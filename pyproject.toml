@@ -1,0 +1,26 @@
+[project]
+name = "architect-rag-verification"
+version = "0.0.0"
+description = "Deterministic verification layer over a retrieval-augmented generation pipeline, evaluated honestly on a bounded public corpus of AI governance frameworks."
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+]
+
+[tool.uv]
+# This repository is an application, not a distributable package. uv manages the
+# environment and the lock file without building or installing the root project.
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

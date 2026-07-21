@@ -1,0 +1,31 @@
+# Secrets. The API key is loaded only inside a subshell and is never committed.
+.env
+
+# Python virtual environment
+.venv/
+
+# Python bytecode and caches
+__pycache__/
+*.pyc
+*.pyo
+
+# Tooling caches
+.ruff_cache/
+.pytest_cache/
+
+# Local model and embedding caches. Weights and indices are regenerated locally,
+# never committed.
+.cache/
+.hf_home/
+models/
+embeddings_cache/
+
+# macOS
+.DS_Store
+
+# Local, machine-specific Claude Code settings. The shared .claude/settings.json
+# is tracked; only the local override file is ignored.
+.claude/settings.local.json
+
+# Note: data/, eval/, and results/ are intentionally NOT ignored. They hold
+# committed reproducibility artifacts.
