@@ -401,7 +401,7 @@ levels of understanding, transparency increases confidence in the AI system.
 This characteristic’s scope spans from design decisions and training data to model training, the structure of the model, its intended use cases, and how and when deployment,
 post-deployment, or end user decisions were made and by whom. Transparency is often
 necessary for actionable redress related to AI system outputs that are incorrect or otherwise
-lead to negative impacts. Transparency should consider human-AI interaction: for examPage 15
+lead to negative impacts. Transparency should consider human-AI interaction: for exam
 ple, how a human operator or user is notified when a potential or actual adverse outcome
 caused by an AI system is detected. A transparent system is not necessarily an accurate,
 privacy-enhanced, secure, or fair system. However, it is difficult to determine whether an
@@ -1175,7 +1175,7 @@ Procurement tasks are conducted by AI actors with financial, legal, or policy ma
 authority for acquisition of AI models, products, or services from a third-party developer,
 vendor, or contractor.
 Governance and Oversight tasks are assumed by AI actors with management, fiduciary,
-and legal authority and responsibility for the organization in which an AI system is dePage 36
+and legal authority and responsibility for the organization in which an AI system is de
 signed, developed, and/or deployed. Key AI actors responsible for AI governance include
 organizational management, senior leadership, and the Board of Directors. These actors
 are parties that are concerned with the impact and sustainability of the organization as a

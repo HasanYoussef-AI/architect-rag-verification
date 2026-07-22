@@ -84,6 +84,7 @@ class Line:
     start: int
     end: int
     kind: str = "content"  # or a discard class name
+    tail: str = ""  # boilerplate stripped from the end of a content line
 
 
 @dataclass
@@ -109,6 +110,24 @@ def build_lines(pages: list[str]) -> tuple[str, list[Line]]:
                 lines.append(Line(page_number, piece.strip(), start, start + len(piece)))
         cursor = cursor - 1 + len(PAGE_SEPARATOR)
     return raw, lines
+
+
+# The page footer is normally its own line, but twice in this document PDFium
+# appends it to the end of a content line, splitting a word across the page
+# boundary: "...for exam<U+FFFE>Page 15". Line-level discard cannot catch that,
+# so a trailing footer is stripped positionally and its characters are still
+# accounted to the page_footer discard class.
+_FOOTER_TAIL = re.compile(r"\s*Page\s+\d+\s*$")
+
+
+def strip_footer_tails(lines: list[Line]) -> None:
+    for line in lines:
+        if line.kind != "content" or _PAGE_FOOTER.match(line.text):
+            continue
+        match = _FOOTER_TAIL.search(line.text)
+        if match:
+            line.tail = line.text[match.start():]
+            line.text = line.text[: match.start()]
 
 
 def classify_lines(lines: list[Line]) -> None:
@@ -473,6 +492,7 @@ def build(verify: bool = True) -> dict:
         )
 
     classify_lines(lines)
+    strip_footer_tails(lines)
     toc = parse_toc(pages)
     if not toc:
         raise IngestError("no Table of Contents entries parsed, cannot validate structure")
@@ -489,8 +509,12 @@ def build(verify: bool = True) -> dict:
     for line in lines:
         if line.kind != "content":
             discard_chars[line.kind] += len(line.text)
+        elif line.tail:
+            discard_chars["page_footer"] += len(line.tail)
     content_chars = sum(len(line.text) for line in content_lines)
-    line_chars = sum(len(line.text) for line in lines)
+    # Include stripped footer tails: they are counted in the discard classes, so
+    # line_chars must be the pre-strip total for the accounting to balance.
+    line_chars = sum(len(line.text) + len(line.tail) for line in lines)
 
     # Account for every character between the raw extraction and the line
     # inventory, so the proof covers the full raw text rather than a derived

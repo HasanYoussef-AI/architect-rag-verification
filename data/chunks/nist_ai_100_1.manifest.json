@@ -51,24 +51,24 @@
     "soft_hyphen_rule": "delete U+FFFE, which rejoins a word split at a line break"
   },
   "outputs": {
-    "nist_ai_100_1.chunks.jsonl": "bacb92411b525c80db55c09baaa3132b80677167147ce636be2baa6e2036c9e0",
+    "nist_ai_100_1.chunks.jsonl": "544f9d1560501dd7ad894663407eafe6b363d5a77bcfd73600fbb9b3af3c5b36",
     "nist_ai_100_1.duplication_map.json": "11ff616d1a1007fad45ec1fcfdfdb869ac5af4ee7426678fa48bb3e0c2b61f33",
     "nist_ai_100_1.extracted.txt": "b43f15b5de5fcd37f0c7068f554825c9c8f4bc8820aac3e330b02135a855e3f5",
-    "nist_ai_100_1.normalized.txt": "9e8af6eea0354e1d48902030f5009a452e9d0719a3b24a7b5902fd1f6883b6c2",
+    "nist_ai_100_1.normalized.txt": "79c1e3bc5612794df456614da0501bfaad183381bb6ce46c63070b2ecada913e",
     "nist_ai_100_1.relations.jsonl": "645579e69e7c44c15d0c8e04c8095973d72e396d461e37b1ecd6cbc646225270"
   },
   "partition_proof": {
-    "assigned_to_units_chars": 97857,
+    "assigned_to_units_chars": 97843,
     "complete": true,
-    "content_chars": 97857,
+    "content_chars": 97843,
     "discarded_chars_by_class": {
       "front_matter": 4771,
-      "page_footer": 271,
+      "page_footer": 285,
       "running_header": 984,
       "table_continuation": 932
     },
-    "discarded_chars_total": 6958,
-    "discarded_fraction_of_lines": 0.0664,
+    "discarded_chars_total": 6972,
+    "discarded_fraction_of_lines": 0.0665,
     "line_chars": 104815,
     "lines_assigned_more_than_once": 0,
     "raw_chars": 107702,
