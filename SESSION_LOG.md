@@ -4,6 +4,138 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from `rag_case_study_tracker.md` plus the
 last entry here alone. Newest entries at the top.
 
+## 2026-07-22, Phase 1 ingestion part two, NIST AI 100-1
+
+Ingestion of the three NIST PDFs is split. This is part two, AI 100-1 alone.
+Part three is AI 600-1 plus the Playbook. AI 100-1 was separated because the
+risk is concentrated in it: it carries the Core tables that are the join spine,
+it mixes narrative and tabular content, and it is the document the rejected
+extractor fails on.
+
+Extractor decision, made on evidence rather than habit:
+- PyMuPDF was rejected before testing because it is AGPL-3.0 or commercial,
+  which does not fit an Apache-2.0 public repository.
+- Two independent permissively licensed engines were compared against the real
+  files, pdfplumber with pdfminer.six (MIT, pure Python) and pypdfium2 (BSD-3
+  and Apache-2.0, Google's PDFium in C++). Agreement was measured two ways,
+  order-sensitive and order-blind, because the distinction turned out to matter.
+- pdfminer.six is materially WRONG on AI 100-1, a pdfTeX-produced document. It
+  emits page 16 reversed, "AxidneppAeeS" for "See Appendix A", and drops
+  inter-word spaces across the document, 548 run-together tokens of 25
+  characters or more against 4 from PDFium. It reported success on all 48 pages,
+  zero empty pages, no error. Poppler's pdftotext was used as an independent
+  third engine to break the tie and agrees with PDFium.
+- pypdfium2 is the extractor of record. Its version and the PDFium build are
+  pinned in the manifest for the same reason the tokenizer is, and the raw
+  extracted text is committed so extraction is auditable without re-running.
+- The defect is pinned as a regression test, so reversing this decision requires
+  deleting a failing test and justifying it.
+
+Three guarantees replace the ELI anchors a PDF cannot provide:
+- Anchors are validated against the document's own Table of Contents. A heading
+  is accepted only if the document declares it, which also excludes the
+  enumerated list items in Appendices C and D that look exactly like section
+  headings but appear in no TOC. All 30 declared entries were located.
+- Partition proof, covering the FULL raw extraction, 107,702 characters:
+  97,857 content assigned to units, 6,958 discarded across four named classes
+  (front_matter 4,771, running_header 984, table_continuation 932, page_footer
+  271), and 2,887 structural whitespace (1,373 intra-page newlines, 1,373
+  stripped line padding, 141 page separators). Zero unassigned content lines,
+  zero lines assigned twice, and the accounted total equals the raw total
+  exactly. Discarded text stays in the committed extraction, so nothing leaves
+  the audit trail.
+- Every chunk's text must be an exact substring of the persisted text at its
+  recorded offsets. This is what makes the no-reconstruction rule enforced
+  rather than promised: any sentence not originating in the PDF fails it
+  mechanically.
+
+Structure and chunks:
+- 121 units: 72 subcategory, 19 category, 23 section, 4 appendix, 2 part, 1
+  named section. Subcategories are 72, distributed GOVERN 19, MAP 18,
+  MEASURE 22, MANAGE 13, derived from the document.
+- 134 chunks, 10 units split, all ids unique, none empty, none over the cap.
+  Tokens min 8, median 39, max 512, counted with the same pinned tokenizer and
+  the same convention as part one, including the [CLS] and [SEP] special tokens,
+  so 512 is the model's real ceiling rather than 514 at embedding time.
+- Chunk ids derive from printed identifiers, never position:
+  `nist_ai_100_1:sub_GOVERN_1.1`, `:sec_1.2.1`, `:app_A`, splits as `#p2`.
+- Line breaks from the PDF are preserved rather than reflowed into paragraphs,
+  because guessing paragraph boundaries can join text wrongly. The consequence
+  is recorded in the manifest: all whitespace including newlines must be
+  normalised on BOTH sides before any grounding comparison and identically for
+  BM25 tokenisation, at comparison time only, never applied to stored text.
+
+Relations, kept in separate fields:
+- structural_join, 121 edges, decomposing as 72 to the Playbook and 49 to
+  AI 600-1, which independently reproduces the coverage counts found during
+  investigation. Exact, identifier-based, no regex risk.
+- prose_xrefs, 6 emitted and audited in full, all correct, plus 32 drops each
+  carrying a reason and sentence, 20 figures and 12 self-references. The
+  population here, 38 references over a vocabulary that never collides with the
+  external ISO, IEC and OECD citations, is not comparable to the EU AI Act, so
+  no separate audit step was needed. AI 600-1's 212 Action IDs may differ and
+  will be re-assessed in part three rather than assumed.
+
+Duplication map, corpus-derived input to pre-registration:
+- 72 rows. 47 Core subcategory statements appear verbatim in the Playbook, 46 in
+  AI 600-1, 34 in both, and 13 in neither. The 13 with no near-miss twin are
+  named explicitly, since they behave differently in the distractor bucket.
+- The matching method is recorded in the manifest precisely enough to
+  reproduce: full-statement exact match over a match form, not a prefix match.
+  A 12-word-prefix variant of the same method yields 56 and 48 instead.
+- Earlier investigation figures of 41 and 36 came from a different method,
+  prefix matching over statements taken from unfiltered raw text that still
+  contained running headers and unjoined hyphens. The committed method is the
+  stricter one.
+- AI 600-1 covers only 49 of the 72 subcategories, recorded in the manifest,
+  because any assumption that all three documents share one subcategory set is
+  wrong.
+- Duplication is kept, not removed. It is the corpus's best near-miss trap.
+  Gold sets are defined at unit level and may name several acceptable units, and
+  where a statement is genuinely duplicated any carrier satisfies the gold. The
+  exception is a query about what the Playbook adds beyond the Core statement,
+  which the Core unit does not satisfy.
+
+Known property recorded for the retrieval step: this document is strongly
+bimodal by length, 72 of 121 units being one or two line statements against
+narrative sections reaching the cap. Authentic to the document and deliberately
+unchanged, but length normalisation is to be examined deliberately at retrieval
+rather than discovered through a strange result.
+
+Normalisation applied: deletion of U+FFFE, a Unicode noncharacter PDFium emits
+for a discretionary hyphen at a line break, which rejoins the split word. All
+239 occurrences have a letter on both sides, and the precondition is asserted
+before any deletion. No ligatures, soft hyphens or non-breaking spaces are
+present. The Playbook's parrot character is genuine, part of a cited paper
+title, and is not to be cleaned.
+
+Why:
+- Chunk ids freeze here and are cited by pre-registered gold passages. A PDF
+  declares no structure, so the invariants above are what make silent content
+  loss and text reconstruction detectable rather than merely unlikely.
+- 110 tests pass, ruff clean. No API calls, no spend, no remote, nothing pushed.
+
+Commit: 906caab0cd44c188e7ca51b7a8d144a571ccadac
+  (feat: structure-aware NIST AI 100-1 ingestion with partition proof, local only)
+  This entry is recorded by the next commit, `docs: log NIST AI 100-1 ingestion
+  commit, local only`, committed immediately after this entry is written, which
+  closes the chain so the next session inherits no unlogged commit.
+
+Current state:
+- Local git repository on branch `main`, no remote configured, nothing pushed.
+  Once this log commit lands the history is twelve commits, all trailer-free.
+- Ingested and verified: the EU AI Act, and NIST AI 100-1. Not yet ingested:
+  NIST AI 600-1 and the AI RMF Playbook. No retrieval, no query set, no gold
+  passages, no results yet.
+
+Next step:
+- Ingestion part three, AI 600-1 and the Playbook, into the same schema. AI
+  600-1 carries 212 printed Action IDs and page-spanning action tables with a
+  repeated header, and covers only 49 subcategories. The Playbook is the most
+  regular of the three, 72 subcategory sections each with the same printed
+  sub-blocks. Re-assess whether prose_xrefs there needs the EU AI Act's audit
+  depth rather than assuming it does not.
+
 ## 2026-07-22, integrity verifier extended to vendored files
 
 What changed:
