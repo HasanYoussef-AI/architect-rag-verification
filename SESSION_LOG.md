@@ -4,6 +4,133 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from `rag_case_study_tracker.md` plus the
 last entry here alone. Newest entries at the top.
 
+## 2026-07-22, Phase 1 ingestion part one, EU AI Act
+
+Ingestion is split in two. This is part one, the EU AI Act only. Part two is the
+three NIST PDFs. The split is deliberate: the EU HTML carries semantic ELI
+anchors verified against the document's true structure, so the schema is proven
+on the case where structure is certain, and part two is then debugging PDF text
+extraction alone rather than schema and extraction at once.
+
+What changed:
+- Added the corpus integrity verifier, `src/ingest/corpus_integrity.py`. It
+  recomputes the SHA-256 of every file under `corpus/*/raw/` against
+  `corpus/SOURCES.md`, applies the documented `ruxitagentjs` strip rule to the
+  EUR-Lex HTML and checks the stable content hash too. Ingestion calls it first
+  and refuses to run on any mismatch, so a corrupted or swapped corpus cannot be
+  ingested silently.
+- Added the chunk schema, `src/ingest/chunk_schema.py`, format-agnostic so it
+  serves the NIST PDFs in part two unchanged.
+- Added structure-aware EU AI Act ingestion, plus a dependency-free HTML tree,
+  minimal text normalisation, the pinned tokenizer, and cross-reference
+  extraction.
+- Added 62 tests. All pass, ruff clean.
+
+Chunking and identifiers:
+- 113 Articles, 13 Annexes, 180 Recitals, 306 units, into 397 chunks: 176
+  article, 28 annex, 193 recital. 65 units exceeded the cap and were split.
+- Chunk IDs derive from the document's own ELI anchors, `eu_ai_act:art_6`, and
+  splits from the parent, `eu_ai_act:art_6#p2`. Never a positional index. Gold
+  passages cite the unit via `parent_id`, so a later change to chunk size cannot
+  invalidate the pre-registration.
+- Token cap 512, which is bge-base-en-v1.5's real 512-position ceiling rather
+  than a chosen number, so an over-cap chunk would be truncated at embedding
+  time. Max observed 511, none over cap.
+- Recitals are ingested and tagged. They are the most realistic near-miss
+  distractors available. Whether gold sets may cite them is a pre-registration
+  decision, not an ingestion one.
+- Output is `data/chunks/`, separate from the immutable `raw/`. Reruns are
+  byte-identical.
+
+Tokenizer decision, overriding the tracker's BGE-M3 lean:
+- The chunking tokenizer is `BAAI/bge-base-en-v1.5`, vendored under `vendor/`.
+  The corpus is entirely English, so BGE-M3's multilingual capacity is unused
+  weight, and with an 8192 window a 512 cap would be an arbitrary number. With
+  bge-base-en-v1.5 the cap is the model's real ceiling. Recorded in the manifest
+  with its identifier and vocabulary checksum so a future model swap cannot move
+  chunk IDs without the manifest showing it. Hasan is updating the tracker.
+
+Cross-reference graph, and its deliberate limits:
+- 367 internal edges, 102 external references, 25 dropped.
+- Precision is 100 percent on a FULL audit of all 581 internal reference
+  occurrences, screened against each reference's own sentence and the preceding
+  one. Fourteen were flagged and all fourteen were read individually.
+- Recall is deliberately sacrificed for precision, costing about 6.4 percent of
+  edges. The rule emits an internal edge only on positive evidence and drops on
+  doubt. The asymmetry justifies it: roughly 16 multi-hop pairs are needed from
+  several hundred candidate edges, so recall is in surplus while one false edge
+  inside a gold set would corrupt the ground-truth claim.
+- Every dropped reference is recorded with its sentence and reason, so the
+  conservatism is auditable rather than taken on faith.
+- The field is labelled everywhere as a high-precision candidate extraction,
+  derived by our regex from prose rather than read from publisher markup. It is
+  never described as the complete cross-reference structure of the Act. Every
+  edge entering a gold set is individually verified at the point of use.
+
+Four false-positive modes were found and fixed, three of them by auditing
+everything rather than sampling:
+- Bare references inside an article amending another instrument, "in Article 17,
+  the following paragraph is added" in art_108, which amends Regulation
+  2018/1139. Fixed by reading the article's own heading. The carve-out keeps
+  art_7, "Amendments to Annex III", internal because it amends this Act.
+- Anaphora, "Article 33 of that Regulation".
+- A qualifier distributed across an enumeration, "Article 4(2) and Article 10 of
+  Directive (EU) 2016/680".
+- Instruments named by acronym, "Article 16 TFEU", "Article 4(2) TEU". A 30
+  sample missed this entirely; the full audit caught it.
+Referential integrity, requiring an internal edge to resolve to a real unit, is
+retained as a structural safety net. It currently fires zero times, and the
+manifest says so plainly rather than implying it is doing work.
+
+Findings recorded so they are not lost:
+- The published Regulation contains a stray backtick in Article 1's heading,
+  ``Subject matter` ``. It is in the official PDF too, at line 3023 of the
+  pdftotext rendering. Reproduced exactly rather than corrected, recorded in the
+  manifest and in `corpus/SOURCES.md`, and asserted by a test. Source text is
+  never edited, including where it is visibly wrong.
+- Enumerated lists are HTML tables and all 180 Recitals exist only as tables, so
+  a parser skipping tables would drop every list item and every Recital while
+  appearing to succeed. A test asserts the recital count.
+- Unit boundaries come from DOM nesting, not anchor-to-anchor windows. A window
+  made art_113 absorb the Annexes. The NIST PDFs have no nesting to fall back
+  on, so part two needs its own boundary strategy.
+
+Licensing:
+- `corpus/SOURCES.md` gained a vendored third-party dependencies section.
+  bge-base-en-v1.5 is MIT, read from the model card metadata, the model card's
+  own licence section and the upstream FlagEmbedding repository, all three
+  agreeing, with no redistribution restriction. Recorded with source URL,
+  retrieval date and per-file checksums, kept separate from the repository's
+  Apache 2.0 code licence and from the corpus documents' terms.
+
+Why:
+- Chunk IDs are cited by pre-registered gold passages and pre-registration is
+  immutable once results exist, so identifiers had to be structure-derived and
+  final before any query exists. Committing the cross-reference graph before any
+  query exists is also what makes the ground-truth claim demonstrable from the
+  commit history rather than asserted.
+- No API calls, no spend, no remote configured, nothing pushed.
+
+Commit: 8af050de1f22fee47b67797e76047001aaaaaadf
+  (feat: structure-aware EU AI Act ingestion with integrity verifier, local only)
+  This entry is recorded by the next commit, `docs: log EU AI Act ingestion
+  commit, local only`, committed immediately after this entry is written, which
+  closes the chain so the next session inherits no unlogged commit.
+
+Current state:
+- Local git repository on branch `main`, no remote configured, nothing pushed.
+  Once this log commit lands the history is eight commits, all trailer-free.
+- The EU AI Act is ingested and verified. The NIST PDFs are acquired and
+  checksummed but not yet ingested. No retrieval, no query set, no gold
+  passages, no results yet.
+
+Next step:
+- Ingestion part two: the three NIST PDFs, AI 100-1, AI 600-1 and the Playbook,
+  into the same chunk schema. Text extraction from PDF is the risk there, not
+  the schema. Needs its own boundary strategy since PDFs have no DOM nesting,
+  and needs care with headers, footers, ligatures and tables. The persisted
+  normalised text per document is the artifact that makes extraction auditable.
+
 ## 2026-07-22, Phase 1 corpus acquisition
 
 What changed:
