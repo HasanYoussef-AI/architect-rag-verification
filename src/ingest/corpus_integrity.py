@@ -33,9 +33,10 @@ _ROW_RE = re.compile(r"\|\s*`([^`]+)`\s*\|.*?`([0-9a-f]{64})`", re.MULTILINE)
 _STABLE_RE = re.compile(r"stable content SHA-256:\s*([0-9a-f]{64})")
 
 # SOURCES.md also records vendored third-party files, which are not corpus and
-# do not live under corpus/*/raw/. Only rows naming a corpus raw path are
-# checksum rows for this verifier.
+# do not live under corpus/*/raw/. The two groups are verified separately
+# because they are resolved against different roots.
 _CORPUS_PATH_RE = re.compile(r"^[A-Za-z0-9_.-]+/raw/[^/]+$")
+_VENDOR_PATH_RE = re.compile(r"^vendor/[A-Za-z0-9_.-]+/[^/]+$")
 
 
 class IntegrityError(RuntimeError):
@@ -141,9 +142,76 @@ def verify_corpus(
     return checks
 
 
+def parse_vendor_entries(sources_md: Path = SOURCES_MD) -> dict[str, str]:
+    """Return repo-relative vendored file path -> expected sha256."""
+    text = sources_md.read_text(encoding="utf-8")
+    return {
+        path: digest
+        for path, digest in _ROW_RE.findall(text)
+        if _VENDOR_PATH_RE.match(path)
+    }
+
+
+def verify_vendor(
+    repo_root: Path = REPO_ROOT, sources_md: Path = SOURCES_MD
+) -> list[FileCheck]:
+    """Check every vendored third-party file against SOURCES.md.
+
+    Vendored files are verified for the same reason the corpus is, and arguably
+    a stronger one. The chunking tokenizer decides where units split, which
+    decides chunk IDs, which the pre-registered gold passages cite. A silently
+    swapped tokenizer would move chunk IDs and void that pre-registration
+    without changing a single corpus byte. A checksum recorded in a manifest but
+    enforced nowhere is documentation, not enforcement.
+    """
+    expected = parse_vendor_entries(sources_md)
+    if not expected:
+        raise IntegrityError(f"no vendored file rows found in {sources_md}")
+
+    checks: list[FileCheck] = []
+    problems: list[str] = []
+    vendor_dir = repo_root / "vendor"
+
+    on_disk = {
+        str(path.relative_to(repo_root))
+        for path in sorted(vendor_dir.rglob("*"))
+        if path.is_file()
+    }
+    for recorded in sorted(expected):
+        if recorded not in on_disk:
+            problems.append(f"recorded in SOURCES.md but missing on disk: {recorded}")
+    for present in sorted(on_disk):
+        if present not in expected:
+            problems.append(f"present on disk but not recorded in SOURCES.md: {present}")
+
+    for relative in sorted(expected):
+        path = repo_root / relative
+        if not path.exists():
+            continue
+        check = FileCheck(relative, expected[relative], sha256_file(path), "vendor")
+        checks.append(check)
+        if not check.ok:
+            problems.append(
+                f"vendor checksum mismatch: {relative}\n"
+                f"    expected {check.expected}\n"
+                f"    actual   {check.actual}"
+            )
+
+    if problems:
+        raise IntegrityError(
+            "vendor integrity check failed, refusing to ingest:\n  " + "\n  ".join(problems)
+        )
+    return checks
+
+
+def verify_all() -> list[FileCheck]:
+    """Verify everything that can move a chunk ID: the corpus and the vendored files."""
+    return verify_corpus() + verify_vendor()
+
+
 def main() -> int:
     try:
-        checks = verify_corpus()
+        checks = verify_all()
     except IntegrityError as exc:
         print(exc)
         return 1

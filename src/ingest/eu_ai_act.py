@@ -26,7 +26,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from src.ingest.chunk_schema import Chunk, UnitXrefs, write_jsonl
-from src.ingest.corpus_integrity import REPO_ROOT, sha256_file, verify_corpus
+from src.ingest.corpus_integrity import REPO_ROOT, sha256_file, verify_all
 from src.ingest.htmltree import Element, parse_html
 from src.ingest.normalize import normalize_block
 from src.ingest.tokenization import MAX_TOKENS, count_tokens, tokenizer_fingerprint
@@ -243,7 +243,7 @@ def pack_blocks(blocks: list[str]) -> list[list[int]]:
 
 def build(verify: bool = True) -> dict:
     if verify:
-        verify_corpus()
+        verify_all()
 
     source = REPO_ROOT / SOURCE_PATH
     source_sha = sha256_file(source)

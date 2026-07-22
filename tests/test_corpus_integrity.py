@@ -15,7 +15,9 @@ from src.ingest.corpus_integrity import (
     parse_sources,
     sha256_file,
     stable_content_sha256,
+    verify_all,
     verify_corpus,
+    verify_vendor,
 )
 
 
@@ -141,3 +143,38 @@ def test_vendored_dependency_rows_are_not_treated_as_corpus_files():
     assert expected
     assert all("/raw/" in path for path in expected)
     assert not any(path.startswith("vendor/") for path in expected)
+
+
+def test_vendor_verification_passes_on_the_committed_files():
+    checks = verify_vendor()
+    assert checks
+    assert all(check.ok for check in checks)
+    assert all(check.kind == "vendor" for check in checks)
+
+
+def test_vendor_verification_catches_a_swapped_tokenizer(tmp_path, monkeypatch):
+    """A swapped tokenizer moves chunk IDs and would void the pre-registration."""
+    from src.ingest.corpus_integrity import REPO_ROOT
+
+    vendor = tmp_path / "vendor" / "bge-base-en-v1.5"
+    vendor.mkdir(parents=True)
+    tokenizer = vendor / "tokenizer.json"
+    tokenizer.write_text('{"real": true}', encoding="utf-8")
+    sources = tmp_path / "SOURCES.md"
+    sources.write_text(
+        "| File | SHA-256 |\n| --- | --- |\n"
+        f"| `vendor/bge-base-en-v1.5/tokenizer.json` | `{sha256_file(tokenizer)}` |\n",
+        encoding="utf-8",
+    )
+    assert verify_vendor(tmp_path, sources)
+
+    tokenizer.write_text('{"swapped": true}', encoding="utf-8")
+    with pytest.raises(IntegrityError) as excinfo:
+        verify_vendor(tmp_path, sources)
+    assert "vendor checksum mismatch" in str(excinfo.value)
+    assert REPO_ROOT.exists()
+
+
+def test_verify_all_covers_corpus_and_vendor():
+    kinds = {check.kind for check in verify_all()}
+    assert kinds == {"raw", "stable-content", "vendor"}
