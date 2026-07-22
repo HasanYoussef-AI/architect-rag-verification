@@ -4,6 +4,47 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from `rag_case_study_tracker.md` plus the
 last entry here alone. Newest entries at the top.
 
+## 2026-07-22, integrity verifier extended to vendored files
+
+What changed:
+- `verify_vendor` and `verify_all` added to `src/ingest/corpus_integrity.py`.
+  The verifier now checks the vendored tokenizer files under `vendor/` against
+  their checksums in `corpus/SOURCES.md`, alongside the corpus. Ingestion calls
+  `verify_all` and refuses to run on any mismatch. Corpus and vendor rows are
+  parsed separately because they resolve against different roots.
+- Three tests added, including a swapped-tokenizer case. 65 tests pass, ruff
+  clean, 10 integrity checks: 6 corpus, 4 vendor.
+- Ingestion output is byte-identical to the previous commit, so this is
+  enforcement only, not a change to any artifact.
+
+Why:
+- The chunking tokenizer decides where units split, which decides chunk IDs,
+  which the pre-registered gold passages cite. A silently swapped tokenizer
+  would move chunk IDs and void the pre-registration without changing a single
+  corpus byte. The tokenizer checksum was recorded in the ingestion manifest but
+  enforced nowhere, which is documentation rather than enforcement. The verifier
+  now covers everything that can move a chunk ID.
+- Hasan directed this after it was raised at the end of part one.
+
+Commit: b911062a7e778dab3720686e95a6a53a076a69bd
+  (feat: extend integrity verifier to vendored files, local only)
+  This entry is recorded by the next commit, `docs: log vendor verifier commit,
+  local only`, committed immediately after this entry is written, which closes
+  the chain so the next session inherits no unlogged commit.
+
+Current state:
+- Local git repository on branch `main`, no remote configured, nothing pushed.
+  Once this log commit lands the history is ten commits, all trailer-free.
+- EU AI Act ingested and verified. NIST PDFs acquired and checksummed, not yet
+  ingested.
+
+Next step:
+- Ingestion part two, NIST PDFs. Investigation phase first, extractor
+  comparison, silent-failure detection, structural invariants, boundary
+  strategy, chunk ID scheme, cross-document structure, near-duplicate
+  quantification and normalisation survey. No pipeline is built until that
+  investigation is approved.
+
 ## 2026-07-22, Phase 1 ingestion part one, EU AI Act
 
 Ingestion is split in two. This is part one, the EU AI Act only. Part two is the
