@@ -1,0 +1,134 @@
+{
+  "counts": {
+    "chunks_by_unit_type": {
+      "appendix": 8,
+      "category": 19,
+      "named_section": 4,
+      "part": 2,
+      "section": 29,
+      "subcategory": 72
+    },
+    "chunks_total": 134,
+    "units_split": 10
+  },
+  "doc_id": "nist_ai_100_1",
+  "doc_title": "Artificial Intelligence Risk Management Framework (AI RMF 1.0), NIST AI 100-1",
+  "downstream_notes": {
+    "bimodal_chunk_length": "This document is strongly bimodal by length: 72 of its 121 units are one or two line subcategory statements while narrative sections reach the 512-token cap, giving a median near 39 tokens against a maximum of 512. This is authentic to the document and is deliberately not altered. Very short chunks score differently from long ones under both lexical and dense retrieval, so length normalisation is to be examined deliberately at the retrieval step rather than discovered through a strange result.",
+    "comparison_time_whitespace_normalisation": "Chunk text preserves the PDF's own line breaks, including mid-sentence, because reflowing into paragraphs requires guessing paragraph boundaries and can join text wrongly. Consequence to honour downstream: the deterministic grounding check string-matches claims from model answers against chunk text, and model answers contain clean sentences where these chunks carry newlines. ALL whitespace, including newlines, MUST be normalised on BOTH sides before any grounding comparison, and identically for BM25 tokenisation. Without it the layer would raise false unsupported-claim flags and corrupt the headline metric. This normalisation applies at comparison time ONLY and is never applied to the stored chunk text."
+  },
+  "duplication_map": {
+    "ai_600_1_coverage_warning": "AI 600-1 is a profile and references only 49 of the 72 subcategories, so any assumption that all three documents share one subcategory set is wrong. Absence of a match there is expected, not a defect.",
+    "duplicated_in_ai_600_1": 46,
+    "duplicated_in_both": 34,
+    "duplicated_in_playbook": 47,
+    "gold_rule_note": "duplication is a near-miss trap to keep, not a problem to remove. Gold sets are defined at unit level and may name several acceptable units; where a statement is genuinely duplicated, retrieving any carrier satisfies the gold. Queries about what the Playbook adds beyond the Core statement are different questions and the Core unit does not satisfy them.",
+    "method": "mechanical exact-substring match of each Core subcategory statement",
+    "method_detail": "For each Core subcategory, the statement is taken from the parsed unit, that is after discard classes are removed and after U+FFFE line-break hyphens are joined. Both the statement and the target document text are reduced to a match form: lowercased, every run of non-alphanumeric characters replaced by a single space, and whitespace collapsed. A duplicate is recorded when the ENTIRE match form of the statement occurs as a substring of the target document's match form. Statements of fewer than 8 words are not tested. This is a full-statement exact match, not a prefix match: a 12-word-prefix variant of the same method yields 56 and 48 rather than 47 and 46, and is not the method used here.",
+    "no_near_miss_twin": [
+      "GOVERN 1.5",
+      "GOVERN 3.1",
+      "GOVERN 4.1",
+      "GOVERN 5.2",
+      "MANAGE 1.1",
+      "MANAGE 1.2",
+      "MAP 1.1",
+      "MAP 1.3",
+      "MAP 1.5",
+      "MAP 3.5",
+      "MEASURE 1.2",
+      "MEASURE 2.1",
+      "MEASURE 4.3"
+    ],
+    "no_near_miss_twin_count": 13,
+    "no_near_miss_twin_note": "these subcategory statements appear verbatim in neither the Playbook nor AI 600-1, so they have no near-miss twin and will behave differently in the distractor bucket from the ones that do",
+    "subcategories_tested": 72
+  },
+  "extractor": {
+    "engine": "pypdfium2",
+    "pdfium_version": "152.0.7947.0",
+    "pypdfium2_version": "5.12.1",
+    "soft_hyphen_rule": "delete U+FFFE, which rejoins a word split at a line break"
+  },
+  "outputs": {
+    "nist_ai_100_1.chunks.jsonl": "bacb92411b525c80db55c09baaa3132b80677167147ce636be2baa6e2036c9e0",
+    "nist_ai_100_1.duplication_map.json": "11ff616d1a1007fad45ec1fcfdfdb869ac5af4ee7426678fa48bb3e0c2b61f33",
+    "nist_ai_100_1.extracted.txt": "b43f15b5de5fcd37f0c7068f554825c9c8f4bc8820aac3e330b02135a855e3f5",
+    "nist_ai_100_1.normalized.txt": "9e8af6eea0354e1d48902030f5009a452e9d0719a3b24a7b5902fd1f6883b6c2",
+    "nist_ai_100_1.relations.jsonl": "645579e69e7c44c15d0c8e04c8095973d72e396d461e37b1ecd6cbc646225270"
+  },
+  "partition_proof": {
+    "assigned_to_units_chars": 97857,
+    "complete": true,
+    "content_chars": 97857,
+    "discarded_chars_by_class": {
+      "front_matter": 4771,
+      "page_footer": 271,
+      "running_header": 984,
+      "table_continuation": 932
+    },
+    "discarded_chars_total": 6958,
+    "discarded_fraction_of_lines": 0.0664,
+    "line_chars": 104815,
+    "lines_assigned_more_than_once": 0,
+    "raw_chars": 107702,
+    "raw_chars_accounted": 107702,
+    "raw_fully_accounted": true,
+    "structural_whitespace_by_class": {
+      "intra_page_newlines": 1373,
+      "page_separators": 141,
+      "stripped_line_whitespace": 1373
+    },
+    "structural_whitespace_total": 2887,
+    "unassigned_content_lines": 0
+  },
+  "relations": {
+    "kept_separate": "structural_join and prose_xrefs are never merged into one field",
+    "prose_xrefs": "regex over running text, every emitted reference audited in full rather than sampled, unresolvable targets dropped with a reason",
+    "prose_xrefs_dropped": 32,
+    "prose_xrefs_emitted": 6,
+    "structural_join": "same printed subcategory identifier present in another document. Exact, derived from the identifier, no regex precision risk",
+    "structural_join_edges": 121
+  },
+  "schema_version": "1.0",
+  "source": {
+    "pages": 48,
+    "path": "corpus/nist_ai_rmf/raw/NIST.AI.100-1.pdf",
+    "sha256": "7576edb531d9848825814ee88e28b1795d3a84b435b4b797d3670eafdc4a89f1"
+  },
+  "structure": {
+    "anchors_located": 30,
+    "subcategories": 72,
+    "subcategories_per_function": {
+      "GOVERN": 19,
+      "MANAGE": 13,
+      "MAP": 18,
+      "MEASURE": 22
+    },
+    "toc_entries_declared": 30,
+    "units": 121,
+    "units_by_type": {
+      "appendix": 4,
+      "category": 19,
+      "named_section": 1,
+      "part": 2,
+      "section": 23,
+      "subcategory": 72
+    },
+    "validated_against": "the document's own Table of Contents. A heading is accepted only if the document declares it, which also excludes the enumerated list items in Appendices C and D that look like section headings"
+  },
+  "token_distribution": {
+    "max": 512,
+    "mean": 138.3,
+    "median": 39,
+    "min": 8,
+    "over_cap": 0
+  },
+  "tokenizer": {
+    "counts_special_tokens": "true",
+    "max_tokens": 512,
+    "model_id": "BAAI/bge-base-en-v1.5",
+    "tokenizer_file": "vendor/bge-base-en-v1.5/tokenizer.json",
+    "tokenizer_file_sha256": "d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66"
+  }
+}

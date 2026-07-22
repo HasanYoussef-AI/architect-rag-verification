@@ -5,6 +5,8 @@ description = "Deterministic verification layer over a retrieval-augmented gener
 requires-python = ">=3.12"
 dependencies = [
     "anthropic",
+    "pdfplumber>=0.11.10",
+    "pypdfium2>=5.12.1",
     "tokenizers>=0.23.1",
 ]
 

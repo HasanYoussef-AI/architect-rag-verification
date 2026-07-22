@@ -1,0 +1,937 @@
+[
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_GOVERN_1.1"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_GOVERN_1.1"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_1.1",
+    "statement_chars": 87,
+    "subcategory": "GOVERN 1.1"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_GOVERN_1.2"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_1.2",
+    "statement_chars": 120,
+    "subcategory": "GOVERN 1.2"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_GOVERN_1.3"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_1.3",
+    "statement_chars": 153,
+    "subcategory": "GOVERN 1.3"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_GOVERN_1.4"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_GOVERN_1.4"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_1.4",
+    "statement_chars": 162,
+    "subcategory": "GOVERN 1.4"
+  },
+  {
+    "duplicated_in": [],
+    "has_near_miss_twin": false,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_1.5",
+    "statement_chars": 217,
+    "subcategory": "GOVERN 1.5"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_GOVERN_1.6"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_GOVERN_1.6"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_1.6",
+    "statement_chars": 110,
+    "subcategory": "GOVERN 1.6"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_GOVERN_1.7"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_1.7",
+    "statement_chars": 184,
+    "subcategory": "GOVERN 1.7"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_GOVERN_2.1"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_GOVERN_2.1"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_2.1",
+    "statement_chars": 189,
+    "subcategory": "GOVERN 2.1"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_GOVERN_2.2"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_2.2",
+    "statement_chars": 199,
+    "subcategory": "GOVERN 2.2"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_GOVERN_2.3"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_2.3",
+    "statement_chars": 141,
+    "subcategory": "GOVERN 2.3"
+  },
+  {
+    "duplicated_in": [],
+    "has_near_miss_twin": false,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_3.1",
+    "statement_chars": 211,
+    "subcategory": "GOVERN 3.1"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_GOVERN_3.2"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_GOVERN_3.2"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_3.2",
+    "statement_chars": 148,
+    "subcategory": "GOVERN 3.2"
+  },
+  {
+    "duplicated_in": [],
+    "has_near_miss_twin": false,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_4.1",
+    "statement_chars": 249,
+    "subcategory": "GOVERN 4.1"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_GOVERN_4.2"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_4.2",
+    "statement_chars": 184,
+    "subcategory": "GOVERN 4.2"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_GOVERN_4.3"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_GOVERN_4.3"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_4.3",
+    "statement_chars": 113,
+    "subcategory": "GOVERN 4.3"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_GOVERN_5.1"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_GOVERN_5.1"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_5.1",
+    "statement_chars": 257,
+    "subcategory": "GOVERN 5.1"
+  },
+  {
+    "duplicated_in": [],
+    "has_near_miss_twin": false,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_5.2",
+    "statement_chars": 192,
+    "subcategory": "GOVERN 5.2"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_GOVERN_6.1"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_GOVERN_6.1"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_6.1",
+    "statement_chars": 186,
+    "subcategory": "GOVERN 6.1"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_GOVERN_6.2"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_GOVERN_6.2"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_GOVERN_6.2",
+    "statement_chars": 124,
+    "subcategory": "GOVERN 6.2"
+  },
+  {
+    "duplicated_in": [],
+    "has_near_miss_twin": false,
+    "source_unit_id": "nist_ai_100_1:sub_MANAGE_1.1",
+    "statement_chars": 162,
+    "subcategory": "MANAGE 1.1"
+  },
+  {
+    "duplicated_in": [],
+    "has_near_miss_twin": false,
+    "source_unit_id": "nist_ai_100_1:sub_MANAGE_1.2",
+    "statement_chars": 112,
+    "subcategory": "MANAGE 1.2"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MANAGE_1.3"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MANAGE_1.3"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MANAGE_1.3",
+    "statement_chars": 206,
+    "subcategory": "MANAGE 1.3"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MANAGE_1.4"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MANAGE_1.4",
+    "statement_chars": 142,
+    "subcategory": "MANAGE 1.4"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MANAGE_2.1"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MANAGE_2.1",
+    "statement_chars": 193,
+    "subcategory": "MANAGE 2.1"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MANAGE_2.2"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MANAGE_2.2"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MANAGE_2.2",
+    "statement_chars": 80,
+    "subcategory": "MANAGE 2.2"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MANAGE_2.3"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MANAGE_2.3"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MANAGE_2.3",
+    "statement_chars": 103,
+    "subcategory": "MANAGE 2.3"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MANAGE_2.4"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MANAGE_2.4",
+    "statement_chars": 209,
+    "subcategory": "MANAGE 2.4"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MANAGE_3.1"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MANAGE_3.1"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MANAGE_3.1",
+    "statement_chars": 119,
+    "subcategory": "MANAGE 3.1"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MANAGE_3.2"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MANAGE_3.2"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MANAGE_3.2",
+    "statement_chars": 120,
+    "subcategory": "MANAGE 3.2"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MANAGE_4.1"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MANAGE_4.1"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MANAGE_4.1",
+    "statement_chars": 246,
+    "subcategory": "MANAGE 4.1"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MANAGE_4.2"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MANAGE_4.2"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MANAGE_4.2",
+    "statement_chars": 172,
+    "subcategory": "MANAGE 4.2"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MANAGE_4.3"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MANAGE_4.3"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MANAGE_4.3",
+    "statement_chars": 201,
+    "subcategory": "MANAGE 4.3"
+  },
+  {
+    "duplicated_in": [],
+    "has_near_miss_twin": false,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_1.1",
+    "statement_chars": 566,
+    "subcategory": "MAP 1.1"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MAP_1.2"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_1.2",
+    "statement_chars": 274,
+    "subcategory": "MAP 1.2"
+  },
+  {
+    "duplicated_in": [],
+    "has_near_miss_twin": false,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_1.3",
+    "statement_chars": 94,
+    "subcategory": "MAP 1.3"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MAP_1.4"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_1.4",
+    "statement_chars": 136,
+    "subcategory": "MAP 1.4"
+  },
+  {
+    "duplicated_in": [],
+    "has_near_miss_twin": false,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_1.5",
+    "statement_chars": 61,
+    "subcategory": "MAP 1.5"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MAP_1.6"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_1.6",
+    "statement_chars": 220,
+    "subcategory": "MAP 1.6"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MAP_2.1"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_2.1",
+    "statement_chars": 156,
+    "subcategory": "MAP 2.1"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MAP_2.2"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_2.2",
+    "statement_chars": 254,
+    "subcategory": "MAP 2.2"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MAP_2.3"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MAP_2.3"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_2.3",
+    "statement_chars": 258,
+    "subcategory": "MAP 2.3"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MAP_3.1"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_3.1",
+    "statement_chars": 99,
+    "subcategory": "MAP 3.1"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MAP_3.2"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_3.2",
+    "statement_chars": 218,
+    "subcategory": "MAP 3.2"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MAP_3.3"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_3.3",
+    "statement_chars": 139,
+    "subcategory": "MAP 3.3"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MAP_3.4"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MAP_3.4"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_3.4",
+    "statement_chars": 193,
+    "subcategory": "MAP 3.4"
+  },
+  {
+    "duplicated_in": [],
+    "has_near_miss_twin": false,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_3.5",
+    "statement_chars": 136,
+    "subcategory": "MAP 3.5"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MAP_4.1"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MAP_4.1"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_4.1",
+    "statement_chars": 251,
+    "subcategory": "MAP 4.1"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MAP_4.2"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_4.2",
+    "statement_chars": 125,
+    "subcategory": "MAP 4.2"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MAP_5.1"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MAP_5.1"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_5.1",
+    "statement_chars": 313,
+    "subcategory": "MAP 5.1"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MAP_5.2"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MAP_5.2"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MAP_5.2",
+    "statement_chars": 187,
+    "subcategory": "MAP 5.2"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MEASURE_1.1"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MEASURE_1.1"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_1.1",
+    "statement_chars": 272,
+    "subcategory": "MEASURE 1.1"
+  },
+  {
+    "duplicated_in": [],
+    "has_near_miss_twin": false,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_1.2",
+    "statement_chars": 179,
+    "subcategory": "MEASURE 1.2"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MEASURE_1.3"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MEASURE_1.3"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_1.3",
+    "statement_chars": 361,
+    "subcategory": "MEASURE 1.3"
+  },
+  {
+    "duplicated_in": [],
+    "has_near_miss_twin": false,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_2.1",
+    "statement_chars": 80,
+    "subcategory": "MEASURE 2.1"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MEASURE_2.10"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MEASURE_2.10"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_2.10",
+    "statement_chars": 95,
+    "subcategory": "MEASURE 2.10"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MEASURE_2.11"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_2.11",
+    "statement_chars": 97,
+    "subcategory": "MEASURE 2.11"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MEASURE_2.12"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MEASURE_2.12"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_2.12",
+    "statement_chars": 153,
+    "subcategory": "MEASURE 2.12"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MEASURE_2.13"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MEASURE_2.13"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_2.13",
+    "statement_chars": 110,
+    "subcategory": "MEASURE 2.13"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MEASURE_2.2"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MEASURE_2.2"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_2.2",
+    "statement_chars": 153,
+    "subcategory": "MEASURE 2.2"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MEASURE_2.3"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MEASURE_2.3"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_2.3",
+    "statement_chars": 179,
+    "subcategory": "MEASURE 2.3"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MEASURE_2.4"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_2.4",
+    "statement_chars": 138,
+    "subcategory": "MEASURE 2.4"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MEASURE_2.5"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MEASURE_2.5"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_2.5",
+    "statement_chars": 185,
+    "subcategory": "MEASURE 2.5"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MEASURE_2.6"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_2.6",
+    "statement_chars": 418,
+    "subcategory": "MEASURE 2.6"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MEASURE_2.7"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MEASURE_2.7"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_2.7",
+    "statement_chars": 101,
+    "subcategory": "MEASURE 2.7"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MEASURE_2.8"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MEASURE_2.8"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_2.8",
+    "statement_chars": 120,
+    "subcategory": "MEASURE 2.8"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MEASURE_2.9"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_2.9",
+    "statement_chars": 188,
+    "subcategory": "MEASURE 2.9"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MEASURE_3.1"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_3.1",
+    "statement_chars": 211,
+    "subcategory": "MEASURE 3.1"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MEASURE_3.2"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MEASURE_3.2"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_3.2",
+    "statement_chars": 180,
+    "subcategory": "MEASURE 3.2"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MEASURE_3.3"
+      },
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MEASURE_3.3"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_3.3",
+    "statement_chars": 169,
+    "subcategory": "MEASURE 3.3"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MEASURE_4.1"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_4.1",
+    "statement_chars": 188,
+    "subcategory": "MEASURE 4.1"
+  },
+  {
+    "duplicated_in": [
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MEASURE_4.2"
+      }
+    ],
+    "has_near_miss_twin": true,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_4.2",
+    "statement_chars": 268,
+    "subcategory": "MEASURE 4.2"
+  },
+  {
+    "duplicated_in": [],
+    "has_near_miss_twin": false,
+    "source_unit_id": "nist_ai_100_1:sub_MEASURE_4.3",
+    "statement_chars": 237,
+    "subcategory": "MEASURE 4.3"
+  }
+]
