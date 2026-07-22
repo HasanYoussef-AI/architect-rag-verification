@@ -4,6 +4,171 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from `rag_case_study_tracker.md` plus the
 last entry here alone. Newest entries at the top.
 
+## 2026-07-22, HANDOFF, hyphen defect found and partially corrected
+
+Read this entry in full before doing anything. A defect was found in ALREADY
+COMMITTED output, it is only partially corrected, and the work is unfinished.
+Ingestion part three is NOT done.
+
+### The original defect, and why the check that was supposed to catch it did not
+
+PDFium encodes a hyphen falling at a line break as U+FFFE, a Unicode
+noncharacter. The first NIST ingestion used this rule: delete U+FFFE, and
+validate that a letter sits on both sides. The precondition looked like a safety
+check but was not one. A REAL hyphen in a compound such as "third-party" also
+has letters on both sides, so deleting produced "thirdparty".
+
+Confirmed corrupted in the AI 100-1 output committed at 906caab: thirdparty,
+decisionmaking, humanAI, privacyenhancing, contextspecific, one occurrence each,
+against 20, 10, 11, 2 and 3 correct occurrences of the hyphenated forms
+elsewhere in the same document. Corpus-wide the class affects roughly 5
+occurrences in AI 100-1, 19 in AI 600-1 and 29 in the Playbook.
+
+The exact-substring assertion could NOT catch this. The corrupted text is
+faithfully carried from extraction into the chunk, so the chunk is a true
+substring of the extracted text. Only cross-document evidence exposed it. That
+is worth remembering: the assertion proves no text was invented, it does not
+prove the text is right.
+
+### The second defect, ordering between discard removal and normalisation
+
+Hyphen resolution originally ran on RAW text, before discard lines were removed.
+A word split across a PAGE boundary has its continuation after the page footer
+and the running header:
+
+    "...for exam<U+FFFE>Page 15 \f NIST AI 100-1 AI RMF 1.0 ple, how a human..."
+
+Reading neighbours from raw text yields "exam" and "Page" instead of "exam" and
+"ple". Constraining neighbours to one physical line would NOT fix this, because
+the continuation legitimately lives on the next page. The fix is ordering:
+resolution must run on text already assembled from CONTENT lines.
+
+A related discovery: the page footer is normally its own line, but twice in
+AI 100-1 PDFium appends it to the end of a content line, so line-level discard
+cannot catch it. A positional tail-strip was added, and the stripped characters
+are still accounted to the page_footer discard class. Only 2 such cases exist
+in the whole corpus, both in AI 100-1. AI 600-1 and the Playbook have none.
+
+### What is COMPLETE and committed at 2522fea
+
+- `src/ingest/hyphenation.py`, the corrected rule module. Symmetric evidence in
+  both directions, corpus-wide attestation with every line-break hyphen masked
+  so no occurrence is evidence about itself, and NO silent default. Not yet
+  wired into any ingester.
+- The footer tail-strip in `src/ingest/nist_ai_100_1.py`, with the partition
+  accounting corrected so that content plus discards still equals line_chars and
+  raw minus line_chars still equals structural whitespace. Both invariants pass.
+- AI 100-1 re-run so its committed data matches its code. Its duplication counts
+  did NOT move: still 47 for the Playbook and 46 for AI 600-1.
+- 111 tests pass, ruff clean.
+
+IMPORTANT: the hyphen fix is NOT yet applied to any document. AI 100-1's
+committed output STILL CONTAINS thirdparty, decisionmaking, humanAI,
+privacyenhancing and contextspecific. The corrected module exists but is unwired.
+
+### What is NOT done
+
+- The full three-document re-run with the corrected hyphen rule.
+- AI 600-1 and Playbook ingestion. Draft modules exist but are UNCOMMITTED and
+  half-finished: `src/ingest/nist_pdf_common.py`, `src/ingest/nist_playbook.py`,
+  `src/ingest/nist_ai_600_1.py`, plus stale `data/chunks/nist_playbook.*`
+  outputs produced with the OLD hyphen rule. Do not trust those outputs.
+  AI 600-1 currently raises on the U+FFFE precondition, which is correct
+  behaviour, not a bug to suppress.
+- The non-ASCII sweep across all three extracted texts.
+- Regression tests pinning the thirdparty class of defects.
+- The forward-reference validation of AI 100-1's duplication map and
+  structural_join against the newly ingested Playbook and AI 600-1 units.
+
+### Hasan's ruling on the unresolved residue, which supersedes an earlier one
+
+After the ordering fix, AI 100-1 has 11 occurrences where corpus attestation is
+silent in both directions. They are ordinary words that happen to occur exactly
+once in the corpus, at a line break: em-phasize, cooper-ation, illus-trated,
+formal-ized, man-agers, devel-opments, quanti-ties, Nonethe-less, high-or,
+cost-effective, plus on-going where both forms are attested.
+
+Hasan's earlier tie-break, prefer the hyphenated form, holds for Al-Ghoneim and
+Self-Assessment and INVERTS for mid-word syllable breaks, where the joined form
+is the real word. He has withdrawn it for this sub-case. Do not hand-rule the
+list and do not use a capitalisation heuristic. Two mechanical discriminators
+were tried and both failed: corpus attestation is zero in both directions, and
+fragment attestation returns hyphen for everything because every fragment has
+some attestation somewhere in 597,496 characters.
+
+The ruling is to add a FOURTH evidence source: an English wordlist, vendored
+into the repository with a recorded license and checksum, under the vendor
+verifier exactly like the tokenizer. The reasoning to preserve: a committed
+wordlist is not the model's knowledge of English, it is a deterministic external
+artifact anyone can reproduce and audit, so looking up whether "cooperation"
+appears in a specific committed file is a mechanical lookup rather than a
+recollection. That is why it does not violate the no-reconstruction rule the way
+morphological judgment would.
+
+Evidence order, wordlist LAST and only where the earlier sources are silent:
+  1. non-letter neighbour, real hyphen, structurally decisive;
+  2. corpus attestation in exactly one direction, take that direction;
+  3. both attested, keep the earlier Group A ruling, prefer hyphenated and
+     record that both forms are attested;
+  4. neither attested, the wordlist decides. Joined form present in the
+     wordlist means the hyphen was typesetting, so delete. Joined form absent
+     means the hyphen was real, so keep it.
+  5. anything still unresolved goes to Hasan by hand, expected to be nearly empty.
+
+Two constraints recorded with it. Label wordlist-resolved decisions distinctly
+from attestation-resolved ones in the decision log, so the strength of evidence
+behind each is visible rather than flattened. And record the known limitation:
+where a genuinely hyphenated compound occurs exactly once and its joined form
+happens to be a dictionary word, the wordlist will wrongly delete the hyphen.
+Corpus attestation catches that whenever the compound appears anywhere else, so
+the exposure is narrow, but it must be stated rather than discovered.
+
+The wordlist is to be chosen in the fresh session. It must be permissively
+licensed and redistributable, verified from its actual license file rather than
+from memory, the same standard applied to the corpus and the tokenizer. If
+nothing suitable is redistributable, STOP and tell Hasan rather than committing
+it.
+
+### Fix forward, no history rewrite
+
+Hasan's explicit ruling: correct the rule, re-run all three documents, and fix
+forward with a new commit. Do not rewrite history and do not amend the AI 100-1
+commits. Rule 10 is spent and no further exception is invoked. The history
+should show that the defect existed, was caught by the system's own check, and
+was corrected in the open. He intends to write that into the README.
+
+Timing note he asked to be recorded: this surfaced BEFORE pre-registration, so
+the duplication map can still move freely. Had it surfaced afterwards the
+pre-registration would have been void.
+
+If the duplication counts move from 47 and 46 during the re-run, report the new
+numbers with the reason and update the pinning tests as a STATED correction in
+the commit message and this log, never as a silent adjustment.
+
+Commit: 2522fea717acf54d0f84c0eec168234147de1954
+  (fix: correct hyphen-join neighbour extraction and footer tail-strip, partial,
+  local only)
+  This entry is recorded by the next commit, `docs: log hyphen defect checkpoint,
+  local only`, committed immediately after this entry is written, which closes
+  the chain so the next session inherits no unlogged commit.
+
+Current state:
+- Local git repository on branch `main`, no remote configured, nothing pushed.
+  Once this log commit lands the history is sixteen commits, all trailer-free.
+- Ingested: the EU AI Act (clean), NIST AI 100-1 (ingested but its text still
+  carries the five corrupted words listed above). NOT ingested: AI 600-1 and the
+  Playbook.
+
+Next step:
+- Choose and vendor a permissively licensed English wordlist, verify its license
+  from the actual license file, record it in `corpus/SOURCES.md` under vendored
+  dependencies with its checksum, and bring it under the vendor verifier. Then
+  wire `hyphenation.resolve` into all three ingesters, re-run all three
+  documents, commit the full decision log for every U+FFFE occurrence with its
+  neighbours, evidence counts, the rule that fired and the outcome, add the
+  regression tests, run the non-ASCII sweep, and complete AI 600-1 and Playbook
+  ingestion with the forward-reference validation.
+
 ## 2026-07-22, checkpoint before ingestion part three
 
 What changed:
