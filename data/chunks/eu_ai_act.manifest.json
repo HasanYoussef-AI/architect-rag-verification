@@ -1,0 +1,77 @@
+{
+  "chunking": {
+    "block_separator": "\\n",
+    "heading_in_text": "headings appear in the text only where the document places them; they are not duplicated into split chunks, so every chunk text is an exact substring of the normalised document text",
+    "max_tokens": 512,
+    "sentence_fallback": "only for a single block over the cap",
+    "split_boundary": "document paragraph and list-item boundaries",
+    "unit_separator": "\\n\\n"
+  },
+  "counts": {
+    "chunks_by_unit_type": {
+      "annex": 28,
+      "article": 176,
+      "recital": 193
+    },
+    "chunks_total": 397,
+    "units": {
+      "annex": 13,
+      "article": 113,
+      "recital": 180
+    },
+    "units_split": 65
+  },
+  "cross_references": {
+    "acronym_instruments": "the Act cites the Treaties by acronym, 'Article 16 TFEU', with no instrument noun. A reference carrying an adjacent acronym is classified external, not dropped, because the acronym settles it rather than casting doubt",
+    "derivation": "derived by our regular expression from prose, not read from publisher markup: the Official Journal HTML hyperlinks only footnotes",
+    "dropped_by_reason": {
+      "external instrument named in the same sentence": 19,
+      "inside an article amending an external instrument": 6
+    },
+    "dropped_refs": 25,
+    "external_refs": 102,
+    "internal_edges": 367,
+    "precision": "validated by full audit of every emitted edge, not a sample",
+    "recall": "deliberately sacrificed for precision, an ambiguous reference is dropped rather than guessed, and anaphoric references such as 'that Article' or 'paragraph 3 thereof' are not captured at all",
+    "referential_integrity": "an internal edge must resolve to a unit that exists in this document. This is a structural safety net and it currently fires zero times, because acronym-qualified references such as 'Article 290 TFEU' are already classified external upstream. It is retained to catch modes not yet observed, not because it is doing work today",
+    "referential_integrity_firings": 0,
+    "rule": "explicit 'of this Regulation' wins, then an explicit external qualifier, then drop inside articles amending an external instrument, then drop when any external instrument is named in the same sentence, otherwise internal",
+    "status": "high-precision candidate extraction, not an authority",
+    "use_in_ground_truth": "candidate generator only, every edge entering a pre-registered gold set is individually read and verified at the point of use",
+    "warning": "this is not the complete cross-reference structure of the Act"
+  },
+  "doc_id": "eu_ai_act",
+  "doc_title": "Regulation (EU) 2024/1689 of the European Parliament and of the Council of 13 June 2024 laying down harmonised rules on artificial intelligence (Artificial Intelligence Act)",
+  "known_source_artifacts": {
+    "art_1_heading_stray_backtick": "the heading of Article 1 reads 'Subject matter`' with a trailing backtick. This is in the published Regulation, not in our extraction: it appears in the official EUR-Lex PDF as well, at line 3023 of the pdftotext rendering. Reproduced exactly rather than corrected, per the rule that source text is never edited or reconstructed."
+  },
+  "outputs": {
+    "eu_ai_act.chunks.jsonl": "28e6d092859bed97c905470f6698fd0b3ef4243fc50767029674a1d44436d15c",
+    "eu_ai_act.normalized.txt": "3b6480ce3fbafcd631e6d1d5e497db0dcbb999bd4fe5b8433aa93044c2d81ed8",
+    "eu_ai_act.xrefs.jsonl": "a749c69581913065ea006d80ef74c8f7bd17297d98fd919fb2214dfab39e64aa"
+  },
+  "schema_version": "1.0",
+  "source": {
+    "path": "corpus/eu_ai_act/raw/CELEX_32024R1689_EN_OJ.html",
+    "sha256": "a6f77d735ed4f8934a3515864c6334c11461354b7d1eeb868e282a36f58230f1"
+  },
+  "source_format_notes": {
+    "enumerated_lists_are_tables": "enumerated points are laid out as HTML tables with the marker, '(a)', in the first cell and the text in the second",
+    "recitals_are_tables_only": "all 180 Recitals exist only as tables, number in the first cell and text in the second, so a parser that skips tables would drop every list item and every Recital while still appearing to succeed. Asserted by test.",
+    "unit_boundaries_need_dom_nesting": "unit extent comes from element nesting, not from a regex window between anchors. A window over-captures whenever an anchor is the last of its kind: Article 113 absorbed the Annexes and measured 2577 words against a true length near 100. The NIST PDFs in part two have no nesting to fall back on, so that step needs its own boundary strategy."
+  },
+  "token_distribution": {
+    "max": 511,
+    "mean": 270.6,
+    "median": 242,
+    "min": 32,
+    "over_cap": 0
+  },
+  "tokenizer": {
+    "counts_special_tokens": "true",
+    "max_tokens": 512,
+    "model_id": "BAAI/bge-base-en-v1.5",
+    "tokenizer_file": "vendor/bge-base-en-v1.5/tokenizer.json",
+    "tokenizer_file_sha256": "d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66"
+  }
+}

@@ -313,6 +313,23 @@ non-breaking space, U+00A0, rather than an ordinary space. Examples are
 `"Article 6"` with a plain space will silently fail to match. Normalise U+00A0
 to a plain space before structural matching during ingestion.
 
+### Known artifacts in the published text
+
+The published Regulation contains a stray character that a reviewer would
+otherwise read as a bug in our parser.
+
+The heading of Article 1 reads ``Subject matter` ``, with a trailing backtick
+after "matter". This is in the source, not in our extraction. It appears in the
+EUR-Lex HTML as `<p class="oj-sti-art">Subject matter`</p>`, and independently in
+the official PDF, at line 3023 of the `pdftotext -layout` rendering of
+`CELEX_32024R1689_EN_OJ.pdf`.
+
+Ingestion reproduces it exactly rather than correcting it, and a test asserts
+that the extracted heading still reads ``Subject matter` ``. Source text in this
+repository is never edited, completed, or reconstructed, including where it is
+visibly wrong. Silently repairing it would be indistinguishable, to a reviewer,
+from silently altering text anywhere else.
+
 ## NIST AI 100-1
 
 - Title: Artificial Intelligence Risk Management Framework (AI RMF 1.0)
@@ -420,3 +437,45 @@ advertised.
 **NIST hosts.** `nvlpubs.nist.gov` and `airc.nist.gov` served all three PDFs
 without throttling. `https://www.nist.gov/oism/copyrights` responds with HTTP
 301 and redirects to `https://www.nist.gov/copyrights-disclaimers`.
+
+# Vendored third-party dependencies
+
+Not corpus. These are third-party files committed under `vendor/` because the
+pipeline depends on them, recorded here so that every third-party file in this
+repository has stated provenance and terms in one place. They keep their own
+license, separate from the repository's Apache 2.0 code license and from the
+corpus documents' terms above.
+
+## bge-base-en-v1.5 tokenizer
+
+Chunk boundaries are decided by token counts, and chunk IDs are cited by the
+pre-registered gold passages, which are immutable once results exist. The
+tokenizer is therefore vendored rather than downloaded at run time, so chunking
+is offline, deterministic, and pinned by checksum. See `src/ingest/tokenization.py`.
+
+- Model identifier: `BAAI/bge-base-en-v1.5`
+- Publisher: Beijing Academy of Artificial Intelligence (BAAI), FlagEmbedding project
+- Source URL: https://huggingface.co/BAAI/bge-base-en-v1.5
+- Files retrieved from `https://huggingface.co/BAAI/bge-base-en-v1.5/resolve/main/`
+- Retrieved: 2026-07-22
+- License: **MIT**. Declared as `license: mit` in the model card metadata, and
+  stated in the model card's own License section: "FlagEmbedding is licensed
+  under the MIT License. The released models can be used for commercial purposes
+  free of charge." The upstream project repository carries the same MIT license.
+  - Model card: https://huggingface.co/BAAI/bge-base-en-v1.5
+  - License text: https://github.com/FlagOpen/FlagEmbedding/blob/master/LICENSE
+- Redistribution: permitted. MIT allows redistribution with the license and
+  copyright notice preserved. No non-commercial or research-only restriction
+  appears in the model card or the upstream repository.
+
+| File | Bytes | SHA-256 |
+| --- | --- | --- |
+| `vendor/bge-base-en-v1.5/tokenizer.json` | 711,396 | `d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66` |
+| `vendor/bge-base-en-v1.5/tokenizer_config.json` | 366 | `9261e7d79b44c8195c1cada2b453e55b00aeb81e907a6664974b4d7776172ab3` |
+| `vendor/bge-base-en-v1.5/special_tokens_map.json` | 125 | `b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3` |
+| `vendor/bge-base-en-v1.5/config.json` | 777 | `bc00af31a4a31b74040d73370aa83b62da34c90b75eb77bfa7db039d90abd591` |
+
+Only tokenizer and configuration files are vendored. No model weights are
+committed. `config.json` is included because it records
+`max_position_embeddings: 512`, which is the evidence that the 512-token chunk
+cap is the encoder's real ceiling rather than a number we chose.

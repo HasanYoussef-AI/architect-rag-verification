@@ -5,6 +5,7 @@ description = "Deterministic verification layer over a retrieval-augmented gener
 requires-python = ">=3.12"
 dependencies = [
     "anthropic",
+    "tokenizers>=0.23.1",
 ]
 
 [dependency-groups]
