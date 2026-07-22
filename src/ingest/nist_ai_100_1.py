@@ -525,6 +525,14 @@ def build(verify: bool = True) -> dict:
         "raw_fully_accounted": accounted == len(raw),
         "structural_whitespace_by_class": dict(sorted(structural_ws.items())),
         "structural_whitespace_total": structural_total,
+        "why_two_classes_are_equal": (
+            "intra_page_newlines and stripped_line_whitespace are equal by construction, "
+            "not by coincidence. PDFium emits exactly one trailing space on every line "
+            "except the last line of each page, and never any leading space: the observed "
+            "padding distribution is 1373 lines with one trailing space and 48 with none, "
+            "the 48 being the page-final lines. Both counts therefore equal "
+            "total_lines minus page_count."
+        ),
         "line_chars": line_chars,
         "content_chars": content_chars,
         "assigned_to_units_chars": sum(len(line.text) for unit in units for line in unit.lines),

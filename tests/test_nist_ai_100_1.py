@@ -347,3 +347,13 @@ def test_downstream_normalisation_requirement_is_recorded(ingested):
 def test_bimodal_length_is_recorded_as_a_known_property(ingested):
     manifest, *_ = ingested
     assert "length normalisation" in manifest["downstream_notes"]["bimodal_chunk_length"]
+
+
+def test_the_equal_whitespace_classes_are_equal_by_construction(ingested):
+    """Two identical numbers must not look like one was copied from the other."""
+    manifest, *_ = ingested
+    proof = manifest["partition_proof"]
+    classes = proof["structural_whitespace_by_class"]
+    assert classes["intra_page_newlines"] == classes["stripped_line_whitespace"]
+    assert "by construction" in proof["why_two_classes_are_equal"]
+    assert "one trailing space" in proof["why_two_classes_are_equal"]
