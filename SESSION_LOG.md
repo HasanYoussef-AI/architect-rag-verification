@@ -4,6 +4,75 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from `rag_case_study_tracker.md` plus the
 last entry here alone. Newest entries at the top.
 
+## 2026-07-22, checkpoint before ingestion part three
+
+What changed:
+- Recorded in the AI 100-1 partition proof why two of its structural whitespace
+  classes carry the same number. `intra_page_newlines` and
+  `stripped_line_whitespace` are both 1,373 by construction, not by
+  coincidence: PDFium emits exactly one trailing space on every line except the
+  last line of each page, and never a leading space. The observed padding
+  distribution is 1,373 lines with one trailing space and 48 with none, the 48
+  being the page-final lines, so both counts equal total lines minus page count.
+  A test asserts the equality and the recorded explanation.
+- Hasan asked for this so a future reviewer seeing two identical numbers does
+  not have to wonder whether one was copied from the other.
+- 111 tests pass, ruff clean. The extractor dependencies, pdfplumber and
+  pypdfium2, were already committed with the AI 100-1 ingestion commit.
+
+Why:
+- Committed as its own checkpoint before ingestion part three, which is a
+  substantial build covering two documents. Starting that build from a clean
+  tree rather than carrying an uncommitted fix into it, because a long run with
+  loose ends is where a rushed tail becomes likely.
+
+Investigation completed this session, carried into part three:
+- AI 600-1 prose references number 13, ten `Appendix X`, two `Section`, one
+  `Figure`, against 212 Action IDs which are structural rather than prose. The
+  Playbook has one. The combined population of 14 is audited exhaustively, so no
+  separate step is warranted, unlike the EU AI Act's roughly 721 references.
+- Collisions do exist here, so classification is mandatory and needs THREE
+  classes rather than two: internal, resolving within the same document;
+  cross_document, resolving to a unit in another corpus document, recorded with
+  the target's real unit id; and external, pointing outside the corpus, recorded
+  with the named instrument and no edge emitted. Two collisions are already
+  demonstrated: "Section 4.1(a)(i)(A) of EO 14110" is external, and "See
+  Appendix A of the AI RMF" resolves to AI 100-1's Appendix A, which is a real
+  unit in our own corpus and would be lost if collapsed into either other class.
+- The Playbook has five top-level blocks per subcategory, not six. "About",
+  "Suggested Actions", "Transparency & Documentation", "AI Transparency
+  Resources" and "References". "Organizations can document the following"
+  appears 72 times but is a sub-label inside Transparency & Documentation.
+- Two further discard classes are needed: the Playbook's `N of 142` page footer,
+  which appears mid-content between bullets so the discard must be positional
+  and must not join text across the boundary, and AI 600-1's repeated
+  `Action ID Suggested Action GAI Risks` table header on 48 pages.
+
+Commit: 894ce480de1091723c97fdfdfc34e9f2dfef6a08
+  (docs: record why two partition whitespace classes are equal, local only)
+  This entry is recorded by the next commit, `docs: log partition whitespace
+  note commit, local only`, committed immediately after this entry is written,
+  which closes the chain so the next session inherits no unlogged commit.
+
+Current state:
+- Local git repository on branch `main`, no remote configured, nothing pushed.
+  Once this log commit lands the history is fourteen commits, all trailer-free.
+- Ingested and verified: the EU AI Act, and NIST AI 100-1. Not yet ingested:
+  NIST AI 600-1 and the AI RMF Playbook.
+
+Next step:
+- Ingestion part three, AI 600-1 and the Playbook together, under the same rules
+  as part two. Playbook Core statements are separate units from their five
+  blocks, References blocks are chunked and tagged rather than excluded, the
+  Action ID to subcategory relation is its own field, and the forward references
+  that AI 100-1 already committed, the duplication map targets and the
+  structural_join edges, must all resolve against the newly ingested units, with
+  the join decomposing to exactly 72 for the Playbook and 49 for AI 600-1. Those
+  are enforced as tests that fail loudly. Ids are derived by the same mechanical
+  rule used in AI 100-1, from each document's own printed identifiers, with no
+  adjustment to match the prediction; a mismatch is a finding to report, not to
+  reconcile.
+
 ## 2026-07-22, Phase 1 ingestion part two, NIST AI 100-1
 
 Ingestion of the three NIST PDFs is split. This is part two, AI 100-1 alone.
