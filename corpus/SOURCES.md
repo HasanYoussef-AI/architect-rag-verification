@@ -479,3 +479,131 @@ Only tokenizer and configuration files are vendored. No model weights are
 committed. `config.json` is included because it records
 `max_position_embeddings: 512`, which is the evidence that the 512-token chunk
 cap is the encoder's real ceiling rather than a number we chose.
+
+## SCOWL English wordlist, hyphenation resolver last-resort tier
+
+The U+FFFE line-break hyphen resolver decides, per occurrence, whether a hyphen
+at a line break was a typesetting artifact inside one word, "cooper-ation", or a
+real hyphen in a compound, "third-party". Its strongest evidence is corpus
+attestation. A small residue has no attestation in either direction, because the
+word pair occurs exactly once in the whole corpus and that once is at the line
+break. For that residue this wordlist is evidence source four, consulted only
+where the earlier sources are silent: if the joined form is a real English word
+the hyphen was typesetting and is deleted, and if it is not the hyphen was real
+and is kept. A committed, checksummed wordlist keeps that decision a mechanical
+lookup in a reproducible artifact rather than a judgment about English. See
+`src/ingest/wordlist.py` and `src/ingest/hyphenation.py`.
+
+- Source: SCOWL (Spell Checker Oriented Word Lists), revision 2020.12.07, by
+  Kevin Atkinson.
+- Homepage: http://wordlist.aspell.net/
+- Development repository: https://github.com/en-wl/wordlist
+- Download URL: https://downloads.sourceforge.net/project/wordlist/SCOWL/2020.12.07/scowl-2020.12.07.tar.gz
+- Retrieved: 2026-07-23
+- Source tarball: 2,569,810 bytes, SHA-256
+  `5587667caa20c4891390c2d42dbb4d5c4c3f41bee77af1457ece3ba23fb859cc`
+
+### License, verified from the vendored Copyright file
+
+Permissive, read from the vendored `vendor/scowl/Copyright` rather than from
+memory, the same standard applied to the corpus and the tokenizer. SCOWL is a
+collective work whose components each carry their own terms. At the levels used
+here, 10 through 70 of the `english-words` and `american-words` families, every
+component is public domain or permissive:
+
+| Component (enters at level) | Terms |
+| --- | --- |
+| Kevin Atkinson collective and script output | permissive, MIT-style: use, copy, modify, distribute and sell without fee, provided the copyright notice appears |
+| Moby / MWords (10, 70) | explicitly placed in the public domain |
+| Brian Kelk "UK English Wordlist with Frequency Classification" (10, 20, 35, 50) | public domain, author confirmation quoted in the Copyright file |
+| 12Dicts, Alan Beale, including 3esl and 2of4brif (35, 40, 55, 60) | public domain |
+| WordNet 1.6, used to build the inflection database (35, 70) | Princeton permissive grant, notice required on all copies |
+| VarCon, used to split American from British spellings (`american-words`) | permissive: Atkinson and Titze grants plus the Ispell / Geoff Kuenning BSD notice |
+
+Redistribution is permitted at levels 10 through 70. The obligation is to
+reproduce the component notices, which is satisfied by vendoring
+`vendor/scowl/Copyright` verbatim rather than paraphrasing it here.
+
+**Level 80 is excluded deliberately.** It is the first level to include the UK
+Advanced Cryptics Dictionary (UKACD), "Copyright (c) J Ross Beresford 1993-1999.
+All Rights Reserved", which is redistributable only if its notice is prominently
+displayed and its text included verbatim, and is the only SCOWL component that is
+neither public domain nor permissively licensed. Level 80 is also where the
+false-positive surface begins to grow, with 256,772 compound words entering at
+level 95. Capping at level 70 excludes UKACD entirely, so the compact build is
+also the license-cleanest build. This is stated per level in the Copyright file,
+not taken on faith.
+
+### Vendored files
+
+The 16 component files are the as-served bytes from the SCOWL 2020.12.07 release,
+extracted from the tarball above without modification. `Copyright` is vendored
+verbatim to carry the component notices. The built list
+`en-american.10-70.lower.txt` is a **derived** artifact produced by
+`src/ingest/wordlist.py` from the components; it is not as-served bytes, and its
+reproducibility rests on the build recipe below. Every file here, components and
+derived list alike, is pinned by `corpus_integrity.verify_vendor`.
+
+| File | Bytes | SHA-256 |
+| --- | --- | --- |
+| `vendor/scowl/Copyright` | 11758 | `283326a422e29c510e2ba6805518c418ce3c35ed1fadc3eec83d2da4f6c5a055` |
+| `vendor/scowl/english-words.10` | 34496 | `f19988ecdb0280ab63340e5c5e155a814ab3d0f225ae60f5cb9e000252283b0b` |
+| `vendor/scowl/american-words.10` | 310 | `6ed66394d8b46ed12feac7aad989dfc4620c4f2051316ab774560aae71140994` |
+| `vendor/scowl/english-words.20` | 69514 | `618998fff18fb9e143a5bab49e669ec48c023758f0db476d6b64ec06994ba71e` |
+| `vendor/scowl/american-words.20` | 1738 | `a7ae730cd5f2ee11b584c163bf0750cc7659e336c3a04da1a8a2e9c44b604b9e` |
+| `vendor/scowl/english-words.35` | 338445 | `f36ace33ff09bd5eda5f3ccbcc9971c1b6a8887fa62f5ad7f93e3c220d871388` |
+| `vendor/scowl/american-words.35` | 11092 | `c999d002cfe31a2c3d9726eee1b87697402bb71cc831a2c63d064403c6a3a7fb` |
+| `vendor/scowl/english-words.40` | 66062 | `fc5c2058cd24af4ca6a9bca97ce7d300c8899753715d029fc8bb3cbe602eef7f` |
+| `vendor/scowl/american-words.40` | 2857 | `5a9c03d207087acabc969b32c6ef93ed376208287b2c8343f7952d0d06085577` |
+| `vendor/scowl/english-words.50` | 248158 | `ff5b1f1752df695e0512c1e9e096f22af2dc127119918b1e43a35582ef90da90` |
+| `vendor/scowl/american-words.50` | 9521 | `1846537a15d7cf9f0b5fde8d2f69a9d3606856695c68de1701fc85d698646994` |
+| `vendor/scowl/english-words.55` | 62684 | `be646fbdc9c4b4fef5b23e9c5678f7479534c428a7581745178642dfd9c744d6` |
+| `vendor/scowl/american-words.55` | 2845 | `d5b6d504b907ef159b164286519fc96168737d60a62310ff5d74d2076ed97027` |
+| `vendor/scowl/english-words.60` | 146812 | `8922ac79ea926ae876d68f178fcb1107bbdf1b90996086f63ffc3e97da55427f` |
+| `vendor/scowl/american-words.60` | 6942 | `3296121b977bcc2fc3fab374b69d2a0891c825bb473ef8078161245b2a990f2f` |
+| `vendor/scowl/english-words.70` | 344790 | `283f54865410e896bdab53bdaf04fa4e1a3a189dc6961a4033714944ee67cb6a` |
+| `vendor/scowl/american-words.70` | 14858 | `96b09f0f5db4203fa41fca64d6c40833da0ccdc1c02f913628c7ed129a68f6c3` |
+| `vendor/scowl/en-american.10-70.lower.txt` | 1361427 | `ea48e8ef601c01a2ab1654e2b4f61187f59b643a246314aa0b501cd241c6f0a7` |
+
+Built list: 135,951 entries, 1,361,427 bytes.
+
+### Build recipe
+
+Deterministic, and nothing beyond what is stated. `src/ingest/wordlist.py`:
+
+1. Read each of the 16 component files, decoded as ISO-8859-1, the SCOWL shipping encoding.
+2. Concatenate all lines.
+3. Lowercase each word.
+4. Deduplicate.
+5. Sort by Unicode code point, in Python rather than the shell so the order is locale-independent.
+6. Write one word per line, trailing newline, UTF-8.
+
+No filtering, no possessive stripping, no other transformation. `tests/test_wordlist.py`
+re-runs the recipe and asserts byte-identity with the committed built list, the
+same discipline as the byte-identical ingestion rerun.
+
+### A candidate rejected on evidence, recorded so the obvious option is not read as overlooked
+
+The macOS system list `/usr/share/dict/web2` (Webster's Second International,
+1934, copyright lapsed) is public domain and was the convenient local option. It
+was rejected on coverage, measured against the resolver's actual unresolved
+cases rather than assumed. web2 stores base lemmas but not their derived and
+inflected forms, so it lacks the exact forms the resolver must look up:
+
+| Form the resolver must look up | In web2? |
+| --- | --- |
+| emphasize | yes |
+| nonetheless | yes |
+| cooperation | no (web2 carries the base "cooperate" but not the derived noun) |
+| managers | no (base "manager" only) |
+| quantities | no (base "quantity" only) |
+| developments | no |
+| illustrated | no |
+| formalized | no |
+
+web2 would wrongly keep the hyphen on six of the eight residue cases, shipping
+"cooper-ation" and "man-agers", the visible corruption the resolver exists to
+remove. A public-domain list is not adequate on reputation. SCOWL was chosen
+because it carries generated inflected forms and American spellings, tested
+present against these same cases, while excluding proper names and compounds by
+construction so the dangerous false-positive direction stays controlled.
