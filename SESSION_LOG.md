@@ -4,6 +4,119 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from `rag_case_study_tracker.md` plus the
 last entry here alone. Newest entries at the top.
 
+## 2026-07-24, NIST corpus ingestion COMPLETE, AI 600-1 and Playbook ingested
+
+AI 600-1 and the Playbook are now ingested with the corrected resolver, from the
+clean commit. All three NIST documents and the EU AI Act are ingested. The eight
+untracked draft files were reworked against the wired resolver, not trusted.
+Ingestion is finished; the next phase is the query set, gold passages, and
+pre-registration.
+
+### The one finding that needed a ruling, and how it was handled
+
+AI 600-1 has 212 printed action rows, but the strict anchor found 211. The 212th,
+GOVERN 4.3's first action, prints garbled in the PDF's own text layer as
+"GV4.3--001" where the correct printed form is "GV-4.3-001". Cross-engine check as
+ruled: pypdfium2, poppler plain, poppler layout and pdfminer.six all render it
+identically, so the defect is in the source PDF, not our extractor, and there is
+no external corroboration. Hasan ruled Option A. Recovered by a tolerant anchor
+that validates all three intact components (prefix, subcategory resolving to a
+real heading, well-formed number), corroborated by the GOVERN 4.3 heading above
+and GV-4.3-002 below. Stored text keeps "GV4.3--001" verbatim so the
+exact-substring assertion holds; only the derived key is normalised to
+act_GV-4.3-001. Recorded in the manifest as a single documented exception, with
+the resulting lexical-mismatch case (a query for GV-4.3-001 will not match the
+stored surface) in downstream_notes for the retrieval step. Tests pin that the
+tolerant pattern recovers exactly this one row beyond strict, the total is 212,
+no duplicate ids exist, and the recovery fills the numbering gap. GV-1.1-002 in
+the prose is only the ID-scheme example; GOVERN 1.1 has one real action.
+
+### Forward-reference gate, enforced and passing
+
+IDs derived mechanically from each document's own printed identifiers, no
+adjustment to match the prediction. AI 100-1's structural_join decomposes to
+exactly 72 Playbook targets and 49 AI 600-1 targets, and every one resolves to a
+real unit. The reverse joins (98 and 72), all 95 duplication targets and all 212
+action-to-subcategory edges resolve. Enforced by tests in
+tests/test_forward_references.py that fail loudly.
+
+### Structure and partition
+
+- AI 600-1: 287 units (212 action, 49 subcategory, 15 section, Appendix A with 9
+  numbered subsections, Appendix B as References), 308 chunks. Partition closes
+  over 162,204 raw chars, discard classes front_matter and the new table_header,
+  the 48-page "Action ID Suggested Action GAI Risks". Action-to-subcategory is
+  its own field, 212 edges. tokens 7 to 512, none over cap.
+- Playbook: 436 units (72 Core statements separate from their five blocks each,
+  4 function intros), 455 chunks. Partition closes over 341,715 raw chars, discard
+  classes front_matter and the new positional page_footer "N of 142". References
+  blocks chunked and tagged as playbook_references, not excluded. tokens 10 to
+  511, none over cap.
+- Exact-substring assertion holds on every chunk in both, deterministic
+  byte-identical reruns confirmed.
+
+### A structural bug in the draft, found and fixed
+
+The AI 600-1 draft anchored only numbered sections, subcategories and actions, so
+Appendix A ("Primary GAI Considerations") and Appendix B (the References
+bibliography) were folded into the last action, MG-4.3-003, which became a giant
+mis-tagged unit. Fixed by anchoring the appendices and Appendix A's numbered
+subsections, and tagging Appendix B as References. MG-4.3-003 is now one chunk and
+the bibliography is 12 chunks under app_B.
+
+### Hyphenation agreement, the remaining 98 decisions
+
+AI 600-1 44 applied, 0 conflicts. Playbook 54 applied, 0 conflicts. Both agree
+exactly with the committed decision log, completing the 337. Neighbour extraction
+is per unit, attestation is corpus-wide, as the committed decisions require. All
+98 are kept, matching the log's own split for these two documents.
+
+### Duplication map did NOT move
+
+Still 48 and 47, no-twin 11, unchanged. AI 100-1's haystacks resolve the raw
+600-1 and Playbook text directly, which was already the corrected text from the
+previous step and is independent of these ingesters, so ingestion cannot move it.
+Stated explicitly as requested: no movement, so no stated correction this time.
+
+### Prose references and the non-ASCII ruling
+
+Three classes, every reference audited in full. AI 600-1: 11 content references
+audited (the other 2 of the raw 13 are Appendix references in the discarded
+front-matter table of contents). Playbook: 1, "ISO/IEC CD 5339. See Section 6",
+external. Both demonstrated collisions classify correctly, and a false positive
+where a following "AI RMF" clause had flipped AI 600-1's own Appendix A to
+cross-document was caught and fixed by requiring the instrument to be connected to
+the reference. The comparison-time normalisation ruling (curly quotes and
+apostrophe to ASCII, en and em dash to hyphen, non-breaking space to space,
+whitespace collapsed, both sides, never on stored text) and a per-document
+non-ASCII inventory with leave-alone items marked deliberately excluded are
+recorded in downstream_notes of all three NIST manifests, with
+normalise_for_comparison in code. AI 100-1 was re-run only to add this note.
+
+Commit: 40ffc2b
+  (feat: structure-aware ingestion of NIST AI 600-1 and the Playbook with the
+  wired resolver, local only)
+  This entry is recorded by the next commit, `docs: log AI 600-1 and Playbook
+  ingestion commit, local only`, committed immediately after this entry is
+  written, which closes the chain so the next session inherits no unlogged commit.
+
+Current state:
+- Local git repository on branch `main`, no remote configured, nothing pushed.
+  Once this log commit lands the history is twenty-four commits, all trailer-free.
+- Ingested and verified: the EU AI Act, and all three NIST documents, AI 100-1,
+  AI 600-1 and the Playbook, with the hyphen resolver applied and the
+  cross-document reference graph fully resolving. 164 tests pass, ruff clean.
+- No retrieval, no query set, no gold passages, no results yet.
+
+Next step:
+- Phase 1 continues with retrieval, then the query set and gold passages, then
+  the immutable pre-registration commit that must predate any generation run. The
+  duplication map (48 and 47) and the cross-document reference graph are the
+  corpus-derived inputs to gold-passage definition. When retrieval and grounding
+  are built, apply the recorded comparison-time normalisation on both sides, and
+  treat the GV-4.3-001 lexical-mismatch as a known case rather than a designed
+  query trap.
+
 ## 2026-07-23, hyphenation defect FIXED in AI 100-1 applied output, non-ASCII sweep closed
 
 The hyphenation defect is now corrected in applied document output, not just in
