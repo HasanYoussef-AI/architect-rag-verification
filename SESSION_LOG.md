@@ -4,6 +4,108 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from `rag_case_study_tracker.md` plus the
 last entry here alone. Newest entries at the top.
 
+## 2026-07-23, hyphenation defect FIXED in AI 100-1 applied output, non-ASCII sweep closed
+
+The hyphenation defect is now corrected in applied document output, not just in
+the resolver. AI 100-1 was re-run with the wired resolver and committed. AI 600-1
+and the Playbook are the remaining ingestion work, deliberately deferred to the
+next step from this clean commit.
+
+### What was wired
+
+`src.ingest.hyphenation.resolve` replaced the per-line `join_soft_hyphens` in the
+AI 100-1 ingester. It runs per unit, so a word split across a page boundary
+rejoins across the discarded footer and running header, and on the cross-document
+haystacks used for duplication and structural_join, so hyphen resolution is
+consistent on both sides of every match. Attestation stays corpus-wide:
+`resolve` reads `evidence_text` over all three PDFs regardless of the text passed,
+so it was not degraded to per-document or per-line evidence. `pdf_extract`'s
+`soft_hyphen_rule` fingerprint was updated from "delete U+FFFE" to record that
+the resolver decides it.
+
+### Agreement with the committed decision log
+
+The applied result agrees with the committed corpus-wide decision log exactly:
+231 content-region decisions, zero conflicts, and the 8 log decisions not applied
+are markers in discarded front matter and headers that never reach a unit. A test
+pins this. No decision changed between the reviewed log and the applied output.
+
+### What moved in the output
+
+Exactly 12 occurrences changed, in 12 chunks: 10 hyphens now preserved and 2
+page-boundary splits rejoined ("example" at page 15, a de-word at page 36). Net
++8 characters. The five confirmed corrupted words are gone and their hyphenated
+forms present: third-party, decision-making, human-AI, privacy-enhancing,
+context-specific. Five more of the same class were also corrected:
+context-relevant, cost-effective, high-or, off-label, on-going.
+
+- Unchanged and byte-identical: extracted.txt and relations.jsonl. structural_join
+  stayed 121 (72 Playbook, 49 AI 600-1), prose_xrefs 6 emitted and 32 dropped.
+- No chunk IDs moved, no split boundary moved, chunk count still 134, units 121.
+  Twelve chunks' token counts shifted by 1 or 2 but no block crossed a split
+  boundary. Partition still closes over raw_chars 107702.
+
+### Stated correction, the duplication map moved
+
+Resolving line-break hyphens consistently on both the statements and the target
+documents revealed two true duplications the old delete-the-hyphen rule had
+hidden. duplicated_in_playbook 47 -> 48, MEASURE 4.3 now matches the Playbook via
+"context-relevant". duplicated_in_ai_600_1 46 -> 47, MAP 1.1 now matches AI 600-1
+via "context-specific". no_near_miss_twin 13 -> 11. duplicated_in_both unchanged
+at 34. The two pinning tests, test_duplication_uses_full_statement_not_prefix_matching
+and test_subcategories_without_a_near_miss_twin_are_named, were updated to 48/47
+and 11 with the reason recorded in their docstrings. This is a corpus-derived
+input to pre-registration, and it surfaced BEFORE pre-registration, so it can
+still move freely; had it surfaced afterwards the pre-registration would be void.
+
+### Non-ASCII sweep closed, one item flagged for ruling
+
+Swept all three extracted texts. 23 distinct non-ASCII codepoints, every one
+classified. Nothing needs a new ingestion rule. Genuine and preserved: the
+accented Latin letters and the registered sign in Playbook author names, U+FFFE
+(now resolved), the parrot in a cited title, en and em dashes, curly quotes, the
+bullet and almost-equal signs. No space-family surprise: the NIST PDFs carry no
+U+00A0, unlike the EUR-Lex HTML.
+
+One item carries an assumption not yet examined: the quote and dash families,
+curly apostrophe U+2019, curly double quotes U+201C and U+201D, and en and em
+dashes, will silently break lexical matching if a query or a grounding check uses
+an ASCII apostrophe or hyphen against them. This is a COMPARISON-TIME
+normalisation decision for the retrieval and grounding phase, analogous to the
+whitespace note already in the manifest, not an ingestion-time alteration of
+source text. Nothing was applied and nothing was decided; it is left for Hasan to
+rule on when retrieval is built.
+
+Commit: 7434920
+  (fix: apply hyphen resolver to NIST AI 100-1 output, correcting the thirdparty
+  defect class, local only)
+  This entry is recorded by the next commit, `docs: log AI 100-1 hyphen fix
+  commit, local only`, committed immediately after this entry is written, which
+  closes the chain so the next session inherits no unlogged commit.
+
+Current state:
+- Local git repository on branch `main`, no remote configured, nothing pushed.
+  Once this log commit lands the history is twenty-two commits, all trailer-free.
+- Ingested and CORRECT: the EU AI Act, and NIST AI 100-1 with the hyphenation
+  defect now fixed in its applied output. NOT ingested: AI 600-1 and the Playbook.
+- The wordlist is vendored and pinned, the resolver is wired and applied to
+  AI 100-1, and the corpus-wide decision log is committed and agrees with the
+  applied result.
+
+Next step:
+- Ingest AI 600-1 and the Playbook with the corrected resolver, from this clean
+  commit. The eight untracked draft files (nist_pdf_common.py, nist_playbook.py,
+  nist_ai_600_1.py, and the stale data/chunks/nist_playbook.* outputs) are to be
+  reworked against the wired resolver, not trusted as-is. AI 600-1 has two
+  non-letter U+FFFE cases the resolver keeps as real hyphens, so its
+  find_unjoinable_breaks precondition must be reconsidered rather than left to
+  raise. Enforce the forward references: the structural_join must decompose to
+  72 for the Playbook and 49 for AI 600-1 against the newly ingested units, and
+  the duplication map targets must resolve. Add the regression tests pinning the
+  defect class at the ingester level for those two documents. Separately, when
+  retrieval is built, rule on comparison-time normalisation of the quote and dash
+  families surfaced by the non-ASCII sweep.
+
 ## 2026-07-23, hyphen resolver wired and decision log committed, last hyphenation round
 
 Hasan reviewed the decision log from the previous entry and ruled. The resolver
