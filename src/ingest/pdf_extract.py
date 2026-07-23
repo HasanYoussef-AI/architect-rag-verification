@@ -49,7 +49,7 @@ def extractor_fingerprint() -> dict[str, str]:
         "engine": "pypdfium2",
         "pypdfium2_version": str(pypdfium2_version()),
         "pdfium_version": str(pdfium_version.PDFIUM_INFO),
-        "soft_hyphen_rule": "delete U+FFFE, which rejoins a word split at a line break",
+        "soft_hyphen_rule": "U+FFFE resolved by src.ingest.hyphenation.resolve, not blindly deleted",
     }
 
 

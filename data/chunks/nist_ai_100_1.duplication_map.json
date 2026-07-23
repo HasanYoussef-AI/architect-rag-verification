@@ -422,10 +422,15 @@
     "subcategory": "MANAGE 4.3"
   },
   {
-    "duplicated_in": [],
-    "has_near_miss_twin": false,
+    "duplicated_in": [
+      {
+        "doc_id": "nist_ai_600_1",
+        "unit_id": "nist_ai_600_1:sub_MAP_1.1"
+      }
+    ],
+    "has_near_miss_twin": true,
     "source_unit_id": "nist_ai_100_1:sub_MAP_1.1",
-    "statement_chars": 566,
+    "statement_chars": 567,
     "subcategory": "MAP 1.1"
   },
   {
@@ -928,10 +933,15 @@
     "subcategory": "MEASURE 4.2"
   },
   {
-    "duplicated_in": [],
-    "has_near_miss_twin": false,
+    "duplicated_in": [
+      {
+        "doc_id": "nist_playbook",
+        "unit_id": "nist_playbook:sub_MEASURE_4.3"
+      }
+    ],
+    "has_near_miss_twin": true,
     "source_unit_id": "nist_ai_100_1:sub_MEASURE_4.3",
-    "statement_chars": 237,
+    "statement_chars": 238,
     "subcategory": "MEASURE 4.3"
   }
 ]

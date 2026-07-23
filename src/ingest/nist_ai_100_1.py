@@ -36,13 +36,13 @@ from pathlib import Path
 
 from src.ingest.chunk_schema import Chunk, write_jsonl
 from src.ingest.corpus_integrity import REPO_ROOT, sha256_file, verify_all
+from src.ingest.hyphenation import resolve
 from src.ingest.normalize import normalize_block
 from src.ingest.pdf_extract import (
     PAGE_SEPARATOR,
     extract_pages,
     extractor_fingerprint,
     find_unjoinable_breaks,
-    join_soft_hyphens,
     sha256_text,
 )
 from src.ingest.tokenization import MAX_TOKENS, count_tokens, tokenizer_fingerprint
@@ -320,6 +320,18 @@ def match_form(text: str) -> str:
     return " ".join(_MATCH_NORM.sub(" ", text.lower()).split())
 
 
+def _resolved_text(path: Path, doc_id: str) -> str:
+    """Full document text with U+FFFE resolved, for cross-document matching.
+
+    The resolver uses corpus-wide attestation regardless of the text it is given.
+    AI 600-1 and the Playbook have no page-boundary interruption between a marker
+    and its continuation, so their raw joined text gives correct fragments; only
+    AI 100-1 needs the content-line assembly that the main build performs.
+    """
+    resolved, _ = resolve("\n".join(extract_pages(REPO_ROOT / path)), doc_id)
+    return resolved
+
+
 def build_duplication_map(subcategories: dict[str, str]) -> list[dict]:
     """Mechanical exact-substring duplication test against the other two documents.
 
@@ -331,8 +343,8 @@ def build_duplication_map(subcategories: dict[str, str]) -> list[dict]:
     absence there is expected and is not a defect.
     """
     others = {
-        "nist_playbook": match_form(join_soft_hyphens("\n".join(extract_pages(REPO_ROOT / PLAYBOOK_PATH)))),
-        "nist_ai_600_1": match_form(join_soft_hyphens("\n".join(extract_pages(REPO_ROOT / GENAI_PATH)))),
+        "nist_playbook": match_form(_resolved_text(PLAYBOOK_PATH, "nist_playbook")),
+        "nist_ai_600_1": match_form(_resolved_text(GENAI_PATH, "nist_ai_600_1")),
     }
     rows: list[dict] = []
     for label, statement in sorted(subcategories.items()):
@@ -357,14 +369,17 @@ def build_duplication_map(subcategories: dict[str, str]) -> list[dict]:
 
 DUPLICATION_METHOD = (
     "For each Core subcategory, the statement is taken from the parsed unit, that is "
-    "after discard classes are removed and after U+FFFE line-break hyphens are joined. "
+    "after discard classes are removed and after U+FFFE line-break hyphens are resolved "
+    "by src.ingest.hyphenation.resolve on both the statement and the target document. "
     "Both the statement and the target document text are reduced to a match form: "
     "lowercased, every run of non-alphanumeric characters replaced by a single space, "
     "and whitespace collapsed. A duplicate is recorded when the ENTIRE match form of the "
     "statement occurs as a substring of the target document's match form. Statements of "
     "fewer than 8 words are not tested. This is a full-statement exact match, not a "
-    "prefix match: a 12-word-prefix variant of the same method yields 56 and 48 rather "
-    "than 47 and 46, and is not the method used here."
+    "prefix match: a duplicate requires the entire statement to appear, not merely a "
+    "leading window of it. A 12-word-prefix variant of the same method accepts more "
+    "matches and is deliberately not the method used here. The committed counts are in "
+    "duplicated_in_playbook and duplicated_in_ai_600_1 below."
 )
 
 
@@ -398,8 +413,8 @@ _TABLE_TO_SECTION = {"1": "sec_5.1", "2": "sec_5.2", "3": "sec_5.3", "4": "sec_5
 def build_relations(units, unit_ids: set[str]) -> list[dict]:
     """structural_join and prose_xrefs per unit, as separate fields."""
     others = {
-        "nist_playbook": join_soft_hyphens("\n".join(extract_pages(REPO_ROOT / PLAYBOOK_PATH))),
-        "nist_ai_600_1": join_soft_hyphens("\n".join(extract_pages(REPO_ROOT / GENAI_PATH))),
+        "nist_playbook": _resolved_text(PLAYBOOK_PATH, "nist_playbook"),
+        "nist_ai_600_1": _resolved_text(GENAI_PATH, "nist_ai_600_1"),
     }
     records = []
     for unit in units:
@@ -416,7 +431,8 @@ def build_relations(units, unit_ids: set[str]) -> list[dict]:
                             "basis": "same printed subcategory identifier",
                         }
                     )
-        body = " ".join(normalize_block(join_soft_hyphens(line.text)) for line in unit.lines)
+        resolved_body, _ = resolve(BLOCK_SEPARATOR.join(line.text for line in unit.lines), DOC_ID)
+        body = normalize_block(resolved_body)
         refs, dropped = [], []
         for match in _PROSE_REF.finditer(body):
             kind, ident = match.group("kind"), match.group("id")
@@ -580,9 +596,18 @@ def build(verify: bool = True) -> dict:
     doc_parts: list[str] = []
     cursor = 0
     subcategory_statements: dict[str, str] = {}
+    hyphen_decisions: list = []
 
     for unit in units:
-        blocks = [normalize_block(join_soft_hyphens(line.text)) for line in unit.lines]
+        # Resolve U+FFFE across the whole unit, not per line, so a word split at a
+        # page boundary rejoins across the discarded footer and header. The
+        # resolver consumes the newline between such fragments, which merges the
+        # two lines into one block; every other line is returned unchanged.
+        resolved_unit, unit_decisions = resolve(
+            BLOCK_SEPARATOR.join(line.text for line in unit.lines), DOC_ID
+        )
+        hyphen_decisions.extend(unit_decisions)
+        blocks = [normalize_block(block) for block in resolved_unit.split(BLOCK_SEPARATOR)]
         blocks = [b for b in blocks if b]
         if not blocks:
             continue
@@ -664,6 +689,20 @@ def build(verify: bool = True) -> dict:
         "source": {"path": str(SOURCE_PATH), "sha256": source_sha, "pages": len(pages)},
         "extractor": extractor_fingerprint(),
         "tokenizer": tokenizer_fingerprint(),
+        "hyphenation": {
+            "occurrences_resolved": len(hyphen_decisions),
+            "deleted": sum(1 for d in hyphen_decisions if d.outcome == ""),
+            "kept": sum(1 for d in hyphen_decisions if d.outcome == "-"),
+            "by_rule": dict(sorted(Counter(d.rule for d in hyphen_decisions).items())),
+            "note": (
+                "U+FFFE line-break hyphens in content are resolved by "
+                "src.ingest.hyphenation.resolve using corpus-wide attestation and then the "
+                "vendored wordlist, per unit so a word split across a page boundary rejoins. "
+                "This covers the content-line occurrences only; the corpus-wide log over all "
+                "337 raw occurrences, including those in discarded regions, is "
+                "data/hyphenation/decision_log.jsonl."
+            ),
+        },
         "partition_proof": partition,
         "structure": {
             "toc_entries_declared": len(toc),
@@ -788,6 +827,28 @@ def _pack(blocks: list[str]) -> list[list[int]]:
     if current:
         groups.append(current)
     return groups
+
+
+def applied_hyphen_decisions() -> list:
+    """The hyphen decisions actually applied to this document's content.
+
+    Reproduces the per-unit resolution the build performs, so a test can assert
+    the applied result agrees with the committed corpus-wide decision log. This
+    covers content-line occurrences only; markers in discarded front matter and
+    headers never reach a unit and so are not applied anywhere.
+    """
+    pages = extract_pages(REPO_ROOT / SOURCE_PATH)
+    _, lines = build_lines(pages)
+    classify_lines(lines)
+    strip_footer_tails(lines)
+    anchors = locate_anchors(lines, parse_toc(pages))
+    decisions: list = []
+    for unit in build_units(lines, anchors):
+        _, unit_decisions = resolve(
+            BLOCK_SEPARATOR.join(line.text for line in unit.lines), DOC_ID
+        )
+        decisions.extend(unit_decisions)
+    return decisions
 
 
 def main() -> int:

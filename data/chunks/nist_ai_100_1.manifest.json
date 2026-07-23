@@ -19,12 +19,12 @@
   },
   "duplication_map": {
     "ai_600_1_coverage_warning": "AI 600-1 is a profile and references only 49 of the 72 subcategories, so any assumption that all three documents share one subcategory set is wrong. Absence of a match there is expected, not a defect.",
-    "duplicated_in_ai_600_1": 46,
+    "duplicated_in_ai_600_1": 47,
     "duplicated_in_both": 34,
-    "duplicated_in_playbook": 47,
+    "duplicated_in_playbook": 48,
     "gold_rule_note": "duplication is a near-miss trap to keep, not a problem to remove. Gold sets are defined at unit level and may name several acceptable units; where a statement is genuinely duplicated, retrieving any carrier satisfies the gold. Queries about what the Playbook adds beyond the Core statement are different questions and the Core unit does not satisfy them.",
     "method": "mechanical exact-substring match of each Core subcategory statement",
-    "method_detail": "For each Core subcategory, the statement is taken from the parsed unit, that is after discard classes are removed and after U+FFFE line-break hyphens are joined. Both the statement and the target document text are reduced to a match form: lowercased, every run of non-alphanumeric characters replaced by a single space, and whitespace collapsed. A duplicate is recorded when the ENTIRE match form of the statement occurs as a substring of the target document's match form. Statements of fewer than 8 words are not tested. This is a full-statement exact match, not a prefix match: a 12-word-prefix variant of the same method yields 56 and 48 rather than 47 and 46, and is not the method used here.",
+    "method_detail": "For each Core subcategory, the statement is taken from the parsed unit, that is after discard classes are removed and after U+FFFE line-break hyphens are resolved by src.ingest.hyphenation.resolve on both the statement and the target document. Both the statement and the target document text are reduced to a match form: lowercased, every run of non-alphanumeric characters replaced by a single space, and whitespace collapsed. A duplicate is recorded when the ENTIRE match form of the statement occurs as a substring of the target document's match form. Statements of fewer than 8 words are not tested. This is a full-statement exact match, not a prefix match: a duplicate requires the entire statement to appear, not merely a leading window of it. A 12-word-prefix variant of the same method accepts more matches and is deliberately not the method used here. The committed counts are in duplicated_in_playbook and duplicated_in_ai_600_1 below.",
     "no_near_miss_twin": [
       "GOVERN 1.5",
       "GOVERN 3.1",
@@ -32,15 +32,13 @@
       "GOVERN 5.2",
       "MANAGE 1.1",
       "MANAGE 1.2",
-      "MAP 1.1",
       "MAP 1.3",
       "MAP 1.5",
       "MAP 3.5",
       "MEASURE 1.2",
-      "MEASURE 2.1",
-      "MEASURE 4.3"
+      "MEASURE 2.1"
     ],
-    "no_near_miss_twin_count": 13,
+    "no_near_miss_twin_count": 11,
     "no_near_miss_twin_note": "these subcategory statements appear verbatim in neither the Playbook nor AI 600-1, so they have no near-miss twin and will behave differently in the distractor bucket from the ones that do",
     "subcategories_tested": 72
   },
@@ -48,13 +46,26 @@
     "engine": "pypdfium2",
     "pdfium_version": "152.0.7947.0",
     "pypdfium2_version": "5.12.1",
-    "soft_hyphen_rule": "delete U+FFFE, which rejoins a word split at a line break"
+    "soft_hyphen_rule": "U+FFFE resolved by src.ingest.hyphenation.resolve, not blindly deleted"
+  },
+  "hyphenation": {
+    "by_rule": {
+      "TIE-BREAK, both forms attested, no position-specific evidence": 1,
+      "hyphenated form attested elsewhere in corpus, real hyphen": 7,
+      "joined form a word and a fragment is not, syllable break, delete": 8,
+      "joined form absent from vendored wordlist, real hyphen": 2,
+      "joined form attested elsewhere in corpus, discretionary hyphen": 213
+    },
+    "deleted": 221,
+    "kept": 10,
+    "note": "U+FFFE line-break hyphens in content are resolved by src.ingest.hyphenation.resolve using corpus-wide attestation and then the vendored wordlist, per unit so a word split across a page boundary rejoins. This covers the content-line occurrences only; the corpus-wide log over all 337 raw occurrences, including those in discarded regions, is data/hyphenation/decision_log.jsonl.",
+    "occurrences_resolved": 231
   },
   "outputs": {
-    "nist_ai_100_1.chunks.jsonl": "544f9d1560501dd7ad894663407eafe6b363d5a77bcfd73600fbb9b3af3c5b36",
-    "nist_ai_100_1.duplication_map.json": "11ff616d1a1007fad45ec1fcfdfdb869ac5af4ee7426678fa48bb3e0c2b61f33",
+    "nist_ai_100_1.chunks.jsonl": "f23cc153f734189d4ebdcf9c2e5620ce645517da8c569b5752f6d3cef6bb7951",
+    "nist_ai_100_1.duplication_map.json": "39b85f3e24796ecde51ef0386cb9cdbfcddeb6552f010a1d86005c3930ea88c9",
     "nist_ai_100_1.extracted.txt": "b43f15b5de5fcd37f0c7068f554825c9c8f4bc8820aac3e330b02135a855e3f5",
-    "nist_ai_100_1.normalized.txt": "79c1e3bc5612794df456614da0501bfaad183381bb6ce46c63070b2ecada913e",
+    "nist_ai_100_1.normalized.txt": "41974e26fa99929c20741cd3164f544c67bd5be4ce5f4701c1d6d6c1a67914f5",
     "nist_ai_100_1.relations.jsonl": "645579e69e7c44c15d0c8e04c8095973d72e396d461e37b1ecd6cbc646225270"
   },
   "partition_proof": {

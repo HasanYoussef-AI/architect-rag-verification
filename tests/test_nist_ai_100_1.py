@@ -140,6 +140,56 @@ def test_a_known_split_word_is_rejoined(ingested):
     assert f"inte{SOFT_HYPHEN_BREAK}grated" not in text
 
 
+# The class of defect the hyphen resolver exists to prevent: a real compound
+# hyphen deleted at a line break, welding two words into one. Pinned both
+# directions, so reintroducing the delete-the-hyphen rule fails these tests.
+THIRDPARTY_DEFECT_CLASS = [
+    ("thirdparty", "third-party"),
+    ("decisionmaking", "decision-making"),
+    ("humanAI", "human-AI"),
+    ("privacyenhancing", "privacy-enhancing"),
+    ("contextspecific", "context-specific"),
+]
+
+
+def test_the_thirdparty_defect_class_is_fixed_both_directions(ingested):
+    """Corrupted joined forms are gone and the correct hyphenated forms are present."""
+    _, chunks, _, _, text = ingested
+    chunk_text = "\n".join(c["text"] for c in chunks)
+    for corrupted, fixed in THIRDPARTY_DEFECT_CLASS:
+        assert corrupted not in text, f"corrupted {corrupted!r} present in normalized text"
+        assert corrupted not in chunk_text, f"corrupted {corrupted!r} present in chunk text"
+        assert fixed in text, f"fixed {fixed!r} absent from normalized text"
+        assert fixed in chunk_text, f"fixed {fixed!r} absent from chunk text"
+
+
+def test_applied_hyphenation_agrees_with_the_committed_decision_log():
+    """The result applied to the document must match the committed corpus-wide log.
+
+    Every hyphen decision applied to AI 100-1's content must match the reviewed
+    decision log exactly. The eight log decisions not applied are markers in
+    discarded front matter and headers that never reach a unit.
+    """
+    from collections import Counter
+
+    from src.ingest.nist_ai_100_1 import applied_hyphen_decisions
+
+    log_path = OUTPUT_DIR.parent / "hyphenation" / "decision_log.jsonl"
+    log = [json.loads(x) for x in log_path.read_text(encoding="utf-8").splitlines()]
+    key_fields = (
+        "left", "right", "hyphenated", "joined",
+        "hyphen_evidence", "joined_evidence", "rule", "outcome",
+    )
+    log_multiset = Counter(
+        tuple(row[k] for k in key_fields) for row in log if row["doc_id"] == DOC_ID
+    )
+    applied_multiset = Counter(
+        tuple(getattr(d, k) for k in key_fields) for d in applied_hyphen_decisions()
+    )
+    assert not (applied_multiset - log_multiset), "an applied decision does not match the log"
+    assert sum((log_multiset - applied_multiset).values()) == 8
+
+
 # --------------------------------------------------------------------------
 # Chunk invariants
 # --------------------------------------------------------------------------
@@ -301,20 +351,34 @@ def test_duplication_method_is_recorded_reproducibly(ingested):
 
 
 def test_duplication_uses_full_statement_not_prefix_matching(ingested):
-    """Pins the committed method: full-statement match gives 47 and 46."""
+    """Pins the committed method: full-statement match gives 48 and 47.
+
+    Stated correction: these were 47 and 46 before the U+FFFE hyphen resolver was
+    wired in. Resolving line-break hyphens consistently on both the AI 100-1
+    statements and the target documents revealed two true duplications the old
+    delete-the-hyphen rule had hidden: MAP 1.1 now matches AI 600-1 via
+    "context-specific", and MEASURE 4.3 now matches the Playbook via
+    "context-relevant". Both had been corrupted to a joined form that did not
+    match the target's correctly hyphenated text.
+    """
     manifest, *_ = ingested
     summary = manifest["duplication_map"]
-    assert summary["duplicated_in_playbook"] == 47
-    assert summary["duplicated_in_ai_600_1"] == 46
+    assert summary["duplicated_in_playbook"] == 48
+    assert summary["duplicated_in_ai_600_1"] == 47
 
 
 def test_subcategories_without_a_near_miss_twin_are_named(ingested):
-    """They behave differently in the distractor bucket, so they are recorded."""
+    """They behave differently in the distractor bucket, so they are recorded.
+
+    Stated correction: this was 13 before the hyphen resolver was wired in. The
+    same two duplications revealed by consistent hyphen resolution, MAP 1.1 and
+    MEASURE 4.3, each gained a twin, so the count without a twin dropped to 11.
+    """
     manifest, _, _, duplication, _ = ingested
     summary = manifest["duplication_map"]
-    assert summary["no_near_miss_twin_count"] == 13
+    assert summary["no_near_miss_twin_count"] == 11
     named = set(summary["no_near_miss_twin"])
-    assert len(named) == 13
+    assert len(named) == 11
     for row in duplication:
         assert row["has_near_miss_twin"] == (row["subcategory"] not in named)
 
