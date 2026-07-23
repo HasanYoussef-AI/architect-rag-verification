@@ -4,6 +4,114 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from `rag_case_study_tracker.md` plus the
 last entry here alone. Newest entries at the top.
 
+## 2026-07-23, hyphen resolver wired and decision log committed, last hyphenation round
+
+Hasan reviewed the decision log from the previous entry and ruled. The resolver
+wiring, its refinement, its tests and the decision-log artifact are now committed.
+This is the last hyphenation round. The next step is a fresh, separate build.
+
+### The ruling and its refinement
+
+Keep both ambiguous compounds, round-trip and non-inclusive, and reach that
+mechanically rather than by hand. The pattern he identified: a syllable break
+always leaves at least one fragment that is not a word ("cooper" + "ation",
+"nonethe" + "less"), whereas a genuine compound has both fragments as words
+("round" + "trip"). Against the wordlist, unlike against the 597k-character
+corpus where every fragment appears somewhere, that test separates the two
+populations cleanly.
+
+Tier four now has three outcomes, the third labelled distinctly as a tie-break
+rather than evidence:
+- joined form not a word, keep the hyphen;
+- joined a word with a non-word fragment, delete as a syllable break;
+- joined a word with both fragments words, keep as an ambiguous compound.
+
+`non` was confirmed present in the SCOWL build, so non-inclusive resolves to keep
+mechanically and needed no separate ruling.
+
+### Prediction confirmed
+
+His prediction held exactly. Only two occurrences moved, round-trip and
+non-inclusive, both DELETE to KEEP via the tie-break. The eight AI 100-1
+syllable breaks were untouched, each having a non-word fragment. Tiers 1, 2, 3
+and 5 are unchanged; only tier four's internal split moved, from 10 delete and 45
+keep to 8 delete, 45 keep (joined not a word) and 2 keep (ambiguous compound).
+
+### Decision log across all 337
+
+Committed as an audit artifact, not ingestion output:
+- tier 1 non-letter neighbour 2, tier 2 corpus attestation one direction 273,
+  tier 3 both attested Group A 7, tier 4 wordlist 55, tier 5 unresolved 0.
+- Per document: AI 100-1 239 (tier2 228, tier3 1, tier4 10), AI 600-1 44
+  (tier1 2, tier2 20, tier3 1, tier4 21), Playbook 54 (tier2 25, tier3 5,
+  tier4 24).
+- AI 100-1's tier 4 is 10 and its tier 3 is 1 (on-going), reconciling exactly
+  with the handoff residue, a strong wiring signal. The three cases Hasan named,
+  Al-Ghoneim, all eight Self-Assessment occurrences, and Web-Crawled, all resolve
+  to keep. The URL and citation-slug hyphens in the AI 600-1 and Playbook
+  reference sections land in tier 4 and are correctly kept, which explains the
+  count of 55 rather than a smaller prose-only residue.
+
+### Known limitation recorded
+
+A syllable break whose two fragments both happen to be words, "the" + "rapist"
+for "therapist", is wrongly kept by the tie-break. That fails in the safe
+direction, a spurious hyphen rather than two welded words. Recorded in both
+`src/ingest/hyphenation.py` and `corpus/SOURCES.md`.
+
+### What is committed at 99c4cd3
+
+- `src/ingest/hyphenation.py`: wordlist wired as evidence source four with the
+  fragment-test refinement in `_resolve_by_wordlist`, three distinctly labelled
+  outcomes, docstring updated.
+- `src/ingest/hyphenation_report.py`: runs the resolver over all three documents
+  and writes the decision log. Faithful assembly: AI 100-1's two page-boundary
+  interruptions are collapsed from the committed constants so all 239 of its
+  markers keep correct fragments, and AI 600-1 and the Playbook, which have no
+  such case, run on raw text, so all 337 occurrences are covered.
+- `data/hyphenation/decision_log.jsonl` (337 rows) and
+  `data/hyphenation/decision_log.summary.json`, the reviewed artifact.
+- `corpus/SOURCES.md`: the wordlist known-limitation refined to the three-way
+  logic and the the-rapist failure mode.
+- `tests/test_hyphenation.py`: the three wordlist outcomes, the the-rapist
+  failure mode, all eight syllable breaks deleting and both ambiguous compounds
+  keeping, end-to-end resolves, and byte-identity of the committed decision log.
+  129 tests pass, ruff clean.
+
+### Constraints honoured
+
+No document ingestion was re-run. The eight untracked files were not touched. No
+API calls, no spend, no remote, nothing pushed.
+
+Commit: 99c4cd3
+  (feat: wire wordlist tier into hyphen resolver with fragment test, commit
+  corpus decision log, local only)
+  This entry is recorded by the next commit, `docs: log hyphen resolver wiring
+  commit, local only`, committed immediately after this entry is written, which
+  closes the chain so the next session inherits no unlogged commit.
+
+Current state:
+- Local git repository on branch `main`, no remote configured, nothing pushed.
+  Once this log commit lands the history is twenty commits, all trailer-free.
+- Ingested: the EU AI Act (clean), NIST AI 100-1 (its committed output STILL
+  carries the corrupted words: the corrected resolver is wired and proven but has
+  NOT been applied to any document output yet). NOT ingested: AI 600-1 and the
+  Playbook.
+- The wordlist is vendored and pinned, the resolver is wired and its behaviour
+  across all 337 occurrences is committed as a reviewed decision log. Hyphenation
+  is done.
+
+Next step:
+- A fresh, separate build, started from this clean commit rather than bundled
+  onto the end of it: apply the wired resolver to all three documents. Wire
+  `hyphenation.resolve` into the ingesters replacing the per-line
+  `join_soft_hyphens`, re-run AI 100-1, and complete AI 600-1 and Playbook
+  ingestion, with the forward-reference validation, the regression tests pinning
+  the thirdparty class at the ingester level, and the non-ASCII sweep. The eight
+  currently untracked draft files belong to that build and are still to be
+  reworked against the corrected resolver, not trusted as-is. Report any movement
+  in the 47 and 46 duplication counts as a stated correction.
+
 ## 2026-07-23, wordlist vendored and builder committed, resolver wiring reported not committed
 
 Hasan ruled the wordlist choice this session and it is now committed. The
