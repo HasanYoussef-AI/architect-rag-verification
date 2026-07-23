@@ -1,0 +1,261 @@
+{
+  "counts": {
+    "chunks_by_unit_type": {
+      "function_intro": 4,
+      "playbook_about": 72,
+      "playbook_ai_transparency_resources": 72,
+      "playbook_references": 89,
+      "playbook_suggested_actions": 74,
+      "playbook_transparency_documentation": 72,
+      "subcategory_statement": 72
+    },
+    "chunks_total": 455,
+    "units_split": 14
+  },
+  "doc_id": "nist_playbook",
+  "doc_title": "NIST AI RMF Playbook",
+  "downstream_notes": {
+    "comparison_time_normalisation": "Stored text is never altered. At comparison time ONLY, on BOTH sides identically and for BM25 tokenisation, apply these mappings: curly single quotes and the typographic apostrophe U+2018 and U+2019 to ASCII apostrophe, curly double quotes U+201C and U+201D to ASCII double quote, en dash U+2013 and em dash U+2014 to ASCII hyphen, non-breaking space U+00A0 to space, and collapse all whitespace including newlines. Models emit ASCII, so without this a model answer fails to string-match a chunk carrying the typographic characters, flagging genuinely supported claims as unsupported and corrupting the headline metric, and a BM25 query with an ASCII apostrophe misses passages carrying the typographic one. See src.ingest.normalize.normalise_for_comparison.",
+    "non_ascii_inventory": [
+      {
+        "codepoint": "U+00AE",
+        "count": 1,
+        "handling": "leave_alone_genuine_content",
+        "name": "REGISTERED SIGN"
+      },
+      {
+        "codepoint": "U+00DF",
+        "count": 2,
+        "handling": "leave_alone_genuine_content",
+        "name": "LATIN SMALL LETTER SHARP S"
+      },
+      {
+        "codepoint": "U+00E1",
+        "count": 2,
+        "handling": "leave_alone_genuine_content",
+        "name": "LATIN SMALL LETTER A WITH ACUTE"
+      },
+      {
+        "codepoint": "U+00E7",
+        "count": 3,
+        "handling": "leave_alone_genuine_content",
+        "name": "LATIN SMALL LETTER C WITH CEDILLA"
+      },
+      {
+        "codepoint": "U+00E9",
+        "count": 4,
+        "handling": "leave_alone_genuine_content",
+        "name": "LATIN SMALL LETTER E WITH ACUTE"
+      },
+      {
+        "codepoint": "U+00ED",
+        "count": 5,
+        "handling": "leave_alone_genuine_content",
+        "name": "LATIN SMALL LETTER I WITH ACUTE"
+      },
+      {
+        "codepoint": "U+00F3",
+        "count": 4,
+        "handling": "leave_alone_genuine_content",
+        "name": "LATIN SMALL LETTER O WITH ACUTE"
+      },
+      {
+        "codepoint": "U+00F8",
+        "count": 1,
+        "handling": "leave_alone_genuine_content",
+        "name": "LATIN SMALL LETTER O WITH STROKE"
+      },
+      {
+        "codepoint": "U+00FC",
+        "count": 1,
+        "handling": "leave_alone_genuine_content",
+        "name": "LATIN SMALL LETTER U WITH DIAERESIS"
+      },
+      {
+        "codepoint": "U+0107",
+        "count": 5,
+        "handling": "leave_alone_genuine_content",
+        "name": "LATIN SMALL LETTER C WITH ACUTE"
+      },
+      {
+        "codepoint": "U+010D",
+        "count": 2,
+        "handling": "leave_alone_genuine_content",
+        "name": "LATIN SMALL LETTER C WITH CARON"
+      },
+      {
+        "codepoint": "U+015F",
+        "count": 1,
+        "handling": "leave_alone_genuine_content",
+        "name": "LATIN SMALL LETTER S WITH CEDILLA"
+      },
+      {
+        "codepoint": "U+0160",
+        "count": 2,
+        "handling": "leave_alone_genuine_content",
+        "name": "LATIN CAPITAL LETTER S WITH CARON"
+      },
+      {
+        "codepoint": "U+2013",
+        "count": 177,
+        "handling": "normalise_at_comparison_time",
+        "name": "EN DASH"
+      },
+      {
+        "codepoint": "U+2014",
+        "count": 23,
+        "handling": "normalise_at_comparison_time",
+        "name": "EM DASH"
+      },
+      {
+        "codepoint": "U+2018",
+        "count": 3,
+        "handling": "normalise_at_comparison_time",
+        "name": "LEFT SINGLE QUOTATION MARK"
+      },
+      {
+        "codepoint": "U+2019",
+        "count": 113,
+        "handling": "normalise_at_comparison_time",
+        "name": "RIGHT SINGLE QUOTATION MARK"
+      },
+      {
+        "codepoint": "U+201C",
+        "count": 223,
+        "handling": "normalise_at_comparison_time",
+        "name": "LEFT DOUBLE QUOTATION MARK"
+      },
+      {
+        "codepoint": "U+201D",
+        "count": 212,
+        "handling": "normalise_at_comparison_time",
+        "name": "RIGHT DOUBLE QUOTATION MARK"
+      },
+      {
+        "codepoint": "U+2022",
+        "count": 1187,
+        "handling": "leave_alone_genuine_content",
+        "name": "BULLET"
+      },
+      {
+        "codepoint": "U+2248",
+        "count": 2,
+        "handling": "leave_alone_genuine_content",
+        "name": "ALMOST EQUAL TO"
+      },
+      {
+        "codepoint": "U+FFFE",
+        "count": 54,
+        "handling": "resolved_at_ingestion_by_hyphenation_resolve",
+        "name": "<unnamed noncharacter>"
+      },
+      {
+        "codepoint": "U+1F99C",
+        "count": 1,
+        "handling": "leave_alone_genuine_content",
+        "name": "PARROT"
+      }
+    ],
+    "page_footer_is_positional": "the 'N of 142' footer appears mid-content between bullets. It is discarded per line by position, and units are assembled from the surviving lines in order, so removing it never joins the text on either side into one block",
+    "references_blocks_are_bibliography": "the 72 References blocks are bibliography rather than substantive content and are chunked and tagged as unit_type playbook_references rather than excluded. Citation lists share vocabulary with everything, so they are expected to behave oddly under retrieval, a decision for pre-registration to make deliberately"
+  },
+  "extractor": {
+    "engine": "pypdfium2",
+    "pdfium_version": "152.0.7947.0",
+    "pypdfium2_version": "5.12.1",
+    "soft_hyphen_rule": "U+FFFE resolved by src.ingest.hyphenation.resolve, not blindly deleted"
+  },
+  "hyphenation": {
+    "by_rule": {
+      "TIE-BREAK, both forms attested, no position-specific evidence": 5,
+      "TIE-BREAK, joined form and both fragments are words, ambiguous compound": 1,
+      "hyphenated form attested elsewhere in corpus, real hyphen": 25,
+      "joined form absent from vendored wordlist, real hyphen": 23
+    },
+    "deleted": 0,
+    "kept": 54,
+    "note": "U+FFFE line-break hyphens in content resolved by src.ingest.hyphenation.resolve, per unit, with corpus-wide attestation. See data/hyphenation/decision_log.jsonl for the corpus-wide log.",
+    "occurrences_resolved": 54
+  },
+  "outputs": {
+    "nist_playbook.chunks.jsonl": "a9a2a84e13cb61545837175930ffb343ae195ca205621b180c5565710e4da5b4",
+    "nist_playbook.extracted.txt": "d10ea88ddf4f195af858ce3cc855babe2b43c574767a5e9201193c0ebcf214a8",
+    "nist_playbook.normalized.txt": "cf87a2c726762fdc6f654118ea5e69afc5fe399af0abb24b8d2661c2b7f5a95a",
+    "nist_playbook.prose_xref_audit.jsonl": "283a34c83c76a17b0543e05c88389e1ab9117b7df3cb69fced6d8156c546fb92",
+    "nist_playbook.relations.jsonl": "a7a70fda2ec209b4a4ed50b4574104fff1aba15fd718cf1b6a810cc7965f828e"
+  },
+  "partition_proof": {
+    "assigned_to_units_chars": 311631,
+    "complete": true,
+    "content_chars": 311631,
+    "discarded_chars_by_class": {
+      "front_matter": 14988,
+      "page_footer": 1288
+    },
+    "discarded_chars_total": 16276,
+    "discarded_fraction_of_lines": 0.0496,
+    "line_chars": 327907,
+    "lines_assigned_more_than_once": 0,
+    "raw_chars": 341715,
+    "raw_chars_accounted": 341715,
+    "raw_fully_accounted": true,
+    "structural_whitespace_by_class": {
+      "intra_page_newlines": 5026,
+      "page_separators": 438,
+      "stripped_line_whitespace": 8344
+    },
+    "structural_whitespace_total": 13808,
+    "unassigned_content_lines": 0
+  },
+  "relations": {
+    "prose_xrefs_audited_in_full": 1,
+    "prose_xrefs_by_class": {
+      "external": 1
+    },
+    "prose_xrefs_classes": "three classes. internal resolves within this document, cross_document resolves to a unit in another corpus document with its real unit id, external points outside the corpus and emits no edge. Every reference audited in full",
+    "structural_join": "same printed subcategory identifier in AI 100-1, all 72 resolve",
+    "structural_join_edges": 72
+  },
+  "schema_version": "1.0",
+  "source": {
+    "pages": 147,
+    "path": "corpus/nist_ai_rmf/raw/AI_RMF_Playbook.pdf",
+    "sha256": "65d6101d806502875aadb0fd19a75c3a9cc9a5e9461129e9398a39192d8202d2"
+  },
+  "structure": {
+    "block_headings_derived": [
+      "AI Transparency Resources",
+      "About",
+      "References",
+      "Suggested Actions",
+      "Transparency & Documentation"
+    ],
+    "block_note": "five top-level blocks per subcategory. 'Organizations can document the following' also occurs 72 times but is a sub-label inside Transparency and Documentation, not a sixth block",
+    "functions": 4,
+    "subcategory_statements": 72,
+    "units": 436,
+    "units_by_type": {
+      "function_intro": 4,
+      "playbook_about": 72,
+      "playbook_ai_transparency_resources": 72,
+      "playbook_references": 72,
+      "playbook_suggested_actions": 72,
+      "playbook_transparency_documentation": 72,
+      "subcategory_statement": 72
+    }
+  },
+  "token_distribution": {
+    "max": 511,
+    "mean": 142.2,
+    "median": 102,
+    "min": 10,
+    "over_cap": 0
+  },
+  "tokenizer": {
+    "counts_special_tokens": "true",
+    "max_tokens": 512,
+    "model_id": "BAAI/bge-base-en-v1.5",
+    "tokenizer_file": "vendor/bge-base-en-v1.5/tokenizer.json",
+    "tokenizer_file_sha256": "d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66"
+  }
+}

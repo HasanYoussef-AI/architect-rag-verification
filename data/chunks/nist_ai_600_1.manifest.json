@@ -1,0 +1,168 @@
+{
+  "counts": {
+    "chunks_by_unit_type": {
+      "action": 212,
+      "appendix": 1,
+      "appendix_section": 11,
+      "references": 12,
+      "section": 23,
+      "subcategory_statement": 49
+    },
+    "chunks_total": 308,
+    "units_split": 8
+  },
+  "doc_id": "nist_ai_600_1",
+  "doc_title": "Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile, NIST AI 600-1",
+  "downstream_notes": {
+    "comparison_time_normalisation": "Stored text is never altered. At comparison time ONLY, on BOTH sides identically and for BM25 tokenisation, apply these mappings: curly single quotes and the typographic apostrophe U+2018 and U+2019 to ASCII apostrophe, curly double quotes U+201C and U+201D to ASCII double quote, en dash U+2013 and em dash U+2014 to ASCII hyphen, non-breaking space U+00A0 to space, and collapse all whitespace including newlines. Models emit ASCII, so without this a model answer fails to string-match a chunk carrying the typographic characters, flagging genuinely supported claims as unsupported and corrupting the headline metric, and a BM25 query with an ASCII apostrophe misses passages carrying the typographic one. See src.ingest.normalize.normalise_for_comparison.",
+    "garbled_action_id_lexical_mismatch": "A query containing GV-4.3-001 will not lexically match the chunk carrying the garbled surface GV4.3--001. This is a retrieval consequence of an extraction artifact in our pipeline, not a property of the document, so it must not be used as a designed trap in the query set. The retrieval step inherits it as a known case.",
+    "non_ascii_inventory": [
+      {
+        "codepoint": "U+2013",
+        "count": 39,
+        "handling": "normalise_at_comparison_time",
+        "name": "EN DASH"
+      },
+      {
+        "codepoint": "U+2014",
+        "count": 1,
+        "handling": "normalise_at_comparison_time",
+        "name": "EM DASH"
+      },
+      {
+        "codepoint": "U+2019",
+        "count": 36,
+        "handling": "normalise_at_comparison_time",
+        "name": "RIGHT SINGLE QUOTATION MARK"
+      },
+      {
+        "codepoint": "U+201C",
+        "count": 33,
+        "handling": "normalise_at_comparison_time",
+        "name": "LEFT DOUBLE QUOTATION MARK"
+      },
+      {
+        "codepoint": "U+201D",
+        "count": 35,
+        "handling": "normalise_at_comparison_time",
+        "name": "RIGHT DOUBLE QUOTATION MARK"
+      },
+      {
+        "codepoint": "U+2022",
+        "count": 47,
+        "handling": "leave_alone_genuine_content",
+        "name": "BULLET"
+      },
+      {
+        "codepoint": "U+FFFE",
+        "count": 44,
+        "handling": "resolved_at_ingestion_by_hyphenation_resolve",
+        "name": "<unnamed noncharacter>"
+      }
+    ]
+  },
+  "extractor": {
+    "engine": "pypdfium2",
+    "pdfium_version": "152.0.7947.0",
+    "pypdfium2_version": "5.12.1",
+    "soft_hyphen_rule": "U+FFFE resolved by src.ingest.hyphenation.resolve, not blindly deleted"
+  },
+  "garbled_identifier_exception": {
+    "derived_unit_id": "nist_ai_600_1:act_GV-4.3-001",
+    "note": "The single documented exception to deriving a chunk id verbatim from the extracted surface. The PDF's own text layer prints this action id garbled, confirmed identical across pypdfium2, poppler and pdfminer.six, so the defect is in the source, not the extractor. The three components survive intact (GV, 4.3, 001) and are independently corroborated by the GOVERN 4.3 heading above and GV-4.3-002 below, so the derivation is component-based rather than externally corroborated. Stored text keeps GV4.3--001 verbatim; only the derived key is normalised. This is one exception, not a general licence.",
+    "stored_surface": "GV4.3--001"
+  },
+  "hyphenation": {
+    "by_rule": {
+      "TIE-BREAK, both forms attested, no position-specific evidence": 1,
+      "TIE-BREAK, joined form and both fragments are words, ambiguous compound": 1,
+      "hyphenated form attested elsewhere in corpus, real hyphen": 20,
+      "joined form absent from vendored wordlist, real hyphen": 20,
+      "non-letter neighbour, real hyphen, structurally decisive": 2
+    },
+    "deleted": 0,
+    "kept": 44,
+    "note": "U+FFFE line-break hyphens in content resolved by src.ingest.hyphenation.resolve, per unit, with corpus-wide attestation. See data/hyphenation/decision_log.jsonl for the corpus-wide log.",
+    "occurrences_resolved": 44
+  },
+  "outputs": {
+    "nist_ai_600_1.chunks.jsonl": "2bd05c97dae93c784f70c0cb8b1a1769ffa3c39da176fce59e9ae05a53881cf5",
+    "nist_ai_600_1.extracted.txt": "2cf8e3f9c9ffa1c6fba667055317ae137e6d6707eee85707fc100d5e0a67c080",
+    "nist_ai_600_1.normalized.txt": "94d071fdd9866afab5722000d92505826acc40d2a9ca7c52adf55e6fe44b8bf1",
+    "nist_ai_600_1.prose_xref_audit.jsonl": "c453899e6c96416649d8add510e48f879a3c2a85575333a8b99d52d24862c54b",
+    "nist_ai_600_1.relations.jsonl": "87c951346c9759f165a76941cd6f9d35d01334e15920bf68b4b6782476ce720d"
+  },
+  "partition_proof": {
+    "assigned_to_units_chars": 150353,
+    "complete": true,
+    "content_chars": 150353,
+    "discarded_chars_by_class": {
+      "front_matter": 3625,
+      "table_header": 1728
+    },
+    "discarded_chars_total": 5353,
+    "discarded_fraction_of_lines": 0.0344,
+    "line_chars": 155706,
+    "lines_assigned_more_than_once": 0,
+    "raw_chars": 162204,
+    "raw_chars_accounted": 162204,
+    "raw_fully_accounted": true,
+    "structural_whitespace_by_class": {
+      "blank_line_chars": 2,
+      "intra_page_newlines": 2411,
+      "page_separators": 189,
+      "stripped_line_whitespace": 3896
+    },
+    "structural_whitespace_total": 6498,
+    "unassigned_content_lines": 0
+  },
+  "relations": {
+    "action_subcategory": "exact, the action identifier encodes its subcategory. Its own field, merged into neither structural_join nor prose_xrefs",
+    "action_subcategory_edges": 212,
+    "prose_xrefs_audited_in_full": 11,
+    "prose_xrefs_by_class": {
+      "cross_document": 4,
+      "external": 1,
+      "internal": 6
+    },
+    "prose_xrefs_classes": "three classes. internal resolves within this document, cross_document resolves to a unit in another corpus document with its real unit id, external points outside the corpus and emits no edge. Every reference audited in full",
+    "structural_join": "same printed subcategory identifier in another corpus document",
+    "structural_join_edges": 98
+  },
+  "schema_version": "1.0",
+  "source": {
+    "pages": 64,
+    "path": "corpus/nist_ai_rmf/raw/NIST.AI.600-1.pdf",
+    "sha256": "6e73620ab6b64e90ef2c04bf0e0d6246185a2f4b1b13cab0df494496cff89b6a"
+  },
+  "structure": {
+    "action_identifiers": 212,
+    "action_identifiers_recovered": 1,
+    "action_identifiers_strict": 211,
+    "subcategories_referenced": 49,
+    "subcategory_coverage_note": "this profile references a SUBSET of the 72 AI RMF subcategories, 49 of them. Any assumption that the three NIST documents share one subcategory set is wrong",
+    "units": 287,
+    "units_by_type": {
+      "action": 212,
+      "appendix": 1,
+      "appendix_section": 9,
+      "references": 1,
+      "section": 15,
+      "subcategory_statement": 49
+    }
+  },
+  "token_distribution": {
+    "max": 512,
+    "mean": 108.0,
+    "median": 58,
+    "min": 7,
+    "over_cap": 0
+  },
+  "tokenizer": {
+    "counts_special_tokens": "true",
+    "max_tokens": 512,
+    "model_id": "BAAI/bge-base-en-v1.5",
+    "tokenizer_file": "vendor/bge-base-en-v1.5/tokenizer.json",
+    "tokenizer_file_sha256": "d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66"
+  }
+}

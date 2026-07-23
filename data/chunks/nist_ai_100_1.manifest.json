@@ -15,7 +15,52 @@
   "doc_title": "Artificial Intelligence Risk Management Framework (AI RMF 1.0), NIST AI 100-1",
   "downstream_notes": {
     "bimodal_chunk_length": "This document is strongly bimodal by length: 72 of its 121 units are one or two line subcategory statements while narrative sections reach the 512-token cap, giving a median near 39 tokens against a maximum of 512. This is authentic to the document and is deliberately not altered. Very short chunks score differently from long ones under both lexical and dense retrieval, so length normalisation is to be examined deliberately at the retrieval step rather than discovered through a strange result.",
-    "comparison_time_whitespace_normalisation": "Chunk text preserves the PDF's own line breaks, including mid-sentence, because reflowing into paragraphs requires guessing paragraph boundaries and can join text wrongly. Consequence to honour downstream: the deterministic grounding check string-matches claims from model answers against chunk text, and model answers contain clean sentences where these chunks carry newlines. ALL whitespace, including newlines, MUST be normalised on BOTH sides before any grounding comparison, and identically for BM25 tokenisation. Without it the layer would raise false unsupported-claim flags and corrupt the headline metric. This normalisation applies at comparison time ONLY and is never applied to the stored chunk text."
+    "comparison_time_normalisation": "Stored text is never altered. At comparison time ONLY, on BOTH sides identically and for BM25 tokenisation, apply these mappings: curly single quotes and the typographic apostrophe U+2018 and U+2019 to ASCII apostrophe, curly double quotes U+201C and U+201D to ASCII double quote, en dash U+2013 and em dash U+2014 to ASCII hyphen, non-breaking space U+00A0 to space, and collapse all whitespace including newlines. Models emit ASCII, so without this a model answer fails to string-match a chunk carrying the typographic characters, flagging genuinely supported claims as unsupported and corrupting the headline metric, and a BM25 query with an ASCII apostrophe misses passages carrying the typographic one. See src.ingest.normalize.normalise_for_comparison.",
+    "comparison_time_whitespace_normalisation": "Chunk text preserves the PDF's own line breaks, including mid-sentence, because reflowing into paragraphs requires guessing paragraph boundaries and can join text wrongly. Consequence to honour downstream: the deterministic grounding check string-matches claims from model answers against chunk text, and model answers contain clean sentences where these chunks carry newlines. ALL whitespace, including newlines, MUST be normalised on BOTH sides before any grounding comparison, and identically for BM25 tokenisation. Without it the layer would raise false unsupported-claim flags and corrupt the headline metric. This normalisation applies at comparison time ONLY and is never applied to the stored chunk text.",
+    "non_ascii_inventory": [
+      {
+        "codepoint": "U+2013",
+        "count": 68,
+        "handling": "normalise_at_comparison_time",
+        "name": "EN DASH"
+      },
+      {
+        "codepoint": "U+2014",
+        "count": 4,
+        "handling": "normalise_at_comparison_time",
+        "name": "EM DASH"
+      },
+      {
+        "codepoint": "U+2019",
+        "count": 46,
+        "handling": "normalise_at_comparison_time",
+        "name": "RIGHT SINGLE QUOTATION MARK"
+      },
+      {
+        "codepoint": "U+201C",
+        "count": 23,
+        "handling": "normalise_at_comparison_time",
+        "name": "LEFT DOUBLE QUOTATION MARK"
+      },
+      {
+        "codepoint": "U+201D",
+        "count": 23,
+        "handling": "normalise_at_comparison_time",
+        "name": "RIGHT DOUBLE QUOTATION MARK"
+      },
+      {
+        "codepoint": "U+2022",
+        "count": 54,
+        "handling": "leave_alone_genuine_content",
+        "name": "BULLET"
+      },
+      {
+        "codepoint": "U+FFFE",
+        "count": 239,
+        "handling": "resolved_at_ingestion_by_hyphenation_resolve",
+        "name": "<unnamed noncharacter>"
+      }
+    ]
   },
   "duplication_map": {
     "ai_600_1_coverage_warning": "AI 600-1 is a profile and references only 49 of the 72 subcategories, so any assumption that all three documents share one subcategory set is wrong. Absence of a match there is expected, not a defect.",

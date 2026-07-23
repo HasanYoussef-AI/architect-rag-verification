@@ -37,7 +37,11 @@ from pathlib import Path
 from src.ingest.chunk_schema import Chunk, write_jsonl
 from src.ingest.corpus_integrity import REPO_ROOT, sha256_file, verify_all
 from src.ingest.hyphenation import resolve
-from src.ingest.normalize import normalize_block
+from src.ingest.normalize import (
+    COMPARISON_TIME_NORMALISATION_NOTE,
+    nonascii_inventory,
+    normalize_block,
+)
 from src.ingest.pdf_extract import (
     PAGE_SEPARATOR,
     extract_pages,
@@ -794,6 +798,8 @@ def build(verify: bool = True) -> dict:
                 "length normalisation is to be examined deliberately at the retrieval step "
                 "rather than discovered through a strange result."
             ),
+            "comparison_time_normalisation": COMPARISON_TIME_NORMALISATION_NOTE,
+            "non_ascii_inventory": nonascii_inventory(raw),
         },
         "outputs": {
             f"{DOC_ID}.relations.jsonl": relations_sha,
