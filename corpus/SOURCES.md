@@ -488,10 +488,19 @@ real hyphen in a compound, "third-party". Its strongest evidence is corpus
 attestation. A small residue has no attestation in either direction, because the
 word pair occurs exactly once in the whole corpus and that once is at the line
 break. For that residue this wordlist is evidence source four, consulted only
-where the earlier sources are silent: if the joined form is a real English word
-the hyphen was typesetting and is deleted, and if it is not the hyphen was real
-and is kept. A committed, checksummed wordlist keeps that decision a mechanical
-lookup in a reproducible artifact rather than a judgment about English. See
+where the earlier sources are silent. A syllable break always leaves at least one
+fragment that is not a word, "cooper" plus "ation", so the joined form being a
+dictionary word is necessary but not sufficient to delete: at least one fragment
+must also fail the lookup. Three outcomes result, the third a tie-break rather
+than evidence: joined form not a word, keep the hyphen; joined a word with a
+non-word fragment, delete as a typesetting break; joined a word with both
+fragments words, keep as an ambiguous compound. A committed, checksummed wordlist
+keeps that a mechanical lookup in a reproducible artifact rather than a judgment
+about English. Known limitation, recorded rather than discovered: a syllable
+break whose two fragments both happen to be words, "the" plus "rapist" for
+"therapist", is wrongly kept by the tie-break; that fails in the safe direction,
+a spurious hyphen rather than two welded words, and corpus attestation catches an
+ambiguous compound whenever it appears elsewhere in the corpus. See
 `src/ingest/wordlist.py` and `src/ingest/hyphenation.py`.
 
 - Source: SCOWL (Spell Checker Oriented Word Lists), revision 2020.12.07, by

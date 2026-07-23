@@ -33,16 +33,36 @@ The corrected decision procedure, per occurrence, with NO silent default:
      the WHOLE corpus, with every line-break hyphen masked so no occurrence can
      be evidence about itself.
   3. Exactly one direction attested -> take it, record the evidence.
-  4. Neither or both attested -> an explicitly recorded TIE-BREAK, not evidence.
-     Prefer the hyphenated form, because the discretionary hyphen renders as a
-     hyphen on the published page, so this reproduces the source's visible text
-     rather than a joined form that never appears. The failure mode is a
+  4. Both attested -> an explicitly recorded TIE-BREAK, not evidence. Prefer the
+     hyphenated form (the Group A rule), because the discretionary hyphen renders
+     as a hyphen on the published page, so this reproduces the source's visible
+     text rather than a joined form that never appears. The failure mode is a
      spurious hyphen inside a word, which is far less damaging to lexical and
      semantic retrieval than silently welding two words together.
+  5. Neither attested -> the vendored English wordlist decides, evidence source
+     four (src/ingest/wordlist.py), by the fragment test in _resolve_by_wordlist.
+     A syllable break always leaves at least one fragment that is not a word,
+     "cooper" + "ation", "nonethe" + "less", so the joined form being a dictionary
+     word is necessary but not sufficient to delete: at least one fragment must
+     also fail the lookup, which is the signature of a typesetting break rather
+     than a real hyphen. Three outcomes, the third labelled distinctly as a
+     tie-break rather than evidence:
+       joined form not a word              -> real hyphen, keep;
+       joined a word, a fragment is not    -> syllable break, delete;
+       joined a word, both fragments words -> ambiguous compound, keep (TIE-BREAK).
+     This is a mechanical lookup in a committed, checksummed artifact, not a
+     judgment about English, which is why it does not violate the
+     no-reconstruction rule the way morphological judgment would. Known
+     limitation, stated rather than discovered: a syllable break whose two
+     fragments both happen to be words, "the" + "rapist" for "therapist", is
+     wrongly kept by the tie-break. That fails in the safe direction, a spurious
+     hyphen inside a word rather than two welded words, and corpus attestation
+     catches an ambiguous compound whenever it appears elsewhere in the corpus.
 
-This is reproduction with a recorded tie-break, not normalisation. Corpus
-frequency is evidence about which character the PDF encoded at a position, never
-licence to standardise the corpus toward a majority form.
+This is reproduction with a recorded tie-break and a last-resort wordlist lookup,
+not normalisation. Corpus frequency is evidence about which character the PDF
+encoded at a position, never licence to standardise the corpus toward a majority
+form.
 """
 
 from __future__ import annotations
@@ -53,6 +73,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from src.ingest.pdf_extract import SOFT_HYPHEN_BREAK, extract_pages
+from src.ingest.wordlist import load_wordlist
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -66,12 +87,20 @@ RULE_NON_LETTER = "non-letter neighbour, real hyphen, structurally decisive"
 RULE_HYPHEN_ATTESTED = "hyphenated form attested elsewhere in corpus, real hyphen"
 RULE_JOINED_ATTESTED = "joined form attested elsewhere in corpus, discretionary hyphen"
 TIE_BREAK_BOTH = "TIE-BREAK, both forms attested, no position-specific evidence"
+# Superseded by the wordlist tier below: the neither-attested case is now decided
+# by the vendored wordlist, so this sentinel is retained only for reference.
 TIE_BREAK_NEITHER = "TIE-BREAK, neither form attested, no evidence available"
+RULE_WORDLIST_JOINED = "joined form a word and a fragment is not, syllable break, delete"
+RULE_WORDLIST_HYPHEN = "joined form absent from vendored wordlist, real hyphen"
+TIE_BREAK_WORDLIST_BOTH = "TIE-BREAK, joined form and both fragments are words, ambiguous compound"
 
 HYPHEN = "-"
 DELETE = ""
 
+# Rules backed by corpus attestation or structure. The wordlist rules are a
+# distinct, weaker evidence tier and are deliberately not folded in here.
 _EVIDENCE_RULES = frozenset({RULE_NON_LETTER, RULE_HYPHEN_ATTESTED, RULE_JOINED_ATTESTED})
+_WORDLIST_RULES = frozenset({RULE_WORDLIST_JOINED, RULE_WORDLIST_HYPHEN, TIE_BREAK_WORDLIST_BOTH})
 
 
 @dataclass(frozen=True)
@@ -112,6 +141,34 @@ def _count(pattern: str) -> int:
 _RIGHT = re.compile(r"\s*([A-Za-z]+)")
 
 
+def _resolve_by_wordlist(left: str, right: str) -> tuple[str, str]:
+    """Evidence source four, for the residue with no corpus attestation.
+
+    A syllable break always leaves at least one fragment that is not a word:
+    "cooper" + "ation", "nonethe" + "less", "quanti" + "ties". A genuine compound
+    has both fragments as words: "round" + "trip", "non" + "inclusive". So the
+    joined form being a dictionary word is necessary but not sufficient to delete;
+    at least one fragment must also fail the lookup, which is the signature of a
+    typesetting break rather than a real hyphen.
+
+    Three outcomes:
+      joined form not a word              -> real hyphen, keep (evidence);
+      joined a word, a fragment is not    -> syllable break, delete (evidence);
+      joined a word, both fragments words -> ambiguous compound, keep (TIE-BREAK).
+
+    Known limitation, recorded rather than discovered: a syllable break whose two
+    fragments both happen to be words, "the" + "rapist" for "therapist", is
+    wrongly kept by the tie-break. That fails in the safe direction, a spurious
+    hyphen inside a word rather than two welded words.
+    """
+    words = load_wordlist()
+    if f"{left}{right}".lower() not in words:
+        return RULE_WORDLIST_HYPHEN, HYPHEN
+    if left.lower() in words and right.lower() in words:
+        return TIE_BREAK_WORDLIST_BOTH, HYPHEN
+    return RULE_WORDLIST_JOINED, DELETE
+
+
 def resolve(text: str, doc_id: str) -> tuple[str, list[Decision]]:
     """Resolve every U+FFFE in text already assembled from CONTENT lines.
 
@@ -143,7 +200,7 @@ def resolve(text: str, doc_id: str) -> tuple[str, list[Decision]]:
             elif hyp_n and join_n:
                 rule, outcome = TIE_BREAK_BOTH, HYPHEN
             else:
-                rule, outcome = TIE_BREAK_NEITHER, HYPHEN
+                rule, outcome = _resolve_by_wordlist(left, right)
             consumed = right_match.start(1)
 
         decisions.append(

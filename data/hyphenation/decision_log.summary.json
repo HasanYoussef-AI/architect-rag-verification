@@ -1,0 +1,42 @@
+{
+  "by_document": {
+    "nist_ai_100_1": {
+      "by_tier": {
+        "2_corpus_attestation_one_direction": 228,
+        "3_both_attested_group_A": 1,
+        "4_wordlist": 10
+      },
+      "occurrences": 239
+    },
+    "nist_ai_600_1": {
+      "by_tier": {
+        "1_non_letter_neighbour": 2,
+        "2_corpus_attestation_one_direction": 20,
+        "3_both_attested_group_A": 1,
+        "4_wordlist": 21
+      },
+      "occurrences": 44
+    },
+    "nist_playbook": {
+      "by_tier": {
+        "2_corpus_attestation_one_direction": 25,
+        "3_both_attested_group_A": 5,
+        "4_wordlist": 24
+      },
+      "occurrences": 54
+    }
+  },
+  "by_tier": {
+    "1_non_letter_neighbour": 2,
+    "2_corpus_attestation_one_direction": 273,
+    "3_both_attested_group_A": 7,
+    "4_wordlist": 55
+  },
+  "total_occurrences": 337,
+  "wordlist_tier": {
+    "delete_syllable_break": 8,
+    "keep_ambiguous_compound_tie_break": 2,
+    "keep_joined_not_a_word": 45,
+    "total": 55
+  }
+}
