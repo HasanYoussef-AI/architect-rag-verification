@@ -4,6 +4,105 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from `rag_case_study_tracker.md` plus the
 last entry here alone. Newest entries at the top.
 
+## 2026-07-23, wordlist vendored and builder committed, resolver wiring reported not committed
+
+Hasan ruled the wordlist choice this session and it is now committed. The
+resolver wiring and the decision-log run follow immediately in the same session
+but are deliberately left UNCOMMITTED and applied to no document, for his review
+of the wordlist-resolved decisions before anything touches a document.
+
+### The ruling
+
+SCOWL, American English, size levels 10 through 70, vendored as the as-served
+component files plus a builder rather than a pre-built list. Three changes from
+the recommendation, each with stated reasoning:
+- Level 70 rather than 60. The two failure directions are not symmetric. A
+  coverage miss keeps a hyphen inside an ordinary word and ships "cooper-ation",
+  the visible corruption we are removing. A false positive deletes a real hyphen
+  and ships "thirdparty", the original defect, but that direction is
+  structurally protected below level 80: proper names live in separate files and
+  compounds do not enter until 95, so "alghoneim" and "webcrawled" cannot appear
+  at any level used. The coverage direction has no such protection, and NIST
+  prose is technical vocabulary, so 70 buys inflection headroom at no measured
+  false-positive cost. All 20 false-positive probes stay clean at 70.
+- As-served components plus a builder, not a pre-built file. This reproduces the
+  pattern the repo already runs: corpus raw is as-served and immutable, the
+  built list is derived and reproducible from committed code, and both are
+  checksummed. A pre-built file with a prose recipe would make a single
+  hand-edited word undetectable.
+- Skip the possessive-stripping refinement. Not worth a fifth transformation,
+  and it has an edge case: a line break inside a possessive, "manag-er's", would
+  look up "manager's" and fail if possessives were stripped.
+
+web2, the macOS Webster's Second 1934 list, was rejected on measured coverage
+rather than reputation, and that rejection is recorded in SOURCES.md with its
+evidence, so the obvious local option is shown disqualified on data.
+
+### What is committed at 73f22f2
+
+- vendor/scowl/, the 16 english-words and american-words component files at
+  levels 10 to 70 as served, plus the Copyright file verbatim to carry the
+  component notices. Level 80 excluded deliberately: UKACD's "All Rights
+  Reserved" terms and the compound-word false-positive surface both begin there.
+  Every component used at 10 to 70 is public domain or permissive, license read
+  from the vendored Copyright rather than from memory.
+- src/ingest/wordlist.py, the deterministic builder: concatenate, lowercase,
+  deduplicate, sort by code point, UTF-8, one word per line. No other
+  transformation. The derived list en-american.10-70.lower.txt is 135,951
+  entries, 1,361,427 bytes.
+- corpus/SOURCES.md gained the full SCOWL section: provenance, source tarball
+  checksum, per-file checksums, license, the exact recipe, the deliberate
+  level-80 exclusion, the derived-versus-as-served distinction, and the web2
+  rejection table.
+- tests/test_wordlist.py: rebuild byte-identity, all-lowercase, coverage of the
+  residue cases, and absence of the compound and proper-name joined forms.
+- verify_vendor now pins all 22 vendored files, 4 tokenizer and 18 SCOWL. 119
+  tests pass, ruff clean.
+
+### What follows in-session, uncommitted, reported to Hasan before it is applied
+
+Per his instruction the resolver wiring is left in the working tree, uncommitted,
+and applied to no document output. hyphenation.resolve consults the wordlist as
+evidence source four in the neither-attested branch, lowercasing the joined form,
+with two distinctly labelled outcomes: joined form present means discretionary
+hyphen, delete; joined form absent means real hyphen, keep. The resolver is run
+across all 337 U+FFFE occurrences corpus-wide (AI 100-1 239, AI 600-1 44,
+Playbook 54), and the decision log by evidence tier plus the complete
+wordlist-resolved list are reported to Hasan in the session. Nothing of the
+wiring or the report is committed; the modified hyphenation.py sits uncommitted
+in the working tree, so a fresh session sees it in git status and can regenerate
+the decision log by re-running the resolver.
+
+### Constraints honoured
+
+No document ingestion re-run. The eight untracked files were not touched. No API
+calls, no spend, no remote, nothing pushed.
+
+Commit: 73f22f2f96ddbb580a575a69c68a96bd30826eb1
+  (feat: vendor SCOWL English wordlist and deterministic builder for hyphen
+  resolver, local only)
+  This entry is recorded by the next commit, `docs: log wordlist vendoring
+  commit, local only`, committed immediately after this entry is written, which
+  closes the chain so the next session inherits no unlogged commit.
+
+Current state:
+- Local git repository on branch `main`, no remote configured, nothing pushed.
+  Once this log commit lands the history is eighteen commits, all trailer-free.
+- Ingested: the EU AI Act (clean), NIST AI 100-1 (still carrying the corrupted
+  words, since the corrected resolver is not yet applied to any document). NOT
+  ingested: AI 600-1 and the Playbook.
+- The wordlist is vendored and pinned. The resolver wiring exists in the working
+  tree, uncommitted, pending Hasan's review of the wordlist-resolved decisions.
+
+Next step:
+- On Hasan's go after he reviews the wordlist-resolved decisions, commit the
+  resolver wiring with its tests, then apply the corrected resolver in the full
+  three-document re-run: wire hyphenation.resolve into the ingesters, re-run
+  AI 100-1, and complete AI 600-1 and Playbook ingestion, committing the full
+  per-occurrence decision log, the regression tests pinning the thirdparty
+  class, the non-ASCII sweep, and the forward-reference validation. Report any
+  movement in the 47 and 46 duplication counts as a stated correction.
+
 ## 2026-07-22, HANDOFF, hyphen defect found and partially corrected
 
 Read this entry in full before doing anything. A defect was found in ALREADY
