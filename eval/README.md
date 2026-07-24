@@ -22,11 +22,28 @@ development pool.
 
 ## Discipline
 
-Development queries are authored blind, from the unit text alone, before retrieval
-is run on any of them. The query file and its committed embeddings land in one
-commit; the retrieval results land in a later commit, so the blindness is provable
-from git history rather than asserted in a report. No query is revised because it
-retrieved badly. A miss is a finding and stays in the set.
+Development queries are authored from unit text and fixed before any retrieval
+result is recorded. The query file and its committed embeddings land in one commit;
+the retrieval results land in a later commit. What git proves is the narrow,
+load-bearing claim: the queries were frozen before any result existed, so no query
+could have been edited to match what retrieval returned. It does not prove retrieval
+was never run while a query was being drafted, and this file does not claim that. No
+query is revised because it retrieved badly. A miss is a finding and stays in the set.
+
+## Not a quality metric
+
+Development results are never reported as a retrieval quality metric. The parameters
+are locked and untuned, the queries are informally golded, the sample is twelve, and
+the set exists to detect structural breakage. The only quality numbers this
+repository produces come from the sealed, pre-registered test set scored by the
+deterministic grader. This guard matters here precisely because the development hit
+rate looks good.
+
+What the set did and did not show. The three identifier queries hitting at rank one
+confirms the identifier-aware tokenisation works end to end on real query text; that
+is a confirmation, not a hard test. The one miss, the near-miss `dev_11`, shows the
+retriever cannot discriminate a subcategory's AI Transparency Resources block from
+its near-duplicates, and is kept as a finding.
 
 ## Files
 

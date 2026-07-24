@@ -253,19 +253,57 @@
   "results": "eval/dev_retrieval_results.json",
   "outcome": "10 of 11 gold queries hit; 1 miss kept as a finding, not revised. dev_11 (near-miss): querying for GOVERN 6.1's AI Transparency Resources block returned near-duplicate resource blocks from other subcategories, never GOVERN 6.1's own, the near-duplicate discrimination failure it was designed to probe and consistent with the known-item finding that these blocks are near-duplicated across subcategories. dev_12 (out-of-corpus, CCPA): no gold, retrieval returns unrelated corpus chunks, abstention is the layer's job.",
   "embedding_gap_diagnostic": {
-   "what": "adjacent raw-cosine gaps in the dense top-100 per query, over the 12 development queries; neither a tuning input nor a gate",
-   "min_adjacent_gap": "0.0000 for all 12 queries: every query's dense top-100 contains exact-tie clusters, the verbatim-duplicate blocks, resolved deterministically by quantisation and the chunk-id tie-break",
-   "rank10_to_11_boundary_gap": "the gap that decides the context set: min 0.0002, median 0.0014, max 0.0058. The tightest, 2e-4, is above the 1e-4 quantisation grain, so quantisation does not merge the context-set boundary",
-   "reading": "converts the ranking-stability claim from asserted to demonstrated: exact ties are pervasive and handled, and the top-10 boundary gap stays above the grain"
+   "what": "adjacent raw-cosine gaps in the dense top-100; the rank 10 to 11 gap decides the context set. Neither a tuning input nor a gate. Recorded at two scopes, kept distinct.",
+   "dev_12_queries": {
+    "min_adjacent_gap": "0.0000, exact-tie clusters present in every query",
+    "rank10_11_gap": "min 0.0002, median 0.0014, max 0.0058"
+   },
+   "full_1506_population": {
+    "note": "1294 known-item plus 212 action queries, chunk text and action text rather than typed user queries: a larger and more robust measurement, but not evidence about real query behaviour",
+    "min_adjacent_gap": "0.0000",
+    "rank10_11_gap": "min 0.0000, median 0.00212, max 0.04053",
+    "queries_with_boundary_gap_below_1e-4_grain": 127,
+    "of": 1506
+   },
+   "reading": "The 12-query sample had every rank 10 to 11 gap above the grain, but at scale that does not hold: 127 of 1506 queries have a boundary gap below the 1e-4 grain, so quantisation merges the context-set boundary for those, resolved deterministically by the chunk-id tie-break. Deterministic across implementations, but for those 127 the boundary membership is decided by chunk id rather than a score margin. This corrects the thin-sample claim that the boundary stays above the grain."
   },
   "arm_bias_diagnostic": {
-   "what": "median primary-token length of the top-10 from BM25 alone, dense alone, and fused, per query; neither a tuning input nor a gate",
-   "overall_median_primary_token_length": {
+   "what": "median primary-token length of the top-10 from BM25 alone, dense alone, and fused. Neither a tuning input nor a gate. Two scopes, kept distinct.",
+   "dev_12_queries": {
     "bm25": 110,
     "dense": 109,
     "fused": 127
    },
-   "reading": "BM25 and dense retrieve comparable-length chunks at the top-10 median on real queries, 110 against 109; fused is slightly longer at 127. The measured direction, recorded not tuned"
-  }
+   "full_1506_population": {
+    "bm25": 113,
+    "dense": 83,
+    "fused": 94
+   },
+   "observation_recorded_uncharacterised": "On the 12 hand-written queries the fused median (127) is longer than either arm alone (110, 109). Over the 1506 population the fused median (94) sits between the arms (113, 83). Recorded as observed; the mechanism is left uncharacterised."
+  },
+  "not_a_quality_metric": "Development results are never reported as a retrieval quality metric. The parameters are locked and untuned, the queries are informally golded, the sample is twelve, and the set exists to detect structural breakage. The only quality numbers this repository produces come from the sealed, pre-registered test set scored by the deterministic grader.",
+  "identifier_confirmation": "The three identifier queries hitting at rank one confirms the identifier-aware tokenisation works end to end on real query text. A confirmation, not a hard test."
+ },
+ "garbled_identifier_verification": {
+  "target": "nist_ai_600_1:act_GV-4.3-001, stored surface GV4.3--001, correct identifier GV-4.3-001. Documented in data/chunks/nist_ai_600_1.manifest.json under garbled_action_id_lexical_mismatch and garbled_identifier_exception.",
+  "documented_behaviour": "a query containing GV-4.3-001 will not lexically match the chunk carrying the garbled surface GV4.3--001",
+  "measured_rank_of_target_of_1294": {
+   "correct_identifier_GV-4.3-001": {
+    "bm25": 568,
+    "dense": 12,
+    "fused": 28
+   },
+   "garbled_surface_GV4.3--001": {
+    "bm25": 1,
+    "dense": 2,
+    "fused": 1
+   },
+   "action_text_no_identifier": {
+    "bm25": 1,
+    "dense": 1,
+    "fused": 1
+   }
+  },
+  "held": "Yes. The correct identifier does not lexically retrieve the target (BM25 rank 568) and does not reach the fused top-10 (rank 28), confirming the documented lexical mismatch against the shipped retriever. The action's own text retrieves it at rank 1 in every arm, so only the identifier is affected. A one-off verification of a documented property, not a query-set item and not added to the development set."
  }
 }
