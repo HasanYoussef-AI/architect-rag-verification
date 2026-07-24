@@ -4,6 +4,45 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from `rag_case_study_tracker.md` plus the
 last entry here alone. Newest entries at the top.
 
+## 2026-07-24, correction: the 127 is a dense-arm property, not a context-set finding
+
+The previous entry and the manifest framed the 127-of-1506 rank 10/11 sub-grain gaps as a
+context-set finding. That was inherited from a wrong framing of mine, corrected here fixed
+forward rather than by rewriting the committed entry. The rank 10/11 boundary those 127
+measure is the dense arm's, one input to reciprocal rank fusion, not the fused top 10 that
+reaches the model.
+
+Kept as a dense-arm property: for those 127 queries quantisation merges the two dense
+scores into a tie, and chunk id decides which takes dense rank 10 and which 11, an RRF
+contribution difference of 1/70 minus 1/71, about 2.1e-4. Both remain in the dense top 100
+and both contribute to fusion either way.
+
+The context-set answer stated directly from the measurements that address it: fused rank
+10/11 ties, membership decided by chunk id, are 11 of 1294 known-item and 0 of 212 action,
+11 of 1506 over the same population; cross-path disagreement after quantisation is 1 of
+1506 with zero membership changes. The 0 of 212 closes a twice-raised concern: the
+chunk-id tie-break does not touch the action-to-parent relation at the top-10 boundary, so
+it does not inflate that expected-hard stratum's measured failure.
+
+Two further one-line corrections in the manifest. The b=0.75 length bias (2.70x, a
+single-term term-frequency ratio) and the arm-bias medians (BM25 113 against dense 83,
+realised multi-term retrieval) are different quantities, not a contradiction. And on the
+GV-4.3-001 correct-identifier case only, fused rank 28 is worse than dense 12 because BM25
+at 568 drags fusion, recorded as a single case, not a claim about RRF.
+
+Commit, local only:
+- 96d9e95 docs: relabel the 127 as a dense-arm property, state the context-set boundary directly
+
+Current state:
+- Local git on `main`, no remote, nothing pushed. Retrieval scope complete and its
+  determinism story corrected to distinguish the dense arm from the fused context set. Two
+  governance drafts remain for Hasan to place in `rag_case_study_tracker.md`: the Section 4
+  defect 6 entry and the Section 3 verifier count 28 to 30.
+
+Next step:
+- Pre-registration: the sealed test query set and gold passages, committed and timestamped
+  before any generation run, immutable once results exist.
+
 ## 2026-07-24, retrieval scope closed: development queries, full-population diagnostics, GV-4.3-001
 
 Development queries authored and run under a two-commit blindness protocol, both
