@@ -446,6 +446,12 @@ repository has stated provenance and terms in one place. They keep their own
 license, separate from the repository's Apache 2.0 code license and from the
 corpus documents' terms above.
 
+Vendor path convention: the integrity verifier matches a single path level,
+`vendor/<dir>/<file>`. Where an upstream file lives in a nested path, it is
+vendored flattened one level, and both spellings are recorded here so a reviewer
+can map the vendored file back to what was served. The one current instance is
+`1_Pooling/config.json`, served nested, vendored as `1_Pooling.config.json`.
+
 ## bge-base-en-v1.5 tokenizer
 
 Chunk boundaries are decided by token counts, and chunk IDs are cited by the

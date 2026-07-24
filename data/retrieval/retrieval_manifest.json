@@ -1,152 +1,249 @@
 {
-  "description": "Every parameter and decision of the hybrid retriever, with the reasoning and the measurement behind each. Pre-registration cites this manifest. Nothing here is tuned to the query set or gold, which do not yet exist. Numbers are measured, not asserted; where a belief has no measurement it is written as a belief.",
-  "repository_license_note": "The repository's own code license is Apache-2.0. Vendored model files and corpus documents carry their own licenses separately, recorded in corpus/SOURCES.md, the pattern already used for the corpus.",
-
-  "reproducibility_levels": {
-    "note": "The claim has three levels of decreasing strength. Collapsing them would overclaim.",
-    "level_1_committed_outputs": "Every downstream number reproduces exactly from committed retrieval outputs. No model, no BLAS, no key. Unaffected by any float residual.",
-    "level_2_committed_embeddings": "A reviewer re-runs scoring and fusion over the committed chunk embeddings and committed query embeddings. The only deviation is their BLAS matvec in the dense arm, reduced by dense quantisation to the measured residual below.",
-    "level_3_regenerate_embeddings": "Regenerating embeddings from ONNX at the pinned revision reproduces rankings, not bytes. Cross-machine inference deviation exceeds the matvec deviation.",
-    "level_2_rule": "Query embeddings must be committed alongside every query set at the moment that set is created, development and test both. Otherwise a reviewer regenerates them by running ONNX on their own hardware, whose cross-machine inference deviation is larger than the matvec deviation the quantisation precision was derived to cover, moving level 2 outside coverage. No query set exists yet, so nothing to commit now; the rule is recorded so it is not rediscovered at pre-registration."
+ "description": "Every parameter and decision of the hybrid retriever, with the reasoning and the measurement behind each. Pre-registration cites this manifest. Nothing here is tuned to the query set or gold, which do not yet exist. Numbers are measured, not asserted; where a belief has no measurement it is written as a belief.",
+ "repository_license_note": "The repository's own code license is Apache-2.0. Vendored model files and corpus documents carry their own licenses separately, recorded in corpus/SOURCES.md, the pattern already used for the corpus.",
+ "reproducibility_levels": {
+  "note": "The claim has three levels of decreasing strength. Collapsing them would overclaim.",
+  "level_1_committed_outputs": "Every downstream number reproduces exactly from committed retrieval outputs. No model, no BLAS, no key. Unaffected by any float residual.",
+  "level_2_committed_embeddings": "A reviewer re-runs scoring and fusion over the committed chunk embeddings and committed query embeddings. Measured against the two BLAS code paths we could test on one machine, the per-query matvec and a batched matrix product, this gives zero top-10 membership changes and at most one ordering-only difference across 1506 queries after dense quantisation. See score_determinism_residual for exactly what was measured and its limits as a cross-implementation proxy.",
+  "level_3_regenerate_embeddings": "Regenerating embeddings from ONNX at the pinned revision reproduces rankings, not bytes. Cross-machine inference deviation exceeds the matvec deviation.",
+  "level_2_rule": "Query embeddings must be committed alongside every query set at the moment that set is created, development and test both. Otherwise a reviewer regenerates them by running ONNX on their own hardware, whose cross-machine inference deviation is larger than the matvec deviation the quantisation precision was derived to cover, moving level 2 outside coverage. No query set exists yet, so nothing to commit now; the rule is recorded so it is not rediscovered at pre-registration."
+ },
+ "model": {
+  "repo": "BAAI/bge-base-en-v1.5",
+  "revision": "a5beb1e3e68b9ab74eb54cfd186867f64f240e1a",
+  "revision_resolution": "Full 40-char commit SHA resolved and pinned; download asserts revision and SHA-256 every run.",
+  "weight_run": "onnx/model.onnx",
+  "weight_sha256": "9bc579acdba21c253c62a9bf866891355a63ffa3442b52c8a37d75b2ccb91848",
+  "weight_sha256_reverified_after_download": true,
+  "file_not_run": {
+   "model.safetensors": "c7c1988aae201f80cf91a5dbbd5866409503b89dcaba877ca6dba7dd0a5167d7",
+   "reason": "ONNX path chosen for same-tokenizer consistency; safetensors recorded as the file we did not run."
   },
-
-  "model": {
-    "repo": "BAAI/bge-base-en-v1.5",
-    "revision": "a5beb1e3e68b9ab74eb54cfd186867f64f240e1a",
-    "revision_resolution": "Full 40-char commit SHA resolved and pinned; download asserts revision and SHA-256 every run.",
-    "weight_run": "onnx/model.onnx",
-    "weight_sha256": "9bc579acdba21c253c62a9bf866891355a63ffa3442b52c8a37d75b2ccb91848",
-    "weight_sha256_reverified_after_download": true,
-    "file_not_run": {"model.safetensors": "c7c1988aae201f80cf91a5dbbd5866409503b89dcaba877ca6dba7dd0a5167d7", "reason": "ONNX path chosen for same-tokenizer consistency; safetensors recorded as the file we did not run."},
-    "onnx_path_reason": "transformers pins tokenizers <= 0.23.0 while the frozen chunking tokenizer is 0.23.1; the ONNX path lets the same frozen tokenizer that set chunk boundaries also tokenise for embedding. The dependency conflict is the trigger, the consistency is the justification.",
-    "graph_inspection": {"inputs": ["input_ids", "attention_mask", "token_type_ids"], "token_type_ids_required": true, "token_type_ids_fed_as": "explicit zeros", "output": "last_hidden_state [batch, seq, 768]", "opset": "ai.onnx 11", "ir_version": 6, "cls_pooling_source": "vendored vendor/bge-base-en-v1.5/1_Pooling.config.json at the revision: pooling_mode_cls_token true, all others false"},
-    "pooling": "CLS, hidden[:, 0, :]",
-    "normalisation": "L2, so cosine is the dot product",
-    "no_query_instruction": {"decision": "no instruction, locked, no A/B", "source": "bge-v1.5 model card (vendored README.md at the revision) states embeddings can be generated without one", "instruction_variant": "considered and declined as unresolvable at our development-set size"},
-    "onnxruntime": {"version": "1.27.0", "pinned": "== in pyproject and uv.lock", "session": {"providers": ["CPUExecutionProvider"], "intra_op_num_threads": 1, "inter_op_num_threads": 1, "graph_optimization_level": "ORT_ENABLE_ALL"}, "reason": "onnxruntime parallelises reductions and reduction order changes float results; single-threaded CPU with a fixed opt level makes the build deterministic."},
-    "max_seq": 512,
-    "embed_dim": 768,
-    "dtype": "float32",
-    "truncation": {"max_token_length": 512, "chunks_at_cap": 4, "over_cap": 0, "note": "measured on the comparison-normalised input actually embedded"},
-    "batch_invariance_max_abs_diff": 1.043081283569336e-07
+  "onnx_path_reason": "transformers pins tokenizers <= 0.23.0 while the frozen chunking tokenizer is 0.23.1; the ONNX path lets the same frozen tokenizer that set chunk boundaries also tokenise for embedding. The dependency conflict is the trigger, the consistency is the justification.",
+  "graph_inspection": {
+   "inputs": [
+    "input_ids",
+    "attention_mask",
+    "token_type_ids"
+   ],
+   "token_type_ids_required": true,
+   "token_type_ids_fed_as": "explicit zeros",
+   "output": "last_hidden_state [batch, seq, 768]",
+   "opset": "ai.onnx 11",
+   "ir_version": 6,
+   "cls_pooling_source": "vendored vendor/bge-base-en-v1.5/1_Pooling.config.json at the revision: pooling_mode_cls_token true, all others false"
   },
-
-  "embedding_input_normalisation": {
-    "rule": "normalise_for_comparison is applied to the embedding input, on both the corpus and the query side, before the model tokenizer. Dense retrieval is a comparison and falls under the same shared-path rule that governs BM25 and the grounding check.",
-    "what_it_folds": "curly quotes, en and em dashes, non-breaking space, whitespace collapse",
-    "measured_effect": {"chunks_changed": 399, "of": 1294, "driver": "curly quotes (229 typographic apostrophes, 104 each curly double-quote, 50 left-single) and dashes (148 en, 24 em); whitespace is not a driver because the tokenizer already folds it", "cosine_old_vs_new_over_changed": {"min": 0.9788, "median": 0.9995, "max": 0.99999}},
-    "corrected_mechanism": "The divergence between the arms before this change was NOT whitespace. The BERT WordPiece normalizer folds whitespace before pre-tokenisation, so a newline against a space produces identical token IDs and an identical vector, verified across all 32 normalise-identical raw-different pairs (identical IDs, cosine 1.0). The divergence was entirely the publisher's typographic characters, measured at the 399 changed embeddings above.",
-    "retraction": "An earlier report claimed the arms read different text 'demonstrated by a newline against a space'. That mechanism was wrong: the cited 0.981 figure was a different pair (Playbook vs AI 100-1 GOVERN 1.1, differing by a colon separator), not a whitespace pair. Recorded in the open, not silently replaced.",
-    "retraction_2": "An earlier report claimed the model of verbatim-identical implying a tie across both arms 'was violated for 32 groups'. It was not violated; those 32 tied on both arms the whole time, differing only by a float rounding of ~2e-7 that quantisation now removes.",
-    "state_now": "Both arms read normalise_for_comparison text, so they no longer diverge and normalised-identity genuinely implies a full tie. The pre-rebuild divergence is history."
+  "pooling": "CLS, hidden[:, 0, :]",
+  "normalisation": "L2, so cosine is the dot product",
+  "no_query_instruction": {
+   "decision": "no instruction, locked, no A/B",
+   "source": "bge-v1.5 model card (vendored README.md at the revision) states embeddings can be generated without one",
+   "instruction_variant": "considered and declined as unresolvable at our development-set size"
   },
-
-  "tokenisation": {
-    "primary_token_pattern": "[a-z0-9]+(?:[._-][a-z0-9]+)*",
-    "index_side_expansion": "documents also index hyphen/underscore-split parts; queries do not. Expansion parts contribute term frequency and postings but are not charged against document length.",
-    "document_length": "primary tokens only",
-    "direction_checks": "four checks pass; index-side-only expansion is sufficient",
-    "stopwords": "none removed, explicit decision",
-    "stemming": "none, explicit decision",
-    "avgdl_recomputed_under_final_tokenizer": 128.4242658423493
+  "onnxruntime": {
+   "version": "1.27.0",
+   "pinned": "== in pyproject and uv.lock",
+   "session": {
+    "providers": [
+     "CPUExecutionProvider"
+    ],
+    "intra_op_num_threads": 1,
+    "inter_op_num_threads": 1,
+    "graph_optimization_level": "ORT_ENABLE_ALL"
+   },
+   "reason": "onnxruntime parallelises reductions and reduction order changes float results; single-threaded CPU with a fixed opt level makes the build deterministic."
   },
-
-  "bm25": {
-    "implementation": "from scratch, Okapi",
-    "idf_variant_shipped": "nonneg, Lucene form ln(1 + (N - n + 0.5)/(n + 0.5)), always non-negative",
-    "idf_variant_crosscheck": "robertson with rank-bm25's negative-IDF floor (epsilon 0.25), implemented only to prove the formula matches rank-bm25",
-    "rank_bm25_crosscheck_max_abs_diff": 3.55e-15,
-    "k1": 1.5,
-    "b": 0.75,
-    "tuning": "UNTUNED, declared; no sweep",
-    "length_bias": {"property": "bimodal chunk-length distribution, short/long avgdl ratio 2.70 under b=0.75", "direction": "short chunks advantaged", "reasoning_verbatim": "suppressing near-miss retrieval is the layer's job, not the retriever's, and lowering b to hide near-misses would weaken the exact test the query set exists to run", "measured_confirmation": "all 15 known-item genuine preferences are a shorter near-duplicate winning BM25 on length-normalised density, dBM25 positive and dDense negative in every one; 8 are Playbook resource blocks, 7 are named cross-document subcategory statements"},
-    "avgdl_determinism": "avgdl uses an exact integer sum, not np.mean. Document lengths are integers whose exact sum is order-independent, removing the only floating-point reduction from the BM25 path and making cross-platform reproducibility unconditional rather than resting on the sum staying below 2^53. Measured bitwise-identical to np.mean (128.4242658423493); a test pins the value. Score accumulation is a scalar element-wise scatter-add over query tokens in fixed for-loop order, no np.sum/np.dot/reduce, so it is deterministic across platforms by IEEE 754.",
-    "not_quantised": "BM25 is not quantised. Its cross-path deviation measured exactly 0.000e+00 against an independent scalar reference and is bitwise-identical on repeat calls, and quantising it added 0 top-10 changes; rounding it would change rankings for no reproducibility gain."
+  "max_seq": 512,
+  "embed_dim": 768,
+  "dtype": "float32",
+  "truncation": {
+   "max_token_length": 512,
+   "chunks_at_cap": 4,
+   "over_cap": 0,
+   "note": "measured on the comparison-normalised input actually embedded"
   },
-
-  "dense": {
-    "score": "cosine over committed embeddings, both L2-normalised",
-    "quantisation": {"applied": true, "decimals": 4, "grain": "1e-4", "derivation": "measured max per-score deviation between the full-matrix and per-query matvec paths is 1.49e-6; 1e-4 sits 67x above it, the finest decimal at least an order of magnitude above, since 1e-5 would be only 6.7x", "purpose": "cross-platform determinism, not an acceptance criterion; it decides nothing about whether a result is correct"}
+  "batch_invariance_max_abs_diff": 1.043081283569336e-07
+ },
+ "embedding_input_normalisation": {
+  "rule": "normalise_for_comparison is applied to the embedding input, on both the corpus and the query side, before the model tokenizer. Dense retrieval is a comparison and falls under the same shared-path rule that governs BM25 and the grounding check.",
+  "what_it_folds": "curly quotes, en and em dashes, non-breaking space, whitespace collapse",
+  "measured_effect": {
+   "chunks_changed": 399,
+   "of": 1294,
+   "driver": "curly quotes (229 typographic apostrophes, 104 each curly double-quote, 50 left-single) and dashes (148 en, 24 em); whitespace is not a driver because the tokenizer already folds it",
+   "cosine_old_vs_new_over_changed": {
+    "min": 0.9788,
+    "median": 0.9995,
+    "max": 0.99999
+   }
   },
-
-  "fusion": {
-    "method": "reciprocal rank fusion",
-    "k": 60,
-    "k_reasoning": "published default from Cormack, Clarke and Buettcher, adopted untuned",
-    "arm_depth": 100,
-    "output_depth": 10,
-    "output_depth_note": "fixed before the query set and gold exist",
-    "tie_break": "chunk id lexicographic ascending, within each arm and after fusion",
-    "fused_not_quantised": {"reason": "the fused score is a function of the arm ranks alone, no raw arm score enters, and the dense ranks are already deterministic from dense quantisation, so 1/(k+rank) is exact-reproducible float64", "measured_rejection": "rounding the fused score at the dense-derived grain was measured to reshuffle 369 of 1294 top-10s by merging fused scores that differ by ~1e-5, finer than that grain, so it would coarsen the ranking it exists to stabilise"}
+  "corrected_mechanism": "The divergence between the arms before this change was NOT whitespace. The BERT WordPiece normalizer folds whitespace before pre-tokenisation, so a newline against a space produces identical token IDs and an identical vector, verified across all 32 normalise-identical raw-different pairs (identical IDs, cosine 1.0). The divergence was entirely the publisher's typographic characters, measured at the 399 changed embeddings above.",
+  "retraction": "An earlier report claimed the arms read different text 'demonstrated by a newline against a space'. That mechanism was wrong: the cited 0.981 figure was a different pair (Playbook vs AI 100-1 GOVERN 1.1, differing by a colon separator), not a whitespace pair. Recorded in the open, not silently replaced.",
+  "retraction_2": "An earlier report claimed the model of verbatim-identical implying a tie across both arms 'was violated for 32 groups'. It was not violated; those 32 tied on both arms the whole time, differing only by a float rounding of ~2e-7 that quantisation now removes.",
+  "state_now": "Both arms read normalise_for_comparison text, so they no longer diverge and normalised-identity genuinely implies a full tie. The pre-rebuild divergence is history."
+ },
+ "tokenisation": {
+  "primary_token_pattern": "[a-z0-9]+(?:[._-][a-z0-9]+)*",
+  "index_side_expansion": "documents also index hyphen/underscore-split parts; queries do not. Expansion parts contribute term frequency and postings but are not charged against document length.",
+  "document_length": "primary tokens only",
+  "direction_checks": "four checks pass; index-side-only expansion is sufficient",
+  "stopwords": "none removed, explicit decision",
+  "stemming": "none, explicit decision",
+  "avgdl_recomputed_under_final_tokenizer": 128.4242658423493
+ },
+ "bm25": {
+  "implementation": "from scratch, Okapi",
+  "idf_variant_shipped": "nonneg, Lucene form ln(1 + (N - n + 0.5)/(n + 0.5)), always non-negative",
+  "idf_variant_crosscheck": "robertson with rank-bm25's negative-IDF floor (epsilon 0.25), implemented only to prove the formula matches rank-bm25",
+  "rank_bm25_crosscheck_max_abs_diff": 3.55e-15,
+  "k1": 1.5,
+  "b": 0.75,
+  "tuning": "UNTUNED, declared; no sweep",
+  "length_bias": {
+   "property": "bimodal chunk-length distribution, short/long avgdl ratio 2.70 under b=0.75",
+   "direction": "short chunks advantaged",
+   "reasoning_verbatim": "suppressing near-miss retrieval is the layer's job, not the retriever's, and lowering b to hide near-misses would weaken the exact test the query set exists to run",
+   "measured_confirmation": "all 15 known-item genuine preferences are a shorter near-duplicate winning BM25 on length-normalised density, dBM25 positive and dDense negative in every one; 8 are Playbook resource blocks, 7 are named cross-document subcategory statements"
   },
-
-  "quantisation_determinism_footprint": {
-    "top10_changed_vs_unrounded": {"both_arm": 46, "dense_only": 46, "bm25_marginal": 0, "note": "of 1294 known-item queries; the footprint is entirely from the dense arm"}
-  },
-
-  "score_determinism_residual": {
-    "statement": "Quantisation reduces cross-platform ranking variation to a measured residual. It does not make rankings platform-deterministic. Two scores differing by less than the 1.49e-6 deviation can still round to different 4dp values when they straddle a boundary.",
-    "scope": "Applies to reproducibility levels 2 and 3 only. Level 1, committed outputs, is exact and unaffected.",
-    "population": "the dense arm's top 100 per query, the depth that can influence fusion",
-    "near_boundary_dense_scores_in_dense_top100": 4242,
-    "over_queries": "1294 known-item + 212 action = 1506",
-    "worst_case_derivation": "for each query the near-boundary chunks in the dense top-105 (mean 2.98, max 13 per query, none skipped) were enumerated over all 2^k rounding combinations; the fused top-10 was recomputed for each and compared to the committed one",
-    "worst_case_top10_membership_change": {"known_item": 7, "of_known_item": 1294, "action": 1, "of_action": 212},
-    "worst_case_top10_ordering_only_change": {"known_item": 10, "of_known_item": 1294, "action": 0, "of_action": 212},
-    "combined_known_item_affected": {"count": 17, "of": 1294, "below_footprint_threshold": 46},
-    "membership_vs_ordering": "membership changes which chunks the model sees; ordering changes the sequence they arrive in, which can move the model's output even when the set is unchanged. Both are recorded."
-  },
-
-  "known_item_fixture": {
-    "path": "data/retrieval/known_item_fixture.json",
-    "what_it_proves": "an end-to-end check of the lexical path (text goes through normalisation, tokenisation, index-side expansion, and scoring before it matches) and an ordering check of the dense path. The dense half of known item is close to vacuous as a retrieval check because the query is each chunk's own embedding, cosine 1.0 by construction; the order assertion already proves vectors are stored against the right chunk ids. It is NOT a test of retrieval quality, which is untested until real queries exist.",
-    "categories": {"self": 1150, "raw_verbatim_twin": 36, "normalised_twin": 32, "near_duplicate": 76},
-    "acceptance": "exact equality against the committed expected rank-1 for all 1294 rows; the only categorical assertion is that no row is a dissimilar rank-1",
-    "note": "the 1150 self count equals the frozen unit count of 1150 by coincidence, 1294 minus 36 minus 32 minus 76, not by any relationship"
-  },
-
-  "verbatim_groups": {
-    "path": "data/retrieval/verbatim_groups.json",
-    "normalised_identity": {"groups": 55, "chunks": 125},
-    "raw_identity": {"groups": 23, "chunks": 61},
-    "note": "a mechanically derived corpus-property artifact over all 1294 chunks. Supersedes nothing; the AI 100-1 duplication map, which carries subcategory-statement semantics this does not, stays."
-  },
-
-  "near_duplicate_exceptions": {
-    "path": "data/retrieval/near_duplicate_exceptions.json",
-    "cross_document_statement_class": {"count": 64, "predicate": "same subcategory identifier, different source document", "residue_failing_predicate": 0, "predicate_tested_over": "the full 96 (64 near plus 32 normalised_twin), residue 0"},
-    "block_near_duplicates_hand_audited": 12,
-    "handling": "near-verbatim duplication exists in this corpus and is handled by individual verification at pre-registration, not by an automated map, because an automated map would need a similarity threshold, which was rejected"
-  },
-
-  "dev_pool": {
-    "path": "eval/dev_unit_pool.json",
-    "units": 40,
-    "strata": 22,
-    "rule": "one unit per (document, unit_type) stratum so a break in any structural type surfaces, remainder to 40 by largest-remainder proportional to stratum size, evenly spaced within a stratum by sorted unit_id with the offset rotated by stratum index so co-sized playbook block strata do not concentrate on one subcategory. Deterministic.",
-    "firewall": "committed before any development query is written; the test-set builder asserts no pre-registered gold unit is drawn from this pool. Because retrieval parameters are locked untuned, the development set's job is catching structural breakage."
-  },
-
-  "action_subcategory_recall_diagnostic": {
-    "what": "for each of the 212 action-to-subcategory edges, mechanically derived from printed identifiers, query with the action text and check whether the parent subcategory statement appears in the top 10. A genuine test of the embedding space, unlike the vacuous dense half of known item. Diagnostic only, never a tuning input, never a pass or fail gate.",
-    "recall_at_10": {"dense": 0.033, "bm25": 0.033, "fused": 0.047},
-    "random_baseline_recall_at_10": 0.0077,
-    "median_parent_dense_rank": 184,
-    "random_median_parent_rank": 647,
-    "reading": "a working space on a hard task, not a broken one. Parent at median rank 184 against a random 647. BM25, which contains no embeddings, fails at the identical 3.3%, which proves this is not an embedding defect but a semantic-gap property: action-to-parent is a structural relation and the space groups by register and surface. This is the repo's retrieval-completeness failure surface, measured on judgment-free ground truth.",
-    "gold_design": "include hierarchical action-to-parent queries deliberately, bounded, pre-registered as an expected-hard stratum with the expectation that first-pass retrieval misses them recorded before any run. The proportion is decided at pre-registration with reasoning recorded, because loading the query set with cases only corrective re-retrieval can fix would manufacture the delta."
-  },
-
-  "tie_break_boundary_footnote": {
-    "concern": "chunk ids sort act_ before anx_, art_, rct_, sec_, sub_, so a tie between an action row and a subcategory statement resolves for the action, and quantisation manufactures ties by design",
-    "measured": "rank-10/11 fused ties, where top-10 membership is decided by the chunk-id tie-break rather than a score difference: 11 of 1294 known-item queries and 0 of 212 action queries. The action-vs-subcategory case that motivated the concern came back empty: zero of the 212 action-query boundaries were tie-decided. The 11 known-item winners by id prefix are art 8, sub 2, act 1, not an action-dominated pattern.",
-    "ruling": "recorded as a footnote, not a rule change; the tie-break is auditable and reproducible, which is what it is for"
-  },
-
-  "licensing": {
-    "model": "bge-base-en-v1.5 is MIT, attested by license: mit in the README.md frontmatter at revision a5beb1e3e68b9ab74eb54cfd186867f64f240e1a, vendored as served and checksummed. No standalone LICENSE file exists at that revision. The absence was checked against the repository file listing, not assumed.",
-    "repository_code": "Apache-2.0",
-    "pattern": "model and corpus artifacts carry their own licenses separately from the repository code license, recorded in corpus/SOURCES.md",
-    "vendor_verifier_count": 24
+  "avgdl_determinism": "avgdl uses an exact integer sum, not np.mean. Document lengths are integers whose exact sum is order-independent, removing the only floating-point reduction from the BM25 path and making cross-platform reproducibility unconditional rather than resting on the sum staying below 2^53. Measured bitwise-identical to np.mean (128.4242658423493); a test pins the value. Score accumulation is a scalar element-wise scatter-add over query tokens in fixed for-loop order, no np.sum/np.dot/reduce, so it is deterministic across platforms by IEEE 754.",
+  "not_quantised": "BM25 is not quantised. Its cross-path deviation measured exactly 0.000e+00 against an independent scalar reference and is bitwise-identical on repeat calls, and quantising it added 0 top-10 changes; rounding it would change rankings for no reproducibility gain."
+ },
+ "dense": {
+  "score": "cosine over committed embeddings, both L2-normalised",
+  "quantisation": {
+   "applied": true,
+   "decimals": 4,
+   "grain": "1e-4",
+   "derivation": "measured max per-score deviation between the full-matrix and per-query matvec paths is 1.49e-6; 1e-4 sits 67x above it, the finest decimal at least an order of magnitude above, since 1e-5 would be only 6.7x",
+   "purpose": "cross-platform determinism, not an acceptance criterion; it decides nothing about whether a result is correct"
   }
+ },
+ "fusion": {
+  "method": "reciprocal rank fusion",
+  "k": 60,
+  "k_reasoning": "published default from Cormack, Clarke and Buettcher, adopted untuned",
+  "arm_depth": 100,
+  "output_depth": 10,
+  "output_depth_note": "fixed before the query set and gold exist",
+  "tie_break": "chunk id lexicographic ascending, within each arm and after fusion",
+  "fused_not_quantised": {
+   "reason": "the fused score is a function of the arm ranks alone, no raw arm score enters, and the dense ranks are already deterministic from dense quantisation, so 1/(k+rank) is exact-reproducible float64",
+   "measured_rejection": "rounding the fused score at the dense-derived grain was measured to reshuffle 369 of 1294 top-10s by merging fused scores that differ by ~1e-5, finer than that grain, so it would coarsen the ranking it exists to stabilise"
+  }
+ },
+ "quantisation_determinism_footprint": {
+  "top10_changed_vs_unrounded": {
+   "both_arm": 46,
+   "dense_only": 46,
+   "bm25_marginal": 0,
+   "note": "of 1294 known-item queries; the footprint is entirely from the dense arm"
+  }
+ },
+ "score_determinism_residual": {
+  "statement": "Quantisation reduces cross-implementation ranking variation to a small measured residual. It does not make rankings deterministic across implementations. A score difference below the 1.49e-6 deviation can still round to different 4dp values when it straddles a boundary, and reciprocal rank fusion then amplifies the resulting single dense-rank flip.",
+  "scope": "Applies to reproducibility levels 2 and 3 only. Level 1, committed outputs, is exact and unaffected.",
+  "what_was_measured": "Cross-path disagreement between two BLAS code paths on one machine: the per-query matvec the shipped retriever uses, and a batched corpus-by-corpus matrix product, comparing the fused top-10 each produces. A proxy for cross-implementation variation, used because it is the strongest such difference we can produce locally. It is NOT a cross-platform or cross-hardware measurement and must not be read as one.",
+  "direct_measurement": {
+   "over_queries": "1294 known-item + 212 action = 1506",
+   "unquantised": {
+    "total": 63,
+    "known_item_membership": 16,
+    "known_item_ordering": 45,
+    "action_ordering": 2
+   },
+   "quantised": {
+    "total": 1,
+    "membership_changes": 0,
+    "ordering_only": 1
+   },
+   "reduction": "quantisation reduces cross-path top-10 disagreement from 63 to 1, zero membership changes across all 1506 queries, so the model receives the identical set of chunks on both paths and one query differs only in order"
+  },
+  "residual_case": "The single quantised case is nist_playbook:sub_GOVERN_6.2.suggested_actions. A distinct-vector chunk, sub_GOVERN_1.7.suggested_actions, scores 0.76354951 on matvec and 0.76355004 on matmul, straddling the 0.76355 rounding boundary, so it rounds to 0.7635 on one path and 0.7636 on the other. That flips its dense rank past act_GV-6.2-003, moving act_GV-6.2-003 from dense rank 8 to 9, changing its RRF contribution by 1/68 - 1/69 = 2.13e-4 and reordering it with sub_GOVERN_6.2.about in the top-10. The residual mechanism behaving exactly as predicted.",
+  "two_mechanisms": {
+   "identical_vector_ties_under_matmul": "The dominant unquantised instability is identical-vector clusters, verbatim and normalise duplicates of which this corpus has many. Matvec gives two identical vectors exactly equal scores, resolved by the chunk-id tie-break, but a batched matrix product reduces identical rows in different tile orders and assigns them scores differing by ~1e-7, breaking the tie nondeterministically. Quantisation rounds that away.",
+   "rrf_rank_amplification": "RRF sums over ranks, not scores. A ~1e-7 score difference that flips two adjacent dense ranks near position 10 changes the RRF contribution by roughly 1/70 - 1/71 = 2e-4, three orders of magnitude larger than the score difference that caused it, so a tiny score change produces a discrete, non-small fused change. This is why 'within 2x the deviation of a boundary' was the wrong question, why the superseded enumeration under-counted, and why quantisation is effective: it prevents the rank flip at its source by collapsing near-ties into exact ties resolved by chunk id, rather than damping a score difference."
+  },
+  "superseded_enumeration": {
+   "value": "An earlier enumeration over near-boundary chunks in the dense top-105 reported a worst-case of 17 affected known-item queries.",
+   "why_wrong": "It excluded identical-vector pairs as deterministic, true for matvec but false for matmul, and it framed the risk as a score being near a boundary when the real risk is a single dense-rank flip amplified by RRF. It under-counted the unquantised case at 4 against a direct 63, so it is not a reliable bound. Superseded by the direct measurement above, recorded not deleted so the correction is visible. See defect 6."
+  },
+  "precision_unchanged": "This does not reopen the 4dp precision. It was derived correctly from the 1.49e-6 deviation, and coarser rounding trades this residual for the 369-top-10 reshuffle already measured. The precision stands."
+ },
+ "known_item_fixture": {
+  "path": "data/retrieval/known_item_fixture.json",
+  "what_it_proves": "an end-to-end check of the lexical path (text goes through normalisation, tokenisation, index-side expansion, and scoring before it matches) and an ordering check of the dense path. The dense half of known item is close to vacuous as a retrieval check because the query is each chunk's own embedding, cosine 1.0 by construction; the order assertion already proves vectors are stored against the right chunk ids. It is NOT a test of retrieval quality, which is untested until real queries exist.",
+  "categories": {
+   "self": 1150,
+   "raw_verbatim_twin": 36,
+   "normalised_twin": 32,
+   "near_duplicate": 76
+  },
+  "acceptance": "exact equality against the committed expected rank-1 for all 1294 rows; the only categorical assertion is that no row is a dissimilar rank-1",
+  "note": "the 1150 self count equals the frozen unit count of 1150 by coincidence, 1294 minus 36 minus 32 minus 76, not by any relationship"
+ },
+ "verbatim_groups": {
+  "path": "data/retrieval/verbatim_groups.json",
+  "normalised_identity": {
+   "groups": 55,
+   "chunks": 125
+  },
+  "raw_identity": {
+   "groups": 23,
+   "chunks": 61
+  },
+  "note": "a mechanically derived corpus-property artifact over all 1294 chunks. Supersedes nothing; the AI 100-1 duplication map, which carries subcategory-statement semantics this does not, stays."
+ },
+ "near_duplicate_exceptions": {
+  "path": "data/retrieval/near_duplicate_exceptions.json",
+  "cross_document_statement_class": {
+   "count": 64,
+   "predicate": "same subcategory identifier, different source document",
+   "residue_failing_predicate": 0,
+   "predicate_tested_over": "the full 96 (64 near plus 32 normalised_twin), residue 0"
+  },
+  "block_near_duplicates_hand_audited": 12,
+  "handling": "near-verbatim duplication exists in this corpus and is handled by individual verification at pre-registration, not by an automated map, because an automated map would need a similarity threshold, which was rejected"
+ },
+ "dev_pool": {
+  "path": "eval/dev_unit_pool.json",
+  "units": 40,
+  "strata": 22,
+  "rule": "one unit per (document, unit_type) stratum so a break in any structural type surfaces, remainder to 40 by largest-remainder proportional to stratum size, evenly spaced within a stratum by sorted unit_id with the offset rotated by stratum index so co-sized playbook block strata do not concentrate on one subcategory. Deterministic.",
+  "firewall": "committed before any development query is written; the test-set builder asserts no pre-registered gold unit is drawn from this pool. Because retrieval parameters are locked untuned, the development set's job is catching structural breakage."
+ },
+ "action_subcategory_recall_diagnostic": {
+  "what": "for each of the 212 action-to-subcategory edges, mechanically derived from printed identifiers, query with the action text and check whether the parent subcategory statement appears in the top 10. A genuine test of the embedding space, unlike the vacuous dense half of known item. Diagnostic only, never a tuning input, never a pass or fail gate.",
+  "recall_at_10": {
+   "dense": 0.033,
+   "bm25": 0.033,
+   "fused": 0.047
+  },
+  "random_baseline_recall_at_10": 0.0077,
+  "median_parent_dense_rank": 184,
+  "random_median_parent_rank": 647,
+  "reading": "a working space on a hard task, not a broken one. Parent at median rank 184 against a random 647. BM25, which contains no embeddings, fails at the identical 3.3%, which proves this is not an embedding defect but a semantic-gap property: action-to-parent is a structural relation and the space groups by register and surface. This is the repo's retrieval-completeness failure surface, measured on judgment-free ground truth.",
+  "gold_design": "include hierarchical action-to-parent queries deliberately, bounded, pre-registered as an expected-hard stratum with the expectation that first-pass retrieval misses them recorded before any run. The proportion is decided at pre-registration with reasoning recorded, because loading the query set with cases only corrective re-retrieval can fix would manufacture the delta."
+ },
+ "tie_break_boundary_footnote": {
+  "concern": "chunk ids sort act_ before anx_, art_, rct_, sec_, sub_, so a tie between an action row and a subcategory statement resolves for the action, and quantisation manufactures ties by design",
+  "measured": "rank-10/11 fused ties, where top-10 membership is decided by the chunk-id tie-break rather than a score difference: 11 of 1294 known-item queries and 0 of 212 action queries. The action-vs-subcategory case that motivated the concern came back empty: zero of the 212 action-query boundaries were tie-decided. The 11 known-item winners by id prefix are art 8, sub 2, act 1, not an action-dominated pattern.",
+  "ruling": "recorded as a footnote, not a rule change; the tie-break is auditable and reproducible, which is what it is for"
+ },
+ "licensing": {
+  "model": "bge-base-en-v1.5 is MIT, attested by license: mit in the README.md frontmatter at revision a5beb1e3e68b9ab74eb54cfd186867f64f240e1a, vendored as served and checksummed. No standalone LICENSE file exists at that revision. The absence was checked against the repository file listing, not assumed.",
+  "repository_code": "Apache-2.0",
+  "pattern": "model and corpus artifacts carry their own licenses separately from the repository code license, recorded in corpus/SOURCES.md",
+  "vendor_verifier_count": 24
+ },
+ "scoring_path": {
+  "shipped": "per query: dense_scores computes corpus_embeddings @ query_vector, a matrix-vector product, not a batched corpus-by-corpus matrix product",
+  "fixtures_generated_under": "the per-query path",
+  "why_recorded": "Post-quantisation the per-query and batched-matmul paths agree to within the single ordering-only residual case above, so the choice is recorded rather than load-bearing. A test asserts the shipped path is per-query, so a future performance refactor to a batched matmul is a deliberate decision, not a silent change to the determinism properties."
+ },
+ "corpus_duplicate_properties": {
+  "note": "Properties of a duplicate-heavy corpus, all deterministic under quantisation plus the chunk-id tie-break.",
+  "distinct_vectors_bitwise_equal_scores": "12 adjacent pairs in the dense top-106 are distinct vectors producing bitwise-identical matvec scores; deterministic by chunk id.",
+  "genuine_near_tie_pairs": "604 adjacent pairs in the dense top-106 have distinct scores within 2x the 1.49e-6 deviation; near-ties, deterministic once quantised.",
+  "rank_100_to_106_gap": "Minimum positive dense-score gap between rank 100 and rank 106 over 1506 queries is 8.9e-5, far above 2x the deviation; the only sub-threshold gaps are exact zeros from identical-vector clusters. A corpus property, not support for the residual reading."
+ }
 }
