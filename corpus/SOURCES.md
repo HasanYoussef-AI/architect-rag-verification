@@ -456,17 +456,26 @@ is offline, deterministic, and pinned by checksum. See `src/ingest/tokenization.
 - Model identifier: `BAAI/bge-base-en-v1.5`
 - Publisher: Beijing Academy of Artificial Intelligence (BAAI), FlagEmbedding project
 - Source URL: https://huggingface.co/BAAI/bge-base-en-v1.5
-- Files retrieved from `https://huggingface.co/BAAI/bge-base-en-v1.5/resolve/main/`
-- Retrieved: 2026-07-22
-- License: **MIT**. Declared as `license: mit` in the model card metadata, and
-  stated in the model card's own License section: "FlagEmbedding is licensed
-  under the MIT License. The released models can be used for commercial purposes
-  free of charge." The upstream project repository carries the same MIT license.
-  - Model card: https://huggingface.co/BAAI/bge-base-en-v1.5
-  - License text: https://github.com/FlagOpen/FlagEmbedding/blob/master/LICENSE
+- Tokenizer and configuration files (`tokenizer.json`, `tokenizer_config.json`,
+  `special_tokens_map.json`, `config.json`) retrieved 2026-07-22 from the `main`
+  ref. `README.md` and `1_Pooling/config.json` retrieved 2026-07-24 from revision
+  `a5beb1e3e68b9ab74eb54cfd186867f64f240e1a`, the revision whose `onnx/model.onnx`
+  generated the committed embeddings, see the retrieval manifest. All are pinned by
+  the checksums below; reproduction uses the committed bytes, not a live fetch.
+- License: **MIT**, attested by `license: mit` in the `README.md` frontmatter at
+  revision `a5beb1e3e68b9ab74eb54cfd186867f64f240e1a`, vendored as served and
+  checksummed below. No standalone LICENSE file exists at that revision; the
+  absence was checked against the repository file listing at that revision, not
+  assumed. The README's own License section points at the FlagEmbedding project's
+  MIT license as corroboration; nothing is vendored from that separate repository,
+  because a license file there at its own revision is not the license at the
+  revision we ran. The vendored tokenizer files carry their license from this same
+  README at this same revision, being files of the same model repository.
+- Pooling: `1_Pooling/config.json` is vendored (as `1_Pooling.config.json`, one
+  path level to fit the vendor verifier) so the CLS-pooling choice is verifiable at
+  the revision: `pooling_mode_cls_token: true`, all other pooling modes false.
 - Redistribution: permitted. MIT allows redistribution with the license and
-  copyright notice preserved. No non-commercial or research-only restriction
-  appears in the model card or the upstream repository.
+  copyright notice preserved, and that notice travels in the vendored `README.md`.
 
 | File | Bytes | SHA-256 |
 | --- | --- | --- |
@@ -474,9 +483,11 @@ is offline, deterministic, and pinned by checksum. See `src/ingest/tokenization.
 | `vendor/bge-base-en-v1.5/tokenizer_config.json` | 366 | `9261e7d79b44c8195c1cada2b453e55b00aeb81e907a6664974b4d7776172ab3` |
 | `vendor/bge-base-en-v1.5/special_tokens_map.json` | 125 | `b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3` |
 | `vendor/bge-base-en-v1.5/config.json` | 777 | `bc00af31a4a31b74040d73370aa83b62da34c90b75eb77bfa7db039d90abd591` |
+| `vendor/bge-base-en-v1.5/README.md` | 94,551 | `fd29e6117a8c2bc83f8eafb73f261d35341702dcd95c9cc0b34f5be75afa8231` |
+| `vendor/bge-base-en-v1.5/1_Pooling.config.json` | 190 | `c9bef85e8bbf4b2eab4941b3fb62bd33f88686748b478f2e264d256472d9643b` |
 
-Only tokenizer and configuration files are vendored. No model weights are
-committed. `config.json` is included because it records
+Tokenizer, configuration, the model card, and the pooling config are vendored. No
+model weights are committed. `config.json` is included because it records
 `max_position_embeddings: 512`, which is the evidence that the 512-token chunk
 cap is the encoder's real ceiling rather than a number we chose.
 

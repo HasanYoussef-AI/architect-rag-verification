@@ -8,12 +8,27 @@ dependencies = [
     "pdfplumber>=0.11.10",
     "pypdfium2>=5.12.1",
     "tokenizers>=0.23.1",
+    "numpy>=2.1",
 ]
 
 [dependency-groups]
 dev = [
     "pytest",
     "ruff",
+    # Independent BM25 reference implementation, used only to cross-check our own
+    # BM25 in tests. Never imported in the runtime retrieval path.
+    "rank-bm25>=0.2.2",
+]
+# Build-only. Used once to generate the committed embeddings from the pinned model
+# revision. Not installed for normal dev or test runs, since retrieval reads the
+# committed embeddings rather than the model. Install with: uv sync --group embed
+embed = [
+    # Pinned exactly: the committed embeddings were generated with this build, and
+    # onnxruntime's reduction order is version-sensitive, so reproducing the exact
+    # vectors requires it. Recorded in the retrieval manifest.
+    "onnxruntime==1.27.0",
+    "onnx>=1.17",
+    "huggingface-hub>=0.25",
 ]
 
 [tool.uv]
