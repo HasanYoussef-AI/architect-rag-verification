@@ -60,6 +60,24 @@ def test_every_structural_join_edge_resolves(corpus):
                 assert join["unit_id"] in all_units, f"{doc} join to missing {join['unit_id']}"
 
 
+def test_structural_join_is_symmetric(corpus):
+    """Ground truth must not depend on traversal direction.
+
+    If A joins to B on a shared subcategory identifier, B must join back to A.
+    Asserted generally over the whole graph, not against specific counts, so it
+    still holds if the corpus changes.
+    """
+    _, relations, _ = corpus
+    edges = {
+        (record["unit_id"], join["unit_id"])
+        for records in relations.values()
+        for record in records
+        for join in record.get("structural_join", [])
+    }
+    missing = [(a, b) for (a, b) in edges if (b, a) not in edges]
+    assert missing == [], f"asymmetric structural_join edges with no reverse: {missing[:5]}"
+
+
 def test_every_duplication_target_resolves(corpus):
     units, _, duplication = corpus
     all_units = set().union(*units.values())

@@ -90,13 +90,17 @@ def test_chunk_ids_unique_and_no_chunk_over_cap(ingested):
     assert [c["chunk_id"] for c in chunks if c["token_count"] > MAX_TOKENS] == []
 
 
-def test_structural_join_targets_ai_100_1(ingested):
+def test_structural_join_is_symmetric_to_both_documents(ingested):
+    """Symmetric: 72 edges to AI 100-1 (all 72 subcategories) and 49 to AI 600-1."""
     manifest, _, relations, _, _ = ingested
-    assert manifest["relations"]["structural_join_edges"] == 72
+    decomposition = Counter(
+        join["doc_id"] for r in relations for join in r.get("structural_join", [])
+    )
+    assert manifest["relations"]["structural_join_edges"] == 121
+    assert decomposition == {"nist_ai_100_1": 72, "nist_ai_600_1": 49}
     for record in relations:
         for join in record.get("structural_join", []):
-            assert join["doc_id"] == "nist_ai_100_1"
-            assert join["unit_id"].startswith("nist_ai_100_1:sub_")
+            assert join["unit_id"].startswith(f"{join['doc_id']}:sub_")
 
 
 def test_the_one_prose_reference_is_external_iso(ingested):

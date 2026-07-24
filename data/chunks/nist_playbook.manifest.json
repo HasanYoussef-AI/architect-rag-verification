@@ -182,7 +182,7 @@
     "nist_playbook.extracted.txt": "d10ea88ddf4f195af858ce3cc855babe2b43c574767a5e9201193c0ebcf214a8",
     "nist_playbook.normalized.txt": "cf87a2c726762fdc6f654118ea5e69afc5fe399af0abb24b8d2661c2b7f5a95a",
     "nist_playbook.prose_xref_audit.jsonl": "283a34c83c76a17b0543e05c88389e1ab9117b7df3cb69fced6d8156c546fb92",
-    "nist_playbook.relations.jsonl": "a7a70fda2ec209b4a4ed50b4574104fff1aba15fd718cf1b6a810cc7965f828e"
+    "nist_playbook.relations.jsonl": "3ef95a17ef6048296903cc91c21cacb6bfb0c7c29736b1e157981740aff55c3b"
   },
   "partition_proof": {
     "assigned_to_units_chars": 311631,
@@ -213,8 +213,8 @@
       "external": 1
     },
     "prose_xrefs_classes": "three classes. internal resolves within this document, cross_document resolves to a unit in another corpus document with its real unit id, external points outside the corpus and emits no edge. Every reference audited in full",
-    "structural_join": "same printed subcategory identifier in AI 100-1, all 72 resolve",
-    "structural_join_edges": 72
+    "structural_join": "same printed subcategory identifier in another corpus document, derived by the identical match AI 100-1 uses, so the relation is symmetric: 72 edges to AI 100-1 and 49 to AI 600-1, the 49 subcategories that document covers",
+    "structural_join_edges": 121
   },
   "schema_version": "1.0",
   "source": {

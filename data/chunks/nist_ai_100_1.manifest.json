@@ -107,24 +107,24 @@
     "occurrences_resolved": 231
   },
   "outputs": {
-    "nist_ai_100_1.chunks.jsonl": "f23cc153f734189d4ebdcf9c2e5620ce645517da8c569b5752f6d3cef6bb7951",
+    "nist_ai_100_1.chunks.jsonl": "139a48c6fe6418f99e05e5ab765d2238f84859f17b6c05a760d941b15488e67e",
     "nist_ai_100_1.duplication_map.json": "39b85f3e24796ecde51ef0386cb9cdbfcddeb6552f010a1d86005c3930ea88c9",
     "nist_ai_100_1.extracted.txt": "b43f15b5de5fcd37f0c7068f554825c9c8f4bc8820aac3e330b02135a855e3f5",
-    "nist_ai_100_1.normalized.txt": "41974e26fa99929c20741cd3164f544c67bd5be4ce5f4701c1d6d6c1a67914f5",
-    "nist_ai_100_1.relations.jsonl": "645579e69e7c44c15d0c8e04c8095973d72e396d461e37b1ecd6cbc646225270"
+    "nist_ai_100_1.normalized.txt": "b68632ab8b55290d422f397f6c8a3bb24574e3bc61b5e6f3305d13f337ebf74d",
+    "nist_ai_100_1.relations.jsonl": "c827d56911378ad04fea061354638bcfa28b8720931d7f43e7bbf8ccfff14225"
   },
   "partition_proof": {
-    "assigned_to_units_chars": 97843,
+    "assigned_to_units_chars": 97818,
     "complete": true,
-    "content_chars": 97843,
+    "content_chars": 97818,
     "discarded_chars_by_class": {
       "front_matter": 4771,
       "page_footer": 285,
-      "running_header": 984,
+      "running_header": 1009,
       "table_continuation": 932
     },
-    "discarded_chars_total": 6972,
-    "discarded_fraction_of_lines": 0.0665,
+    "discarded_chars_total": 6997,
+    "discarded_fraction_of_lines": 0.0668,
     "line_chars": 104815,
     "lines_assigned_more_than_once": 0,
     "raw_chars": 107702,
@@ -142,6 +142,7 @@
   "relations": {
     "kept_separate": "structural_join and prose_xrefs are never merged into one field",
     "prose_xrefs": "regex over running text, every emitted reference audited in full rather than sampled, unresolvable targets dropped with a reason",
+    "prose_xrefs_classification": "carried in the three-class field shape used by AI 600-1 and the Playbook, but every AI 100-1 reference is INTERNAL BY CONSTRUCTION and the class is set directly, not derived by the three-class classifier. That classifier is NOT APPLICABLE to this document: it detects an external instrument by name, and AI 100-1 is itself the AI RMF, so its own running header 'AI RMF 1.0' reads as a citation of another document and yields a false cross_document. A future session must not wire the classifier in here for the same reason.",
     "prose_xrefs_dropped": 32,
     "prose_xrefs_emitted": 6,
     "structural_join": "same printed subcategory identifier present in another document. Exact, derived from the identifier, no regex precision risk",
@@ -176,7 +177,7 @@
   },
   "token_distribution": {
     "max": 512,
-    "mean": 138.3,
+    "mean": 138.2,
     "median": 39,
     "min": 8,
     "over_cap": 0

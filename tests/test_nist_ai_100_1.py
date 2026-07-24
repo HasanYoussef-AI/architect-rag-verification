@@ -140,6 +140,33 @@ def test_a_known_split_word_is_rejoined(ingested):
     assert f"inte{SOFT_HYPHEN_BREAK}grated" not in text
 
 
+def test_no_chunk_contains_the_running_header_boilerplate(ingested):
+    """The running header must never survive into content, in any position.
+
+    PDFium once prepends it to a figure caption in sec_2. It is stripped
+    positionally into the running_header discard class. This assertion is
+    generalised beyond that one instance, so any further embedded occurrence fails
+    loudly rather than surviving into a chunk.
+    """
+    from src.ingest.nist_ai_100_1 import RUNNING_HEADER
+
+    _, chunks, _, _, _ = ingested
+    offenders = [c["chunk_id"] for c in chunks if RUNNING_HEADER in c["text"]]
+    assert offenders == [], f"running header text found in chunks: {offenders}"
+
+
+def test_prose_references_are_all_internal_in_three_class_shape(ingested):
+    """AI 100-1's references are internal by construction, carried in the shared shape."""
+    _, _, relations, _, _ = ingested
+    entries = [
+        e
+        for r in relations
+        for e in (r.get("prose_xrefs", []) + r.get("prose_xrefs_dropped", []))
+    ]
+    assert entries
+    assert all(e["classification"] == "internal" for e in entries)
+
+
 # The class of defect the hyphen resolver exists to prevent: a real compound
 # hyphen deleted at a line break, welding two words into one. Pinned both
 # directions, so reintroducing the delete-the-hyphen rule fails these tests.

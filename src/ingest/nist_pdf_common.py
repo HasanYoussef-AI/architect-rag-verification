@@ -21,7 +21,7 @@ from pathlib import Path
 
 from src.ingest.hyphenation import resolve
 from src.ingest.normalize import normalize_block
-from src.ingest.pdf_extract import PAGE_SEPARATOR
+from src.ingest.pdf_extract import PAGE_SEPARATOR, extract_pages
 from src.ingest.tokenization import MAX_TOKENS, count_tokens
 
 BLOCK_SEPARATOR = "\n"
@@ -125,6 +125,17 @@ def partition_proof(raw: str, pages: list[str], lines: list[Line], units: list[U
         "structural_whitespace_total": ws_total,
         "complete": True,
     }
+
+
+def resolved_document_text(abs_path, doc_id: str) -> str:
+    """Whole-document text with U+FFFE resolved, for cross-document identifier match.
+
+    Used to derive structural_join edges by the same printed-identifier search
+    another document uses, so the relation is symmetric and derived by one rule
+    rather than special-cased per document.
+    """
+    resolved, _ = resolve("\n".join(extract_pages(abs_path)), doc_id)
+    return resolved
 
 
 def resolve_unit_blocks(unit: Unit, doc_id: str) -> tuple[list[str], list]:

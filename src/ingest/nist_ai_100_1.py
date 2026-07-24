@@ -89,6 +89,7 @@ class Line:
     end: int
     kind: str = "content"  # or a discard class name
     tail: str = ""  # boilerplate stripped from the end of a content line
+    head: str = ""  # boilerplate stripped from the start of a content line
 
 
 @dataclass
@@ -123,6 +124,13 @@ def build_lines(pages: list[str]) -> tuple[str, list[Line]]:
 # accounted to the page_footer discard class.
 _FOOTER_TAIL = re.compile(r"\s*Page\s+\d+\s*$")
 
+# The running header is normally its own line and discarded by classify_lines,
+# but once in this document PDFium prepends it to a figure-caption content line,
+# "NIST AI 100-1 AI RMF 1.0 Fig. 3. AI actors ...". Line-level discard cannot
+# catch that, so the header prefix is stripped positionally, mirroring the footer
+# tail-strip, and its characters are accounted to the running_header discard class.
+_HEADER_PREFIX = re.compile(rf"^{re.escape(RUNNING_HEADER)}\s+")
+
 
 def strip_footer_tails(lines: list[Line]) -> None:
     for line in lines:
@@ -132,6 +140,16 @@ def strip_footer_tails(lines: list[Line]) -> None:
         if match:
             line.tail = line.text[match.start():]
             line.text = line.text[: match.start()]
+
+
+def strip_header_prefixes(lines: list[Line]) -> None:
+    for line in lines:
+        if line.kind != "content":
+            continue
+        match = _HEADER_PREFIX.match(line.text)
+        if match:
+            line.head = line.text[: match.end()]
+            line.text = line.text[match.end():]
 
 
 def classify_lines(lines: list[Line]) -> None:
@@ -438,6 +456,14 @@ def build_relations(units, unit_ids: set[str]) -> list[dict]:
         resolved_body, _ = resolve(BLOCK_SEPARATOR.join(line.text for line in unit.lines), DOC_ID)
         body = normalize_block(resolved_body)
         refs, dropped = [], []
+        # Three-class field shape, aligned with AI 600-1 and the Playbook, but the
+        # class is set to internal DIRECTLY, not derived by the classifier. Every
+        # AI 100-1 prose reference is internal by construction: it cites this
+        # document's own Sections, Appendices, Tables and Figures. The three-class
+        # classifier is not applicable here, because it detects an external
+        # instrument by name and AI 100-1 is itself the AI RMF, so its own running
+        # header 'AI RMF 1.0' would read as a citation of another document. See the
+        # prose_xrefs_classification note in the manifest.
         for match in _PROSE_REF.finditer(body):
             kind, ident = match.group("kind"), match.group("id")
             if kind == "Appendix":
@@ -448,22 +474,31 @@ def build_relations(units, unit_ids: set[str]) -> list[dict]:
                 mapped = _TABLE_TO_SECTION.get(ident)
                 target = f"{DOC_ID}:{mapped}" if mapped else None
             sentence = re.sub(r"\s+", " ", body[max(0, match.start() - 70) : match.end() + 60])
+            entry = {
+                "surface": match.group(0),
+                "kind": kind,
+                "classification": "internal",
+                "detail": "",
+                "sentence": sentence,
+            }
             if target and target in unit_ids and target != unit_id:
-                refs.append({"target": target, "surface": match.group(0), "sentence": sentence})
+                entry["target"] = target
+                refs.append(entry)
             else:
                 if target == unit_id:
-                    reason = "self-reference, the unit citing its own identifier"
+                    entry["reason"] = "self-reference, the unit citing its own identifier"
                 elif target is None:
-                    reason = "no mapping from this printed identifier to a unit"
+                    entry["reason"] = "no mapping from this printed identifier to a unit"
                 else:
-                    reason = "target is not a chunked unit in this document"
-                dropped.append(
-                    {"surface": match.group(0), "reason": reason, "sentence": sentence}
-                )
+                    entry["reason"] = "target is not a chunked unit in this document"
+                dropped.append(entry)
         for match in _UNRESOLVABLE.finditer(body):
             dropped.append(
                 {
                     "surface": match.group(0),
+                    "kind": match.group("kind"),
+                    "classification": "internal",
+                    "detail": "",
                     "reason": "figures are not chunked units, no resolvable target",
                     "sentence": re.sub(
                         r"\s+", " ", body[max(0, match.start() - 60) : match.end() + 50]
@@ -513,6 +548,7 @@ def build(verify: bool = True) -> dict:
 
     classify_lines(lines)
     strip_footer_tails(lines)
+    strip_header_prefixes(lines)
     toc = parse_toc(pages)
     if not toc:
         raise IngestError("no Table of Contents entries parsed, cannot validate structure")
@@ -529,12 +565,15 @@ def build(verify: bool = True) -> dict:
     for line in lines:
         if line.kind != "content":
             discard_chars[line.kind] += len(line.text)
-        elif line.tail:
-            discard_chars["page_footer"] += len(line.tail)
+        else:
+            if line.tail:
+                discard_chars["page_footer"] += len(line.tail)
+            if line.head:
+                discard_chars["running_header"] += len(line.head)
     content_chars = sum(len(line.text) for line in content_lines)
-    # Include stripped footer tails: they are counted in the discard classes, so
-    # line_chars must be the pre-strip total for the accounting to balance.
-    line_chars = sum(len(line.text) + len(line.tail) for line in lines)
+    # Include stripped footer tails and header prefixes: they are counted in the
+    # discard classes, so line_chars must be the pre-strip total for the balance.
+    line_chars = sum(len(line.text) + len(line.tail) + len(line.head) for line in lines)
 
     # Account for every character between the raw extraction and the line
     # inventory, so the proof covers the full raw text rather than a derived
@@ -770,6 +809,15 @@ def build(verify: bool = True) -> dict:
             "prose_xrefs": (
                 "regex over running text, every emitted reference audited in full rather "
                 "than sampled, unresolvable targets dropped with a reason"
+            ),
+            "prose_xrefs_classification": (
+                "carried in the three-class field shape used by AI 600-1 and the Playbook, "
+                "but every AI 100-1 reference is INTERNAL BY CONSTRUCTION and the class is "
+                "set directly, not derived by the three-class classifier. That classifier is "
+                "NOT APPLICABLE to this document: it detects an external instrument by name, "
+                "and AI 100-1 is itself the AI RMF, so its own running header 'AI RMF 1.0' "
+                "reads as a citation of another document and yields a false cross_document. A "
+                "future session must not wire the classifier in here for the same reason."
             ),
             "kept_separate": "structural_join and prose_xrefs are never merged into one field",
             "structural_join_edges": sum(len(r["structural_join"]) for r in relations),

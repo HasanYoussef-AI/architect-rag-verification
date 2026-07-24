@@ -282,7 +282,7 @@ perspectives, disciplines, professions, and experiences. Diverse teams contribut
 open sharing of ideas and assumptions about the purposes and functions of technology –
 making these implicit aspects more explicit. This broader collective perspective creates
 opportunities for surfacing problems and identifying existing and emergent risks.
-NIST AI 100-1 AI RMF 1.0 Fig. 3. AI actors across AI lifecycle stages. See Appendix A for detailed descriptions of AI actor tasks, including details about testing, evaluation, verification, and validation tasks. Note that AI actors in the AI Model dimension (Figure 2) are separated as a best practice, with those building and using the models separated from those verifying and validating the models.
+Fig. 3. AI actors across AI lifecycle stages. See Appendix A for detailed descriptions of AI actor tasks, including details about testing, evaluation, verification, and validation tasks. Note that AI actors in the AI Model dimension (Figure 2) are separated as a best practice, with those building and using the models separated from those verifying and validating the models.
 
 3. AI Risks and Trustworthiness
 For AI systems to be trustworthy, they often need to be responsive to a multiplicity of criteria that are of value to interested parties. Approaches which enhance AI trustworthiness

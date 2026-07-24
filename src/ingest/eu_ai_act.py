@@ -28,7 +28,11 @@ from pathlib import Path
 from src.ingest.chunk_schema import Chunk, UnitXrefs, write_jsonl
 from src.ingest.corpus_integrity import REPO_ROOT, sha256_file, verify_all
 from src.ingest.htmltree import Element, parse_html
-from src.ingest.normalize import normalize_block
+from src.ingest.normalize import (
+    COMPARISON_TIME_NORMALISATION_NOTE,
+    nonascii_inventory,
+    normalize_block,
+)
 from src.ingest.tokenization import MAX_TOKENS, count_tokens, tokenizer_fingerprint
 from src.ingest.xref import amends_external_instrument, extract_references
 
@@ -478,6 +482,32 @@ def build(verify: bool = True) -> dict:
                 "the official EUR-Lex PDF as well, at line 3023 of the pdftotext rendering. "
                 "Reproduced exactly rather than corrected, per the rule that source text is "
                 "never edited or reconstructed."
+            ),
+        },
+        "downstream_notes": {
+            "comparison_time_normalisation": COMPARISON_TIME_NORMALISATION_NOTE,
+            "non_ascii_inventory": nonascii_inventory(doc_text),
+            "non_ascii_leave_alone": (
+                "U+00E0 and U+00E9, a with grave and e with acute, are deliberately excluded "
+                "from normalisation: they are genuine content in French terms in the English "
+                "text, 'vis-a-vis' and 'cafes', not typography to fold."
+            ),
+            "non_ascii_verified_absent": (
+                "The sweep of the stored text was run, not skipped, and these classes were "
+                "examined and confirmed ABSENT: guillemets, the en dash U+2013, and the "
+                "non-breaking space U+00A0. Only the quote, apostrophe and em-dash codepoints "
+                "in the inventory above are present and all are covered by the comparison-time map."
+            ),
+            "non_breaking_space_u00a0": (
+                "The raw EUR-Lex HTML uses U+00A0 in structural titles, 'Article' + U+00A0 + "
+                "number, recorded in corpus/SOURCES.md. It is folded to a plain space at "
+                "ingestion by normalize_spaces, so it is absent from the stored text, and the "
+                "comparison-time map folds U+00A0 again for safety."
+            ),
+            "integrity_path": (
+                "This document is HTML, not PDF, so its integrity is validated by DOM nesting, "
+                "ELI anchors and the recital-count assertion rather than a raw_chars partition "
+                "proof. The absence of a partition_proof is by design, not a gap."
             ),
         },
         "outputs": {

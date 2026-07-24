@@ -55,6 +55,7 @@ from src.ingest.nist_pdf_common import (
     pack,
     partition_proof,
     resolve_unit_blocks,
+    resolved_document_text,
     write_jsonl_dicts,
 )
 from src.ingest.normalize import COMPARISON_TIME_NORMALISATION_NOTE, nonascii_inventory
@@ -65,6 +66,13 @@ DOC_ID = "nist_playbook"
 DOC_TITLE = "NIST AI RMF Playbook"
 SOURCE_PATH = Path("corpus/nist_ai_rmf/raw/AI_RMF_Playbook.pdf")
 OUTPUT_DIR = REPO_ROOT / "data" / "chunks"
+
+# The other NIST documents a subcategory can join to, by the same printed
+# identifier match, so the structural_join is symmetric across the graph.
+_OTHER_DOCS = {
+    "nist_ai_100_1": Path("corpus/nist_ai_rmf/raw/NIST.AI.100-1.pdf"),
+    "nist_ai_600_1": Path("corpus/nist_ai_rmf/raw/NIST.AI.600-1.pdf"),
+}
 
 _FUNCTION_LINE = re.compile(r"^(GOVERN|MAP|MEASURE|MANAGE)$")
 _SUBCATEGORY_LINE = re.compile(r"^(GOVERN|MAP|MEASURE|MANAGE)\s+(\d+\.\d+)$")
@@ -234,6 +242,13 @@ def build(verify: bool = True) -> dict:
         if doc_text[chunk.char_start : chunk.char_end] != chunk.text:
             raise IngestError(f"exact-substring assertion failed for {chunk.chunk_id}")
 
+    # Resolve the other documents once, and derive structural_join to each by the
+    # same printed-identifier search AI 100-1 uses, so the relation is symmetric.
+    others = {
+        doc_id: resolved_document_text(REPO_ROOT / path, doc_id)
+        for doc_id, path in _OTHER_DOCS.items()
+    }
+
     relations = []
     audit: list[dict] = []
     for unit in units:
@@ -243,13 +258,15 @@ def build(verify: bool = True) -> dict:
         joins = []
         if unit.unit_type == "subcategory_statement":
             function, number = unit.label.split()
-            joins.append(
-                {
-                    "doc_id": "nist_ai_100_1",
-                    "unit_id": f"nist_ai_100_1:sub_{function}_{number}",
-                    "basis": "same printed subcategory identifier",
-                }
-            )
+            for doc_id, text in others.items():
+                if re.search(rf"\b{function}\s+{re.escape(number)}\b", text):
+                    joins.append(
+                        {
+                            "doc_id": doc_id,
+                            "unit_id": f"{doc_id}:sub_{function}_{number}",
+                            "basis": "same printed subcategory identifier",
+                        }
+                    )
 
         refs, dropped = [], []
         for match, kind, ident in find_prose_references(body):
@@ -341,7 +358,11 @@ def build(verify: bool = True) -> dict:
             "over_cap": sum(1 for t in tokens if t > MAX_TOKENS),
         },
         "relations": {
-            "structural_join": "same printed subcategory identifier in AI 100-1, all 72 resolve",
+            "structural_join": (
+                "same printed subcategory identifier in another corpus document, derived by "
+                "the identical match AI 100-1 uses, so the relation is symmetric: 72 edges to "
+                "AI 100-1 and 49 to AI 600-1, the 49 subcategories that document covers"
+            ),
             "prose_xrefs_classes": (
                 "three classes. internal resolves within this document, cross_document resolves "
                 "to a unit in another corpus document with its real unit id, external points "
