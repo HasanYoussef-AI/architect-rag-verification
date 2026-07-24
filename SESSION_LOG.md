@@ -4,6 +4,63 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from `rag_case_study_tracker.md` plus the
 last entry here alone. Newest entries at the top.
 
+## 2026-07-24, retrieval determinism residual corrected, defect 6, and a commit-trailer transition
+
+### Defect 6, residual measurement corrected
+
+The quantisation residual worst-case, recorded in an earlier manifest as 17 affected
+known-item queries, was measured by an enumeration over near-boundary chunks that
+excluded identical-vector pairs as deterministic. That holds for the per-query matvec the
+retriever ships, but not for a batched matrix product, which reduces identical rows in
+different tile orders and assigns them scores differing by ~1e-7, breaking their tie
+nondeterministically. Reciprocal rank fusion sums over ranks, not scores, so a single
+dense-rank flip near position 10 changes an RRF contribution by ~1/70 minus 1/71, about
+2e-4, three orders of magnitude larger than the score difference that caused it. The
+enumeration's framing, a score being near a boundary, was the wrong question, and it
+under-counted the unquantised case at 4 against a direct 63.
+
+Corrected to the direct measurement: cross-path top-10 disagreement between the shipped
+per-query matvec and a batched matmul, a local proxy for cross-implementation variation
+and explicitly not a cross-hardware measurement. Unquantised 63 of 1506 queries, quantised
+1 of 1506 with zero membership changes across all 1506; the model receives the identical
+chunk set on both paths and one query differs only in order. Quantisation reduces
+cross-path disagreement 63 to 1, the measured justification that it earns its place,
+stronger than the enumeration it replaces. The single residual case is audited in the
+manifest and behaves exactly as the mechanism predicts. The 4dp precision is unchanged.
+
+Same class as the U+FFFE hyphenation defect: our own residual measurement was wrong, our
+own follow-up counterfactual caught it, the correction strengthened the case for
+quantisation rather than weakening it, fixed forward with no rewrite, pinned in a test.
+The 17 is kept in the manifest as superseded with the reason it was wrong, per the repo
+pattern that corrections are visible rather than history looking clean.
+
+### Commit-trailer transition, recorded
+
+The 27 commits before this session's retrieval build carry no trailer. The 7
+retrieval-build commits, and every commit onward, carry a Claude-Session provenance
+trailer. The reason is the harness default: unlike the co-author byline, which
+`includeCoAuthoredBy` disables and which was removed repo-wide under the spent Rule 10
+override, the session trailer is not configurable through any setting, environment
+variable, or flag, confirmed against the settings schema. The decision was to fix forward
+rather than rewrite, consistent with Rule 10 being spent, so the seven are the start of a
+consistent convention.
+
+Commits, local only:
+- b1123e0 docs: correct retrieval determinism residual, defect 6
+- 9b29c46 test: pin cross-path fusion determinism, defect 6 regression
+
+Current state:
+- Local git on `main`, no remote, nothing pushed. Manifest residual corrected, defect 6
+  pinned in `tests/test_retrieval_determinism.py`. Two governance items are drafted for
+  Hasan to place, both in `rag_case_study_tracker.md`: the Section 4 defect 6 entry, and a
+  stale mechanical reference, the verifier check count moved from 28 (22 vendor) to 30 (24
+  vendor) when `README.md` and `1_Pooling.config.json` were vendored.
+
+Next step:
+- Development queries, twelve from the reserved pool, authored blind before any retrieval
+  run, no query revised for performing badly. Then the embedding-gap and arm-bias
+  diagnostics on this final pipeline, with query embeddings committed alongside.
+
 ## 2026-07-24, retrieval build: normalised embeddings, dense quantisation, fixture and artifacts, manifest
 
 The hybrid retriever is built and committed across six scoped commits, all local
