@@ -4,6 +4,57 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from `rag_case_study_tracker.md` plus the
 last entry here alone. Newest entries at the top.
 
+## 2026-07-24, retrieval scope closed: development queries, full-population diagnostics, GV-4.3-001
+
+Development queries authored and run under a two-commit blindness protocol, both
+diagnostics extended to the full population, and one documented extraction property
+verified against the shipped retriever. This closes the retrieval scope.
+
+Development queries. Twelve authored blind from unit text, committed with their
+embeddings before any retrieval ran (7f75f78), results committed after (29bad20), so the
+freeze is provable from git. 10 of 11 gold queries hit; the one miss, near-miss dev_11,
+is kept as a finding: querying GOVERN 6.1's AI Transparency Resources returned
+near-duplicate resource blocks from other subcategories, the discrimination failure it
+was written to probe. The out-of-corpus query returns unrelated chunks; abstention is the
+layer's job. Development results are guarded, in the README and the manifest, as never a
+quality metric; the only quality numbers come from the sealed pre-registered set under
+the deterministic grader.
+
+Blind-authoring claim narrowed. The commit ordering proves the queries were frozen before
+any result existed, not that retrieval was never run during drafting. The README now says
+the first and not the second.
+
+Diagnostics at scale. Extended from 12 to the full 1506 population, recorded distinct.
+Embedding gap: 127 of 1506 queries have a rank 10 to 11 boundary gap below the 1e-4 grain,
+which corrects the thin-sample claim that the boundary stays above it. Those boundaries
+merge into ties resolved deterministically by chunk id, so reproducible across
+implementations, but decided by chunk id rather than a score margin. Arm bias over 1506:
+BM25 113, dense 83, fused 94; the fused-longer-than-both seen on 12 queries does not hold
+at scale, recorded and left uncharacterised.
+
+GV-4.3-001 verified. The action id the PDF prints garbled as GV4.3--001, stored verbatim
+with only the derived key normalised. Against the shipped retriever the correct identifier
+GV-4.3-001 ranks the target at BM25 568, dense 12, fused 28, out of the top-10; the garbled
+surface and the action text rank it 1. The documented lexical-mismatch behaviour held. A
+one-off verification, not added to the query set.
+
+Commits, local only:
+- 7f75f78 feat: twelve blind-authored development queries and their embeddings
+- 29bad20 feat: development-query retrieval results and diagnostics
+- 26a3f8d docs: full-population diagnostics, dev-set guards, GV-4.3-001 verification
+
+Current state:
+- Local git on `main`, no remote, nothing pushed. Retrieval scope complete: retriever,
+  embeddings, fixture, artifacts, development pool, development queries and results,
+  manifest, and tests all committed. Two governance drafts remain for Hasan to place in
+  `rag_case_study_tracker.md`: the Section 4 defect 6 entry, and the Section 3 verifier
+  count 28 to 30.
+
+Next step:
+- Pre-registration: the sealed test query set and gold passages, committed and timestamped
+  before any generation run, immutable once results exist. Then the single paid generation
+  step, which requires the stated Console balance first.
+
 ## 2026-07-24, retrieval determinism residual corrected, defect 6, and a commit-trailer transition
 
 ### Defect 6, residual measurement corrected
