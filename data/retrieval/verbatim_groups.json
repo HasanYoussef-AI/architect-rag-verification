@@ -1,0 +1,611 @@
+{
+  "description": "Corpus-wide verbatim duplicate groups, mechanically derived by text identity over all 1294 chunks across all four documents. Records a property of the frozen corpus. Supersedes nothing; the AI 100-1 duplication map, which carries subcategory-statement semantics this does not, stays. No chunk id or text is altered.",
+  "bases": {
+    "normalised_identity": {
+      "criterion": "normalise_for_comparison(text) identical",
+      "note": "The corpus-property artifact. Folds curly quotes, en/em dashes, non-breaking space, and collapses whitespace before grouping.",
+      "n_groups": 55,
+      "n_chunks": 125,
+      "twin_resolutions_if_full_tie": 70,
+      "size_distribution": {
+        "2": 49,
+        "3": 4,
+        "4": 1,
+        "11": 1
+      },
+      "groups": [
+        {
+          "representative": "nist_ai_100_1:sub_GOVERN_1.1",
+          "members": [
+            "nist_ai_100_1:sub_GOVERN_1.1",
+            "nist_ai_600_1:sub_GOVERN_1.1"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_GOVERN_1.2",
+          "members": [
+            "nist_ai_100_1:sub_GOVERN_1.2",
+            "nist_ai_600_1:sub_GOVERN_1.2"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_GOVERN_1.3",
+          "members": [
+            "nist_ai_100_1:sub_GOVERN_1.3",
+            "nist_ai_600_1:sub_GOVERN_1.3"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_GOVERN_1.4",
+          "members": [
+            "nist_ai_100_1:sub_GOVERN_1.4",
+            "nist_ai_600_1:sub_GOVERN_1.4"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_GOVERN_1.6",
+          "members": [
+            "nist_ai_100_1:sub_GOVERN_1.6",
+            "nist_ai_600_1:sub_GOVERN_1.6"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_GOVERN_1.7",
+          "members": [
+            "nist_ai_100_1:sub_GOVERN_1.7",
+            "nist_ai_600_1:sub_GOVERN_1.7"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_GOVERN_2.1",
+          "members": [
+            "nist_ai_100_1:sub_GOVERN_2.1",
+            "nist_ai_600_1:sub_GOVERN_2.1"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_GOVERN_3.2",
+          "members": [
+            "nist_ai_100_1:sub_GOVERN_3.2",
+            "nist_ai_600_1:sub_GOVERN_3.2"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_GOVERN_4.2",
+          "members": [
+            "nist_ai_100_1:sub_GOVERN_4.2",
+            "nist_ai_600_1:sub_GOVERN_4.2"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_GOVERN_4.3",
+          "members": [
+            "nist_ai_100_1:sub_GOVERN_4.3",
+            "nist_ai_600_1:sub_GOVERN_4.3"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_GOVERN_5.1",
+          "members": [
+            "nist_ai_100_1:sub_GOVERN_5.1",
+            "nist_ai_600_1:sub_GOVERN_5.1"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_GOVERN_6.1",
+          "members": [
+            "nist_ai_100_1:sub_GOVERN_6.1",
+            "nist_ai_600_1:sub_GOVERN_6.1"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_GOVERN_6.2",
+          "members": [
+            "nist_ai_100_1:sub_GOVERN_6.2",
+            "nist_ai_600_1:sub_GOVERN_6.2"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MANAGE_1.3",
+          "members": [
+            "nist_ai_100_1:sub_MANAGE_1.3",
+            "nist_ai_600_1:sub_MANAGE_1.3"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MANAGE_2.2",
+          "members": [
+            "nist_ai_100_1:sub_MANAGE_2.2",
+            "nist_ai_600_1:sub_MANAGE_2.2"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MANAGE_2.3",
+          "members": [
+            "nist_ai_100_1:sub_MANAGE_2.3",
+            "nist_ai_600_1:sub_MANAGE_2.3"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MANAGE_2.4",
+          "members": [
+            "nist_ai_100_1:sub_MANAGE_2.4",
+            "nist_ai_600_1:sub_MANAGE_2.4"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MANAGE_3.1",
+          "members": [
+            "nist_ai_100_1:sub_MANAGE_3.1",
+            "nist_ai_600_1:sub_MANAGE_3.1"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MANAGE_3.2",
+          "members": [
+            "nist_ai_100_1:sub_MANAGE_3.2",
+            "nist_ai_600_1:sub_MANAGE_3.2"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MAP_2.1",
+          "members": [
+            "nist_ai_100_1:sub_MAP_2.1",
+            "nist_ai_600_1:sub_MAP_2.1"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MAP_3.4",
+          "members": [
+            "nist_ai_100_1:sub_MAP_3.4",
+            "nist_ai_600_1:sub_MAP_3.4"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MAP_5.1",
+          "members": [
+            "nist_ai_100_1:sub_MAP_5.1",
+            "nist_ai_600_1:sub_MAP_5.1"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MEASURE_1.1",
+          "members": [
+            "nist_ai_100_1:sub_MEASURE_1.1",
+            "nist_ai_600_1:sub_MEASURE_1.1"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MEASURE_2.10",
+          "members": [
+            "nist_ai_100_1:sub_MEASURE_2.10",
+            "nist_ai_600_1:sub_MEASURE_2.10"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MEASURE_2.11",
+          "members": [
+            "nist_ai_100_1:sub_MEASURE_2.11",
+            "nist_ai_600_1:sub_MEASURE_2.11"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MEASURE_2.12",
+          "members": [
+            "nist_ai_100_1:sub_MEASURE_2.12",
+            "nist_ai_600_1:sub_MEASURE_2.12"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MEASURE_2.13",
+          "members": [
+            "nist_ai_100_1:sub_MEASURE_2.13",
+            "nist_ai_600_1:sub_MEASURE_2.13"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MEASURE_2.2",
+          "members": [
+            "nist_ai_100_1:sub_MEASURE_2.2",
+            "nist_ai_600_1:sub_MEASURE_2.2"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MEASURE_2.3",
+          "members": [
+            "nist_ai_100_1:sub_MEASURE_2.3",
+            "nist_ai_600_1:sub_MEASURE_2.3"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MEASURE_2.6",
+          "members": [
+            "nist_ai_100_1:sub_MEASURE_2.6",
+            "nist_ai_600_1:sub_MEASURE_2.6"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MEASURE_2.7",
+          "members": [
+            "nist_ai_100_1:sub_MEASURE_2.7",
+            "nist_ai_600_1:sub_MEASURE_2.7"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MEASURE_2.8",
+          "members": [
+            "nist_ai_100_1:sub_MEASURE_2.8",
+            "nist_ai_600_1:sub_MEASURE_2.8"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MEASURE_2.9",
+          "members": [
+            "nist_ai_100_1:sub_MEASURE_2.9",
+            "nist_ai_600_1:sub_MEASURE_2.9"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MEASURE_3.2",
+          "members": [
+            "nist_ai_100_1:sub_MEASURE_3.2",
+            "nist_ai_600_1:sub_MEASURE_3.2"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MEASURE_3.3",
+          "members": [
+            "nist_ai_100_1:sub_MEASURE_3.3",
+            "nist_ai_600_1:sub_MEASURE_3.3"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_GOVERN_1.1.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_GOVERN_1.1.ai_transparency_resources",
+            "nist_playbook:sub_GOVERN_1.2.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_GOVERN_1.3.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_GOVERN_1.3.ai_transparency_resources",
+            "nist_playbook:sub_MAP_3.5.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_GOVERN_1.4.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_GOVERN_1.4.ai_transparency_resources",
+            "nist_playbook:sub_GOVERN_1.6.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_GOVERN_2.1.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_GOVERN_2.1.ai_transparency_resources",
+            "nist_playbook:sub_GOVERN_2.2.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_GOVERN_6.1.references",
+          "members": [
+            "nist_playbook:sub_GOVERN_6.1.references",
+            "nist_playbook:sub_GOVERN_6.2.references"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_GOVERN_6.2.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_GOVERN_6.2.ai_transparency_resources",
+            "nist_playbook:sub_MAP_1.2.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MANAGE_1.1.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MANAGE_1.1.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_3.1.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_4.1.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MANAGE_1.1.references",
+          "members": [
+            "nist_playbook:sub_MANAGE_1.1.references",
+            "nist_playbook:sub_MANAGE_1.2.references",
+            "nist_playbook:sub_MANAGE_1.3.references",
+            "nist_playbook:sub_MANAGE_1.4.references"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MANAGE_1.4.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MANAGE_1.4.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_1.1.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.12.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MANAGE_2.2.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MANAGE_2.2.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_1.2.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_1.3.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.13.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.4.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.6.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.7.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.8.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_3.2.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_4.2.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_4.3.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MANAGE_2.4.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MANAGE_2.4.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.5.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MANAGE_3.1.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MANAGE_3.1.ai_transparency_resources",
+            "nist_playbook:sub_MANAGE_3.2.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MAP_1.4.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MAP_1.4.ai_transparency_resources",
+            "nist_playbook:sub_MAP_4.1.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MAP_2.1.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MAP_2.1.ai_transparency_resources",
+            "nist_playbook:sub_MAP_2.2.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MAP_3.1.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MAP_3.1.ai_transparency_resources",
+            "nist_playbook:sub_MAP_3.2.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MAP_5.1.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MAP_5.1.ai_transparency_resources",
+            "nist_playbook:sub_MAP_5.2.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MEASURE_2.1.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MEASURE_2.1.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.9.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MEASURE_2.11.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MEASURE_2.11.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.2.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MEASURE_4.1.references#p1",
+          "members": [
+            "nist_playbook:sub_MEASURE_4.1.references#p1",
+            "nist_playbook:sub_MEASURE_4.2.references#p1",
+            "nist_playbook:sub_MEASURE_4.3.references#p1"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MEASURE_4.1.references#p2",
+          "members": [
+            "nist_playbook:sub_MEASURE_4.1.references#p2",
+            "nist_playbook:sub_MEASURE_4.2.references#p2",
+            "nist_playbook:sub_MEASURE_4.3.references#p2"
+          ]
+        }
+      ]
+    },
+    "raw_identity": {
+      "criterion": "byte-identical chunk text",
+      "note": "A subset of the normalised groups. This is the retrieval-tie-relevant basis: only byte-identical chunks tie on both arms once the dense arm also embeds normalised input.",
+      "n_groups": 23,
+      "n_chunks": 61,
+      "twin_resolutions_if_full_tie": 38,
+      "size_distribution": {
+        "2": 17,
+        "3": 4,
+        "4": 1,
+        "11": 1
+      },
+      "groups": [
+        {
+          "representative": "nist_ai_100_1:sub_MANAGE_3.2",
+          "members": [
+            "nist_ai_100_1:sub_MANAGE_3.2",
+            "nist_ai_600_1:sub_MANAGE_3.2"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MEASURE_2.13",
+          "members": [
+            "nist_ai_100_1:sub_MEASURE_2.13",
+            "nist_ai_600_1:sub_MEASURE_2.13"
+          ]
+        },
+        {
+          "representative": "nist_ai_100_1:sub_MEASURE_2.8",
+          "members": [
+            "nist_ai_100_1:sub_MEASURE_2.8",
+            "nist_ai_600_1:sub_MEASURE_2.8"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_GOVERN_1.1.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_GOVERN_1.1.ai_transparency_resources",
+            "nist_playbook:sub_GOVERN_1.2.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_GOVERN_1.3.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_GOVERN_1.3.ai_transparency_resources",
+            "nist_playbook:sub_MAP_3.5.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_GOVERN_1.4.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_GOVERN_1.4.ai_transparency_resources",
+            "nist_playbook:sub_GOVERN_1.6.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_GOVERN_2.1.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_GOVERN_2.1.ai_transparency_resources",
+            "nist_playbook:sub_GOVERN_2.2.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_GOVERN_6.1.references",
+          "members": [
+            "nist_playbook:sub_GOVERN_6.1.references",
+            "nist_playbook:sub_GOVERN_6.2.references"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_GOVERN_6.2.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_GOVERN_6.2.ai_transparency_resources",
+            "nist_playbook:sub_MAP_1.2.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MANAGE_1.1.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MANAGE_1.1.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_3.1.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_4.1.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MANAGE_1.1.references",
+          "members": [
+            "nist_playbook:sub_MANAGE_1.1.references",
+            "nist_playbook:sub_MANAGE_1.2.references",
+            "nist_playbook:sub_MANAGE_1.3.references",
+            "nist_playbook:sub_MANAGE_1.4.references"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MANAGE_1.4.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MANAGE_1.4.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_1.1.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.12.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MANAGE_2.2.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MANAGE_2.2.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_1.2.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_1.3.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.13.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.4.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.6.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.7.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.8.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_3.2.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_4.2.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_4.3.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MANAGE_2.4.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MANAGE_2.4.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.5.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MANAGE_3.1.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MANAGE_3.1.ai_transparency_resources",
+            "nist_playbook:sub_MANAGE_3.2.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MAP_1.4.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MAP_1.4.ai_transparency_resources",
+            "nist_playbook:sub_MAP_4.1.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MAP_2.1.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MAP_2.1.ai_transparency_resources",
+            "nist_playbook:sub_MAP_2.2.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MAP_3.1.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MAP_3.1.ai_transparency_resources",
+            "nist_playbook:sub_MAP_3.2.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MAP_5.1.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MAP_5.1.ai_transparency_resources",
+            "nist_playbook:sub_MAP_5.2.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MEASURE_2.1.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MEASURE_2.1.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.9.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MEASURE_2.11.ai_transparency_resources",
+          "members": [
+            "nist_playbook:sub_MEASURE_2.11.ai_transparency_resources",
+            "nist_playbook:sub_MEASURE_2.2.ai_transparency_resources"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MEASURE_4.1.references#p1",
+          "members": [
+            "nist_playbook:sub_MEASURE_4.1.references#p1",
+            "nist_playbook:sub_MEASURE_4.2.references#p1",
+            "nist_playbook:sub_MEASURE_4.3.references#p1"
+          ]
+        },
+        {
+          "representative": "nist_playbook:sub_MEASURE_4.1.references#p2",
+          "members": [
+            "nist_playbook:sub_MEASURE_4.1.references#p2",
+            "nist_playbook:sub_MEASURE_4.2.references#p2",
+            "nist_playbook:sub_MEASURE_4.3.references#p2"
+          ]
+        }
+      ]
+    }
+  }
+}
