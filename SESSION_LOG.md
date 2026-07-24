@@ -4,6 +4,117 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from `rag_case_study_tracker.md` plus the
 last entry here alone. Newest entries at the top.
 
+## 2026-07-24, CORPUS FREEZE, join symmetry, EU downstream_notes, AI 100-1 prose and header strip
+
+This is the corpus freeze. After this commit chunk IDs are cited by
+pre-registration and cannot move. Three corrections were made so the
+cross-document graph and the manifests are consistent, all verified to leave
+chunk IDs unchanged and globally unique at 1,294. A consolidated freeze-point
+verification preceded them and reconciled: 1,150 units, 1,294 chunks, all
+relations resolving on both endpoints, the verifier's 28 checks passing,
+exact-substring passing corpus-wide, and byte-identical reruns.
+
+### 1. structural_join made symmetric, and why it mattered
+
+The Playbook joined only to AI 100-1, not to AI 600-1, so a relation over shared
+subcategory identifiers was DIRECTION-DEPENDENT: traversal from AI 600-1 reached
+the Playbook counterpart of a subcategory but traversal from the Playbook did not
+reach the AI 600-1 one. Ground truth whose content depends on which document you
+start from is not a property of the corpus, which is the whole reason the join
+spine exists. This was a scoping choice I made silently to avoid a cross-document
+dependency, and it should have come as a governance question at the time, because
+it changed what the relation CONTAINS rather than merely how it is computed. The
+standing rule going forward: a scoping choice that changes what a relation
+contains is raised, not noted locally.
+
+The fix is the same mechanical rule applied consistently. The Playbook now derives
+joins to both other documents by the identical printed-identifier search AI 100-1
+uses (resolved_document_text in nist_pdf_common). Graph is symmetric: AI 100-1 and
+Playbook 72/72, AI 100-1 and AI 600-1 49/49, AI 600-1 and Playbook 49/49. Only the
+Playbook moved, 72 to 121; AI 100-1 stayed 121 and AI 600-1 stayed 98, nothing
+else moved. test_forward_references asserts every edge has its reverse, generally
+rather than by count, so it holds if the corpus changes.
+
+### 2. EU AI Act downstream_notes added
+
+The EU manifest was built in part one, before the comparison-time ruling, and
+carried no downstream_notes. The freeze-point check caught it, three of four
+manifests carrying a requirement the retrieval step will read. Added: the
+comparison-time normalisation map, a 7-codepoint non-ASCII inventory of the
+stored text (only curly quotes, apostrophe and em dash, all folded by the map;
+plus U+00E0 and U+00E9 as genuine content in French terms, marked deliberately
+excluded), a verified-absent note that guillemets, the en dash and U+00A0 were
+examined and are absent, the U+00A0 part-one note that it is folded at ingestion,
+and an integrity-path note that this HTML document is validated by DOM nesting,
+ELI anchors and the recital-count assertion rather than a raw_chars partition, by
+design, so a future reader does not read the absent partition proof as a gap.
+
+### 3. AI 100-1 prose schema normalised to three classes
+
+Field shape aligned with AI 600-1 and the Playbook, every reference internal by
+construction, class set directly. The three-class classifier was run first as a
+guard and flagged exactly one of 38 references, "Fig. 3", as cross_document. That
+is a classifier false positive, not a real reclassification: the classifier
+detects an external instrument by name, and AI 100-1 is itself the AI RMF, so its
+own running header "AI RMF 1.0" next to the Fig. 3 caption reads as a citation of
+another document. Structural inapplicability, not miscalibration, so the
+classifier is not tuned for it and not wired in; the manifest records that it must
+not be, to stop a future session repeating the false positive.
+
+### 4. AI 100-1 running-header strip
+
+The false positive exposed the real defect: the running header
+"NIST AI 100-1 AI RMF 1.0" was embedded once in a content line, prepended by
+PDFium to the Fig. 3 caption in sec_2#p2, so the document title was sitting in a
+real content chunk and would inject title terms into BM25 and pollute that
+chunk's embedding. Same defect class as the exam-Page footer merge already fixed
+in this document, found later. Stripped positionally in the same shape as the
+footer tail-strip: the header prefix removed from the content line into a new
+Line.head field, its characters accounted to the running_header discard class,
+and every character kept in the committed extracted text so nothing leaves the
+audit trail.
+
+Verified after the content change: partition still closes over raw_chars 107,702,
+running_header rose from 984 to 1,009 and content fell by the same 25, no chunk ID
+moved, split count still 10, chunk total still 134, duplication unchanged at 48
+and 47 (sec_2 is narrative, not a Core statement), exact-substring passing
+corpus-wide, global uniqueness still 1,294. A generalised test asserts no chunk
+contains the running-header text, so a further embedded instance fails loudly
+rather than surviving. AI 600-1 and the Playbook were swept for the same class,
+running headers and repeated table headers checked for merged instances, and both
+are clean: AI 600-1's table header and the Playbook's footer are discarded with
+zero merged occurrences, and neither has a per-page running header.
+
+### What did not change
+
+AI 600-1's outputs are byte-identical, untouched this step. The Playbook's chunks
+are unchanged, only its relations moved with the symmetric join. The EU chunks are
+unchanged, only its manifest gained the notes. AI 100-1's chunk IDs did not move;
+only sec_2#p2's text lost the stripped header.
+
+Commit: 777235a
+  (fix: symmetric structural_join, EU downstream_notes, AI 100-1 prose schema and
+  header strip, local only)
+  This entry is recorded by the next commit, `docs: log corpus freeze commit,
+  local only`, committed immediately after this entry is written, which closes the
+  chain so the next session inherits no unlogged commit.
+
+Current state:
+- Local git repository on branch `main`, no remote configured, nothing pushed.
+  Once this log commit lands the history is twenty-six commits, all trailer-free.
+- CORPUS FROZEN. The EU AI Act and all three NIST documents are ingested,
+  verified, and consistent: 1,150 units, 1,294 globally unique chunks, all
+  relations symmetric and resolving, all four manifests carrying downstream_notes.
+  167 tests pass, ruff clean, byte-identical reruns.
+- No retrieval, no query set, no gold passages, no results yet.
+
+Next step:
+- Phase 1 retrieval, then the query set and gold passages derived from the frozen
+  cross-document graph and the duplication map, then the immutable pre-registration
+  commit that predates any generation run. At retrieval, apply the recorded
+  comparison-time normalisation on both sides for grounding and BM25, and treat the
+  GV-4.3-001 lexical-mismatch as a known case, not a designed trap.
+
 ## 2026-07-24, NIST corpus ingestion COMPLETE, AI 600-1 and Playbook ingested
 
 AI 600-1 and the Playbook are now ingested with the corrected resolver, from the
