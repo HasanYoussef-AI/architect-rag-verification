@@ -253,19 +253,21 @@
   "results": "eval/dev_retrieval_results.json",
   "outcome": "10 of 11 gold queries hit; 1 miss kept as a finding, not revised. dev_11 (near-miss): querying for GOVERN 6.1's AI Transparency Resources block returned near-duplicate resource blocks from other subcategories, never GOVERN 6.1's own, the near-duplicate discrimination failure it was designed to probe and consistent with the known-item finding that these blocks are near-duplicated across subcategories. dev_12 (out-of-corpus, CCPA): no gold, retrieval returns unrelated corpus chunks, abstention is the layer's job.",
   "embedding_gap_diagnostic": {
-   "what": "adjacent raw-cosine gaps in the dense top-100; the rank 10 to 11 gap decides the context set. Neither a tuning input nor a gate. Recorded at two scopes, kept distinct.",
+   "what": "adjacent raw-cosine gaps in the dense top-100, a dense-arm measurement. Neither a tuning input nor a gate. Recorded at two scopes, kept distinct.",
    "dev_12_queries": {
     "min_adjacent_gap": "0.0000, exact-tie clusters present in every query",
-    "rank10_11_gap": "min 0.0002, median 0.0014, max 0.0058"
+    "dense_rank10_11_gap": "min 0.0002, median 0.0014, max 0.0058"
    },
    "full_1506_population": {
-    "note": "1294 known-item plus 212 action queries, chunk text and action text rather than typed user queries: a larger and more robust measurement, but not evidence about real query behaviour",
+    "note": "1294 known-item plus 212 action, chunk and action text rather than typed user queries: a larger and more robust measurement, not evidence about real query behaviour",
     "min_adjacent_gap": "0.0000",
-    "rank10_11_gap": "min 0.0000, median 0.00212, max 0.04053",
-    "queries_with_boundary_gap_below_1e-4_grain": 127,
+    "dense_rank10_11_gap": "min 0.0000, median 0.00212, max 0.04053",
+    "dense_rank10_11_below_1e-4_grain": 127,
     "of": 1506
    },
-   "reading": "The 12-query sample had every rank 10 to 11 gap above the grain, but at scale that does not hold: 127 of 1506 queries have a boundary gap below the 1e-4 grain, so quantisation merges the context-set boundary for those, resolved deterministically by the chunk-id tie-break. Deterministic across implementations, but for those 127 the boundary membership is decided by chunk id rather than a score margin. This corrects the thin-sample claim that the boundary stays above the grain."
+   "the_127_is_a_dense_arm_property": "The 127 is a dense-arm property, not a context-set finding. The dense rank 10/11 boundary is one input to RRF, not the boundary that decides what reaches the model. For those 127 queries quantisation merges the two chunks' dense scores into a tie, and the chunk-id tie-break decides which takes dense rank 10 and which takes 11; the resulting difference in RRF contribution is 1/70 minus 1/71, about 2.1e-4. Both chunks remain in the dense top 100 and both still contribute to fusion either way.",
+   "context_set_answer": "The context set the model sees is the fused top 10, and its boundary stability is measured directly, not inferred from the dense arm. Fused rank 10/11 ties, where top-10 membership is decided by the chunk-id tie-break rather than by score, are 11 of 1294 known-item and 0 of 212 action, 11 of 1506 over the same population. Cross-path disagreement after quantisation is 1 of 1506 with zero membership changes. Those are the context-set numbers.",
+   "action_stratum_note": "0 of 212 action queries had a fused boundary tie, so the chunk-id tie-break does not touch the action-to-parent relation at the top-10 boundary. This matters because that relation enters pre-registration as an expected-hard stratum, and a tie-break favouring act_ over sub_ would have made the measured failure look worse than it is. It does not."
   },
   "arm_bias_diagnostic": {
    "what": "median primary-token length of the top-10 from BM25 alone, dense alone, and fused. Neither a tuning input nor a gate. Two scopes, kept distinct.",
@@ -279,7 +281,8 @@
     "dense": 83,
     "fused": 94
    },
-   "observation_recorded_uncharacterised": "On the 12 hand-written queries the fused median (127) is longer than either arm alone (110, 109). Over the 1506 population the fused median (94) sits between the arms (113, 83). Recorded as observed; the mechanism is left uncharacterised."
+   "observation_recorded_uncharacterised": "On the 12 hand-written queries the fused median (127) is longer than either arm alone (110, 109). Over the 1506 population the fused median (94) sits between the arms (113, 83). Recorded as observed; the mechanism is left uncharacterised.",
+   "not_in_tension_with_length_bias": "These medians are not in tension with the recorded b=0.75 length bias (short chunks advantaged 2.70x). They are different quantities: the 2.70 is a single-term term-frequency ratio between a 12-token and a 300-token chunk, while these medians are realised retrieval on multi-term queries, where long chunks accumulate score across several matching terms. The mechanism is not further characterised."
   },
   "not_a_quality_metric": "Development results are never reported as a retrieval quality metric. The parameters are locked and untuned, the queries are informally golded, the sample is twelve, and the set exists to detect structural breakage. The only quality numbers this repository produces come from the sealed, pre-registered test set scored by the deterministic grader.",
   "identifier_confirmation": "The three identifier queries hitting at rank one confirms the identifier-aware tokenisation works end to end on real query text. A confirmation, not a hard test."
@@ -304,6 +307,7 @@
     "fused": 1
    }
   },
-  "held": "Yes. The correct identifier does not lexically retrieve the target (BM25 rank 568) and does not reach the fused top-10 (rank 28), confirming the documented lexical mismatch against the shipped retriever. The action's own text retrieves it at rank 1 in every arm, so only the identifier is affected. A one-off verification of a documented property, not a query-set item and not added to the development set."
+  "held": "Yes. The correct identifier does not lexically retrieve the target (BM25 rank 568) and does not reach the fused top-10 (rank 28), confirming the documented lexical mismatch against the shipped retriever. The action's own text retrieves it at rank 1 in every arm, so only the identifier is affected. A one-off verification of a documented property, not a query-set item and not added to the development set.",
+  "single_case_observation": "On the correct-identifier query, fused rank 28 is worse than dense alone at rank 12, because BM25 at 568 drags the fusion. Observed on this single case, not a claim about RRF."
  }
 }
