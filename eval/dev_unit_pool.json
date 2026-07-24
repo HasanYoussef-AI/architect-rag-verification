@@ -1,0 +1,593 @@
+{
+  "description": "Reserved development unit pool. Committed before any development query is written, per the dev/test firewall. Units here are burned from pre-registered gold eligibility; the test-set builder asserts no gold unit is drawn from this pool. Unit = parent_id. Because retrieval parameters are locked untuned, the dev set's job is catching structural breakage, so the pool covers every structural stratum.",
+  "selection_rule": "Strata = (document, unit_type). Allocate one unit per stratum so a break in any structural type surfaces, then fill to a target of 40 by largest-remainder proportional to stratum size. Within a stratum of n units sorted by unit_id, take m units at indices {(offset + floor(i*n/m)) mod n : i in 0..m-1}, offset = stratum index in canonical document order then unit_type, so co-sized playbook block strata do not all land on the same subcategory. Fully deterministic.",
+  "target": 40,
+  "n_units_selected": 40,
+  "n_member_chunks": 64,
+  "strata": [
+    {
+      "doc": "eu_ai_act",
+      "unit_type": "annex",
+      "stratum_size": 13,
+      "take": 1,
+      "offset": 0,
+      "units": [
+        "eu_ai_act:anx_I"
+      ]
+    },
+    {
+      "doc": "eu_ai_act",
+      "unit_type": "article",
+      "stratum_size": 113,
+      "take": 3,
+      "offset": 1,
+      "units": [
+        "eu_ai_act:art_10",
+        "eu_ai_act:art_31",
+        "eu_ai_act:art_66"
+      ]
+    },
+    {
+      "doc": "eu_ai_act",
+      "unit_type": "recital",
+      "stratum_size": 180,
+      "take": 4,
+      "offset": 2,
+      "units": [
+        "eu_ai_act:rct_100",
+        "eu_ai_act:rct_141",
+        "eu_ai_act:rct_2",
+        "eu_ai_act:rct_60"
+      ]
+    },
+    {
+      "doc": "nist_ai_100_1",
+      "unit_type": "appendix",
+      "stratum_size": 4,
+      "take": 1,
+      "offset": 3,
+      "units": [
+        "nist_ai_100_1:app_D"
+      ]
+    },
+    {
+      "doc": "nist_ai_100_1",
+      "unit_type": "category",
+      "stratum_size": 19,
+      "take": 1,
+      "offset": 4,
+      "units": [
+        "nist_ai_100_1:cat_GOVERN_5"
+      ]
+    },
+    {
+      "doc": "nist_ai_100_1",
+      "unit_type": "named_section",
+      "stratum_size": 1,
+      "take": 1,
+      "offset": 0,
+      "units": [
+        "nist_ai_100_1:exec_summary"
+      ]
+    },
+    {
+      "doc": "nist_ai_100_1",
+      "unit_type": "part",
+      "stratum_size": 2,
+      "take": 1,
+      "offset": 0,
+      "units": [
+        "nist_ai_100_1:part_1"
+      ]
+    },
+    {
+      "doc": "nist_ai_100_1",
+      "unit_type": "section",
+      "stratum_size": 23,
+      "take": 2,
+      "offset": 7,
+      "units": [
+        "nist_ai_100_1:sec_2",
+        "nist_ai_100_1:sec_5.1"
+      ]
+    },
+    {
+      "doc": "nist_ai_100_1",
+      "unit_type": "subcategory",
+      "stratum_size": 72,
+      "take": 2,
+      "offset": 8,
+      "units": [
+        "nist_ai_100_1:sub_GOVERN_2.2",
+        "nist_ai_100_1:sub_MAP_3.4"
+      ]
+    },
+    {
+      "doc": "nist_ai_600_1",
+      "unit_type": "action",
+      "stratum_size": 212,
+      "take": 5,
+      "offset": 9,
+      "units": [
+        "nist_ai_600_1:act_GV-1.3-007",
+        "nist_ai_600_1:act_GV-6.2-001",
+        "nist_ai_600_1:act_MG-4.1-006",
+        "nist_ai_600_1:act_MP-5.1-005",
+        "nist_ai_600_1:act_MS-2.5-006"
+      ]
+    },
+    {
+      "doc": "nist_ai_600_1",
+      "unit_type": "appendix",
+      "stratum_size": 1,
+      "take": 1,
+      "offset": 0,
+      "units": [
+        "nist_ai_600_1:app_A"
+      ]
+    },
+    {
+      "doc": "nist_ai_600_1",
+      "unit_type": "appendix_section",
+      "stratum_size": 9,
+      "take": 1,
+      "offset": 2,
+      "units": [
+        "nist_ai_600_1:sec_A.1.2"
+      ]
+    },
+    {
+      "doc": "nist_ai_600_1",
+      "unit_type": "references",
+      "stratum_size": 1,
+      "take": 1,
+      "offset": 0,
+      "units": [
+        "nist_ai_600_1:app_B"
+      ]
+    },
+    {
+      "doc": "nist_ai_600_1",
+      "unit_type": "section",
+      "stratum_size": 15,
+      "take": 1,
+      "offset": 13,
+      "units": [
+        "nist_ai_600_1:sec_2.9"
+      ]
+    },
+    {
+      "doc": "nist_ai_600_1",
+      "unit_type": "subcategory_statement",
+      "stratum_size": 49,
+      "take": 2,
+      "offset": 14,
+      "units": [
+        "nist_ai_600_1:sub_GOVERN_6.2",
+        "nist_ai_600_1:sub_MEASURE_2.13"
+      ]
+    },
+    {
+      "doc": "nist_playbook",
+      "unit_type": "function_intro",
+      "stratum_size": 4,
+      "take": 1,
+      "offset": 3,
+      "units": [
+        "nist_playbook:fn_MEASURE"
+      ]
+    },
+    {
+      "doc": "nist_playbook",
+      "unit_type": "playbook_about",
+      "stratum_size": 72,
+      "take": 2,
+      "offset": 16,
+      "units": [
+        "nist_playbook:sub_GOVERN_5.2.about",
+        "nist_playbook:sub_MEASURE_1.3.about"
+      ]
+    },
+    {
+      "doc": "nist_playbook",
+      "unit_type": "playbook_ai_transparency_resources",
+      "stratum_size": 72,
+      "take": 2,
+      "offset": 17,
+      "units": [
+        "nist_playbook:sub_GOVERN_6.1.ai_transparency_resources",
+        "nist_playbook:sub_MEASURE_2.1.ai_transparency_resources"
+      ]
+    },
+    {
+      "doc": "nist_playbook",
+      "unit_type": "playbook_references",
+      "stratum_size": 72,
+      "take": 2,
+      "offset": 18,
+      "units": [
+        "nist_playbook:sub_GOVERN_6.2.references",
+        "nist_playbook:sub_MEASURE_2.10.references"
+      ]
+    },
+    {
+      "doc": "nist_playbook",
+      "unit_type": "playbook_suggested_actions",
+      "stratum_size": 72,
+      "take": 2,
+      "offset": 19,
+      "units": [
+        "nist_playbook:sub_MANAGE_1.1.suggested_actions",
+        "nist_playbook:sub_MEASURE_2.11.suggested_actions"
+      ]
+    },
+    {
+      "doc": "nist_playbook",
+      "unit_type": "playbook_transparency_documentation",
+      "stratum_size": 72,
+      "take": 2,
+      "offset": 20,
+      "units": [
+        "nist_playbook:sub_MANAGE_1.2.transparency_documentation",
+        "nist_playbook:sub_MEASURE_2.12.transparency_documentation"
+      ]
+    },
+    {
+      "doc": "nist_playbook",
+      "unit_type": "subcategory_statement",
+      "stratum_size": 72,
+      "take": 2,
+      "offset": 21,
+      "units": [
+        "nist_playbook:sub_MANAGE_1.3",
+        "nist_playbook:sub_MEASURE_2.13"
+      ]
+    }
+  ],
+  "units": [
+    {
+      "unit_id": "eu_ai_act:anx_I",
+      "doc": "eu_ai_act",
+      "unit_type": "annex",
+      "chunks": [
+        "eu_ai_act:anx_I#p1",
+        "eu_ai_act:anx_I#p2",
+        "eu_ai_act:anx_I#p3",
+        "eu_ai_act:anx_I#p4"
+      ]
+    },
+    {
+      "unit_id": "eu_ai_act:art_10",
+      "doc": "eu_ai_act",
+      "unit_type": "article",
+      "chunks": [
+        "eu_ai_act:art_10#p1",
+        "eu_ai_act:art_10#p2"
+      ]
+    },
+    {
+      "unit_id": "eu_ai_act:art_31",
+      "doc": "eu_ai_act",
+      "unit_type": "article",
+      "chunks": [
+        "eu_ai_act:art_31#p1",
+        "eu_ai_act:art_31#p2"
+      ]
+    },
+    {
+      "unit_id": "eu_ai_act:art_66",
+      "doc": "eu_ai_act",
+      "unit_type": "article",
+      "chunks": [
+        "eu_ai_act:art_66#p1",
+        "eu_ai_act:art_66#p2"
+      ]
+    },
+    {
+      "unit_id": "eu_ai_act:rct_100",
+      "doc": "eu_ai_act",
+      "unit_type": "recital",
+      "chunks": [
+        "eu_ai_act:rct_100"
+      ]
+    },
+    {
+      "unit_id": "eu_ai_act:rct_141",
+      "doc": "eu_ai_act",
+      "unit_type": "recital",
+      "chunks": [
+        "eu_ai_act:rct_141"
+      ]
+    },
+    {
+      "unit_id": "eu_ai_act:rct_2",
+      "doc": "eu_ai_act",
+      "unit_type": "recital",
+      "chunks": [
+        "eu_ai_act:rct_2"
+      ]
+    },
+    {
+      "unit_id": "eu_ai_act:rct_60",
+      "doc": "eu_ai_act",
+      "unit_type": "recital",
+      "chunks": [
+        "eu_ai_act:rct_60"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_100_1:app_D",
+      "doc": "nist_ai_100_1",
+      "unit_type": "appendix",
+      "chunks": [
+        "nist_ai_100_1:app_D"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_100_1:cat_GOVERN_5",
+      "doc": "nist_ai_100_1",
+      "unit_type": "category",
+      "chunks": [
+        "nist_ai_100_1:cat_GOVERN_5"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_100_1:exec_summary",
+      "doc": "nist_ai_100_1",
+      "unit_type": "named_section",
+      "chunks": [
+        "nist_ai_100_1:exec_summary#p1",
+        "nist_ai_100_1:exec_summary#p2",
+        "nist_ai_100_1:exec_summary#p3",
+        "nist_ai_100_1:exec_summary#p4"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_100_1:part_1",
+      "doc": "nist_ai_100_1",
+      "unit_type": "part",
+      "chunks": [
+        "nist_ai_100_1:part_1"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_100_1:sec_2",
+      "doc": "nist_ai_100_1",
+      "unit_type": "section",
+      "chunks": [
+        "nist_ai_100_1:sec_2#p1",
+        "nist_ai_100_1:sec_2#p2"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_100_1:sec_5.1",
+      "doc": "nist_ai_100_1",
+      "unit_type": "section",
+      "chunks": [
+        "nist_ai_100_1:sec_5.1"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_100_1:sub_GOVERN_2.2",
+      "doc": "nist_ai_100_1",
+      "unit_type": "subcategory",
+      "chunks": [
+        "nist_ai_100_1:sub_GOVERN_2.2"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_100_1:sub_MAP_3.4",
+      "doc": "nist_ai_100_1",
+      "unit_type": "subcategory",
+      "chunks": [
+        "nist_ai_100_1:sub_MAP_3.4"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_600_1:act_GV-1.3-007",
+      "doc": "nist_ai_600_1",
+      "unit_type": "action",
+      "chunks": [
+        "nist_ai_600_1:act_GV-1.3-007"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_600_1:act_GV-6.2-001",
+      "doc": "nist_ai_600_1",
+      "unit_type": "action",
+      "chunks": [
+        "nist_ai_600_1:act_GV-6.2-001"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_600_1:act_MG-4.1-006",
+      "doc": "nist_ai_600_1",
+      "unit_type": "action",
+      "chunks": [
+        "nist_ai_600_1:act_MG-4.1-006"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_600_1:act_MP-5.1-005",
+      "doc": "nist_ai_600_1",
+      "unit_type": "action",
+      "chunks": [
+        "nist_ai_600_1:act_MP-5.1-005"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_600_1:act_MS-2.5-006",
+      "doc": "nist_ai_600_1",
+      "unit_type": "action",
+      "chunks": [
+        "nist_ai_600_1:act_MS-2.5-006"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_600_1:app_A",
+      "doc": "nist_ai_600_1",
+      "unit_type": "appendix",
+      "chunks": [
+        "nist_ai_600_1:app_A"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_600_1:app_B",
+      "doc": "nist_ai_600_1",
+      "unit_type": "references",
+      "chunks": [
+        "nist_ai_600_1:app_B#p1",
+        "nist_ai_600_1:app_B#p2",
+        "nist_ai_600_1:app_B#p3",
+        "nist_ai_600_1:app_B#p4",
+        "nist_ai_600_1:app_B#p5",
+        "nist_ai_600_1:app_B#p6",
+        "nist_ai_600_1:app_B#p7",
+        "nist_ai_600_1:app_B#p8",
+        "nist_ai_600_1:app_B#p9",
+        "nist_ai_600_1:app_B#p10",
+        "nist_ai_600_1:app_B#p11",
+        "nist_ai_600_1:app_B#p12"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_600_1:sec_2.9",
+      "doc": "nist_ai_600_1",
+      "unit_type": "section",
+      "chunks": [
+        "nist_ai_600_1:sec_2.9#p1",
+        "nist_ai_600_1:sec_2.9#p2"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_600_1:sec_A.1.2",
+      "doc": "nist_ai_600_1",
+      "unit_type": "appendix_section",
+      "chunks": [
+        "nist_ai_600_1:sec_A.1.2"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_600_1:sub_GOVERN_6.2",
+      "doc": "nist_ai_600_1",
+      "unit_type": "subcategory_statement",
+      "chunks": [
+        "nist_ai_600_1:sub_GOVERN_6.2"
+      ]
+    },
+    {
+      "unit_id": "nist_ai_600_1:sub_MEASURE_2.13",
+      "doc": "nist_ai_600_1",
+      "unit_type": "subcategory_statement",
+      "chunks": [
+        "nist_ai_600_1:sub_MEASURE_2.13"
+      ]
+    },
+    {
+      "unit_id": "nist_playbook:fn_MEASURE",
+      "doc": "nist_playbook",
+      "unit_type": "function_intro",
+      "chunks": [
+        "nist_playbook:fn_MEASURE"
+      ]
+    },
+    {
+      "unit_id": "nist_playbook:sub_GOVERN_5.2.about",
+      "doc": "nist_playbook",
+      "unit_type": "playbook_about",
+      "chunks": [
+        "nist_playbook:sub_GOVERN_5.2.about"
+      ]
+    },
+    {
+      "unit_id": "nist_playbook:sub_GOVERN_6.1.ai_transparency_resources",
+      "doc": "nist_playbook",
+      "unit_type": "playbook_ai_transparency_resources",
+      "chunks": [
+        "nist_playbook:sub_GOVERN_6.1.ai_transparency_resources"
+      ]
+    },
+    {
+      "unit_id": "nist_playbook:sub_GOVERN_6.2.references",
+      "doc": "nist_playbook",
+      "unit_type": "playbook_references",
+      "chunks": [
+        "nist_playbook:sub_GOVERN_6.2.references"
+      ]
+    },
+    {
+      "unit_id": "nist_playbook:sub_MANAGE_1.1.suggested_actions",
+      "doc": "nist_playbook",
+      "unit_type": "playbook_suggested_actions",
+      "chunks": [
+        "nist_playbook:sub_MANAGE_1.1.suggested_actions"
+      ]
+    },
+    {
+      "unit_id": "nist_playbook:sub_MANAGE_1.2.transparency_documentation",
+      "doc": "nist_playbook",
+      "unit_type": "playbook_transparency_documentation",
+      "chunks": [
+        "nist_playbook:sub_MANAGE_1.2.transparency_documentation"
+      ]
+    },
+    {
+      "unit_id": "nist_playbook:sub_MANAGE_1.3",
+      "doc": "nist_playbook",
+      "unit_type": "subcategory_statement",
+      "chunks": [
+        "nist_playbook:sub_MANAGE_1.3"
+      ]
+    },
+    {
+      "unit_id": "nist_playbook:sub_MEASURE_1.3.about",
+      "doc": "nist_playbook",
+      "unit_type": "playbook_about",
+      "chunks": [
+        "nist_playbook:sub_MEASURE_1.3.about"
+      ]
+    },
+    {
+      "unit_id": "nist_playbook:sub_MEASURE_2.1.ai_transparency_resources",
+      "doc": "nist_playbook",
+      "unit_type": "playbook_ai_transparency_resources",
+      "chunks": [
+        "nist_playbook:sub_MEASURE_2.1.ai_transparency_resources"
+      ]
+    },
+    {
+      "unit_id": "nist_playbook:sub_MEASURE_2.10.references",
+      "doc": "nist_playbook",
+      "unit_type": "playbook_references",
+      "chunks": [
+        "nist_playbook:sub_MEASURE_2.10.references#p1",
+        "nist_playbook:sub_MEASURE_2.10.references#p2"
+      ]
+    },
+    {
+      "unit_id": "nist_playbook:sub_MEASURE_2.11.suggested_actions",
+      "doc": "nist_playbook",
+      "unit_type": "playbook_suggested_actions",
+      "chunks": [
+        "nist_playbook:sub_MEASURE_2.11.suggested_actions#p1",
+        "nist_playbook:sub_MEASURE_2.11.suggested_actions#p2"
+      ]
+    },
+    {
+      "unit_id": "nist_playbook:sub_MEASURE_2.12.transparency_documentation",
+      "doc": "nist_playbook",
+      "unit_type": "playbook_transparency_documentation",
+      "chunks": [
+        "nist_playbook:sub_MEASURE_2.12.transparency_documentation"
+      ]
+    },
+    {
+      "unit_id": "nist_playbook:sub_MEASURE_2.13",
+      "doc": "nist_playbook",
+      "unit_type": "subcategory_statement",
+      "chunks": [
+        "nist_playbook:sub_MEASURE_2.13"
+      ]
+    }
+  ]
+}
