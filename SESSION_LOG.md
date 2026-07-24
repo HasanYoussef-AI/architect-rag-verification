@@ -4,6 +4,74 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from `rag_case_study_tracker.md` plus the
 last entry here alone. Newest entries at the top.
 
+## 2026-07-24, retrieval build: normalised embeddings, dense quantisation, fixture and artifacts, manifest
+
+The hybrid retriever is built and committed across six scoped commits, all local
+only. Every parameter is locked untuned and recorded in the retrieval manifest,
+which pre-registration will cite. The query set and gold do not exist yet, so
+nothing here is fitted to them.
+
+What changed, with the measurements behind it:
+
+- Embeddings are generated from bge-base-en-v1.5 `onnx/model.onnx` at revision
+  a5beb1e3, with the embedding input comparison-normalised on both corpus and query
+  side under the shared-path rule. This folds the publisher's curly quotes and en/em
+  dashes a typed query never contains, changing 399 of 1,294 embeddings, median
+  cosine 0.9995. An earlier claim that the arms diverged on whitespace is retracted:
+  the tokenizer folds whitespace, verified as identical token IDs and cosine 1.0 on
+  all 32 whitespace pairs, so the divergence was entirely typographic. The claim that
+  verbatim-identical tying "was violated for 32 groups" is struck; it was never
+  violated, those 32 tied on both arms throughout.
+- Dense scores are quantised to 4 decimals before ranking, derived from a measured
+  1.49e-6 max deviation between BLAS matvec paths, 67x above it. BM25 is not
+  quantised, its cross-path deviation measured exactly zero, scalar scatter-add in
+  fixed order with avgdl switched to an exact integer sum, bitwise-identical to
+  np.mean at 128.4242658423493. The fused score is not quantised, it is a function of
+  the deterministic ranks alone, and rounding it was measured to reshuffle 369 top-10s.
+- Determinism footprint is 46 of 1,294 top-10s versus unrounded, all from the dense
+  arm. The residual quantisation cannot remove is 4,242 near-boundary dense scores in
+  the dense top-100, worst-case 17 of 1,294 known-item top-10s could differ across
+  BLAS builds, 7 membership and 10 ordering, scoped in the manifest to reproducibility
+  levels 2 and 3 only; level 1 committed outputs are exact.
+- Fixtures and artifacts: the known-item fixture pins rank-1 for all 1,294 chunks
+  exactly, 1150 self, 36 raw twin, 32 normalised twin, 76 near-duplicate; the verbatim
+  group artifact, 55 normalised groups and 23 raw; the near-duplicate exception list,
+  64 cross-document statements predicate-clean over the full 96 and 12 hand-audited
+  blocks; the reserved 40-unit development pool over all 22 strata.
+- The bge `README.md` and `1_Pooling.config.json` are vendored at the revision under
+  the verifier, 24 checks, recording MIT via the README frontmatter, no LICENSE file
+  exists at the revision which was checked not assumed, and CLS pooling.
+
+Why:
+- This is the retrieval layer both conditions share. It is settled and reproducible
+  before the query set exists, so no parameter can be fitted to results. 198 tests
+  pass, including the exact-equality known-item fixture and the rank-bm25 cross-check.
+
+Caught gap, recorded rather than filed as routine: onnxruntime was a floor at
+`>=1.19` in pyproject rather than a pin, with the lock happening to resolve 1.27.0.
+Now pinned `==1.27.0` in both. The second time in this work that confirming a
+believed-true fact found it was not.
+
+Commits, six, local only:
+- 2a65b31 feat: normalised bge-base-en-v1.5 embeddings via ONNX
+- bd7c887 feat: hybrid BM25 plus dense retriever with dense-arm quantisation
+- 9ffc20f feat: verbatim group and near-duplicate exception artifacts
+- c7febcb feat: reserved development unit pool, committed before any dev query
+- 3fc8e82 test: known-item fixture and deterministic retrieval checks
+- c6a2bfb docs: retrieval manifest recording final config and measurements
+
+Current state:
+- Local git on `main`, no remote, nothing pushed. Retriever, embeddings, fixture,
+  artifacts, development pool, manifest, and tests committed. Every headline parameter
+  is in `data/retrieval/retrieval_manifest.json`.
+
+Next step:
+- Author the development queries within the reserved pool, development split, then run
+  the embedding-gap and arm-bias diagnostics on this final pipeline, committing query
+  embeddings alongside the query set per the level-2 rule in the manifest. Then the
+  pre-registration commit that adds the test query set and gold, which must predate any
+  generation run.
+
 ## 2026-07-24, CORPUS FREEZE, join symmetry, EU downstream_notes, AI 100-1 prose and header strip
 
 This is the corpus freeze. After this commit chunk IDs are cited by
