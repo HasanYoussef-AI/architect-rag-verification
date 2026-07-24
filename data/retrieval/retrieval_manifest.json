@@ -167,7 +167,8 @@
    "value": "An earlier enumeration over near-boundary chunks in the dense top-105 reported a worst-case of 17 affected known-item queries.",
    "why_wrong": "It excluded identical-vector pairs as deterministic, true for matvec but false for matmul, and it framed the risk as a score being near a boundary when the real risk is a single dense-rank flip amplified by RRF. It under-counted the unquantised case at 4 against a direct 63, so it is not a reliable bound. Superseded by the direct measurement above, recorded not deleted so the correction is visible. See defect 6."
   },
-  "precision_unchanged": "This does not reopen the 4dp precision. It was derived correctly from the 1.49e-6 deviation, and coarser rounding trades this residual for the 369-top-10 reshuffle already measured. The precision stands."
+  "precision_unchanged": "This does not reopen the 4dp precision. It was derived correctly from the 1.49e-6 deviation, and coarser rounding trades this residual for the 369-top-10 reshuffle already measured. The precision stands.",
+  "boundary_can_be_a_third_chunk": "The chunk whose score straddles a rounding boundary need not be one of the chunks whose order changes. A boundary straddle anywhere in the dense top-100 shifts that chunk's rank, which shifts the ranks of every chunk it passes, changing their RRF contributions, so the swap can surface between two chunks that are nowhere near a boundary. In the audited case the straddling chunk (sub_GOVERN_1.7.suggested_actions) is neither of the two that swap. Do not apply the narrow test of looking only at the swapped chunks."
  },
  "known_item_fixture": {
   "path": "data/retrieval/known_item_fixture.json",
