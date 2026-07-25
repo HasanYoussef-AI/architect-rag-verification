@@ -29,3 +29,7 @@ embeddings_cache/
 
 # Note: data/, eval/, and results/ are intentionally NOT ignored. They hold
 # committed reproducibility artifacts.
+
+# Local working files. Not part of the published artifact.
+CLAUDE.local.md
+rag_case_study_tracker.md
