@@ -4,6 +4,34 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from `rag_case_study_tracker.md` plus the
 last entry here alone. Newest entries at the top.
 
+## 2026-07-26, governance: firewall rule generalised, local working files separated
+
+Governance file maintenance ahead of publication. Nothing pushed.
+
+Firewall rule generalised. CLAUDE.md Rule 14 previously named specific components. It now
+forbids importing, referencing, reproducing, or describing code, components, or internal
+design belonging to any other private project, naming none. The substance and force are
+unchanged: it forbids the same thing and still says to stop and raise. Hasan-directed
+governance edit, an owner override of the file's own do-not-rewrite rule.
+
+Local working files separated from the published artifact. Machine-local working notes are
+git-ignored and are no longer tracked. Session-open instructions that refer to them moved to
+`CLAUDE.local.md`, which is also ignored. `CLAUDE.md` and this log now reference only files
+that ship, so the published repository is the engineering artifact and nothing else.
+
+Commits, local only:
+- 26cd522, firewall rule wording generalised
+- 15dedc2, local working files removed from tracking and added to .gitignore
+
+Current state:
+- Local git on `main`, no remote configured, nothing pushed. Governance files reference only
+  published files.
+
+Next step:
+- Pre-registration, second sealing commit: instantiate the 50-query sealed test set and its
+  gold sets against the frozen specification, with per-edge verification records and query
+  embeddings, committed before retrieval runs on them.
+
 ## 2026-07-25, pre-registration extended and corrected: no-context condition, near-miss redefinition
 
 Two Hasan-directed corrections to PREREGISTRATION.md, made before any result exists and
