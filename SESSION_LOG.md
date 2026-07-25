@@ -4,6 +4,43 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from `rag_case_study_tracker.md` plus the
 last entry here alone. Newest entries at the top.
 
+## 2026-07-25, pre-registration extended and corrected: no-context condition, near-miss redefinition
+
+Two Hasan-directed corrections to PREREGISTRATION.md, made before any result exists and
+revisable under Rule 4, committed at b7e305c. No generation has run; the file still
+predates all results.
+
+Near-miss redefined. The near-miss stratum changes from a faithfulness trap, terms present
+but not answering, to a retrieval discrimination trap, a plausible near-identical unit
+surfaced over the actually-right one. Reason: the measured development query 11 case is a
+discrimination failure by construction, and the bootstrap definition predated that
+measurement.
+
+Third condition named no-context, not closed-book. Closed-book is reserved in this repo for
+the grounding discipline of answering only from retrieved chunks and never from training
+memory, per CLAUDE.md Rule 1. Reusing it for the no-retrieval diagnostic condition would
+collide with that, so the condition is named no-context in the pre-registration, and the
+tracker was aligned to no-context in the same pass at its three condition lines, with the
+decisions-log entry recording the rename.
+
+Both changes sit alongside the extensions the bootstrap file explicitly deferred to Phase 1:
+the no-context condition, the sealed-set composition, the gold set rules, and the
+per-stratum predictions, all added in this revision.
+
+Commit, local only:
+- b7e305c docs: extend and correct pre-registration, no-context condition and near-miss redefinition
+
+Current state:
+- Local git on `main`, no remote, nothing pushed. Pre-registration extended and corrected;
+  the file still predates all results. The tracker is modified in the working tree, its
+  no-context alignment and other governance edits, and is deliberately not committed by
+  this pass.
+
+Next step:
+- Author the sealed 50-query set and its gold sets within the pre-registered composition,
+  committed before generation, with per-edge gold verification recorded. Then generation
+  behind the spend gate.
+
 ## 2026-07-24, correction: the 127 is a dense-arm property, not a context-set finding
 
 The previous entry and the manifest framed the 127-of-1506 rank 10/11 sub-grain gaps as a
