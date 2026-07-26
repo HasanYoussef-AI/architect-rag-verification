@@ -1,8 +1,8 @@
 # Session log, architect-rag-verification
 
 Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
-A new session should be able to resume from `rag_case_study_tracker.md` plus the
-last entry here alone. Newest entries at the top.
+A new session should be able to resume from the last entry here plus the
+governance files alone. Newest entries at the top.
 
 ## 2026-07-26, governance: firewall rule generalised, local working files separated
 
