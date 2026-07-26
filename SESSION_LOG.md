@@ -22,6 +22,7 @@ that ship, so the published repository is the engineering artifact and nothing e
 Commits, local only:
 - 26cd522, firewall rule wording generalised
 - 15dedc2, local working files removed from tracking and added to .gitignore
+- a563df6, session-open instructions moved to CLAUDE.local.md, governance scoped to shipping files
 
 Current state:
 - Local git on `main`, no remote configured, nothing pushed. Governance files reference only
