@@ -4,7 +4,7 @@ This document defines the evaluation before any model answer is generated, so re
 
 ## Revision note
 
-This revision extends the bootstrap pre-registration placed at a4383816 on 2026-07-21. No generation has run and no result exists, so the file is revisable under Rule 4 and nothing below is a post-hoc rescue.
+This revision extends the bootstrap pre-registration placed at f98a03bd on 2026-07-21. No generation has run and no result exists, so the file is revisable under Rule 4 and nothing below is a post-hoc rescue.
 
 - **Extended, as the bootstrap file said Phase 1 would.** The sealed-set composition, the gold set rules, the per-stratum predictions, and the retrieval scoring detail are added. These were always deferred to this commit.
 - **Added.** The no-context condition, approved on 2026-07-24 before any result, so contamination is measured directly rather than left as a caveat. Named no-context rather than closed-book, since in this repo closed-book already denotes the grounding discipline of answering only from retrieved chunks and never from training memory, per CLAUDE.md Rule 1. Reusing the term for a no-retrieval condition would collide with that.
@@ -14,7 +14,7 @@ This revision extends the bootstrap pre-registration placed at a4383816 on 2026-
 
 The evaluation design below is locked. The query set and the ground-truth passages are added in a dedicated pre-registration commit that predates any generation run.
 
-Frozen inputs this pre-registration is derived from and cites: the corpus frozen at aea1279, 1,294 globally unique chunks, chunk IDs immovable; retrieval locked and declared untuned at b0605fb, first-pass context set the fused top 10; and the reserved 40-unit development pool committed before any development query was written. No gold unit in this test set may be drawn from that pool, and the test-set builder will assert this mechanically when it is built.
+Frozen inputs this pre-registration is derived from and cites: the corpus frozen at 71ef631, 1,294 globally unique chunks, chunk IDs immovable; retrieval locked and declared untuned at 137788b, first-pass context set the fused top 10; and the reserved 40-unit development pool committed before any development query was written. No gold unit in this test set may be drawn from that pool, and the test-set builder will assert this mechanically when it is built.
 
 ## Conditions
 

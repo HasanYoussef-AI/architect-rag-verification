@@ -20,9 +20,8 @@ git-ignored and are no longer tracked. Session-open instructions that refer to t
 that ship, so the published repository is the engineering artifact and nothing else.
 
 Commits, local only:
-- 26cd522, firewall rule wording generalised
-- 15dedc2, local working files removed from tracking and added to .gitignore
-- a563df6, session-open instructions moved to CLAUDE.local.md, governance scoped to shipping files
+- 44e9fe5, local working files removed from tracking and added to .gitignore
+- fe9487c, session-open instructions moved to CLAUDE.local.md, governance scoped to shipping files
 
 Current state:
 - Local git on `main`, no remote configured, nothing pushed. Governance files reference only
@@ -36,7 +35,7 @@ Next step:
 ## 2026-07-25, pre-registration extended and corrected: no-context condition, near-miss redefinition
 
 Two Hasan-directed corrections to PREREGISTRATION.md, made before any result exists and
-revisable under Rule 4, committed at b7e305c. No generation has run; the file still
+revisable under Rule 4, committed at 18603e9. No generation has run; the file still
 predates all results.
 
 Near-miss redefined. The near-miss stratum changes from a faithfulness trap, terms present
@@ -57,7 +56,7 @@ the no-context condition, the sealed-set composition, the gold set rules, and th
 per-stratum predictions, all added in this revision.
 
 Commit, local only:
-- b7e305c docs: extend and correct pre-registration, no-context condition and near-miss redefinition
+- 18603e9 docs: extend and correct pre-registration, no-context condition and near-miss redefinition
 
 Current state:
 - Local git on `main`, no remote, nothing pushed. Pre-registration extended and corrected;
@@ -97,7 +96,7 @@ GV-4.3-001 correct-identifier case only, fused rank 28 is worse than dense 12 be
 at 568 drags fusion, recorded as a single case, not a claim about RRF.
 
 Commit, local only:
-- 96d9e95 docs: relabel the 127 as a dense-arm property, state the context-set boundary directly
+- 5a240b7 docs: relabel the 127 as a dense-arm property, state the context-set boundary directly
 
 Current state:
 - Local git on `main`, no remote, nothing pushed. Retrieval scope complete and its
@@ -116,7 +115,7 @@ diagnostics extended to the full population, and one documented extraction prope
 verified against the shipped retriever. This closes the retrieval scope.
 
 Development queries. Twelve authored blind from unit text, committed with their
-embeddings before any retrieval ran (7f75f78), results committed after (29bad20), so the
+embeddings before any retrieval ran (0b9c6e2), results committed after (78cc246), so the
 freeze is provable from git. 10 of 11 gold queries hit; the one miss, near-miss dev_11,
 is kept as a finding: querying GOVERN 6.1's AI Transparency Resources returned
 near-duplicate resource blocks from other subcategories, the discrimination failure it
@@ -144,9 +143,9 @@ surface and the action text rank it 1. The documented lexical-mismatch behaviour
 one-off verification, not added to the query set.
 
 Commits, local only:
-- 7f75f78 feat: twelve blind-authored development queries and their embeddings
-- 29bad20 feat: development-query retrieval results and diagnostics
-- 26a3f8d docs: full-population diagnostics, dev-set guards, GV-4.3-001 verification
+- 0b9c6e2 feat: twelve blind-authored development queries and their embeddings
+- 78cc246 feat: development-query retrieval results and diagnostics
+- bb1141d docs: full-population diagnostics, dev-set guards, GV-4.3-001 verification
 
 Current state:
 - Local git on `main`, no remote, nothing pushed. Retrieval scope complete: retriever,
@@ -202,8 +201,8 @@ rather than rewrite, consistent with Rule 10 being spent, so the seven are the s
 consistent convention.
 
 Commits, local only:
-- b1123e0 docs: correct retrieval determinism residual, defect 6
-- 9b29c46 test: pin cross-path fusion determinism, defect 6 regression
+- 8685632 docs: correct retrieval determinism residual, defect 6
+- 935c6aa test: pin cross-path fusion determinism, defect 6 regression
 
 Current state:
 - Local git on `main`, no remote, nothing pushed. Manifest residual corrected, defect 6
@@ -266,12 +265,12 @@ Now pinned `==1.27.0` in both. The second time in this work that confirming a
 believed-true fact found it was not.
 
 Commits, six, local only:
-- 2a65b31 feat: normalised bge-base-en-v1.5 embeddings via ONNX
-- bd7c887 feat: hybrid BM25 plus dense retriever with dense-arm quantisation
-- 9ffc20f feat: verbatim group and near-duplicate exception artifacts
-- c7febcb feat: reserved development unit pool, committed before any dev query
-- 3fc8e82 test: known-item fixture and deterministic retrieval checks
-- c6a2bfb docs: retrieval manifest recording final config and measurements
+- 2205607 feat: normalised bge-base-en-v1.5 embeddings via ONNX
+- 8f07f2c feat: hybrid BM25 plus dense retriever with dense-arm quantisation
+- beb3216 feat: verbatim group and near-duplicate exception artifacts
+- a338376 feat: reserved development unit pool, committed before any dev query
+- 691c4bf test: known-item fixture and deterministic retrieval checks
+- a5a74dc docs: retrieval manifest recording final config and measurements
 
 Current state:
 - Local git on `main`, no remote, nothing pushed. Retriever, embeddings, fixture,
@@ -373,7 +372,7 @@ are unchanged, only its relations moved with the symmetric join. The EU chunks a
 unchanged, only its manifest gained the notes. AI 100-1's chunk IDs did not move;
 only sec_2#p2's text lost the stripped header.
 
-Commit: 777235a
+Commit: aa61ea9
   (fix: symmetric structural_join, EU downstream_notes, AI 100-1 prose schema and
   header strip, local only)
   This entry is recorded by the next commit, `docs: log corpus freeze commit,
@@ -485,7 +484,7 @@ non-ASCII inventory with leave-alone items marked deliberately excluded are
 recorded in downstream_notes of all three NIST manifests, with
 normalise_for_comparison in code. AI 100-1 was re-run only to add this note.
 
-Commit: 40ffc2b
+Commit: 66448f0
   (feat: structure-aware ingestion of NIST AI 600-1 and the Playbook with the
   wired resolver, local only)
   This entry is recorded by the next commit, `docs: log AI 600-1 and Playbook
@@ -581,7 +580,7 @@ whitespace note already in the manifest, not an ingestion-time alteration of
 source text. Nothing was applied and nothing was decided; it is left for Hasan to
 rule on when retrieval is built.
 
-Commit: 7434920
+Commit: 44f2368
   (fix: apply hyphen resolver to NIST AI 100-1 output, correcting the thirdparty
   defect class, local only)
   This entry is recorded by the next commit, `docs: log AI 100-1 hyphen fix
@@ -666,7 +665,7 @@ for "therapist", is wrongly kept by the tie-break. That fails in the safe
 direction, a spurious hyphen rather than two welded words. Recorded in both
 `src/ingest/hyphenation.py` and `corpus/SOURCES.md`.
 
-### What is committed at 99c4cd3
+### What is committed at f80d46e
 
 - `src/ingest/hyphenation.py`: wordlist wired as evidence source four with the
   fragment-test refinement in `_resolve_by_wordlist`, three distinctly labelled
@@ -690,7 +689,7 @@ direction, a spurious hyphen rather than two welded words. Recorded in both
 No document ingestion was re-run. The eight untracked files were not touched. No
 API calls, no spend, no remote, nothing pushed.
 
-Commit: 99c4cd3
+Commit: f80d46e
   (feat: wire wordlist tier into hyphen resolver with fragment test, commit
   corpus decision log, local only)
   This entry is recorded by the next commit, `docs: log hyphen resolver wiring
@@ -753,7 +752,7 @@ web2, the macOS Webster's Second 1934 list, was rejected on measured coverage
 rather than reputation, and that rejection is recorded in SOURCES.md with its
 evidence, so the obvious local option is shown disqualified on data.
 
-### What is committed at 73f22f2
+### What is committed at 29cc8fc
 
 - vendor/scowl/, the 16 english-words and american-words component files at
   levels 10 to 70 as served, plus the Copyright file verbatim to carry the
@@ -793,7 +792,7 @@ the decision log by re-running the resolver.
 No document ingestion re-run. The eight untracked files were not touched. No API
 calls, no spend, no remote, nothing pushed.
 
-Commit: 73f22f2f96ddbb580a575a69c68a96bd30826eb1
+Commit: 29cc8fcfeb841cee5c0bde6b154c147ba9c7705d
   (feat: vendor SCOWL English wordlist and deterministic builder for hyphen
   resolver, local only)
   This entry is recorded by the next commit, `docs: log wordlist vendoring
@@ -832,7 +831,7 @@ validate that a letter sits on both sides. The precondition looked like a safety
 check but was not one. A REAL hyphen in a compound such as "third-party" also
 has letters on both sides, so deleting produced "thirdparty".
 
-Confirmed corrupted in the AI 100-1 output committed at 906caab: thirdparty,
+Confirmed corrupted in the AI 100-1 output committed at e4fd217: thirdparty,
 decisionmaking, humanAI, privacyenhancing, contextspecific, one occurrence each,
 against 20, 10, 11, 2 and 3 correct occurrences of the hyphenated forms
 elsewhere in the same document. Corpus-wide the class affects roughly 5
@@ -863,7 +862,7 @@ cannot catch it. A positional tail-strip was added, and the stripped characters
 are still accounted to the page_footer discard class. Only 2 such cases exist
 in the whole corpus, both in AI 100-1. AI 600-1 and the Playbook have none.
 
-### What is COMPLETE and committed at 2522fea
+### What is COMPLETE and committed at be81945
 
 - `src/ingest/hyphenation.py`, the corrected rule module. Symmetric evidence in
   both directions, corpus-wide attestation with every line-break hyphen masked
@@ -959,7 +958,7 @@ If the duplication counts move from 47 and 46 during the re-run, report the new
 numbers with the reason and update the pinning tests as a STATED correction in
 the commit message and this log, never as a silent adjustment.
 
-Commit: 2522fea717acf54d0f84c0eec168234147de1954
+Commit: be8194593e9e8c0f3d09c798b0c21186145bb98c
   (fix: correct hyphen-join neighbour extraction and footer tail-strip, partial,
   local only)
   This entry is recorded by the next commit, `docs: log hyphen defect checkpoint,
@@ -1027,7 +1026,7 @@ Investigation completed this session, carried into part three:
   and must not join text across the boundary, and AI 600-1's repeated
   `Action ID Suggested Action GAI Risks` table header on 48 pages.
 
-Commit: 894ce480de1091723c97fdfdfc34e9f2dfef6a08
+Commit: e8ee5c995066f82a8842edb02c34e3d7dc054e96
   (docs: record why two partition whitespace classes are equal, local only)
   This entry is recorded by the next commit, `docs: log partition whitespace
   note commit, local only`, committed immediately after this entry is written,
@@ -1163,7 +1162,7 @@ Why:
   loss and text reconstruction detectable rather than merely unlikely.
 - 110 tests pass, ruff clean. No API calls, no spend, no remote, nothing pushed.
 
-Commit: 906caab0cd44c188e7ca51b7a8d144a571ccadac
+Commit: e4fd217bd4a1bec41577765d12b3e859743ba18d
   (feat: structure-aware NIST AI 100-1 ingestion with partition proof, local only)
   This entry is recorded by the next commit, `docs: log NIST AI 100-1 ingestion
   commit, local only`, committed immediately after this entry is written, which
@@ -1206,7 +1205,7 @@ Why:
   now covers everything that can move a chunk ID.
 - Hasan directed this after it was raised at the end of part one.
 
-Commit: b911062a7e778dab3720686e95a6a53a076a69bd
+Commit: bade8bdd7f4ce0071d7c333dda1437be9f77a0d4
   (feat: extend integrity verifier to vendored files, local only)
   This entry is recorded by the next commit, `docs: log vendor verifier commit,
   local only`, committed immediately after this entry is written, which closes
@@ -1332,7 +1331,7 @@ Why:
   commit history rather than asserted.
 - No API calls, no spend, no remote configured, nothing pushed.
 
-Commit: 8af050de1f22fee47b67797e76047001aaaaaadf
+Commit: f4d21deaff8ca968a0db14e9ddae47cb62ec00af
   (feat: structure-aware EU AI Act ingestion with integrity verifier, local only)
   This entry is recorded by the next commit, `docs: log EU AI Act ingestion
   commit, local only`, committed immediately after this entry is written, which
@@ -1430,7 +1429,7 @@ Why:
   API calls, no spend, no remote configured, and nothing pushed. Hasan reviewed
   and approved `corpus/SOURCES.md` in full before this commit.
 
-Commit: d16d331bf8323d0b91d9c47ca29f0f45c491ab59
+Commit: 57e633f6f50d2051ed99ba701bd8a4143c8ce601
   (feat: add NIST AI RMF and EU AI Act corpus with provenance, local only)
   This entry is recorded by the next commit, `docs: log corpus acquisition
   commit, local only`, committed immediately after this entry is written, which
@@ -1438,9 +1437,9 @@ Commit: d16d331bf8323d0b91d9c47ca29f0f45c491ab59
 
 Current state:
 - Local git repository on branch `main`, no remote configured, nothing pushed.
-  Once this log commit lands the history is six commits, all trailer-free:
-  a4383816 bootstrap, d311c03f session log, 3e4c68c tracker update, 4ee0632 log
-  of the tracker commit, d16d331 corpus acquisition, and this log commit.
+  Once this log commit lands the history is five commits, all trailer-free:
+  f98a03bd bootstrap, d574a88b session log, 0d19261 log of the tracker commit,
+  57e633f corpus acquisition, and this log commit.
 - The corpus is in place and verified. Source subpackages are still empty
   placeholders. There is no ingestion code, no chunking, no retrieval, no query
   set, no gold passages, and no results yet.
@@ -1473,16 +1472,10 @@ Why:
   names its own recording commit so the log-of-the-log does not spawn an endless
   tail of unlogged commits.
 
-Commit: 3e4c68c6106752623e0cdc33140e3607afa0d04c
-  (docs: update tracker after bootstrap rebuild, local only)
-  This entry is recorded by the next commit, `docs: log tracker update commit,
-  local only`, committed immediately after it is written.
-
 Current state:
 - Local git repository on branch `main`, no remote configured, nothing pushed.
-  Once this log commit lands the history is four commits, all trailer-free:
-  a4383816 bootstrap, d311c03f session log, 3e4c68c tracker update, and this log
-  commit.
+  Once this log commit lands the history is three commits, all trailer-free:
+  f98a03bd bootstrap, d574a88b session log, and this log commit.
 - Repo contents are unchanged since the Phase 0 bootstrap: source subpackages are
   empty placeholders, and there are no corpus files, no query set, no gold
   passages, and no results yet.
@@ -1521,7 +1514,7 @@ Why:
   corpus was downloaded, no API was called, nothing was spent, no remote was
   configured, and nothing was pushed.
 
-Commit: a4383816d7583c9ea09987ba13165f0e11022021
+Commit: f98a03bd7b7afbb2aac2b921f8ff0ab201a267c1
   (chore: bootstrap repo scaffolding, tooling, and governance)
   Note: the two bootstrap commits were deliberately rebuilt before any push to remove the Claude co-author trailer, a one-time authorized override of CLAUDE.md Rule 10 valid only in this pre-push window because nothing is pushed and no README or pre-registration cites these hashes; the hash above is the rebuilt bootstrap hash.
 
