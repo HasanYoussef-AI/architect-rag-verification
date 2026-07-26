@@ -4,6 +4,47 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from the last entry here plus the
 governance files alone. Newest entries at the top.
 
+## 2026-07-26, history rebuilt before first publication, citations re-anchored
+
+Repository history was rebuilt with git-filter-repo 2.47.0 on a local repository with no
+remote configured that had never been pushed. Hasan-directed, authorized in session as a
+second exception to CLAUDE.md Rule 10. The first was the pre-push bootstrap rebuild recorded
+in the 2026-07-21 entries below, which that entry records as spent. No further exception is
+available.
+
+Commit hashes changed. Author and committer identities and timestamps, and commit ordering,
+are unchanged for every surviving commit, verified by generating the full commit ledger
+before and after the rebuild and comparing those fields directly. The tree at the tip is
+byte-identical to the tree before the rebuild, so no published file content moved. Three
+commits became empty under the rebuild and were pruned, taking the history from 51 commits
+to 48.
+
+Citations were re-anchored mechanically from the rebuild's commit map: 40 occurrences across
+29 commits in this file, and 3 across 3 commits in `PREREGISTRATION.md`. Abbreviation
+lengths were preserved and every rewritten abbreviation was verified to resolve
+unambiguously in the rebuilt history. Four citations named commits that no longer exist;
+those were removed rather than remapped, and two commit-count enumerations in this file were
+corrected to counts measured against the rebuilt history.
+
+Verified after the re-anchoring commit: every hex string of length 7 to 40 in the tracked
+tree either resolves to a commit in the rebuilt history or is individually accounted for.
+The accounted-for set is the pinned bge model revision, its abbreviated mention in this
+file, the fractional digits of the avgdl constant, and the generated and vendored content
+under `data/`, `corpus/`, `vendor/` and `uv.lock`, none of which resolves to a commit in
+this repository.
+
+Commits, local only:
+- dbe8b33, commit citations re-anchored after the rebuild
+
+Current state:
+- Local git on `main`, no remote configured, nothing pushed. 203 tests pass, ruff clean,
+  vendor verifier 30 checks.
+
+Next step:
+- Pre-registration, second sealing commit: instantiate the 50-query sealed test set and its
+  gold sets against the frozen specification, with per-edge verification records and query
+  embeddings, committed before retrieval runs on them.
+
 ## 2026-07-26, governance: firewall rule generalised, local working files separated
 
 Governance file maintenance ahead of publication. Nothing pushed.
