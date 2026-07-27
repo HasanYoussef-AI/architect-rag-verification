@@ -8,17 +8,20 @@ locked and untuned, and was fixed before any query set existed, the development 
 has no tuning role. Its single job is to fail loudly if tokenisation, scoring,
 fusion, quantisation, or the embeddings break.
 
-The 40-unit development pool in `dev_unit_pool.json` is reserved and committed
-before any development query is written. Development queries draw their expected
-units only from that pool, so that no pre-registered gold unit can be drawn from it.
+The 40-unit development pool in `dev_unit_pool.json` is reserved and committed before
+any development query is written. Development queries draw their expected units only
+from that pool. The pre-registered test set is filtered against a 50-unit closure: the
+40 pool units plus the 10 units carrying a statement verbatim-identical to a pool unit.
+The closure exists because a gold slot is satisfied by any unit carrying its statement,
+so excluding only the pool unit would leave a slot that either admits a pool unit into
+gold or scores a retrieval hit on identical text as a miss. A disjointness assertion
+requires that no test gold unit falls in that closure.
+
 The one exception is the out-of-corpus query, which has no gold unit by definition
 and may reference material outside the pool; it consumes no pool budget and is
-marked as such in `dev_queries.jsonl`.
-
-The pre-registered test set will live in `test_queries.jsonl`, committed and
-timestamped before any generation run and immutable once results exist. A
-disjointness assertion will require that no test gold unit is drawn from the
-development pool.
+marked as such in `dev_queries.jsonl`. The pre-registered test set will live in
+`test_queries.jsonl`, committed and timestamped before any generation run and
+immutable once results exist.
 
 ## Discipline
 
@@ -44,6 +47,17 @@ confirms the identifier-aware tokenisation works end to end on real query text; 
 is a confirmation, not a hard test. The one miss, the near-miss `dev_11`, shows the
 retriever cannot discriminate a subcategory's AI Transparency Resources block from
 its near-duplicates, and is kept as a finding.
+
+## Tests that require the pinned model
+
+Most tests run offline against committed artifacts and need no model. Two do not: the
+query-embedding provenance tests in `tests/test_query_embeddings_provenance.py` regenerate
+the development query embeddings through the ONNX model and compare rankings, so they need
+the pinned `bge-base-en-v1.5` revision. That path asserts the model's sha256 before use,
+and it skips when the model is not already cached, using `local_files_only` so it never
+triggers a network download. Read a run reporting `2 skipped` as "query-embedding
+provenance was not verified here", not as a pass; a run where they pass had the pinned
+model present. Nothing else in the suite depends on the model.
 
 ## Files
 
