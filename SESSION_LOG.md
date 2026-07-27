@@ -4,6 +4,37 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from the last entry here plus the
 governance files alone. Newest entries at the top.
 
+## 2026-07-27, session log heading dates derived from commit metadata
+
+The heading date on the history rebuild entry below was authored rather than read
+from the repository, and disagreed with the metadata of the commits that entry
+records. Both of those commits carry committer date 2026-07-27 in the
+repository's local timezone. The heading is corrected to that date.
+
+Convention recorded so it is applied consistently: a heading date is the
+committer date, in the repository's local timezone, of the commit whose work the
+entry records, not of the commit that places the entry. A rebuild leaves no
+timestamp of its own, since author and committer times are preserved across it,
+so the derived evidence for when such an operation ran is the first commit made
+after it.
+
+Mechanical references, commit hashes and dates, are corrected in place. Claims
+and findings are corrected forward in a new entry, as the 2026-07-24 dense-arm
+relabelling was. Only the first of those rewrites a committed entry, and it
+rewrites a reference rather than a statement.
+
+Commits, local only:
+- bdd548d, session log heading date corrected to the committed date
+
+Current state:
+- Local git on `main`, no remote configured, nothing pushed.
+
+Next step:
+- Pre-registration, second sealing commit: instantiate the 50-query sealed test
+  set and its gold sets against the frozen specification, with per-edge
+  verification records and query embeddings, committed before retrieval runs on
+  them.
+
 ## 2026-07-27, history rebuilt before first publication, citations re-anchored
 
 Repository history was rebuilt with git-filter-repo 2.47.0 on a local repository with no
