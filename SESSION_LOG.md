@@ -4,7 +4,7 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from the last entry here plus the
 governance files alone. Newest entries at the top.
 
-## 2026-07-26, history rebuilt before first publication, citations re-anchored
+## 2026-07-27, history rebuilt before first publication, citations re-anchored
 
 Repository history was rebuilt with git-filter-repo 2.47.0 on a local repository with no
 remote configured that had never been pushed. Hasan-directed, authorized in session as a
