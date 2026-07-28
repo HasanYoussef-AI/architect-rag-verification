@@ -4,6 +4,43 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-07-28, use of an untracked working file disclosed, S9 scoped to match
+
+Nine sites in this log describe an untracked working file used during development.
+They were left uncorrected when the session log writing standard landed, because
+whether they were defects depended on a decision not then made. The decision is that
+the repository discloses the file rather than removing the references. The filename
+already appears in `.gitignore`, so the existence was public either way, and a
+reviewer finding nine references to a file absent from a clone with no acknowledgment
+learns less than one who finds the acknowledgment. Editing nine historical entries to
+satisfy a rule shipped days earlier is the more suspicious of the two options.
+
+The disclosure could not be written until it was true. An audit of the decisions
+recorded in that file against the tracked tree found four that existed in no tracked
+file: the generation transport, the Opus reasoning-effort setting, the withdrawal of
+orthographic variation traps, and a ruling on metric inflation over duplicated gold.
+All four were placed before this statement, so the statement describes the repository
+rather than an intention. The audit also found the intended wording too narrow: the
+retrieval parameters and the corpus provenance are governed by the manifest and by
+`corpus/SOURCES.md`, not by prose, so both are named alongside the four prose files.
+
+The statement carries no universal claim. The decisions checked were enumerated by
+hand rather than extracted mechanically, so what is stated is where the record is and
+that a decision found only in the untracked file is a defect, not that none remains.
+
+S9 was scoped to the disclosure and not weakened to fit it. Naming a disclosed
+untracked file, and describing an edit to it by its mechanism and by which decision it
+records, is permitted; reproducing its text is not; and untracked material the
+repository does not disclose is not described at all. The bar on naming a commit hash
+as the location of removed or private material is unchanged and absolute.
+
+The entry recording the metric correction understated its own evidence, citing one
+development query where an exhaustive audit of all twelve found five returning more
+than one carrier inside the top 10. Corrected in this commit.
+
+Commits:
+- f33e5ca docs: disclose the untracked working file and scope S9 to match
+
 ## 2026-07-28, retrieval metric definitions corrected before any generation
 
 The retrieval metrics section specified its scoring level twice and disagreed with
