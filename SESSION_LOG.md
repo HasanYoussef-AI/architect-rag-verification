@@ -521,7 +521,7 @@ pattern that corrections are visible rather than history looking clean.
 
 ### Commit-trailer transition, recorded
 
-The 27 commits before this session's retrieval build carry no trailer. The 7
+The 25 commits before this session's retrieval build carry no trailer. The 7
 retrieval-build commits, and every commit onward, carry a Claude-Session provenance
 trailer. The reason is the harness default: unlike the co-author byline, which
 `includeCoAuthoredBy` disables and which was removed repo-wide under the spent Rule 10
@@ -711,7 +711,7 @@ Commit: aa61ea9
 
 Current state:
 - Local git repository on branch `main`, no remote configured, nothing pushed.
-  Once this log commit lands the history is twenty-six commits, all trailer-free.
+  Once this log commit lands the history is twenty-five commits, all trailer-free.
 - CORPUS FROZEN. The EU AI Act and all three NIST documents are ingested,
   verified, and consistent: 1,150 units, 1,294 globally unique chunks, all
   relations symmetric and resolving, all four manifests carrying downstream_notes.
@@ -823,7 +823,7 @@ Commit: 66448f0
 
 Current state:
 - Local git repository on branch `main`, no remote configured, nothing pushed.
-  Once this log commit lands the history is twenty-four commits, all trailer-free.
+  Once this log commit lands the history is twenty-three commits, all trailer-free.
 - Ingested and verified: the EU AI Act, and all three NIST documents, AI 100-1,
   AI 600-1 and the Playbook, with the hyphen resolver applied and the
   cross-document reference graph fully resolving. 164 tests pass, ruff clean.
@@ -919,7 +919,7 @@ Commit: 44f2368
 
 Current state:
 - Local git repository on branch `main`, no remote configured, nothing pushed.
-  Once this log commit lands the history is twenty-two commits, all trailer-free.
+  Once this log commit lands the history is twenty-one commits, all trailer-free.
 - Ingested and CORRECT: the EU AI Act, and NIST AI 100-1 with the hyphenation
   defect now fixed in its applied output. NOT ingested: AI 600-1 and the Playbook.
 - The wordlist is vendored and pinned, the resolver is wired and applied to
@@ -1028,7 +1028,7 @@ Commit: f80d46e
 
 Current state:
 - Local git repository on branch `main`, no remote configured, nothing pushed.
-  Once this log commit lands the history is twenty commits, all trailer-free.
+  Once this log commit lands the history is nineteen commits, all trailer-free.
 - Ingested: the EU AI Act (clean), NIST AI 100-1 (its committed output STILL
   carries the corrupted words: the corrected resolver is wired and proven but has
   NOT been applied to any document output yet). NOT ingested: AI 600-1 and the
@@ -1131,7 +1131,7 @@ Commit: 29cc8fcfeb841cee5c0bde6b154c147ba9c7705d
 
 Current state:
 - Local git repository on branch `main`, no remote configured, nothing pushed.
-  Once this log commit lands the history is eighteen commits, all trailer-free.
+  Once this log commit lands the history is seventeen commits, all trailer-free.
 - Ingested: the EU AI Act (clean), NIST AI 100-1 (still carrying the corrupted
   words, since the corrected resolver is not yet applied to any document). NOT
   ingested: AI 600-1 and the Playbook.
@@ -1297,7 +1297,7 @@ Commit: be8194593e9e8c0f3d09c798b0c21186145bb98c
 
 Current state:
 - Local git repository on branch `main`, no remote configured, nothing pushed.
-  Once this log commit lands the history is sixteen commits, all trailer-free.
+  Once this log commit lands the history is fifteen commits, all trailer-free.
 - Ingested: the EU AI Act (clean), NIST AI 100-1 (ingested but its text still
   carries the five corrupted words listed above). NOT ingested: AI 600-1 and the
   Playbook.
@@ -1364,7 +1364,7 @@ Commit: e8ee5c995066f82a8842edb02c34e3d7dc054e96
 
 Current state:
 - Local git repository on branch `main`, no remote configured, nothing pushed.
-  Once this log commit lands the history is fourteen commits, all trailer-free.
+  Once this log commit lands the history is thirteen commits, all trailer-free.
 - Ingested and verified: the EU AI Act, and NIST AI 100-1. Not yet ingested:
   NIST AI 600-1 and the AI RMF Playbook.
 
@@ -1500,7 +1500,7 @@ Commit: e4fd217bd4a1bec41577765d12b3e859743ba18d
 
 Current state:
 - Local git repository on branch `main`, no remote configured, nothing pushed.
-  Once this log commit lands the history is twelve commits, all trailer-free.
+  Once this log commit lands the history is eleven commits, all trailer-free.
 - Ingested and verified: the EU AI Act, and NIST AI 100-1. Not yet ingested:
   NIST AI 600-1 and the AI RMF Playbook. No retrieval, no query set, no gold
   passages, no results yet.
@@ -1543,7 +1543,7 @@ Commit: bade8bdd7f4ce0071d7c333dda1437be9f77a0d4
 
 Current state:
 - Local git repository on branch `main`, no remote configured, nothing pushed.
-  Once this log commit lands the history is ten commits, all trailer-free.
+  Once this log commit lands the history is nine commits, all trailer-free.
 - EU AI Act ingested and verified. NIST PDFs acquired and checksummed, not yet
   ingested.
 
@@ -1669,7 +1669,7 @@ Commit: f4d21deaff8ca968a0db14e9ddae47cb62ec00af
 
 Current state:
 - Local git repository on branch `main`, no remote configured, nothing pushed.
-  Once this log commit lands the history is eight commits, all trailer-free.
+  Once this log commit lands the history is seven commits, all trailer-free.
 - The EU AI Act is ingested and verified. The NIST PDFs are acquired and
   checksummed but not yet ingested. No retrieval, no query set, no gold
   passages, no results yet.

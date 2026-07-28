@@ -247,6 +247,96 @@
   "genuine_near_tie_pairs": "604 adjacent pairs in the dense top-106 have distinct scores within 2x the 1.49e-6 deviation; near-ties, deterministic once quantised.",
   "rank_100_to_106_gap": "Minimum positive dense-score gap between rank 100 and rank 106 over 1506 queries is 8.9e-5, far above 2x the deviation; the only sub-threshold gaps are exact zeros from identical-vector clusters. A corpus property, not support for the residual reading."
  },
+ "unit_chunk_cardinality": {
+  "note": "How many chunks a unit holds. Gold is unit-level and slot-based while first-pass retrieval returns a top 10 of chunks, so collapsing chunks to units is a definitional choice, and no retrieval metric in this repository has made it yet. Recorded before the metric exists so the measurement cannot be shaped by a metric written around it. Measurement only: it is not a parameter, not a tuning input, and decides nothing.",
+  "derivation": "eval/corpus_unit_index.json and eval/test_frame.json. tests/test_unit_chunk_cardinality.py re-derives every number below and fails on divergence, so a hand edit here or a change to either artifact breaks the suite.",
+  "what_it_constrains": "PREREGISTRATION.md defines recall as slots satisfied over total slots, which is unit-level and does not change with how many chunks a unit holds. It defines precision as retrieved units satisfying some slot over ten, whose numerator counts units and whose denominator counts chunk slots. Where a gold unit occupies more than one of the ten, those two levels differ, and a unit holding k chunks has k chances at a ten-slot cut where a single-chunk unit has one. Both effects are measured below and neither is resolved here; the resolution is a sealing-boundary decision.",
+  "corpus": {
+   "n_units": 1150,
+   "n_chunks": 1294,
+   "units_by_chunk_count": {
+    "1": 1053,
+    "2": 75,
+    "3": 12,
+    "4": 5,
+    "5": 3,
+    "8": 1,
+    "12": 1
+   },
+   "multi_chunk_units": 97,
+   "chunks_held_by_multi_chunk_units": 241,
+   "multi_chunk_units_by_document": {
+    "eu_ai_act": 65,
+    "nist_ai_100_1": 10,
+    "nist_ai_600_1": 8,
+    "nist_playbook": 14
+   },
+   "multi_chunk_units_by_unit_type": {
+    "article": 45,
+    "recital": 13,
+    "playbook_references": 12,
+    "section": 11,
+    "annex": 7,
+    "appendix": 3,
+    "appendix_section": 2,
+    "playbook_suggested_actions": 2,
+    "named_section": 1,
+    "references": 1
+   },
+   "largest_unit": "nist_ai_600_1:app_B",
+   "largest_unit_chunks": 12
+  },
+  "sealed_frame_gold_side": {
+   "single_hop.eu_ai_act": {
+    "distinct_candidate_units": 298,
+    "multi_chunk": 61
+   },
+   "single_hop.nist_ai_100_1": {
+    "distinct_candidate_units": 109,
+    "multi_chunk": 8
+   },
+   "single_hop.nist_ai_600_1": {
+    "distinct_candidate_units": 24,
+    "multi_chunk": 6
+   },
+   "clean_multi_hop.eu_internal_xref.source": {
+    "distinct_candidate_units": 95,
+    "multi_chunk": 45
+   },
+   "clean_multi_hop.eu_internal_xref.target": {
+    "distinct_candidate_units": 97,
+    "multi_chunk": 44
+   },
+   "action_to_parent.action_subcategory.parent": {
+    "distinct_candidate_units": 45,
+    "multi_chunk": 0
+   },
+   "near_miss.block_clusters": {
+    "distinct_candidate_units": 27,
+    "multi_chunk": 1
+   },
+   "near_miss.near_duplicate.query": {
+    "distinct_candidate_units": 71,
+    "multi_chunk": 0
+   }
+  },
+  "sealed_frame_gold_side_note": "Distinct candidate units per stratum source in eval/test_frame.json, before any draw. Which element of a pair carries gold differs by stratum, so each is named: clean multi-hop requires both endpoints, action-to-parent's gold is the parent, and the near-miss near_duplicate pairs carry gold on the query side. Exposure is concentrated in clean multi-hop, 44 of 97 target-side and 45 of 95 source-side, and absent from action-to-parent and from the near_duplicate query side, both 0. The near-miss block_clusters population carries 1 of 27, nist_playbook:sub_MEASURE_4.1.references, which is not among the three spaced picks and reaches gold only by backfill.",
+  "development_top10": {
+   "dev_01": 9,
+   "dev_02": 8,
+   "dev_03": 10,
+   "dev_04": 7,
+   "dev_05": 10,
+   "dev_06": 10,
+   "dev_07": 10,
+   "dev_08": 10,
+   "dev_09": 10,
+   "dev_10": 10,
+   "dev_11": 10,
+   "dev_12": 10
+  },
+  "development_top10_note": "The twelve committed development top-10s collapsed to distinct units. Nine hold ten distinct units, and dev_01, dev_02 and dev_04 hold 9, 8 and 7, so a multi-chunk unit consumes more than one of the ten slots in 3 of 12 queries on the only committed retrieval run. Development results are never a quality metric; this is a structural count."
+ },
  "development_set": {
   "note": "Development queries are never scored and never reported in results. They catch structural breakage only. Authored blind from unit text before any retrieval run, provable from git history: the query file and embeddings are one commit, the results another.",
   "queries": "eval/dev_queries.jsonl, 12 blind-authored (4 single-hop, 3 multi-hop, 3 identifier, 1 near-miss, 1 out-of-corpus), embeddings in eval/dev_query_embeddings.npy",

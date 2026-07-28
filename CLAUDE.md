@@ -45,7 +45,7 @@ A reviewer with a clone can follow the session-start list above in full. `CLAUDE
 
 10. Git flow. Local first. Commit locally with conventional-commit messages. Push to the public GitHub remote only on Hasan's explicit go. Never force-push. Never rewrite committed history. Both authorized rewrite exceptions are spent; a defect in history is fixed forward or lived with.
 
-11. Session log. `SESSION_LOG.md` records the work, not the commits. One entry covers one unit of work, which is usually several commits, and names every commit it covers with the hash and its subject. An entry is appended before the work is set aside, and a new session must be able to resume from the last entry plus the governance files alone. Entries are written to the standard below.
+11. Session log. `SESSION_LOG.md` records the work, not the commits. One entry covers one unit of work, which is usually several commits, and names every commit it covers with the hash and its subject. An entry does not name the commit that places it, since that commit's content is the entry, and that is the only commit an entry may omit: a commit touching any file other than `SESSION_LOG.md` is named by some entry. Where the placing commit needs to be identifiable, the entry states which commit will place it rather than citing a hash it cannot yet know. An entry is appended before the work is set aside, and a new session must be able to resume from the last entry plus the governance files alone. Entries are written to the standard below.
 
 12. Tests for every deterministic check. Any grounding, completeness, retrieval-metric, or scoring function ships with tests. A deterministic check with no test does not merge.
 
