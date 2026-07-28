@@ -4,6 +4,55 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-07-28, session log standard and verification discipline written into CLAUDE.md
+
+SESSION_LOG.md ships. It is the file in this repository written most often by an
+agent and reviewed least per line, and every process claim the README makes rests
+on it. The standard it is held to, and the verification discipline behind the
+deterministic checks, were not in the file read at the start of every session.
+Both are now in CLAUDE.md as S1 through S11 and V1 through V19. Each item was
+paid for by a defect recorded elsewhere in this log.
+
+Rule 11 was corrected on the owner's ruling. It required an entry immediately
+after each commit, and this file's header repeated that claim. Measured: 22
+entries against a rev-list count of 57. The practice is one entry per unit of
+work, naming the commits it covers, which is what the writing standard requires,
+since an entry recording decisions rather than a sequence of events cannot be one
+per commit. The rule was stale, not the practice. Changing the practice to match
+the rule was rejected for that reason. The header line and one stale restatement
+in an earlier entry were corrected in the same commit.
+
+Rule 10 now records that both authorized history-rewrite exceptions are spent, so
+a defect in history is fixed forward or lived with.
+
+Rule 13 now forbids reconstructing ISO/IEC 42001 clause content by paraphrase and
+not only by quotation. Three pre-registered adversarial queries will reference
+that standard, which is excluded from the corpus on copyright grounds, and a
+question specific enough to probe a clause can encode the clause without quoting
+it. The rule was committed before any of those queries was written.
+
+The layer-gold firewall moved into CLAUDE.md and gained a clause. It bars the
+operational layer from using any relation that defines the gold for the query it
+is answering, which leaves the empty-gold case uncovered: adversarial queries have
+no gold, so no such relation exists to bar. The added clause gives the layer the
+query text and the retrieved context and nothing else, barring it from a query
+row's stratum label, row identifier, and notes. Ruled before the layer exists,
+because ruling it once an abstention rate is known would be indistinguishable
+from rescuing one.
+
+S9 ships as a rule this log does not yet satisfy. It bars describing the contents
+or purpose of an ignored working file. Fifteen lines in earlier entries reference
+that file, and nine of them state its contents or its purpose rather than only the
+mechanism of an edit, on two independent classifications of the same fifteen lines
+that agreed line for line. The mechanism and content boundary is a judgment and
+not a mechanical test, and the count carries that limitation. Those nine are left
+uncorrected. Whether they are defects or are consistent with disclosed practice
+turns on a decision not yet made, and correcting them ahead of that decision would
+be scrubbing rather than fixing.
+
+Commits:
+- 5bc01d3, governance: consolidate session log standard and verification discipline into CLAUDE.md
+
 ## 2026-07-27, sealed test-set candidate frame, corpus unit index, query-embedding builder
 
 The sealed specification fixes the stratum counts and the gold rules and leaves one degree
