@@ -4,6 +4,48 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-07-28, retrieval metric definitions corrected before any generation
+
+The retrieval metrics section specified its scoring level twice and disagreed with
+itself. The header named gold chunks and the rule named units, and NDCG@10 named a
+gain without naming the ideal it is normalised against, so it had no value at all.
+Both were found before any generation ran, so the file was revisable under Rule 4.
+
+Precision@10 is now the fraction of the ten retrieved chunks whose unit satisfies a
+slot. The ten positions are chunks, and a chunk the model receives occupies context
+whether or not another chunk of the same unit is also present. That leaves precision
+raised by a retrieval returning several verbatim carriers of one statement, which is
+correct behaviour under a gold rule where any carrier satisfies. The development
+results show it: one query returned three distinct carriers of a single statement at
+the top three ranks. The definition stands rather than being changed, because
+counting satisfied slots instead collapses precision into a rescaling of recall and
+carries no independent information. Each query's carrier count is reported alongside
+the metric and no precision figure is quoted without it.
+
+NDCG@10 now assigns gain 1 to each slot at the rank of the first chunk satisfying
+it, normalised against those gains at the leading ranks. An earlier draft normalised
+against every chunk of every acceptable unit, which scored one correct carrier of a
+three-carrier slot at 0.4693 and made a perfect score reachable only by returning
+redundant copies. That draft was rejected before placement: 61 of the 72 duplication
+groups have more than one carrier, so the defect would have applied to most of them.
+
+A Gold set rule now requires a query's slots to have disjoint acceptable-unit sets.
+Without it a single retrieved unit could satisfy two slots, which scores recall 1.0
+on a query built to require two units and lifts NDCG@10 above 1. No candidate in the
+committed frame violates it and a backfill could have introduced one silently. A
+drawn candidate whose slots cannot be made disjoint is a recorded rejection.
+
+Two decisions that were settled earlier and recorded in no tracked file are now in
+the pre-registration: the Batch API as the generation transport, and reasoning effort
+low on the Opus tier. Both fix cost and output and had to be frozen before the paid
+step. A third, the withdrawal of orthographic variation traps from the query set, is
+recorded in Composition with its reason, that the shared retrieval path should handle
+hyphenation and spelling variants and a failure mode is not preserved so the layer
+has something to fix.
+
+Commits:
+- bc4b2d4 fix: correct the retrieval metric definitions before any generation
+
 ## 2026-07-28, commit-count claims corrected across eleven sites
 
 Eleven claims about the length of the history were false. Ten share one cause and
