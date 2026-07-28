@@ -142,28 +142,36 @@ def largest_remainder(sizes: list[int], total: int) -> list[int]:
     return alloc
 
 
-def select(draw: list, m: int, distinct_key=None, rejected=()) -> list:
+def select(draw: list, m: int, distinct_key=None, rejected=(), *, taken=()) -> list:
     """The committed selection rule: forward-walk the draw order, taking the first m entries that
     are not in the rejection log and, when distinct_key is given, whose key has not already been
     taken. Rejections and key-collisions both walk forward, so the selected set stays
-    reconstructible from the draw order and the rejection log alone."""
+    reconstructible from the draw order and the rejection log alone.
+
+    taken seeds the key set, which is how a source constrains itself against another source's
+    already-selected units. A distinct_key returning None means the candidate carries no key and
+    can never collide, which is how a rule keyed on a partial property leaves the rest
+    unconstrained. Both are keyword-only so no positional call can bind them by accident."""
     blocked = {json.dumps(r, ensure_ascii=False) for r in rejected}
-    out, taken = [], set()
+    out, seen = [], set(taken)
     for c in draw:
         if json.dumps(c, ensure_ascii=False) in blocked:
             continue
         if distinct_key is not None:
             k = distinct_key(c)
-            if k in taken:
-                continue
-            taken.add(k)
+            if k is not None:
+                if k in seen:
+                    continue
+                seen.add(k)
         out.append(c)
         if len(out) == m:
             break
     return out
 
 
-def _stratum_source(stratum, source, candidates, m, distinct_target=False):
+def _stratum_source(
+    stratum, source, candidates, m, distinct_target=False, distinct_from=None, identity_group=None
+):
     off = OFFSET[(stratum, source)]
     spec = {
         "offset": off,
@@ -173,6 +181,10 @@ def _stratum_source(stratum, source, candidates, m, distinct_target=False):
     }
     if distinct_target:
         spec["select_distinct_target"] = True
+    if distinct_from is not None:
+        spec["select_distinct_from"] = distinct_from
+    if identity_group is not None:
+        spec["select_distinct_identity_group"] = identity_group
     return spec
 
 
@@ -270,6 +282,7 @@ def build_frame() -> dict:
     # dedup: two of the 18, references#p1 and #p2 of one unit, collapse, so this scope's 18
     # becomes 17. The 20 block-cluster total is the sealed chunk-level number and is kept.
     vg = json.loads((DATA / "retrieval" / "verbatim_groups.json").read_text(encoding="utf-8"))
+    nd = json.loads((DATA / "retrieval" / "near_duplicate_exceptions.json").read_text(encoding="utf-8"))
     block_clusters, surviving_units = [], []
     for g in vg["bases"]["normalised_identity"]["groups"]:
         members = [_unit_of(m) for m in g["members"]]
@@ -281,8 +294,30 @@ def build_frame() -> dict:
     assert len(block_clusters) == 20, f"block clusters {len(block_clusters)} != 20"
     assert len(surviving_clusters) == 17, f"surviving block clusters {len(surviving_clusters)} != 17"
 
+    # Sealed line 58 names the 12 hand-audited near-block-duplicate pairs as a source for the
+    # three measured picks alongside the clusters, so the population is the union of both, query
+    # side only. The returned side is the competitor, not the gold, and has 6 distinct values
+    # across the 12, so unioning it would give one unit several draw slots.
+    twelve_queries = [p["query"] for p in nd["block_near_duplicates_hand_audited"]["pairs"]]
+    assert len(twelve_queries) == 12, f"hand-audited pairs {len(twelve_queries)} != 12"
+    bc_union = sorted(set(surviving_clusters) | set(twelve_queries))
+    assert len(bc_union) == 27, f"block-cluster union {len(bc_union)} != 27"
+    bc_candidates = [u for u in bc_union if u not in closure]
+    assert len(bc_candidates) == 27, f"union after closure filter {len(bc_candidates)} != 27"
+
+    # Rule B key: the identity group's representative, matched by exact string equality between
+    # the candidate and a group member. See select_distinct_identity_group.basis for why exact
+    # equality rather than the unit-normalised alternative.
+    identity_key: dict[str, str] = {}
+    candidate_set = set(bc_candidates)
+    for g in vg["bases"]["normalised_identity"]["groups"]:
+        for mem in g["members"]:
+            if mem in candidate_set:
+                assert mem not in identity_key, f"candidate {mem} in two identity groups"
+                identity_key[mem] = g["representative"]
+    assert len(identity_key) == 18, f"identity keys {len(identity_key)} != 18"
+
     # near-miss, source 2: near-duplicate pairs whose query unit is out of closure.
-    nd = json.loads((DATA / "retrieval" / "near_duplicate_exceptions.json").read_text(encoding="utf-8"))
     nd_pairs = []
     for cls in ("cross_document_statement_class", "block_near_duplicates_hand_audited"):
         for p in nd[cls]["pairs"]:
@@ -299,6 +334,54 @@ def build_frame() -> dict:
     assert len(cm_selected) == 12, f"clean multi-hop selected {len(cm_selected)} != 12"
     assert len({e[1] for e in cm_selected}) == 12, "clean multi-hop selection has duplicate targets"
     assert not (closure & {u for e in cm_selected for u in e}), "clean multi-hop selection touches closure"
+
+    # near-miss selection: block_clusters resolves first, per canonical_offset_order, then
+    # near_duplicate walks with those picks seeded into its taken set. Both distinctness rules are
+    # verified here so a violation fails the build rather than reaching a reviewer.
+    identity_basis = (
+        "The representative of the normalise-identity group in "
+        "data/retrieval/verbatim_groups.json at .bases.normalised_identity whose members include "
+        "the candidate, matched by exact string equality between the candidate and a member. 18 "
+        "of the 27 candidates carry a key; the 9 in no group are absent from the map and never "
+        "block. The population and the key are built on different matching rules: the population "
+        "admits a unit through chunk-level membership normalised to its unit id, while the key "
+        "requires the member string to equal the candidate string. One candidate, "
+        "nist_playbook:sub_MEASURE_4.1.references, is admitted by the population and carries no "
+        "key, because its two chunks belong to two different groups and a single-valued key "
+        "cannot hold both. The unit-normalised alternative would give it a key and 19 of 27, and "
+        "was rejected because it requires choosing between those two groups after the draw. Both "
+        "definitions select the same three units on this population, so the choice could not have "
+        "been fitted to an outcome. A build-time assertion re-derives this map and fails on any "
+        "divergence."
+    )
+    nm_bc = _stratum_source(
+        "near_miss",
+        "block_clusters",
+        bc_candidates,
+        3,
+        identity_group={
+            "basis": identity_basis,
+            "key_by_candidate": {k: identity_key[k] for k in sorted(identity_key)},
+        },
+    )
+    nm_nd = _stratum_source(
+        "near_miss", "near_duplicate", nd_pairs, 5, distinct_from="block_clusters"
+    )
+    nm_bc_selected = select(nm_bc["draw_order"], 3, distinct_key=lambda c: identity_key.get(c))
+    nm_nd_selected = select(
+        nm_nd["draw_order"], 5, distinct_key=lambda e: e[0], taken=set(nm_bc_selected)
+    )
+    assert len(nm_bc_selected) == 3, f"near-miss block_clusters selected {len(nm_bc_selected)} != 3"
+    assert len(nm_nd_selected) == 5, f"near-miss near_duplicate selected {len(nm_nd_selected)} != 5"
+    _bk = [identity_key[c] for c in nm_bc_selected if c in identity_key]
+    assert len(_bk) == len(set(_bk)), "near-miss block_clusters selection shares an identity group"
+    assert not (set(nm_bc_selected) & {e[0] for e in nm_nd_selected}), (
+        "near-miss sources selected the same unit"
+    )
+    assert not (closure & set(nm_bc_selected)), "near-miss block_clusters selection touches closure"
+    assert not (closure & {_unit_of(u) for e in nm_nd_selected for u in e}), (
+        "near-miss near_duplicate selection touches closure"
+    )
 
     finding = (
         "Clean multi-hop is allocated 12 EU internal cross-references and 0 NIST prose "
@@ -332,6 +415,86 @@ def build_frame() -> dict:
         "inventing a cross-stratum disjointness constraint after the frame is drawn would be the "
         "worse move. Stated here so a reviewer finds it in the frame rather than discovering it "
         "unremarked."
+    )
+
+    near_miss_overlap = (
+        "Sealed line 58 names the 12 fixture near-block-duplicates twice: as a source for the "
+        "three measured picks alongside the 20 normalise-identical block clusters, and inside the "
+        "committed near_duplicate class from which the five authored picks are drawn. The builder "
+        "resolved that overlap without recording it, iterating both sub-populations of "
+        "near_duplicate_exceptions.json into the near_duplicate source while building "
+        "block_clusters from verbatim_groups.json alone. The three measured were therefore drawn "
+        "entirely from the normalise-identical half, where 16 of the 17 candidates were the "
+        "lexicographic minimum of their own identity group and the chunk-id tie-break, not "
+        "retrieval, decides the ordering among byte-identical text. Sealed line 58 states that "
+        "the three reproduce the development query 11 structure, and that query's gold unit "
+        "belongs to no normalise-identity group, so the structure the three were specified to "
+        "reproduce was absent from the pool they were drawn from. Correcting rather than "
+        "recording was decided on measurement: 8 of the 12 query-side units belong to no identity "
+        "group, and 8 of 12 by the reason and genuine_preference fields, or 9 of 12 by "
+        "won_by_fused, resolve by a BM25 term-density separation rather than by the tie-break, so "
+        "the 12 are a different instrument and not a relabelling of the clusters. The "
+        "block_clusters population became the union of the 17 surviving clusters and the 12 "
+        "query-side units, 27 after 2 duplicates were removed, with 0 removed by the closure "
+        "filter. The 12 entered whole; filtering them by identity-group membership, "
+        "won_by_fused, reason or cosine was rejected, because selecting a population on a "
+        "property measured after the draw is shaping. The near_duplicate source is unchanged and "
+        "remains set-equal to the 59 surviving cross-document pairs plus the 12. The deviation "
+        "was reached by inspecting the drawn units, and is independently visible by comparing "
+        "sealed line 58 against the builder's population code without knowledge of which units "
+        "were drawn. Residual: 1 of the 3 corrected picks has gold in no identity group, against "
+        "0 of 3 before. The other 2 remain identity-group cases decided by the tie-break, which "
+        "is a property of a corpus whose block clusters are predominantly identity groups. No "
+        "adjustment to the offset, the spacing rule or the population was made to improve that "
+        "ratio."
+    )
+
+    near_duplicate_record_10 = (
+        "In data/retrieval/near_duplicate_exceptions.json, the hand-audited pair whose query is "
+        "nist_playbook:sub_MAP_3.5.ai_transparency_resources and whose returned unit is "
+        "nist_playbook:sub_GOVERN_1.1.ai_transparency_resources carries won_by_fused set to "
+        "strict while both reason and genuine_preference record a tie resolved to the lower chunk "
+        "id by the locked tie-break. Across the 12 hand-audited pairs, reason and "
+        "genuine_preference agree on 12 of 12 and won_by_fused disagrees with them on 1. The "
+        "inconsistency is recorded and not resolved. Nothing in the near-miss population or its "
+        "draw depends on which field is authoritative, because the 12 enter the block_clusters "
+        "population whole and are filtered on none of the three."
+    )
+
+    nm_population_correction = (
+        "The block_clusters population is the union of the surviving normalise-identical block "
+        "clusters and the query-side units of the 12 hand-audited near-block-duplicate pairs, "
+        "which is what sealed line 58 names as the source for the three measured picks. It was "
+        "previously the clusters alone. The 12 enter whole and are filtered on no measured "
+        "property. See recorded_finding.near_miss_population_overlap_resolved_silently for the "
+        "deviation, the measurements that decided the correction, and the residual it does not "
+        "remove."
+    )
+
+    nm_cross_source_cascade = (
+        "The five picks from near_duplicate are selected with the three already selected from "
+        "block_clusters seeded into the taken set, so the two sources are not independent, and "
+        "canonical_offset_order fixes block_clusters ahead of near_duplicate for that reason. An "
+        "authoring rejection in block_clusters can therefore change which near_duplicate entries "
+        "are selected, which is stated here because it changes what a rejection costs at "
+        "authoring time. A first check reported the cascade as demonstrated on this draw; that "
+        "result was withdrawn after isolation showed it had injected rejections into both sources "
+        "and attributed the change to the wrong cause. Rejecting only the first block_clusters "
+        "pick leaves the five unchanged, because the replacement pick is element 0 of no "
+        "near_duplicate entry. The mechanism is live and does not fire on this draw."
+    )
+
+    nm_backfill_authoring_rule = (
+        "Both distinctness rules apply during backfill and not only to the initial selection: the "
+        "walk continues through the draw order, skipping rejected and colliding entries, until "
+        "each allocation fills. A pick entering by backfill, from a distinctness skip or an "
+        "authoring rejection, is judged and rejected with a recorded reason under the same "
+        "standard as a spaced pick. A unit may be gold for a block_clusters pick and "
+        "simultaneously the returned-side competitor of a near_duplicate pair; this is permitted, "
+        "because the two picks have different gold, no identical text is involved, and their "
+        "outcomes are not correlated by construction. That was ruled before the corrected draw "
+        "was computed, and select_distinct_from keys on element 0 only and does not exclude the "
+        "returned side. It does not fire on this draw."
     )
 
     return {
@@ -372,8 +535,15 @@ def build_frame() -> dict:
             "candidate space rather than off the sorted head. Selection is the first m draw-order "
             "entries not in the rejection log. A stratum marked select_distinct_target additionally "
             "skips a draw-order entry whose target unit is already selected, continuing the forward "
-            "walk until m are taken, the same forward walk a rejection uses. The spaced picks reuse "
-            "eval/dev_unit_pool.json selection_rule."
+            "walk until m are taken, the same forward walk a rejection uses. A source marked "
+            "select_distinct_from names another source in the same stratum and starts its walk "
+            "with that source's already-selected units in its taken set, keyed on element 0 of a "
+            "pair or on the candidate itself for a bare string, which makes the two sources "
+            "order-dependent in the order canonical_offset_order fixes. A source marked "
+            "select_distinct_identity_group carries a key_by_candidate map and skips an entry "
+            "whose key is already taken; a candidate absent from that map carries no key and never "
+            "collides. Every rule applies during backfill and not only to the initial picks. The "
+            "spaced picks reuse eval/dev_unit_pool.json selection_rule."
         ),
         "canonical_offset_order": [list(p) for p in CANONICAL_ORDER],
         "strata": {
@@ -478,13 +648,12 @@ def build_frame() -> dict:
             },
             "near_miss": {
                 "total": 8,
+                "population_correction": nm_population_correction,
+                "cross_source_cascade": nm_cross_source_cascade,
+                "backfill_authoring_rule": nm_backfill_authoring_rule,
                 "sources": {
-                    "block_clusters": _stratum_source(
-                        "near_miss", "block_clusters", surviving_clusters, 3
-                    ),
-                    "near_duplicate": _stratum_source(
-                        "near_miss", "near_duplicate", nd_pairs, 5
-                    ),
+                    "block_clusters": nm_bc,
+                    "near_duplicate": nm_nd,
                 },
             },
             "adversarial": {
@@ -501,6 +670,8 @@ def build_frame() -> dict:
         "recorded_finding": {
             "clean_multi_hop_is_eu_only": finding,
             "cross_stratum_gold_govern_1_3": govern_1_3,
+            "near_miss_population_overlap_resolved_silently": near_miss_overlap,
+            "near_duplicate_record_10_internally_inconsistent": near_duplicate_record_10,
         },
     }
 

@@ -43,21 +43,63 @@ def _unit(value: str) -> str:
     return value.split("#", 1)[0]
 
 
-def _selected(spec: dict, rejected_keys: set) -> list:
+def _gold(candidate):
+    """The gold unit a candidate names: element 0 of a pair, or the candidate itself."""
+    return candidate[0] if isinstance(candidate, list) else candidate
+
+
+def _distinct_key(spec: dict):
+    """The key function a spec's distinctness rule uses, or None when it carries no rule. A key of
+    None for a given candidate means that candidate is unconstrained and can never collide."""
+    if spec.get("select_distinct_target"):
+        return lambda c: c[1]
+    if "select_distinct_identity_group" in spec:
+        table = spec["select_distinct_identity_group"]["key_by_candidate"]
+        return lambda c: table.get(_gold(c))
+    if "select_distinct_from" in spec:
+        return _gold
+    return None
+
+
+def _selected(spec: dict, rejected_keys: set, taken=()) -> list:
     """Reconstruct the selected set from the draw order and rejection log alone, applying the
-    committed rule: forward-walk, skip rejected entries and, under select_distinct_target,
-    entries whose target unit is already taken, until allocation entries are chosen."""
-    out, taken = [], set()
+    committed rule: forward-walk, skip rejected entries and, under a distinctness rule, entries
+    whose key is already taken, until allocation entries are chosen. taken seeds the key set so a
+    source constrained against another source reconstructs the same way the builder selected."""
+    key = _distinct_key(spec)
+    out, seen = [], set(taken)
     for candidate in spec["draw_order"]:
         if json.dumps(candidate) in rejected_keys:
             continue
-        if spec.get("select_distinct_target"):
-            if candidate[1] in taken:
-                continue
-            taken.add(candidate[1])
+        if key is not None:
+            k = key(candidate)
+            if k is not None:
+                if k in seen:
+                    continue
+                seen.add(k)
         out.append(candidate)
         if len(out) == spec["allocation"]:
             break
+    return out
+
+
+def _near_miss_selected(frame: dict, rejected_by_source: dict) -> dict:
+    """near_miss's two sources are order-dependent: near_duplicate is constrained against
+    block_clusters, in the order canonical_offset_order fixes. Walk them in that order, threading
+    the taken set, so the cross-source rule reconstructs from committed files alone."""
+    order = [tuple(p) for p in frame["canonical_offset_order"]]
+    sources = frame["strata"]["near_miss"]["sources"]
+    out, by_name = {}, {}
+    for stratum, source in order:
+        if stratum != "near_miss":
+            continue
+        spec = sources[source]
+        seed = set()
+        if "select_distinct_from" in spec:
+            seed = {_gold(c) for c in by_name[spec["select_distinct_from"]]}
+        picked = _selected(spec, rejected_by_source.get(("near_miss", source), set()), taken=seed)
+        by_name[source] = picked
+        out[source] = picked
     return out
 
 
@@ -84,8 +126,10 @@ def test_allocations_and_universe_match_the_ruling():
 def test_no_selected_pick_is_in_the_closure():
     closure, _ = compute_closure()
     frame = _frame()
+    near_miss = _near_miss_selected(frame, {})
     for stratum, source, spec in _sources(frame):
-        for candidate in _selected(spec, set()):
+        picks = near_miss[source] if stratum == "near_miss" else _selected(spec, set())
+        for candidate in picks:
             items = candidate if isinstance(candidate, list) else [candidate]
             offending = [i for i in items if _unit(i) in closure]
             assert not offending, f"{stratum}/{source}: selected pick {candidate} touches closure {offending}"
@@ -109,9 +153,39 @@ def test_selected_set_reconstructs_from_draw_order_and_rejection_log():
         )
         assert all(json.dumps(c) in keys for c in selected), f"{stratum}/{source}: selected outside draw order"
         assert not (set(map(json.dumps, selected)) & rejected), f"{stratum}/{source}: selected a rejected candidate"
-        if spec.get("select_distinct_target"):
-            targets = [c[1] for c in selected]
-            assert len(set(targets)) == len(targets), f"{stratum}/{source}: selected duplicate targets"
+        key = _distinct_key(spec)
+        if key is not None:
+            taken = [key(c) for c in selected if key(c) is not None]
+            assert len(set(taken)) == len(taken), f"{stratum}/{source}: selected duplicate keys"
+
+
+def test_near_miss_rules_hold_through_backfill():
+    """Both near-miss rules bind during backfill, not only the initial picks, and the selected set
+    still reconstructs from the draw order plus the rejection log. Driven off a synthetic log, so
+    it exercises the cascade whether or not authoring has recorded a real rejection yet."""
+    frame = _frame()
+    nm = frame["strata"]["near_miss"]["sources"]
+    bc, nd = nm["block_clusters"], nm["near_duplicate"]
+    synthetic = {
+        ("near_miss", "block_clusters"): {json.dumps(bc["draw_order"][0])},
+        ("near_miss", "near_duplicate"): {json.dumps(c) for c in nd["draw_order"][:2]},
+    }
+    picked = _near_miss_selected(frame, synthetic)
+    three, five = picked["block_clusters"], picked["near_duplicate"]
+
+    assert len(three) == bc["allocation"] and len(five) == nd["allocation"]
+    # the walk went deeper than the spaced picks, so backfill really was exercised
+    assert three != _near_miss_selected(frame, {})["block_clusters"]
+    # no rejected entry was selected, on either source
+    for source, sel in (("block_clusters", three), ("near_duplicate", five)):
+        assert not (set(map(json.dumps, sel)) & synthetic[("near_miss", source)])
+        assert all(json.dumps(c) in {json.dumps(d) for d in nm[source]["draw_order"]} for c in sel)
+    # rule B: no two block_clusters picks share an identity group
+    table = bc["select_distinct_identity_group"]["key_by_candidate"]
+    groups = [table[c] for c in three if c in table]
+    assert len(set(groups)) == len(groups), f"backfilled picks share an identity group: {groups}"
+    # rule A: the two sources did not select the same unit
+    assert not (set(three) & {_gold(c) for c in five}), "backfilled sources selected the same unit"
 
 
 def test_closure_lists_all_50_units_with_provenance():
