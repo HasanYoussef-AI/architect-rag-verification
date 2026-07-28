@@ -44,7 +44,7 @@ Blind grading. The grader runs as a separate invocation over committed files, wi
 
 ## Metrics
 
-Generation faithfulness is reported as the unsupported-claim rate, the fraction of atomic claims in an answer not grounded in the retrieved chunks, before and after the layer. Retrieval is reported with Precision@k, Recall@k, MRR, and NDCG@10 against the gold chunks, which surfaces the completeness failures that faithfulness alone hides. Both surfaces are reported separately, so the repo honestly shows what the layer fixes and what it does not.
+Generation faithfulness is reported as the unsupported-claim rate, the fraction of atomic claims in an answer not grounded in the retrieved chunks, before and after the layer. Retrieval is reported with Precision@10, Recall@10, MRR, and NDCG@10 against the slot-based gold defined in the pre-registration, which surfaces the completeness failures that faithfulness alone hides. Both surfaces are reported separately, so the repo honestly shows what the layer fixes and what it does not.
 
 ## Reproducibility model
 

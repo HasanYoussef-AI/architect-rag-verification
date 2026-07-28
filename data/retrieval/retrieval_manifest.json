@@ -250,7 +250,7 @@
  "unit_chunk_cardinality": {
   "note": "How many chunks a unit holds. Gold is unit-level and slot-based while first-pass retrieval returns a top 10 of chunks, so collapsing chunks to units is a definitional choice, and no retrieval metric in this repository has made it yet. Recorded before the metric exists so the measurement cannot be shaped by a metric written around it. Measurement only: it is not a parameter, not a tuning input, and decides nothing.",
   "derivation": "eval/corpus_unit_index.json and eval/test_frame.json. tests/test_unit_chunk_cardinality.py re-derives every number below and fails on divergence, so a hand edit here or a change to either artifact breaks the suite.",
-  "what_it_constrains": "PREREGISTRATION.md defines recall as slots satisfied over total slots, which is unit-level and does not change with how many chunks a unit holds. It defines precision as retrieved units satisfying some slot over ten, whose numerator counts units and whose denominator counts chunk slots. Where a gold unit occupies more than one of the ten, those two levels differ, and a unit holding k chunks has k chances at a ten-slot cut where a single-chunk unit has one. Both effects are measured below and neither is resolved here; the resolution is a sealing-boundary decision.",
+  "what_it_constrains": "PREREGISTRATION.md scores Recall@10 as slots satisfied over total slots, and MRR as the reciprocal of the rank of the first chunk whose unit satisfies any slot, both over units, so neither moves with how many chunks a unit holds. It scores Precision@10 as the fraction of the ten retrieved chunks whose unit satisfies a slot, over chunks, so a gold unit occupying more than one of the ten raises it. It scores NDCG@10 over slots, gain 1 at the rank of the first chunk satisfying each slot, so a slot contributes once however many of its chunks appear. The distribution below is the population those definitions act on: 97 of 1150 units hold more than one chunk, unevenly across the strata, from 44 of 97 clean multi-hop targets to 0 of 45 action-to-parent parents.",
   "corpus": {
    "n_units": 1150,
    "n_chunks": 1294,
@@ -336,6 +336,140 @@
    "dev_12": 10
   },
   "development_top10_note": "The twelve committed development top-10s collapsed to distinct units. Nine hold ten distinct units, and dev_01, dev_02 and dev_04 hold 9, 8 and 7, so a multi-chunk unit consumes more than one of the ten slots in 3 of 12 queries on the only committed retrieval run. Development results are never a quality metric; this is a structural count."
+ },
+ "duplicated_gold_carrier_counts": {
+  "note": "Evidence for the precision property recorded in PREREGISTRATION.md, that Precision@10 is scored over chunks and is therefore raised when a retrieval returns several verbatim carriers of one statement, which the gold rule calls correct. The rule and the requirement to report a carrier count alongside every precision figure live in the sealed file. This block carries the measurement only and decides nothing.",
+  "derivation": "Carrier equivalence classes are the union of data/chunks/nist_ai_100_1.duplication_map.json and the normalise-identity groups in data/retrieval/verbatim_groups.json, because neither relation alone is complete. Occurrences are counted against the committed top 10 in eval/dev_retrieval_results.json. Deliberately not derived from that file's hit_ranks, which records ranks per expected unit under the any-carrier rule and omits a carrier present in the same top 10. tests/test_gold_carrier_counts.py re-derives every number here and fails on divergence.",
+  "duplication_map": {
+   "groups": 72,
+   "carriers_per_group": {
+    "1": 11,
+    "2": 27,
+    "3": 34
+   },
+   "groups_with_more_than_one_carrier": 61
+  },
+  "normalised_identity_groups": {
+   "groups": 55,
+   "members_per_group": {
+    "2": 49,
+    "3": 4,
+    "4": 1,
+    "11": 1
+   }
+  },
+  "observed_in_development_top10": {
+   "dev_01": {
+    "max_carriers_of_one_statement_in_top10": 0,
+    "carriers": []
+   },
+   "dev_02": {
+    "max_carriers_of_one_statement_in_top10": 0,
+    "carriers": []
+   },
+   "dev_03": {
+    "max_carriers_of_one_statement_in_top10": 0,
+    "carriers": []
+   },
+   "dev_04": {
+    "max_carriers_of_one_statement_in_top10": 0,
+    "carriers": []
+   },
+   "dev_05": {
+    "max_carriers_of_one_statement_in_top10": 3,
+    "carriers": [
+     {
+      "unit_id": "nist_ai_100_1:sub_GOVERN_6.2",
+      "rank": 1
+     },
+     {
+      "unit_id": "nist_ai_600_1:sub_GOVERN_6.2",
+      "rank": 2
+     },
+     {
+      "unit_id": "nist_playbook:sub_GOVERN_6.2",
+      "rank": 3
+     }
+    ]
+   },
+   "dev_06": {
+    "max_carriers_of_one_statement_in_top10": 3,
+    "carriers": [
+     {
+      "unit_id": "nist_ai_100_1:sub_MEASURE_2.13",
+      "rank": 3
+     },
+     {
+      "unit_id": "nist_ai_600_1:sub_MEASURE_2.13",
+      "rank": 4
+     },
+     {
+      "unit_id": "nist_playbook:sub_MEASURE_2.13",
+      "rank": 5
+     }
+    ]
+   },
+   "dev_07": {
+    "max_carriers_of_one_statement_in_top10": 0,
+    "carriers": []
+   },
+   "dev_08": {
+    "max_carriers_of_one_statement_in_top10": 3,
+    "carriers": [
+     {
+      "unit_id": "nist_ai_100_1:sub_GOVERN_1.1",
+      "rank": 3
+     },
+     {
+      "unit_id": "nist_ai_600_1:sub_GOVERN_1.1",
+      "rank": 4
+     },
+     {
+      "unit_id": "nist_playbook:sub_GOVERN_1.1",
+      "rank": 10
+     }
+    ]
+   },
+   "dev_09": {
+    "max_carriers_of_one_statement_in_top10": 0,
+    "carriers": []
+   },
+   "dev_10": {
+    "max_carriers_of_one_statement_in_top10": 3,
+    "carriers": [
+     {
+      "unit_id": "nist_ai_100_1:sub_MAP_3.4",
+      "rank": 1
+     },
+     {
+      "unit_id": "nist_ai_600_1:sub_MAP_3.4",
+      "rank": 2
+     },
+     {
+      "unit_id": "nist_playbook:sub_MAP_3.4",
+      "rank": 3
+     }
+    ]
+   },
+   "dev_11": {
+    "max_carriers_of_one_statement_in_top10": 2,
+    "carriers": [
+     {
+      "unit_id": "nist_playbook:sub_MAP_3.1.ai_transparency_resources",
+      "rank": 2
+     },
+     {
+      "unit_id": "nist_playbook:sub_MAP_3.2.ai_transparency_resources",
+      "rank": 3
+     }
+    ]
+   },
+   "dev_12": {
+    "max_carriers_of_one_statement_in_top10": 0,
+    "carriers": []
+   }
+  },
+  "reading": "61 of the 72 duplication groups carry more than one unit, so most duplicated gold admits more than one satisfying carrier. On the twelve development queries, 5 return more than one carrier of a single statement inside the top 10 and 4 of those return three. The largest normalise-identity group is 11 members, the AI Transparency Resources block shared across 11 Playbook subcategories. Development results are never a quality metric; this is a structural count of how often the property fires, not a retrieval score."
  },
  "development_set": {
   "note": "Development queries are never scored and never reported in results. They catch structural breakage only. Authored blind from unit text before any retrieval run, provable from git history: the query file and embeddings are one commit, the results another.",
