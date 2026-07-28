@@ -4,6 +4,171 @@ Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
 A new session should be able to resume from the last entry here plus the
 governance files alone. Newest entries at the top.
 
+## 2026-07-27, sealed test-set candidate frame, corpus unit index, query-embedding builder
+
+The sealed specification fixes the stratum counts and the gold rules and leaves one degree
+of freedom, which specific units are drawn within a stratum. A selection described after the
+queries are authored is unfalsifiable. The candidate frame is therefore derived from the
+committed artifacts by committed code and frozen before any query text, gold, rank or result
+exists, the same discipline the reserved development pool already applies.
+
+### The development firewall and the duplication gold rule had not been composed
+
+The firewall requires that no pre-registered gold unit be drawn from the reserved forty-unit
+development pool. The gold rule states that a slot is satisfied by any unit carrying its
+statement. The first is written in units and the second operates on equivalence classes of
+units, so excluding the forty does not keep the pool out of gold. A slot for a statement
+with a carrier in the pool either names that carrier, breaking the firewall, or omits it,
+which scores a retrieval hit on byte-identical text as a miss.
+
+Candidates are filtered against a closure rather than the pool. Measured over the committed
+artifacts the closure is fifty units, the forty plus ten. Two of the ten are reachable only
+through the normalised-identity groups and not through the duplication map, so both
+relations are composed rather than either alone. The burn is at unit-equivalence
+granularity rather than subcategory granularity: MAP 3.4's statement unit is burned while
+its Playbook block units are not, so excluding everything under a subcategory would
+over-burn and excluding only the pool unit would under-burn. Eighteen of the twenty
+normalise-identical block clusters survive the closure. The closure is a strict superset of
+the pool, so the pre-registered disjointness promise is honoured and exceeded, and the
+sealed file is unchanged.
+
+### Single-hop eligibility is the sealed criterion in mechanical form
+
+The sealed specification excludes the Playbook from single-hop because its only
+atomic-factual candidates duplicate the NIST subcategory statements and its unique content
+is block elaboration. Those are two criteria, atomic-factual and not a duplicate, and the
+per-document unit-type allow-list is their mechanical form rather than a new composition
+decision.
+
+Excluded with reasons recorded in the frame: AI 600-1 actions, which are procedural
+suggested-action items rather than atomic fact and are the action-to-parent stratum's own
+source, so including them would overlap two strata on one unit type; AI 100-1 parts, the one
+remaining unit reading "Part 2: Core and Profiles"; and AI 600-1 subcategory statements the
+duplication map records as duplicated, which are verbatim restatements rooted at AI 100-1
+and eligible only in their originating document. Forty-three of the forty-five non-closure
+statements fall to that last rule, leaving two.
+
+AI 100-1 categories were included over an ambiguity. They carry statements and duplicate
+nothing, so both criteria pass. Retrieval adjacency to their own subcategories is a
+difficulty property rather than an eligibility criterion, and excluding a type because it
+might retrieve hard would fit the stratum to the outcome it exists to measure. An
+unanswerable draw is handled by the recorded rejection procedure instead.
+
+Eligible populations are 298, 109 and 24, and one per source with largest remainder gives
+eleven, five and two. The allocation follows eligible supply, which is a property of the
+corpus.
+
+### Clean multi-hop is twelve EU cross-references and no NIST
+
+The one-per-source floor introduced during frame design is withdrawn for this stratum only.
+Single-hop keeps its floor because all three of its sources have supply. This withdraws a
+design-time allocation rule rather than a split mandated by the sealed specification, which
+names eligible sources and mandates no split, so no correction to that file is required.
+
+Two measured causes. The NIST prose reference supply is thin and pointer-class, thirteen
+references against 367 EU internal edges before any closure, and the survivors are see-also
+and bibliography pointers rather than different-content hops. Separately, the development
+pool's one-unit-per-stratum design burned the units those references cite: of the eight
+same-document references lost, five fall to size-one NIST structural strata the pool
+necessarily takes whole, and three to the single AI 100-1 section the pool drew from a
+stratum of twenty-three, which is a dense cross-referencing hub. The first cause is prior
+and dominant and the second jointly determines the final zero. Naming only the frameworks
+would book a property of the pool's design as a property of the corpus.
+
+The candidates rejected under this rule are recorded: two intra-document pointers and one
+cross-document reference, all of which resolve on both endpoints and carry different content
+but cite the target as machinery, a list item, or a glossary location. The test applied is
+whether answering requires content from both endpoints or whether the source only points at
+where the answer lives.
+
+### Selection under skip and rejection
+
+Selection is a forward walk over the committed draw order, taking the first entries not in
+the rejection log, so the selected set is reconstructible from the draw order and the
+rejection log alone. That property ships as a test now and passes vacuously on an empty log.
+
+Clean multi-hop additionally skips an entry whose target unit is already selected. One
+target was gold for two spaced picks, which would correlate those outcomes and shrink the
+effective sample size of a twelve-query stratum. The constraint is enforced by the same
+forward walk rather than by removing candidates, so the reconstruction property is
+unaffected.
+
+The draw order's tail disperses rather than following sorted order. A sorted tail was
+measured to draw the alphabetical head of each candidate list: eighteen of the first thirty
+backfill entries for AI 100-1 single-hop were categories, sixteen percent of that
+population, with no subcategories at sixty-one percent of it; twenty-four of the first
+thirty for clean multi-hop were annex-sourced against a share of 7.7 percent. Every
+replacement, from a target skip or an authoring rejection, would have come from that head.
+The tail is ordered by maximum minimum circular distance to every already-taken index, ties
+to the lower index, which leaves the spaced picks unchanged and returns the backfill head to
+population proportions. One selected candidate moved.
+
+Block-cluster candidates are unit ids rather than the chunk-level representatives the
+identity groups carry. Identity is a chunk property and correct as such in that artifact,
+but gold is unit-level, so a candidate that cannot be a gold identifier is the wrong object,
+and one unit holding two draw slots would double-weight it. Two entries were two chunks of
+one unit, so the eighteen surviving clusters yield seventeen distinct unit candidates.
+
+### A shared gold class recorded rather than removed
+
+Single-hop draws the AI 100-1 carrier of GOVERN 1.3 and action-to-parent draws the AI 600-1
+carrier as its gold parent. The duplication map records that statement as duplicated, so
+under the any-carrier rule one slot is satisfied by either. This is the closure's defect
+shape, unit identity against equivalence class, and a unit-id collision check does not see
+it. It is recorded rather than removed: the same statement reached by an easy query and by a
+hard structural hop, carrying opposite pre-registered predictions, is a controlled pair. A
+cross-stratum disjointness constraint was considered and rejected as machinery introduced to
+erase an informative coincidence.
+
+### Corpus unit index
+
+Units are keyed on parent_id by the chunk artifacts and on unit_id by the pool, relation,
+cross-reference and duplication artifacts. The index makes that join once, covering 1,150
+units over 1,294 chunks. Its test re-derives byte-for-byte, which is the correct pin here
+because the derivation is machine-independent, and asserts that every unit_id referenced by
+those artifacts resolves to an index unit, which is what actually tests the bridge.
+
+### Query-embedding provenance
+
+No committed script produced the development query embedding array. The array was committed
+and level two held, but a reviewer could not verify that those bytes came from those queries
+through the declared path. A builder now produces both arrays through the shared
+normalise_for_comparison and ONNX path.
+
+Byte-identity of a regenerated array is not asserted. The manifest already records that ONNX
+reproduces rankings and not bytes across machines, so a byte assertion would pass locally and
+fail for a reviewer. The pins are shape, dtype, row alignment and L2 norm, plus rank
+reproduction from the regenerated array against the committed array, which is the assertion
+that carries provenance. Comparing against the committed results file tests the pipeline
+instead. The model's sha256 is asserted before use so a cache holding another revision fails
+loudly, and the gate is offline-only, so the tests skip rather than download.
+
+Rank reproduction is not available for the sealed set at its own commit, because that commit
+carries no ranks by construction. It is added when retrieval runs on that set.
+
+### Manifest stale statements corrected
+
+Two statements in the retrieval manifest were true when written and were contradicted by the
+committed development query set. Both are past-tense-marked rather than deleted, so the
+record of when they held survives. No parameter, measurement or decision in that file
+changed.
+
+Commits, local only:
+- 0453d9c, corpus unit index derived from chunk artifacts
+- 94a418c, query-embedding builder with provenance tests
+- c559130, sealed test-set candidate frame, committed before any query text
+- b048cab, retrieval manifest stale statements past-tense-marked
+
+Current state:
+- Local git on `main`, no remote configured, nothing pushed. The candidate frame is committed
+  and carries no query text, gold, rank or result. Suite 214 passes, or 212 with two skipped
+  where the pinned model is not cached, ruff clean, vendor verifier 30 checks.
+
+Next step:
+- The sealed fifty: query text, slot-based gold, per-edge verification records and the
+  rejection log, authored against the committed draw order, with query embeddings built by
+  `src/retrieve/build_query_embeddings.py`, committed before retrieval runs on them.
+
 ## 2026-07-27, session log heading dates derived from commit metadata
 
 The heading date on the history rebuild entry below was authored rather than read
