@@ -4,6 +4,50 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-07-28, near-miss population corrected to the sealed specification
+
+The frame's near-miss stratum drew its three measured picks from one of the two
+populations the sealed specification names for them. Sealed line 58 names the 12
+hand-audited near-block-duplicate pairs both as a source for those three and inside
+the committed near_duplicate class the five authored picks come from; the builder
+gave them to near_duplicate alone and recorded no choice. The three were therefore
+drawn entirely from the normalise-identical population, where 16 of 17 candidates
+were the lexicographic minimum of their own identity group, so the chunk-id
+tie-break rather than retrieval decides the ordering among byte-identical text. The
+development query the specification names as the structure those three reproduce has
+gold in no identity group, so that structure was absent from the pool.
+
+Correcting rather than recording was decided on measurement: 8 of the 12 query-side
+units belong to no identity group, and 8 of 12 or 9 of 12, depending on which of
+three fields is trusted, resolve by a BM25 term-density separation rather than by the
+tie-break. The block_clusters population became the union of the 17 surviving
+clusters and the 12 query-side units, 27 after 2 duplicates, 0 removed by closure.
+The 12 entered whole. Filtering them by any measured property was rejected, because
+selecting a population on a property observed after the draw is shaping.
+
+Two draw-time rules were added, both ruled before the corrected draw was computed.
+Cross-source distinctness prevents the three measured and the five authored from
+selecting the same unit, which the overlapping populations now make possible.
+Identity-group distinctness prevents two of the three measured being over
+byte-identical normalised text, extending to normalise-identity the principle the
+frame already applies to a shared gold target. Both apply during backfill, and a test
+exercising them under a synthetic rejection log replaces a reconstruction test that
+passed vacuously on an absent rejection log.
+
+The corrected three were predicted before the rebuild ran, from the union order and
+the spacing formula alone, and the rebuild confirmed each of them, both rules not
+firing, and the five unchanged. A byte-equality control reproduced the pre-correction
+draw orders from the same code path before any rebuilt number was accepted.
+
+The correction does not remove the property that prompted it. One of the three
+corrected picks has gold in no identity group, against none before; the other two
+remain identity-group cases decided by the tie-break. That is a property of a corpus
+whose block clusters are predominantly identity groups, and no adjustment to the
+offset, the spacing rule or the population was made to improve the ratio.
+
+Commits:
+- 5ea39cc, fix: near-miss block_clusters population corrected to the sealed specification
+
 ## 2026-07-28, session log standard and verification discipline written into CLAUDE.md
 
 SESSION_LOG.md ships. It is the file in this repository written most often by an
