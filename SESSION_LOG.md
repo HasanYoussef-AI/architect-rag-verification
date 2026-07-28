@@ -1,8 +1,8 @@
 # Session log, architect-rag-verification
 
-Running log owned by Claude Code. One entry per commit, per CLAUDE.md Rule 11.
-A new session should be able to resume from the last entry here plus the
-governance files alone. Newest entries at the top.
+Running log owned by Claude Code. One entry per unit of work, naming the commits
+it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
+last entry here plus the governance files alone. Newest entries at the top.
 
 ## 2026-07-27, sealed test-set candidate frame, corpus unit index, query-embedding builder
 
@@ -1704,10 +1704,9 @@ What changed:
 Why:
 - The tracker is the first file a new session reads, and it still described the
   pre-rebuild state. Correcting it was Hasan-directed in session, permitted under
-  CLAUDE.md for stale-reference corrections. CLAUDE.md Rule 11 requires a session
-  log entry after each commit, so the tracker commit is logged here, and this entry
-  names its own recording commit so the log-of-the-log does not spawn an endless
-  tail of unlogged commits.
+  CLAUDE.md for stale-reference corrections. The tracker commit is logged here, and
+  this entry names its own recording commit so the log-of-the-log does not spawn an
+  endless tail of unlogged commits.
 
 Current state:
 - Local git repository on branch `main`, no remote configured, nothing pushed.
