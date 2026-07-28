@@ -16,11 +16,12 @@ slot. The ten positions are chunks, and a chunk the model receives occupies cont
 whether or not another chunk of the same unit is also present. That leaves precision
 raised by a retrieval returning several verbatim carriers of one statement, which is
 correct behaviour under a gold rule where any carrier satisfies. The development
-results show it: one query returned three distinct carriers of a single statement at
-the top three ranks. The definition stands rather than being changed, because
-counting satisfied slots instead collapses precision into a rescaling of recall and
-carries no independent information. Each query's carrier count is reported alongside
-the metric and no precision figure is quoted without it.
+results show it: five of the twelve queries returned more than one carrier of a
+single statement inside the top 10, four of them returning three. The definition
+stands rather than being changed, because counting satisfied slots instead collapses
+precision into a rescaling of recall and carries no independent information. Each
+query's carrier count is reported alongside the metric and no precision figure is
+quoted without it.
 
 NDCG@10 now assigns gain 1 to each slot at the rank of the first chunk satisfying
 it, normalised against those gains at the leading ranks. An earlier draft normalised

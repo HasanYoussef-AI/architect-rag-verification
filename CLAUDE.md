@@ -117,7 +117,7 @@ S7. No first person, no second person, no present-tense enthusiasm. Past tense, 
 
 S8. Never restate what the diff shows. Length is set by the decisions in the commit, not by the size of the change.
 
-S9. Never name a commit hash as the location of removed or private material, and never describe the contents or purpose of an ignored working file. Mechanism may be stated; content may not.
+S9. Never name a commit hash as the location of removed or private material. An untracked file whose use the repository discloses may be named, and an edit to it may be described by its mechanism and by which decision it records; its text is not reproduced. Untracked material the repository does not disclose is not described at all, by content or by purpose.
 
 S10. Never cite a hash that does not resolve in the current history. A dangling citation is a defect wherever it appears.
 

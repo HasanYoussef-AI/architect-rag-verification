@@ -50,6 +50,14 @@ Generation faithfulness is reported as the unsupported-claim rate, the fraction 
 
 Running the models under test needs an API key and costs money, which is unavoidable because we test real models. That step runs once and its outputs are committed: queries, retrieved chunks, raw answers, and layer answers. The entire evaluation then runs deterministically over those committed files with no key, so any reviewer can clone the repo and reproduce every number for free. The pipeline also supports regenerating answers with a reviewer's own key, but that is never required to verify a result. No API keys are ever committed, and the documented `.env` pattern is the only way the key enters.
 
+## How this repository was developed
+
+Development used a working file that is not tracked here. It held session state, working notes, and a running index of decisions, and it is named in the session log wherever an entry records work done on it. It is not published and nothing in it is needed to reproduce any number in this repository.
+
+The decisions that govern this repository are in the tracked record: `CLAUDE.md`, `PREREGISTRATION.md`, this document, `SESSION_LOG.md`, `data/retrieval/retrieval_manifest.json`, and `corpus/SOURCES.md`. The retrieval parameters and their provenance live in the last two rather than in prose, so they can be checked mechanically rather than read. A decision found only in the untracked file is a defect, and the audit that produced this statement moved four of them into the files above rather than leaving the statement narrower.
+
+One category is deliberately absent from the tracked record. The identifiers of commits removed by the history rewrite are not written down anywhere, because a citation that does not resolve is worse than no citation. The rewrite itself, its scope, and what it did and did not cover are recorded in the session log.
+
 ## Honest boundary
 
 The completeness check works precisely because the corpus is bounded and small enough to read in full per query. This does not scale. As the corpus grows, reading every document per query becomes cost-prohibitive and slow, and past that point the honest fallback is retrieval-confidence estimation with abstention rather than full-document checking. The README states this boundary in writing, names the rough point where full-corpus checking stops being practical, and does not claim the bounded-corpus method as a general solution.
