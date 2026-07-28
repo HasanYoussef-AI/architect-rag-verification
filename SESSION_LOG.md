@@ -4,6 +4,37 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-07-28, commit-count claims corrected across eleven sites
+
+Eleven claims about the length of the history were false. Ten share one cause and
+the eleventh is separate.
+
+Ten entries state, in the form "once this log commit lands the history is N
+commits, all trailer-free", values of 26, 24, 22, 20, 18, 16, 14, 12, 10 and 8
+against measured 25, 23, 21, 19, 17, 15, 13, 11, 9 and 7. Each is stale by one in
+the same direction. The convention is fixed by the wording and confirmed by the two
+entries in the same class that enumerate their commits by hash and so verify
+themselves: N is the history length once the placing commit lands.
+
+The cause is recorded because it bounds what an earlier operation covered. The
+history rebuild re-anchored citations by hash, so it reached the two claims in this
+class that carry hashes and corrected them, and never examined the ten that do not.
+An earlier entry states that two commit-count enumerations were corrected against
+the rebuilt history. That was accurate about what was done and silent about the
+remainder; the class held twelve.
+
+The eleventh is a different shape. A claim of 27 commits preceding the retrieval
+build measures 25, having been off by one when authored before the rebuild removed
+one more. Its companion claim of seven retrieval-build commits holds exactly.
+
+Claims that record a measurement taken during a session are not corrected. Those
+describe an act at a time, and the history they measured no longer exists to
+re-derive; correcting them would restate them as claims about a later state. The
+distinction is recorded so the omission is deliberate rather than overlooked.
+
+Commits:
+- 140d167 fix: correct eleven false commit-count claims in the session log
+
 ## 2026-07-28, near-miss population corrected to the sealed specification
 
 The frame's near-miss stratum drew its three measured picks from one of the two
