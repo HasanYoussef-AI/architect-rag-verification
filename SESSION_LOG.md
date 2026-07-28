@@ -32,6 +32,22 @@ describe an act at a time, and the history they measured no longer exists to
 re-derive; correcting them would restate them as claims about a later state. The
 distinction is recorded so the omission is deliberate rather than overlooked.
 
+Rule 11 gained a clause fixing the one commit an entry may omit. An entry does not
+name the commit that places it, because that commit's content is the entry, and the
+convention had been left implicit. A reviewer resolving a commit that appears in no
+entry could not distinguish that case from an unlogged one. The clause is narrow by
+design: a commit touching any file other than this one is named by some entry, so a
+genuinely unlogged commit stays visible rather than being absorbed by the exemption.
+
+The corpus unit-to-chunk cardinality was recorded in the retrieval manifest and
+pinned by a test that re-derives every figure from the unit index and the test
+frame. Gold is defined at unit level and retrieval returns a top ten of chunks, so a
+unit spanning several chunks occupies several of the ten. The distribution is uneven
+across the strata, from 45 percent of clean multi-hop targets to none of the
+action-to-parent parents, which constrains any metric later defined over those ten
+slots. Recorded before the metrics were settled and before any retrieval ran on the
+sealed set.
+
 Commits:
 - 140d167 fix: correct eleven false commit-count claims in the session log
 
@@ -519,6 +535,31 @@ Next step:
 - Pre-registration: the sealed test query set and gold passages, committed and timestamped
   before any generation run, immutable once results exist. Then the single paid generation
   step, which requires the stated Console balance first.
+
+## 2026-07-24, residual mechanism clarified, the straddling chunk need not be one that swaps
+
+The score determinism residual recorded its measurement and its single audited case
+but not the shape of the mechanism, which left a narrow test available: look at the
+two chunks whose order changes, find neither near a rounding boundary, and conclude
+no straddle occurred. The commit predates this entry, which carried none when it
+landed.
+
+That test is wrong. A boundary straddle anywhere in the dense top-100 moves the
+straddling chunk's rank, which moves the rank of every chunk it passes, and
+reciprocal rank fusion converts those moved ranks into changed contributions. The
+swap therefore surfaces between two chunks that need not sit near any boundary. The
+audited case is the demonstration: nist_playbook:sub_GOVERN_1.7.suggested_actions
+straddles the 0.76355 boundary, and the pair that reorders is act_GV-6.2-003 with
+sub_GOVERN_6.2.about, neither of which is the straddling chunk.
+
+Recorded in the manifest as boundary_can_be_a_third_chunk, inside the residual block
+it qualifies, so the narrow test is refused where the measurement that invites it is
+stated rather than in a separate note. No measurement changed: the 63 to 1 cross-path
+reduction, the zero membership changes across 1506 queries and the 4dp precision
+stand as recorded.
+
+Commits:
+- f9f93fe docs: clarify residual mechanism, straddling chunk need not be a swapped one, local only
 
 ## 2026-07-24, retrieval determinism residual corrected, defect 6, and a commit-trailer transition
 
