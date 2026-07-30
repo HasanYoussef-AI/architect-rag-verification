@@ -4,6 +4,74 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-07-30, adversarial stratum committed, ISO constraint replaced, retrieval gated for the sealed set
+
+The first eight of the fifty pre-registered queries were committed: three referencing ISO/IEC 42001, four naming a fabricated identifier, one out of domain. Gold is empty on all eight, correct behaviour is abstention from retrieved context, and no retrieval metric is computed for the stratum.
+
+### ISO authoring constraint replaced
+
+The ISO queries were originally to be built from the standard's published contents listing, referencing clause number and published title and nothing further. That constraint was withdrawn. ISO publishes only the informative sections of a standard publicly, so a listing of normative clause titles is not freely available, and the constraint governed the author rather than the artifact: a reviewer holding the repository could not check whether it had been honoured.
+
+Four checkable constraints replaced it. The queries carry no clause reference. They ask what the standard requires rather than what it defines, and the requirements clauses are not among the sections ISO publishes freely. Every token other than 42001 is a member of the corpus primary-token vocabulary, measured at 8670 distinct tokens over the four committed chunk files; 42001 is the sole exemption, because iso and iec are already corpus vocabulary through NIST's own citations of ISO documents. Each query is interrogative and carries no numeric token other than 42001, which pins the absence of a clause number to a test rather than to a reading. All four properties are asserted against the shipped file.
+
+The vocabulary check ships with its scope stated narrowly: it establishes that no ISO-specific vocabulary entered the query text, and does not establish that no ISO material did. A query assembled entirely from corpus words could still mirror a clause's propositional structure, and no mechanical check available here detects that. Rule 13 is unchanged and no ISO text is included in any form.
+
+### Retrieval ordering for the sealed set
+
+The pre-registration commits the queries and their embeddings before retrieval runs on them. Parameterising the query-embedding provenance tests over both query sets would have executed retrieval against the sealed eight at test time, before the commit that freezes them existed. Two readings were available: retrieval as the numbered metric-producing step, under which an in-memory unit test violates nothing, or the clause read literally. The literal reading was adopted, because the ordering claim is the load-bearing claim of the repository and a run cannot be un-run.
+
+No code path in the committed tree executes retrieval against `eval/test_queries.jsonl`. The gate derives from the absence of a committed results file for a query set rather than from a flag, so it opens at the commit adding those results and requires no manual change. It was verified by instrumenting the retriever for one suite run: 36 search calls, none of them a sealed query, against 12 of 12 development queries as the positive control. A regression test asserts the gate, and removing the gate call from a retrieval-performing test was confirmed to fail it.
+
+The reading of that clause is now load-bearing and should be settled explicitly at the retrieval commit rather than left to whichever interpretation is convenient then.
+
+### Row-count assertions do not establish alignment
+
+The provenance suite asserts row count, dtype and unit L2 norm on a committed embedding array. A row-shuffled array satisfies all three. Alignment is established only by rank reproduction, which compares the committed array against a regenerated one row by row, and that check is gated for the sealed set until its retrieval results exist. Its own blind spot, two rows producing an identical top ten, is recorded in the test.
+
+### The frame's absence predicate reports real units as absent
+
+The candidate frame requires each fabricated identifier to be checked absent against the unit index and the frozen chunk-id set. Read as bare membership, that predicate reports 97 of 1150 real unit ids as absent, because a split unit carries `#pN` chunk ids; `eu_ai_act:art_10` and `eu_ai_act:anx_III` both fail it. A predicate that reports real units as absent cannot make an empty result evidence. The prefix form recovers all 97 with no residue and is what the verification records use, including in every positive control. The frame was not amended: it states a requirement, and bare membership is the wrong implementation of it.
+
+Absence was also checked against corpus text, which the frame does not require. `data/chunks/*.normalized.txt` is the target of record, being byte-equivalent to the chunk text the retriever surfaces. Searches over the extracted text carry a known false-negative mode from U+FFFE at hyphen positions and are recorded as a bound. Publisher PDF bytes are searchable only for the playbook, where 72 of 72 real subcategory identifiers are findable; the EU PDF returns nothing for the real Article 113 and is excluded rather than counted as a passing check.
+
+### Identifier selection and its amendment
+
+The four fabricated identifiers were selected by rule from an enumeration of the corpus identifier space rather than chosen. All 193 rejected candidates are recorded with their reasons, so the picks reconstruct from the enumeration and the log alone.
+
+The rule was amended after its first three checks were written. A fabricated EU article number tokenises to the word and a bare number, and the recital series prints bare parenthesised numbers to 180, so every candidate from 115 to 180 carries its number on a real chunk. Article 115 would have driven BM25 onto Recital 115 through a document-frequency-1 token, the highest inverse document frequency available in this corpus, which is the opposite of what its class exists to test. A fourth check was added, that no chunk carries the bare number, and the pick moved to Article 181. The added property is a frozen-corpus property, derivable before any query text existed and independent of every outcome the stratum measures. The check was applied to three of the four classes and left both other picks unchanged, which is recorded. It does not apply to the class requiring a text decoy, because a decoy of the form "Article N" contains N, so the two checks are logically incompatible there; measured exhaustively, all three candidates with a decoy carry the bare number, while 68 of the 84 without one carry it anyway.
+
+Article 181 sits 68 past the last real article, a weaker plausibility claim than a number nearer the end. It was taken because it is the only route to a fabricated article number with no lexical anchor: candidates carrying a text decoy above 113 are 114, 119 and 188, and the first candidate with no carrier of any kind is 181.
+
+One identifier was drawn deliberately from the class that is absent from both id spaces while present in corpus text under a different referent. Article 114 appears in a recital as a reference to the Treaty on the Functioning of the European Union. Declining on a retrieved context that contains the exact string attached to a different instrument is a harder abstention than declining on a context that contains nothing relevant.
+
+### Wrong predictions, recorded
+
+Three predictions made before measurement were contradicted and are recorded in the artifacts rather than removed.
+
+Fabricated identifiers were expected to be available in both interior-gap and past-the-end shapes. No interior gap exists anywhere in the corpus identifier space: EU articles run 1 to 113 complete, and both the framework and the playbook carry all 72 subcategories with no gap in any category. The only gaps are the generative-AI profile's own subcategory selection, and those two subcategories are real, printed and unit-bearing in the other two documents. Every fabricated identifier is therefore past the end of its series.
+
+A fabricated leaf under a real parent was expected to retrieve its real siblings while a fabricated parent retrieved nothing structurally near. Both numeric tokens have document frequency 0 and the scorer skips a term with no inverse document frequency, so the two queries produce identical BM25 scores. The contrast between them is generation-side, not retrieval-side.
+
+Retrieval on a fabricated identifier was expected to be dense-driven, because the identifier reaches the index only through parts that mostly do not exist in it. That holds for the compositional NIST identifiers and fails for the EU ones, where the bare number is a rare token present in the index. Fabricating an identifier in a compositional grammar leaves no lexical footprint; fabricating one in a bare-integer grammar collides with another family's numbering in the same document.
+
+### Exposure recorded before any run
+
+Because every fabricated identifier is past the end of its series, a model with accurate parametric knowledge of the instrument's length can reject all four without reading the retrieved context. Abstention driven by parametric knowledge is not the context grounding this stratum measures. The pre-registered no-context condition measures that share directly, one run per tier, so the exposure converts to a number rather than remaining a caveat. The NIST picks are less exposed than the EU ones, since the count of subcategories under a given category is less likely to be memorised than the article count of a named regulation.
+
+Grading is pre-declared per row before any generation. The failure is asserting substantive content as the answer, whether attributed to the named standard, to the named provision, or to nothing at all. Every other response is not a failure, including reporting that the retrieved context does not support an answer, and including stating that a named provision does not exist.
+
+### Retracted count claim
+
+An earlier record stated that candidates above 113 carrying the string in corpus text were exactly 114 and 119. A wider scan found a third at 188. No pick changes: the class requiring a decoy takes the lowest satisfying candidate and 114 is lowest, and the clean class's pick at 181 is below 188. The claim was stated more broadly than the scan behind it, which is a defect whether or not it changed an outcome.
+
+### Worktree directories ignored ahead of the stratum
+
+An ignore rule for isolated working copies created under `.claude` was committed separately and first, so the ignore rule does not appear in the stratum's own diff. Without the rule, staging from the repository root recurses into a working copy and stages a second copy of the whole tree. Measured before adding: `git check-ignore` reported no match on a path inside a working copy, at exit 1, against a positive control matching a path under `.venv`.
+
+Commits:
+- 9e13d61 chore(git): ignore worktree directories under .claude
+- 6540c0c feat(eval): add the eight adversarial queries with their verification record
+
 ## 2026-07-28, use of an untracked working file disclosed, S9 scoped to match
 
 Nine sites in this log describe an untracked working file used during development.
