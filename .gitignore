@@ -27,6 +27,12 @@ embeddings_cache/
 # is tracked; only the local override file is ignored.
 .claude/settings.local.json
 
+# Isolated working copies of this repository, created per task. Each holds a full
+# checkout, so without this line a `git add -A` from the repository root stages a
+# second copy of the entire tree. Measured: `git check-ignore` matched no path
+# inside one, while the same command matched .venv/ from the rule above.
+.claude/worktrees/
+
 # Note: data/, eval/, and results/ are intentionally NOT ignored. They hold
 # committed reproducibility artifacts.
 
