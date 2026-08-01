@@ -4,6 +4,15 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-01, removed-identifier claim narrowed to the tracked record
+
+A statement in docs/METHODOLOGY.md asserted that the identifiers of commits removed by the history rewrite are not written down anywhere. The surrounding sentences scope the section to the tracked record, and within that scope the claim holds: none of the four identifiers appears in any tracked file. The word anywhere reaches past that scope, so the claim was stated more broadly than the evidence behind it. It is narrowed to the tracked record rather than deleted, because the reason for withholding the identifiers is unchanged and the sentence carries it. Hasan's ruling.
+
+What the repository withholds and why did not change, and the correction states no location for the withheld identifiers. That absence is deliberate: naming where removed material sits is the exposure the removal exists to prevent, and a claim that something is absent from one record is not a claim about where else it may be.
+
+Commits:
+- 354c70b docs(methodology): scope the removed-identifier claim to the tracked record
+
 ## 2026-08-01, session log authorship divided by what each side can verify
 
 The authorship rule under the session log writing standard assigned every entry carrying a governance or disclosure judgment to Hasan, written away from the repository and placed verbatim. It now divides by what each side can check. Hasan states the judgment an entry must establish, what a scope decided, what it retracted, what it discloses and how far a claim may reach, and reviews the draft against that. Claude Code drafts the prose and checks every factual claim in it against the repository as it writes. An entry is drafted once, after the measurements it describes are final, rather than revised alongside measurements that are still moving. Hasan-directed, overriding the rule this file previously carried.
