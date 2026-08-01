@@ -4,6 +4,27 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-01, session log authorship divided by what each side can verify
+
+The authorship rule under the session log writing standard assigned every entry carrying a governance or disclosure judgment to Hasan, written away from the repository and placed verbatim. It now divides by what each side can check. Hasan states the judgment an entry must establish, what a scope decided, what it retracted, what it discloses and how far a claim may reach, and reviews the draft against that. Claude Code drafts the prose and checks every factual claim in it against the repository as it writes. An entry is drafted once, after the measurements it describes are final, rather than revised alongside measurements that are still moving. Hasan-directed, overriding the rule this file previously carried.
+
+The reason is an asymmetry in what carries a control. A measurement is produced under rules that require one: a funnel, a positive control on an emptiness claim, a named check reporting its output. A claim written in prose about a file's contents, a count, a convention or a format carries none, so it is found wrong only by someone holding the repository who checks it against the files. The adversarial stratum produced five defects of that second kind in authored text: a claim about which sections of a standard are published freely, made without the standard; a verification criterion requiring a quote to appear exactly once, where the corpus repeats the quoted span three times across three references blocks; a heading convention stated as measured, where seven of this file's headings contradict it; a count of what a commit's diff carried, where it carried seven files; and a scope stated as three rows, where the property it named held on five. Measurement in the same scope was also wrong at points, and those errors are checkable by the controls the discipline already requires of a measurement, which is what a prose claim lacks.
+
+Four rules accompany the change, each recorded with the defect that forced it. The file carries 46 numbered items, from 44: V20 and V21 are new, and V11 and the receiving-an-instruction section each gained a clause.
+
+V20 requires a check that reports a pass or an absence to be shown capable of failing before it is trusted. Two forms failed. A digest verification loop reported a match on a copy that had not happened, because both hash commands failed on a malformed path, both returned empty, and the empty strings compared equal; what caught it was a separately derived count of staged paths, not the comparison. Three detectors matched on structure where the claim lived in content, and each returned a pass on the one site it existed to check. The rule is scoped to a pass or an absence so that it does not revoke V8's exemption, that a non-empty result certifies its own predicate.
+
+V21 requires artifacts committed together to be cross-checked against each other rather than only against their sources. Three defects were a claim in one file contradicted by a number or a quote in a file committed beside it, and each survived readings of the files separately.
+
+V11 gained a clause requiring a characterization of what a piece of corpus text is or means to ship with a quote of that text in the same commit. A wrong count is caught by cross-checking against a recorded count; a wrong description has nothing to check against unless the text sits beside it. The defect was in the rejection log. Three rows assert that a candidate's string appears under a different referent, which is a characterization rather than a count, and they name three distinct candidates. Two of those decoys were quoted in a sibling artifact and the third was quoted nowhere, so that claim rested on text a reviewer could not reach. The gap was closed before the artifacts were committed, and every row making such a claim now carries the occurrence verbatim.
+
+The receiving-an-instruction section gained a clause on scope stated as a count. An instruction naming how many items a change covers, rather than the property those items share, is answered with the property and the count that property yields.
+
+Rule 13 states that clause number and published title are a ceiling on a permitted reference to ISO/IEC 42001, not its required form. What the rule permits is unchanged, which a reviewer can confirm by diffing this commit against the previous version. The ordering is the weaker one: the three queries referencing the standard by number alone shipped at 6540c0c, and the clarification follows here, where V16 prefers a claim to be committed before the thing that could contaminate it. Both authorized history rewrites are spent, so the ordering is recorded rather than corrected. Hasan's ruling.
+
+Commits:
+- de366c4 docs(governance): divide session log authorship by what each side can verify
+
 ## 2026-07-30, adversarial stratum committed, ISO constraint replaced, retrieval gated for the sealed set
 
 The first eight of the fifty pre-registered queries were committed: three referencing ISO/IEC 42001, four naming a fabricated identifier, one out of domain. Gold is empty on all eight, correct behaviour is abstention from retrieved context, and no retrieval metric is computed for the stratum.
