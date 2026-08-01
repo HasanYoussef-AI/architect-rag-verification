@@ -4,6 +4,29 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-01, authorship division extended to every governance file
+
+The division placed at de366c4, that the owner states the judgment a change must carry and the side holding the repository checks every factual claim in it, was written for SESSION_LOG.md alone. Actors and ownership still carried the rule it supersedes, which barred Claude Code from a governance file and admitted one enumerated exception. The division now stands once, in Actors and ownership, and covers every governance file, and the session log writing standard applies it to entries and states the reasoning. Hasan-directed, overriding the rule the file previously carried.
+
+The file's own history places this as a migration rather than the correction of a statement that became false. The exception sentence is byte-identical from f98a03bd to the revision preceding this commit, sits at line 12 in every one of them, and appears in each governance diff only as unchanged context. The paragraph above it was rewritten at 5bc01d3. It is bootstrap text the file revised around and never reached.
+
+Two defects closed.
+
+The opening paragraph forbade editing without exception what the ownership bullet permitted with one, so the file contradicted itself about Claude Code. The contradiction needed no history to find: the paragraph's imperative and the bullet both bind the same actor, and the paragraph's antecedent is the file the bullet's exception also covers. The gap between them has no instances. Six commits had touched CLAUDE.md before this change, the first creating it and five changing prose, and none carried a commit hash or a tag. CLAUDE.md held no commit-shaped string at any of those six revisions, so the correction the bullet permitted never had a subject in that file. The detector returning those zeros returns three on PREREGISTRATION.md at dbe8b33^, which are the three citations dbe8b33 re-anchored.
+
+The exception was narrower than the changes a governance file takes, so a change outside it had no stated authority. Of the ten commits that had touched a governance file before this change, eight changed content, one created them, and one, dbe8b33, corrected commit citations. The defect was the exception's reach and not its form: correcting a stale mechanical reference is already a property, carrying a commit hash or a tag as an appositive gloss.
+
+Rule 4 was considered as the authority for the governance edits already in the history and rejected. It names no file. Its subject is the query set, the ground-truth passages, the metrics, the thresholds, and the pass and fail rules, and the files it makes immutable are that list rather than a path. Its trigger, that results exist, has not fired. Pointing the ownership bullet at Rule 4 would have widened it across the governance set by implication, or left the CLAUDE.md and docs/METHODOLOGY.md edits unauthorised.
+
+Whether the practice ever departed from the superseded bullet is not determinable from this history, and is recorded as open rather than answered in either direction. Every commit carries one author identity and one committer identity, so composing a change is not distinguishable from placing it. The session trailer does not separate them either: it is absent from the first 25 commits, carried by 42 of the 43 that follow, and absent from 9e13d61 onward, which tracks a convention change rather than who wrote a diff.
+
+docs/METHODOLOGY.md's ownership line named a second owner in vocabulary a reader of this repository cannot resolve. CLAUDE.md carried the same phrase at f98a03bd and fe9487c and lost it at 5bc01d3, and the design document was the site that edit did not reach. The phrase occurred once in the tracked tree, at that line.
+
+The 2026-07-24 entry recording the commit-trailer transition stated that the retrieval-build commits and every commit onward carry the trailer. That held when it was written and is contradicted by the distribution above. It is past-tense-marked in the commit placing this entry, recording when the claim held rather than removing it, following the marking at b048cab.
+
+Commits:
+- ad691ef docs(governance): extend the authorship division to every governance file
+
 ## 2026-08-01, removed-identifier claim narrowed to the tracked record
 
 A statement in docs/METHODOLOGY.md asserted that the identifiers of commits removed by the history rewrite are not written down anywhere. The surrounding sentences scope the section to the tracked record, and within that scope the claim holds: none of the four identifiers appears in any tracked file. The word anywhere reaches past that scope, so the claim was stated more broadly than the evidence behind it. It is narrowed to the tracked record rather than deleted, because the reason for withholding the identifiers is unchanged and the sentence carries it. Hasan's ruling.
@@ -771,14 +794,14 @@ pattern that corrections are visible rather than history looking clean.
 
 ### Commit-trailer transition, recorded
 
-The 25 commits before this session's retrieval build carry no trailer. The 7
-retrieval-build commits, and every commit onward, carry a Claude-Session provenance
-trailer. The reason is the harness default: unlike the co-author byline, which
-`includeCoAuthoredBy` disables and which was removed repo-wide under the spent Rule 10
-override, the session trailer is not configurable through any setting, environment
+The 25 commits before this session's retrieval build carried no trailer. The 7
+retrieval-build commits, and every commit onward when this was written, carried a
+Claude-Session provenance trailer. The reason is the harness default: unlike the co-author
+byline, which `includeCoAuthoredBy` disables and which was removed repo-wide under the spent
+Rule 10 override, the session trailer is not configurable through any setting, environment
 variable, or flag, confirmed against the settings schema. The decision was to fix forward
-rather than rewrite, consistent with Rule 10 being spent, so the seven are the start of a
-consistent convention.
+rather than rewrite, consistent with Rule 10 being spent, so the seven were the start of the
+convention then in force.
 
 Commits, local only:
 - 8685632 docs: correct retrieval determinism residual, defect 6
