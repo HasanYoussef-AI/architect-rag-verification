@@ -56,7 +56,7 @@ Development used a working file that is not tracked here. It held session state,
 
 The decisions that govern this repository are in the tracked record: `CLAUDE.md`, `PREREGISTRATION.md`, this document, `SESSION_LOG.md`, `data/retrieval/retrieval_manifest.json`, and `corpus/SOURCES.md`. The retrieval parameters and their provenance live in the last two rather than in prose, so they can be checked mechanically rather than read. A decision found only in the untracked file is a defect, and the audit that produced this statement moved four of them into the files above rather than leaving the statement narrower.
 
-One category is deliberately absent from the tracked record. The identifiers of commits removed by the history rewrite are not written down anywhere, because a citation that does not resolve is worse than no citation. The rewrite itself, its scope, and what it did and did not cover are recorded in the session log.
+One category is deliberately absent from the tracked record. The identifiers of commits removed by the history rewrite are not written down in the tracked record, because a citation that does not resolve is worse than no citation. The rewrite itself, its scope, and what it did and did not cover are recorded in the session log.
 
 ## Honest boundary
 
