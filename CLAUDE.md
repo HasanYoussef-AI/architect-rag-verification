@@ -49,7 +49,7 @@ A reviewer with a clone can follow the session-start list above in full. `CLAUDE
 
 12. Tests for every deterministic check. Any grounding, completeness, retrieval-metric, or scoring function ships with tests. A deterministic check with no test does not merge.
 
-13. Corpus integrity. Only the NIST AI RMF and the EU AI Act are shipped, both public and redistributable, with provenance and license recorded in `corpus/SOURCES.md`. ISO/IEC 42001 is copyrighted and is never included in any form. It is referenced by pointer only, by clause number and published title, never by quotation and never by a paraphrase that reconstructs clause content.
+13. Corpus integrity. Only the NIST AI RMF and the EU AI Act are shipped, both public and redistributable, with provenance and license recorded in `corpus/SOURCES.md`. ISO/IEC 42001 is copyrighted and is never included in any form. It is referenced by pointer only, by clause number and published title, never by quotation and never by a paraphrase that reconstructs clause content. Clause number and published title are the ceiling on a permitted reference, not its required form; referencing the standard by less than that, such as by its number alone, satisfies this rule.
 
 14. Firewall. This repo is standalone. It must never import, reference, reproduce, or describe code, components, or internal design belonging to any other private project. The verification principle is re-implemented here from scratch. If a task appears to require anything from another project, stop and raise it.
 
@@ -77,7 +77,7 @@ V9. Never suppress stderr in a sweep. A silent failure is indistinguishable from
 
 V10. Every enumeration reports its funnel: the starting population, each filter in order, the count each filter removed, and the removed items in full for any filter that takes out more than it leaves. A thin result is trustworthy only alongside evidence of what the command actually did. The one filter defect in this repo was invisible in the survivor list and visible only in the funnel.
 
-V11. Quote a file verbatim from disk before writing a claim about it. A remembered fragment is not a source, and a path is not known until it has been read from a file that names it. Point at files rather than describing them.
+V11. Quote a file verbatim from disk before writing a claim about it. A remembered fragment is not a source, and a path is not known until it has been read from a file that names it. Point at files rather than describing them. Where the claim is a characterization of what a piece of corpus text is or means, rather than a count of how often a string occurs, the quote ships alongside the claim in the same commit. A wrong count is caught by cross-checking against a recorded count; a wrong characterization has nothing to check against unless the text sits beside it.
 
 V12. Run the contradiction sweep across the whole repository before every governance commit, as standing practice rather than when someone thinks of it. Every hash resolves or is individually accounted for; every stated count is derivable and matches; every referenced file exists and ships; terminology matches Rule 1; every stated invariant carries a measurement. The sweep covers the ignored governance files by name, because they sit outside every mechanical guarantee the tracked tree makes about itself.
 
@@ -94,6 +94,10 @@ V17. For any irreversible operation, reconnaissance precedes scoping. Measure fi
 V18. Name the check that proves a task worked and report its output, not an assertion that it passed.
 
 V19. State predictions before an irreversible step so the result can contradict them. A prediction that fails is the mechanism working.
+
+V20. A check that reports a pass or an absence is trusted only once it has been shown capable of failing. This is V8 generalised from emptiness to every check. Two forms have failed here. A comparison passes when both sides are absent: a digest verification loop reported a match on a completely failed copy, because both hash commands failed on a bogus path, both returned empty, and the empties compared equal. Assert the shape of each side before comparing it, and assert the expected count of things independently, since that is what caught it. A detector passes by blindness when it matches on structure and the claim lives in content: three detectors here matched a field path, a fixed prefix pattern, and a truncated span, and each returned a pass on the one site it existed to check. Before trusting a detector, run it against the known defect and confirm it fails.
+
+V21. Artifacts committed together are cross-checked against each other, not only against their sources. Enumerate every claim one artifact makes that another artifact in the same commit also records, and re-derive each from the corpus or the code rather than from either file. Three defects here were a claim in one file contradicted by a number or a quote in a file committed beside it, and each survived several careful readings of the files separately.
 
 ## Session log writing standard
 
@@ -123,7 +127,11 @@ S10. Never cite a hash that does not resolve in the current history. A dangling 
 
 S11. No em dashes, no emojis, consistent with every other file in the repo.
 
-Authorship. Entries carrying a governance or disclosure judgment are authored by Hasan and placed verbatim. Routine entries are Claude Code's own. Thoroughness is not the safeguard here; the standard is.
+Authorship. Hasan owns the judgment in every entry: what a scope decided, what it retracted, what it discloses and how far a claim reaches. Claude Code drafts the prose, checking every factual claim in it against the repository as it writes, and Hasan reviews and rules. Where an entry carries a governance or disclosure judgment, Hasan states the judgment and what the entry must establish, and reviews the draft against it; where the entry is routine, Claude Code writes it outright.
+
+The division follows what each side can verify. A claim about a file's contents, a count, a convention or a format is checkable only by the side holding the repository, and prose authored away from it reproduces exactly the errors the verification discipline exists to catch. Judgment about what may be disclosed and how strongly a claim may be stated is not mechanically checkable and stays with the owner. An entry is drafted once, after the measurements it describes are final, rather than revised alongside them.
+
+Thoroughness is not the safeguard here; the standard is.
 
 Heading dates are derived, not authored. A heading date is the committer date, in the repository's local timezone, of the commit whose work the entry records, not of the commit that places the entry.
 
@@ -140,6 +148,8 @@ Where a query's gold set is empty, as it is for every adversarial query, no gold
 ## Receiving an instruction
 
 An instruction that describes a filter as a property, rather than naming the artifact, the field and the accepted values, is sent back for the field and the values before it is implemented. Prose lifted from a sealed or governance file describes intent to a reader correctly; the same prose becomes a silent misfilter when it becomes code. This has already cost one defect, where a filter described in prose excluded the single class that could carry the relation it was meant to find.
+
+The same applies to scope. An instruction naming how many items a change covers, rather than the property those items share, is answered with the property and the count it actually yields. A count is a description of the answer, and the side holding the schema is the side that can derive it. This has cost one defect, where a change scoped to three rows had a property holding on five.
 
 Raise an objection on correctness before implementing, whenever one exists. An instruction that is wrong is more useful caught than executed. Style is not the target; correctness is.
 
