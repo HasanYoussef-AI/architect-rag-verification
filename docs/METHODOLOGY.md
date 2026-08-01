@@ -1,6 +1,6 @@
 # Methodology, architect-rag-verification
 
-This document explains the design and the honest limits of the case study. It is the rationale behind the binding rules in `CLAUDE.md`, and it feeds the design section of the README. It is a governance file, owned by Hasan and the strategy chat.
+This document explains the design and the honest limits of the case study. It is the rationale behind the binding rules in `CLAUDE.md`, and it feeds the design section of the README. It is a governance file, owned by Hasan.
 
 ## Purpose
 

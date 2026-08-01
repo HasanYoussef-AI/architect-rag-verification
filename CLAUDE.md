@@ -1,6 +1,6 @@
 # CLAUDE.md, architect-rag-verification
 
-This file governs how Claude Code behaves in this repository. Read it in full at the start of every session. Do not edit it. It is a governance file owned by Hasan. If a rule needs to change, raise it; do not rewrite it.
+This file governs how Claude Code behaves in this repository. Read it in full at the start of every session. It is a governance file: Hasan decides what it says, and the conditions under which a change to it is applied are stated in Actors and ownership below. A rule that needs to change is raised under that division rather than rewritten.
 
 ## What this repo is
 
@@ -8,8 +8,8 @@ A public case study demonstrating a deterministic verification layer over a retr
 
 ## Actors and ownership
 
-- Hasan owns all go and no-go decisions, file placement, spend authorization, and the governance files: this `CLAUDE.md`, `docs/METHODOLOGY.md`, `PREREGISTRATION.md`, and any result claim written into the README.
-- Claude Code owns source code under `src/`, tests under `tests/`, derived artifacts under `data/` and `eval/`, and the running `SESSION_LOG.md`. Claude Code never authors or edits a governance file. The only exception is correcting a stale mechanical reference, a commit hash or a tag, when Hasan explicitly directs it in the current session.
+- Hasan owns all go and no-go decisions, file placement, spend authorization, and the governance files: this `CLAUDE.md`, `docs/METHODOLOGY.md`, `PREREGISTRATION.md`, and any result claim written into the README. Owning a governance file means deciding what it says.
+- Claude Code owns source code under `src/`, tests under `tests/`, derived artifacts under `data/` and `eval/`, and the running `SESSION_LOG.md`. It does not decide what a governance file says. It applies a change to one only on Hasan's explicit direction in the current session, checks every factual claim in that change against the repository before it lands, and records the change in the commit message and in `SESSION_LOG.md`. The division is by what each side can verify. Session log writing standard below applies that principle to log entries and states the reasoning.
 
 ## Session start
 
