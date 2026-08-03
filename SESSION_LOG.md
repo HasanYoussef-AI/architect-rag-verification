@@ -4,6 +4,40 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-03, clean multi-hop stratum drawn, twelve edges with their verification records
+
+The clean multi-hop stratum is twelve EU AI Act internal cross-references, drawn by a forward walk over the committed draw order to index 33 under `select_distinct_target`. The selected set reconstructs from that draw order plus `eval/test_frame_rejections.jsonl` alone.
+
+Thirty-four draw-order entries were walked, three skipped by the distinctness rule and thirty-one judged. Twelve passed and nineteen were rejected. Reason codes over the nineteen: `source_points_only` six, `target_defers_out_of_corpus` four, `target_self_identifies` four, `answer_duplicated_across_endpoints` two, `query_link_not_the_cited_link` two, `target_already_covers_source` one. The denominator is every candidate judged, not the survivors: nineteen of the thirty-one candidates judged are not content dependencies. The largest class is six of nineteen. The largest class carries a recorded caution. The form of a citing sentence is not diagnostic of whether an edge is a content dependency: four rejections were predicted from a bare list-item form and two of those predictions were wrong, and one rejection issued on that basis was reversed after its structural twin was screened.
+
+A rejection can free a target and reopen an entry the distinctness rule had skipped. Draw index 4 held the target `art_72` and was a pass when the walk was screened, so draw index 10 was skipped. Draw index 4 was later rejected because its answer appeared in both endpoints, which freed `art_72` and made draw index 10 eligible. Nothing in the procedure reopened the skip that decision caused. The condition was found by reconstructing the selected set from the committed files, not by review, and every individual verdict was correct while the sequence that produced them was not. Draw index 10 was then screened on the same standard as the other thirty and rejected as `source_points_only`, so the twelve stand as drawn. Re-deriving the selection after all nineteen rejections converges in two iterations, and the three remaining skips have targets held by selected picks, so none can reopen.
+
+The property is now asserted rather than left to procedure. The committed reconstruction test checks the count and the not-rejected property and never the set, which is why a set that was twelve entries but not the twelve the queries were authored against passed it. A test now asserts that the reconstructed set equals the units in the committed query rows, and a companion drops one rejection, reopens the skip it was holding, and asserts the comparison detects the change.
+
+The duplication check exists because two picks that careful reading passed carried their answer in both endpoints. Its verdict rests on the designated answer sentence, not on a ratio: a pick fails when the sentence carrying its answer occurs in both endpoint units. The answer sentence is designated at screening, before acceptance, so it cannot be fitted to a query already drafted, and a drafted query resting on a different sentence returns the pick to screening. A reporting floor of 0.60 is recorded and decides nothing; every surviving row ships the ratios above it so a reviewer can disagree in the open. The check is calibrated against the case that motivated it, which scores 0.940 and is near-verbatim rather than verbatim, so an exact-match check would have passed it. The highest ratio in the set, 0.996, sits on a pick that was kept: Articles 91(5) and 92(5) share a procedural sentence about who supplies requested information, and no query rests on it. A negative worth recording: Articles 9 and 72 both discuss post-market monitoring data and returned no pair at or above the floor.
+
+Three of the twelve share an endpoint with another pick, one as a source and one as a target. The frame's constraint reaches shared targets only. The property is recorded rather than removed, because a structural rejection criterion invented after seeing which picks it would remove is a threshold fitted to its own observations.
+
+The query row's `type` field names the pre-registered stratum and `subtype` names the source within it. That is why these rows carry `multi_hop` with subtype `eu_internal_xref`, and why the four action-to-parent rows will carry the same type with a different subtype. A frame stratum name in `type` would make the pre-registration's stratum of sixteen unrepresentable in the file that instantiates it. The row-count test is relaxed from batch exactness to a bound at every commit plus exactness once the file reaches the frame's grand total, because a type mapping to two separately authored strata is partial by construction until both land.
+
+The adversarial per-row grader pre-declaration is scoped to adversarial rows, and the complement is asserted so a gold-bearing row carrying it fails. The paragraph defines failure as asserting substantive content rather than abstaining, which is false about a gold-bearing query. Adversarial rows need it because the retrieval metrics do not apply to an empty gold set and an abstention carries no atomic claims to score. Gold-bearing rows are scored by rates declared before any query existed, and a per-row failure condition for them would invent a verdict this study does not use.
+
+Commits:
+- a996d65 feat(eval): twelve clean multi-hop queries with their verification records
+
+## 2026-08-03, em-dash prohibition scoped to authored text
+
+The output convention barred em dashes anywhere. The tracked tree carries 164 occurrences of them across 19 files: 139 in corpus text and its derived chunk artifacts, 24 in files redistributed unmodified from outside the repository, and one as the value of the fold-table entry in `src/ingest/normalize.py` that exists to handle the character. Every prose file the rule was written for is clean. The prohibition asserted something the repository contradicted from the point the corpus was ingested.
+
+It is scoped to authored text rather than narrowed by exception. The three classes are not exceptions to the rule; they are outside what it governs, and stating them as exceptions would have made the largest of them, the derived artifacts, depend on reading a chunk record as a quotation.
+
+No test or sweep asserted the prohibition, so nothing changed behaviour. `normalise_for_comparison` folds U+2014 to an ASCII hyphen at comparison time, so the character never reaches retrieval matching.
+
+The rule was reached through a rejection reason whose argument is what an annex heading says, where paraphrasing to remove the character would have broken the requirement that a characterisation of corpus text ship with a verbatim quote of that text.
+
+Commits:
+- 71275cc docs(governance): scope the em-dash prohibition to authored text
+
 ## 2026-08-01, authorship division extended to every governance file
 
 The division placed at de366c4, that the owner states the judgment a change must carry and the side holding the repository checks every factual claim in it, was written for SESSION_LOG.md alone. Actors and ownership still carried the rule it supersedes, which barred Claude Code from a governance file and admitted one enumerated exception. The division now stands once, in Actors and ownership, and covers every governance file, and the session log writing standard applies it to entries and states the reasoning. Hasan-directed, overriding the rule the file previously carried.
