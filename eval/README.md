@@ -95,7 +95,12 @@ the same shape and the same norms. Nothing else in the suite depends on the mode
 - `test_query_verification.jsonl`: one row per test query, carrying each absence claim with
   its command, target, predicate, result and shape-matched control, the identifier assertions,
   and the bounds on any target that cannot discriminate.
-- `test_query_rejections.jsonl`: every candidate considered and skipped during selection, with
-  its reason, so the selected identifiers reconstruct from the enumeration and this log alone.
-  It also holds the gold-slot disjointness rejections required by `PREREGISTRATION.md`, of
-  which there are none yet.
+- `test_query_rejections.jsonl`: the adversarial stratum's authoring scan. Each row records an
+  identifier considered and not used, with the class rule it was scanned under, its ordinal in
+  that scan, and the evidence for the decision. The adversarial stratum has no draw order in the
+  frame, so these rows are not draw-order rejections and no selected set reconstructs from them.
+- `test_frame_rejections.jsonl`: draw-order rejections for the four drawing strata. Each row
+  names its `stratum` and `source`, which together index the frame's draw order, and carries the
+  rejected candidate verbatim in `rejected` so it compares equal to a draw-order entry.
+  `tests/test_test_frame.py` reconstructs each stratum's selected set from the committed draw
+  order plus these rows alone.

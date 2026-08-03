@@ -83,16 +83,33 @@ def test_ids_are_contiguous_in_authoring_order():
 
 
 def test_row_count_per_stratum_matches_the_frame():
-    """For each type present in the file, the row count equals the frame's declared total."""
+    """No stratum exceeds its declared total at any commit, and every stratum equals its declared
+    total once the file holds the frame's grand total.
+
+    The batch-exact form, requiring equality for every type present, could not survive incremental
+    authoring: multi_hop maps to two frame strata, clean_multi_hop and action_to_parent, which are
+    authored in separate batches, so that type is partial by construction until both land. The
+    over-fill guard and the guard against a count edited to fit hold at every commit, and
+    exactness is restored at sealing, which is where the strong claim belongs."""
     strata = _strata()
     counts = Counter(row["type"] for row in _rows())
     assert set(counts) <= set(STRATUM_TO_FRAME), f"unmapped type(s): {set(counts) - set(STRATUM_TO_FRAME)}"
+    declared_by_type = {
+        stratum: sum(strata[key]["total"] for key in keys)
+        for stratum, keys in STRATUM_TO_FRAME.items()
+    }
     for stratum, observed in counts.items():
-        declared = sum(strata[key]["total"] for key in STRATUM_TO_FRAME[stratum])
-        assert observed == declared, (
-            f"{stratum}: {observed} rows against the frame's declared "
-            f"{declared} from {list(STRATUM_TO_FRAME[stratum])}"
+        assert observed <= declared_by_type[stratum], (
+            f"{stratum}: {observed} rows over the frame's declared "
+            f"{declared_by_type[stratum]} from {list(STRATUM_TO_FRAME[stratum])}"
         )
+    grand_total = sum(declared_by_type.values())
+    if len(_rows()) == grand_total:
+        for stratum, declared in declared_by_type.items():
+            assert counts.get(stratum, 0) == declared, (
+                f"{stratum}: {counts.get(stratum, 0)} rows against the frame's declared "
+                f"{declared}, with the file at its grand total of {grand_total}"
+            )
 
 
 def test_adversarial_subtypes_match_the_frame_spec():
@@ -126,13 +143,36 @@ def test_adversarial_gold_is_empty():
         assert row["expected_units"] == [], f"{row['id']}: expected_units {row['expected_units']}"
 
 
-def test_every_note_ends_with_the_grader_predeclaration():
+def test_only_adversarial_notes_carry_the_grader_predeclaration():
     """Recorded before any run, so what counts as a failure cannot be settled after seeing answers.
+
+    Adversarial rows need a per-row pre-declaration because they are scored by a binary
+    behavioural judgment the rate metrics cannot express: PREREGISTRATION.md line 41 removes the
+    retrieval metrics from them because their gold is empty, and an abstention carries no atomic
+    claims for the unsupported-claim rate at line 33 to score.
+
+    Gold-bearing rows need none, and the paragraph is false about them because it defines failure
+    as asserting substantive content rather than abstaining. Their failure condition is declared
+    before any query existed: line 33 for the generation side, lines 36 to 41 for the retrieval
+    side slot by slot, line 49 making the headline a rate delta rather than a per-query verdict,
+    and line 86 for the wrong-but-grounded case, which scores clean on faithfulness and a miss on
+    recall. Writing a per-row failure condition for them would invent a verdict this study does
+    not use.
+
+    The complement is asserted, not merely the scoping, because copying the paragraph onto a
+    gold-bearing row later would be a defect that a scoped-only test would not see.
 
     Asserted as a suffix rather than as containment, so the paragraph cannot be buried mid-note
     where a later sentence could qualify it, and asserted whole, so a rewording fails here.
     """
     for row in _rows():
+        if row["type"] != "adversarial":
+            assert GRADER_PREDECLARATION not in row["note"], (
+                f"{row['id']}: a non-adversarial row carries the adversarial pre-declaration, "
+                "which defines failure as asserting substantive content rather than abstaining "
+                "and is false about a gold-bearing query"
+            )
+            continue
         assert row["note"].endswith(GRADER_PREDECLARATION), (
             f"{row['id']}: note does not end with the pre-declaration verbatim. Either the paragraph "
             "was reworded, in which case update GRADER_PREDECLARATION deliberately, or the row is "

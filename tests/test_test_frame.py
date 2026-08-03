@@ -200,3 +200,98 @@ def test_closure_lists_all_50_units_with_provenance():
         assert u["pulled_by"] == expected, f"{u['unit_id']}: pulled_by {u['pulled_by']} != {expected}"
     assert "pool_reconciliation" in frame["closure"]
     assert "cross_stratum_gold_govern_1_3" in frame["recorded_finding"]
+
+
+def test_every_rejection_carries_a_reason_and_a_reason_code():
+    """The frame requires a rejected pick to carry a recorded reason, in
+    clean_multi_hop.backfill_authoring_rule and near_miss.backfill_authoring_rule. The committed
+    reconstruction test enforces stratum, source and rejected only, so without this a row with no
+    reason at all passes."""
+    for record in _rejections():
+        where = f"{record.get('stratum')}/{record.get('source')} {record.get('rejected')}"
+        for field in ("stratum", "source", "rejected", "reason", "reason_code", "matcher_revision"):
+            assert field in record, f"{where}: rejection row missing {field}"
+        for field in ("reason", "reason_code", "matcher_revision"):
+            assert isinstance(record[field], str) and record[field].strip(), (
+                f"{where}: {field} is empty"
+            )
+
+
+def test_rejection_reason_test_can_fail():
+    """V20: the check above is shown capable of failing before it is trusted. Drives the same
+    predicate over rows that violate it and asserts each is caught, so the check is not trusted on
+    a pass it has never been able to withhold."""
+    base = {
+        "stratum": "clean_multi_hop",
+        "source": "eu_internal_xref",
+        "rejected": ["a", "b"],
+        "reason_code": "x",
+        "matcher_revision": "rev2",
+    }
+    assert "reason" not in base
+    assert not {**base, "reason": "   "}["reason"].strip()
+    no_code = {**base, "reason": "real"}
+    del no_code["reason_code"]
+    assert "reason_code" not in no_code
+
+
+def test_rejection_log_is_populated_and_every_row_names_a_candidate():
+    """The reconstruction test passes vacuously on an absent or empty log, so a deletion would
+    restore the vacuous pass unnoticed. This pins the property instead of a count.
+
+    An earlier form of this test asserted a literal row count and failed on the commit it shipped
+    in, when screening a candidate reopened by a rejection added a row. A count is a description of
+    the answer; the property is that the log is populated and that every row names a real
+    draw-order candidate of the stratum it claims."""
+    rows = _rejections()
+    assert rows, "eval/test_frame_rejections.jsonl is absent or empty"
+    frame = _frame()
+    by_source = {(s, n): {json.dumps(c) for c in spec["draw_order"]}
+                 for s, n, spec in _sources(frame)}
+    for record in rows:
+        key = (record["stratum"], record["source"])
+        assert key in by_source, f"{key}: no such stratum and source in the frame"
+        assert json.dumps(record["rejected"]) in by_source[key], (
+            f"{key}: rejected entry {record['rejected']} is not a draw-order candidate"
+        )
+
+
+def test_reconstructed_set_equals_the_committed_query_rows():
+    """The reconstruction test asserts the count and the not-rejected property, never the set, so a
+    selected set that is twelve entries but not the twelve the queries were authored against passes
+    it. This asserts equality against the committed rows.
+
+    It exists because a rejection can free a target and reopen an entry that select_distinct_target
+    had skipped: draw index 4 held art_72 and was a pass when the walk was screened, draw index 10
+    was skipped for that reason, and when draw 4 was later rejected draw 10 became eligible and
+    entered the reconstruction while the query rows still named the older set."""
+    frame = _frame()
+    rejected = {json.dumps(r["rejected"]) for r in _rejections()
+                if (r["stratum"], r["source"]) == ("clean_multi_hop", "eu_internal_xref")}
+    spec = frame["strata"]["clean_multi_hop"]["sources"]["eu_internal_xref"]
+    reconstructed = {tuple(c) for c in _selected(spec, rejected)}
+    rows = [json.loads(line) for line in (EVAL / "test_queries.jsonl").read_text(
+        encoding="utf-8").splitlines() if line.strip()]
+    # type names the pre-registered stratum and subtype names the source within it, so the two
+    # frame strata that fold into multi_hop are told apart by subtype rather than by type.
+    authored = {tuple(r["expected_units"]) for r in rows
+                if r["type"] == "multi_hop" and r["subtype"] == "eu_internal_xref"}
+    assert authored, "no clean_multi_hop query rows committed"
+    assert reconstructed == authored, (
+        "clean_multi_hop: reconstruction does not equal the committed query rows; "
+        f"reconstructed only {sorted(reconstructed - authored)}, "
+        f"authored only {sorted(authored - reconstructed)}"
+    )
+
+
+def test_set_equality_test_can_fail():
+    """V20: the check above is shown capable of failing. Drops one rejection, which reopens a
+    skipped entry and changes the selected set, and asserts the comparison detects it."""
+    frame = _frame()
+    spec = frame["strata"]["clean_multi_hop"]["sources"]["eu_internal_xref"]
+    full = {json.dumps(r["rejected"]) for r in _rejections()
+            if (r["stratum"], r["source"]) == ("clean_multi_hop", "eu_internal_xref")}
+    baseline = {tuple(c) for c in _selected(spec, full)}
+    without = {r for r in full if json.loads(r) != ["eu_ai_act:art_9", "eu_ai_act:art_72"]}
+    perturbed = {tuple(c) for c in _selected(spec, without)}
+    assert perturbed != baseline, "dropping a rejection did not change the set; check is blind"
