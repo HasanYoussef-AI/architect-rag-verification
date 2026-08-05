@@ -103,4 +103,9 @@ the same shape and the same norms. Nothing else in the suite depends on the mode
   names its `stratum` and `source`, which together index the frame's draw order, and carries the
   rejected candidate verbatim in `rejected` so it compares equal to a draw-order entry.
   `tests/test_test_frame.py` reconstructs each stratum's selected set from the committed draw
-  order plus these rows alone.
+  order plus these rows alone. A row may also carry `ratio_supersession`, an optional field
+  present only where a measurement published on that row has been retracted and replaced. It
+  names the superseded value, the value replacing it, and the reason the two do not reconcile, so
+  a retraction is legible from the row itself rather than only from the history. The field is
+  sparse by construction: it is absent wherever nothing has been superseded, and its absence
+  asserts nothing.
