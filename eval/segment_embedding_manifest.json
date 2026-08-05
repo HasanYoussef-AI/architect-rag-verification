@@ -1,0 +1,31 @@
+{
+ "description": "Reproduction manifest for the attributability dense arm's segment embedding cache. The cache itself is not committed, at 40.6 MB against the 3.9 MB committed chunk embeddings, so this manifest is what makes the dense arm checkable: regenerate the cache with the command below and compare cache_sha256.",
+ "cache_path": "embeddings_cache/segment_embeddings.npy",
+ "cache_sha256": "34b786aab37b9bd50187698849c8713a06a7e7a806934682df073d0cf3bfcb91",
+ "cache_bytes": 40636544,
+ "cache_sha256_determinism": "Two full generations from a clean state on one machine produced byte-identical caches. The pinned ONNX session is single-threaded with a fixed graph optimisation level, which is what makes this hold, and the same property is what data/retrieval/retrieval_manifest.json records for the corpus embeddings. Verified before this digest was committed, because a digest that is silently not deterministic is worse than no digest.",
+ "n_segments": 13228,
+ "n_units": 1150,
+ "segmentation_fingerprint": "7ee944065dcace369e6d7e8164d8b865397d38951cb94b50f468ac32c60159df",
+ "segmenter": "comparable_segments/1",
+ "exclusion_funnel": {
+  "starting_population": 14626,
+  "removed_no_alphabetic_word": {
+   "count": 1057,
+   "predicate": "the segment carries at least one alphabetic word"
+  },
+  "removed_own_heading": {
+   "count": 341,
+   "predicate": "the segment is byte-identical, after stripping surrounding whitespace, to its own unit's unit_label as recorded in data/chunks/<doc>.chunks.jsonl. Own label only: a segment equal to some OTHER unit's label is kept, because that is a content match rather than a heading"
+  },
+  "comparable_segments": 13228
+ },
+ "model_repo": "BAAI/bge-base-en-v1.5",
+ "model_revision": "a5beb1e3e68b9ab74eb54cfd186867f64f240e1a",
+ "embed_dim": 768,
+ "batch_size": 16,
+ "input_normalisation": "normalise_for_comparison, the same shared comparison path the retriever uses",
+ "generator_command": "python -m src.goldset.build_segment_embeddings",
+ "reproducibility_level": 3,
+ "reproducibility_note": "Level 3 in data/retrieval/retrieval_manifest.json. Regenerating from ONNX at the pinned revision reproduces rankings, not bytes, across machines. cache_sha256 is therefore a same-machine reproduction check and not a cross-platform guarantee; a reviewer whose digest differs should compare the dense arm's reported units and cosines rather than the hash."
+}
