@@ -10,17 +10,27 @@ rejected entries and, under select_distinct_target, entries whose target unit is
 taken. That test ships now and passes vacuously on an empty rejection log; once authoring
 records rejections it catches a cascade, a rejection that names a non-candidate, and a unit
 that entered the set without appearing in either file.
+
+The reconstruction property is asserted against the authored rows as well, per drawing source
+rather than for one hard-coded source, so a stratum gains that coverage at the commit its rows
+land rather than at a later one. The join is derived: row type inverts STRATUM_TO_FRAME and row
+subtype is the frame's source key verbatim. What is tabulated is which element of a candidate a
+row is keyed by, because that differs per source and cannot be inferred from the stratum name.
 """
 
 from __future__ import annotations
 
 import json
 
+import pytest
+
 from src.ingest.corpus_integrity import REPO_ROOT
 from src.retrieve.build_test_frame import OUTPUT, _sha256, build_frame, compute_closure, to_bytes
+from tests.test_test_queries import STRATUM_TO_FRAME
 
 EVAL = REPO_ROOT / "eval"
 REJECTIONS = EVAL / "test_frame_rejections.jsonl"
+QUERIES = EVAL / "test_queries.jsonl"
 
 
 def _frame() -> dict:
@@ -256,42 +266,216 @@ def test_rejection_log_is_populated_and_every_row_names_a_candidate():
         )
 
 
-def test_reconstructed_set_equals_the_committed_query_rows():
-    """The reconstruction test asserts the count and the not-rejected property, never the set, so a
-    selected set that is twelve entries but not the twelve the queries were authored against passes
-    it. This asserts equality against the committed rows.
+# --------------------------------------------------------------------------------------------
+# The authored set against the reconstruction, per stratum source.
+#
+# The reconstruction test above asserts the count and the not-rejected property, never the set,
+# so a selected set that is the right size but the wrong members passes it. What follows asserts
+# the members, for every drawing source rather than for one.
+#
+# It exists because a rejection can free a target and reopen an entry select_distinct_target had
+# skipped: draw index 4 held art_72 and was a pass when the walk was screened, draw index 10 was
+# skipped for that reason, and when draw 4 was later rejected draw 10 became eligible and entered
+# the reconstruction while the query rows still named the older set.
+# --------------------------------------------------------------------------------------------
 
-    It exists because a rejection can free a target and reopen an entry that select_distinct_target
-    had skipped: draw index 4 held art_72 and was a pass when the walk was screened, draw index 10
-    was skipped for that reason, and when draw 4 was later rejected draw 10 became eligible and
-    entered the reconstruction while the query rows still named the older set."""
+# Frame stratum to query-row type, derived by inverting the committed map rather than restated.
+# Row `type` names the pre-registered stratum and `subtype` names the frame's source key within
+# it verbatim, which is why the twelve clean multi-hop rows carry multi_hop / eu_internal_xref.
+FRAME_STRATUM_TO_ROW_TYPE = {
+    frame_stratum: row_type
+    for row_type, frame_strata in STRATUM_TO_FRAME.items()
+    for frame_stratum in frame_strata
+}
+
+
+def _draw_order_key(candidate):
+    """A draw-order entry as a hashable key. Pairs become tuples, bare units stay strings.
+
+    Entry shape does not follow stratum: near_miss/block_clusters entries are bare strings while
+    action_to_parent/action_subcategory entries are pairs, so this cannot be inferred from the
+    stratum name. Applying tuple() blindly would turn a bare unit id into a tuple of characters.
+    """
+    return tuple(candidate) if isinstance(candidate, list) else candidate
+
+
+def _bare_unit_key(row, spec):
+    """The candidate a row was drawn from, for a source whose draw order holds bare unit ids.
+
+    Not simply expected_units, because a gold slot is satisfied by any carrying unit and may name
+    carriers outside this source: the frame's own cross_stratum_gold_govern_1_3 finding records
+    that the GOVERN 1.3 statement is carried by nist_ai_100_1, nist_ai_600_1 and nist_playbook
+    units, and the single-hop draw on it is one of the eighteen. The row's gold is intersected
+    with the source's FULL candidate population, which is the eligibility list and not the
+    selection, so this derives the key without consulting the answer it is about to check.
+    """
+    hits = sorted(set(row["expected_units"]) & {str(c) for c in spec["draw_order"]})
+    assert len(hits) == 1, (
+        f"{row['id']}: gold names {len(hits)} of this source's candidates, expected exactly one. "
+        f"Gold {sorted(row['expected_units'])}, of which candidates are {hits}. Zero means the row "
+        "does not join to the source its subtype names; more than one means the drawn candidate "
+        "is ambiguous from the row alone and has to be read from the verification record."
+    )
+    return hits[0]
+
+
+def _pair_key(row, spec):
+    """A row drawn from a pair-shaped draw order. Order is load-bearing between slots: on one of
+    the twelve committed clean multi-hop picks the reversed pair is itself a separate draw-order
+    entry, so the pair is not order-free."""
+    return tuple(row["expected_units"])
+
+
+# Which element of a candidate a row is keyed by differs per source, so each is named rather than
+# inferred, following the same practice as tests/test_unit_chunk_cardinality.py. Absent on
+# purpose: action_to_parent/action_subcategory, near_miss/block_clusters and
+# near_miss/near_duplicate have no authored rows and no settled row shape. They are not defaulted,
+# so the first row authored against them fails here rather than being skipped silently.
+KEY_EXTRACTORS = {
+    ("single_hop", "eu_ai_act"): _bare_unit_key,
+    ("single_hop", "nist_ai_100_1"): _bare_unit_key,
+    ("single_hop", "nist_ai_600_1"): _bare_unit_key,
+    ("clean_multi_hop", "eu_internal_xref"): _pair_key,
+}
+
+
+def _query_rows() -> list[dict]:
+    if not QUERIES.exists():
+        pytest.skip(f"{QUERIES.name} is not committed yet")
+    return [json.loads(line) for line in QUERIES.read_text(encoding="utf-8").splitlines()
+            if line.strip()]
+
+
+def _rejected_by_source() -> dict:
+    out: dict[tuple[str, str], set[str]] = {}
+    for record in _rejections():
+        out.setdefault((record["stratum"], record["source"]), set()).add(
+            json.dumps(record["rejected"])
+        )
+    return out
+
+
+def _rows_of(rows, stratum, source):
+    return [r for r in rows
+            if r["type"] == FRAME_STRATUM_TO_ROW_TYPE[stratum] and r["subtype"] == source]
+
+
+def _verdicts(frame, rejected_by_source, rows) -> dict:
+    """Authored against reconstructed, per source, for every source that has authored rows.
+
+    One function so the check and its companion drive the same comparison rather than two copies.
+    """
+    near_miss = _near_miss_selected(frame, rejected_by_source)
+    out = {}
+    for stratum, source, spec in _sources(frame):
+        mine = _rows_of(rows, stratum, source)
+        if not mine:
+            continue
+        extractor = KEY_EXTRACTORS.get((stratum, source))
+        assert extractor is not None, (
+            f"{stratum}/{source}: {len(mine)} rows are authored against this source and no key "
+            "extractor is registered for it. Which element of a candidate carries gold differs "
+            "per source, so add an entry to KEY_EXTRACTORS deliberately rather than defaulting."
+        )
+        picks = (near_miss[source] if stratum == "near_miss"
+                 else _selected(spec, rejected_by_source.get((stratum, source), set())))
+        out[(stratum, source)] = {
+            "rows": len(mine),
+            "allocation": spec["allocation"],
+            "authored": {extractor(r, spec) for r in mine},
+            "reconstructed": {_draw_order_key(c) for c in picks},
+        }
+    return out
+
+
+def test_authored_rows_reconstruct_from_the_draw_order_per_source():
+    """Every unit a source's rows were authored against is in that source's reconstruction, and
+    once the source's row count reaches its allocation the two sets are equal.
+
+    Bound at every commit, exactness at completion, the form
+    tests/test_test_queries.py::test_row_count_per_stratum_matches_the_frame already uses: a
+    stratum authored in batches is partial by construction until the last batch lands, and
+    demanding equality at every commit could not survive incremental authoring. The subset half
+    catches the reopened-skip cascade on the first commit after the reconstruction moves, without
+    waiting for the stratum to seal.
+
+    Per source, not per stratum: single_hop has three sources whose reconstructions are disjoint
+    by document, so comparing a union would hide which source drifted.
+    """
     frame = _frame()
-    rejected = {json.dumps(r["rejected"]) for r in _rejections()
-                if (r["stratum"], r["source"]) == ("clean_multi_hop", "eu_internal_xref")}
-    spec = frame["strata"]["clean_multi_hop"]["sources"]["eu_internal_xref"]
-    reconstructed = {tuple(c) for c in _selected(spec, rejected)}
-    rows = [json.loads(line) for line in (EVAL / "test_queries.jsonl").read_text(
-        encoding="utf-8").splitlines() if line.strip()]
-    # type names the pre-registered stratum and subtype names the source within it, so the two
-    # frame strata that fold into multi_hop are told apart by subtype rather than by type.
-    authored = {tuple(r["expected_units"]) for r in rows
-                if r["type"] == "multi_hop" and r["subtype"] == "eu_internal_xref"}
-    assert authored, "no clean_multi_hop query rows committed"
-    assert reconstructed == authored, (
-        "clean_multi_hop: reconstruction does not equal the committed query rows; "
-        f"reconstructed only {sorted(reconstructed - authored)}, "
-        f"authored only {sorted(authored - reconstructed)}"
+    verdicts = _verdicts(frame, _rejected_by_source(), _query_rows())
+    assert verdicts, "no committed query row joins to any frame drawing source"
+    for (stratum, source), v in verdicts.items():
+        where = f"{stratum}/{source}"
+        assert v["rows"] <= v["allocation"], (
+            f"{where}: {v['rows']} authored rows over the frame's allocation of {v['allocation']}"
+        )
+        assert len(v["authored"]) == v["rows"], (
+            f"{where}: {v['rows']} rows collapse to {len(v['authored'])} distinct candidates, so "
+            "two rows were authored against the same draw-order entry"
+        )
+        assert v["authored"] <= v["reconstructed"], (
+            f"{where}: rows were authored against candidates the reconstruction does not select; "
+            f"authored only {sorted(v['authored'] - v['reconstructed'])}"
+        )
+        if v["rows"] == v["allocation"]:
+            assert v["authored"] == v["reconstructed"], (
+                f"{where}: the source is full at {v['rows']} of {v['allocation']} and the two sets "
+                f"differ; reconstructed only {sorted(v['reconstructed'] - v['authored'])}, "
+                f"authored only {sorted(v['authored'] - v['reconstructed'])}"
+            )
+
+
+def test_authored_reconstruction_check_can_fail():
+    """V20: the check above is shown capable of failing before it is trusted.
+
+    Drops one rejection, which reopens an entry select_distinct_target had skipped and changes the
+    reconstruction, and asserts the same comparison the check runs now reports a mismatch. Driven
+    through _verdicts rather than a private copy, so what is shown to fail is what runs.
+
+    Not vacuous at landing: clean_multi_hop is at twelve rows against an allocation of twelve, so
+    the exactness branch is live and the control has real data to move.
+    """
+    frame = _frame()
+    rows = _query_rows()
+    key = ("clean_multi_hop", "eu_internal_xref")
+    full = _rejected_by_source()
+    baseline = _verdicts(frame, full, rows)
+    assert key in baseline, "no clean_multi_hop rows committed, so this control has nothing to drive"
+    assert baseline[key]["rows"] == baseline[key]["allocation"], (
+        "the control assumes clean_multi_hop is full, so that the exactness branch is the one "
+        f"being shown to fail; it is at {baseline[key]['rows']} of {baseline[key]['allocation']}"
+    )
+    assert baseline[key]["authored"] == baseline[key]["reconstructed"]
+
+    dropped = json.dumps(["eu_ai_act:art_9", "eu_ai_act:art_72"])
+    assert dropped in full[key], "the rejection this control drops is no longer in the log"
+    perturbed_log = {k: (v - {dropped} if k == key else v) for k, v in full.items()}
+    perturbed = _verdicts(frame, perturbed_log, rows)
+
+    assert perturbed[key]["reconstructed"] != baseline[key]["reconstructed"], (
+        "dropping a rejection did not change the reconstruction; the control moves nothing"
+    )
+    assert perturbed[key]["authored"] != perturbed[key]["reconstructed"], (
+        "the reconstruction moved and the equality comparison did not detect it; check is blind"
+    )
+    assert not perturbed[key]["authored"] <= perturbed[key]["reconstructed"], (
+        "the reconstruction moved and the subset comparison did not detect it; check is blind"
     )
 
 
-def test_set_equality_test_can_fail():
-    """V20: the check above is shown capable of failing. Drops one rejection, which reopens a
-    skipped entry and changes the selected set, and asserts the comparison detects it."""
+def test_every_authored_source_has_a_registered_key_extractor():
+    """No silent default. A source that gains rows without a KEY_EXTRACTORS entry must fail rather
+    than be skipped, and the table must not name a source the frame does not have."""
     frame = _frame()
-    spec = frame["strata"]["clean_multi_hop"]["sources"]["eu_internal_xref"]
-    full = {json.dumps(r["rejected"]) for r in _rejections()
-            if (r["stratum"], r["source"]) == ("clean_multi_hop", "eu_internal_xref")}
-    baseline = {tuple(c) for c in _selected(spec, full)}
-    without = {r for r in full if json.loads(r) != ["eu_ai_act:art_9", "eu_ai_act:art_72"]}
-    perturbed = {tuple(c) for c in _selected(spec, without)}
-    assert perturbed != baseline, "dropping a rejection did not change the set; check is blind"
+    frame_sources = {(stratum, source) for stratum, source, _ in _sources(frame)}
+    assert set(KEY_EXTRACTORS) <= frame_sources, (
+        f"KEY_EXTRACTORS names sources the frame does not have: "
+        f"{sorted(set(KEY_EXTRACTORS) - frame_sources)}"
+    )
+    rows = _query_rows()
+    for stratum, source in sorted(frame_sources):
+        if _rows_of(rows, stratum, source):
+            assert (stratum, source) in KEY_EXTRACTORS, (
+                f"{stratum}/{source} has authored rows and no registered key extractor"
+            )
