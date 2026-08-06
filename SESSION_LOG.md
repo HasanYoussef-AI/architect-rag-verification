@@ -35,10 +35,20 @@ five occurrences of `nist_playbook:sub_GOVERN_1.3` in the frame and four in
 index. Occurrences of the unit id itself are zero in both files. Two real identifiers, one a
 prefix of the other, conflated by a substring test.
 
-The same misattributed sentence stands in the 2026-08-06 entry below, placed at 9a5cc9e, which
-records this scope's earlier work. It is left as written pending the owner's reading of that
-entry rather than edited here, so the correction is legible as a correction. This paragraph is
-what keeps the two entries from disagreeing silently.
+The same misattributed sentence was carried by the 2026-08-06 entry below, placed at 9a5cc9e, and
+is corrected there in place. `SESSION_LOG.md` is a tracked file and editing a past entry in a
+later commit is not a history rewrite; the precedent is the scope that corrected eleven false
+commit-count claims in this file in place rather than annotating them. A false claim standing in
+the log's own voice, with its correction two entries away, asserts something untrue and asks the
+reader to keep going to find out. Owner's ruling, overriding the draft-once reading that had left
+it marked rather than repaired.
+
+One divergence survives and is not repairable. The commit message at 6e3c0ce still states the
+three-carrier version. A commit message is not forward-editable, and Rule 10's two authorised
+rewrites are spent, so it stands as written. A reviewer running `git show 6e3c0ce` reads a claim
+the frame contradicts, and this paragraph is the account of why. The tracked text is correct in
+every file; the divergence is confined to that one message and to the message at dce916e that
+quotes it in order to correct it.
 
 Bare-string rejection keys were exercised against the committed walk before the batch that will
 produce them. A single-hop rejection injected at draw index 3 of `eu_ai_act` is skipped, the next
@@ -105,11 +115,12 @@ first thing a consumer does with a list is take element zero.
 
 The single-hop key is the row's gold intersected with that source's full candidate population,
 asserted to be a singleton, rather than the gold itself. A slot may name carriers outside the
-source: the frame's own `cross_stratum_gold_govern_1_3` finding records the GOVERN 1.3 statement
-as carried by `nist_ai_100_1`, `nist_ai_600_1` and `nist_playbook` units, and the single-hop draw
-on it sits at draw index 2 of an allocation of 5, so it is one of the eighteen. Intersecting
-against the eligibility list rather than the selection derives the key without consulting the
-answer being checked.
+source: the frame's own `cross_stratum_gold_govern_1_3` finding records that the statement
+single-hop draws at `nist_ai_100_1:sub_GOVERN_1.3` is the same statement action-to-parent draws at
+`nist_ai_600_1:sub_GOVERN_1.3`, so one slot is satisfied by either carrier under the any-carrier
+gold rule, and the second is not a candidate of the `nist_ai_100_1` source. That draw sits at
+index 2 of that source's draw order. Intersecting against the eligibility list rather than the
+selection derives the key without consulting the answer being checked.
 
 Two rejections recorded. A prefix assertion over every gold unit on a row whose subtype names a
 document was specified and dropped: it fails on that GOVERN 1.3 row, and it would have landed
