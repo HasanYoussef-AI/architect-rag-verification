@@ -303,11 +303,14 @@ def _bare_unit_key(row, spec):
     """The candidate a row was drawn from, for a source whose draw order holds bare unit ids.
 
     Not simply expected_units, because a gold slot is satisfied by any carrying unit and may name
-    carriers outside this source: the frame's own cross_stratum_gold_govern_1_3 finding records
-    that the GOVERN 1.3 statement is carried by nist_ai_100_1, nist_ai_600_1 and nist_playbook
-    units, and the single-hop draw on it is one of the eighteen. The row's gold is intersected
-    with the source's FULL candidate population, which is the eligibility list and not the
-    selection, so this derives the key without consulting the answer it is about to check.
+    carriers outside this source. The frame's own cross_stratum_gold_govern_1_3 finding records
+    that the statement single-hop draws at nist_ai_100_1:sub_GOVERN_1.3 is the same statement
+    action-to-parent draws at nist_ai_600_1:sub_GOVERN_1.3, so one slot is satisfied by either
+    carrier under the any-carrier gold rule, and the second is not a candidate of this source.
+    That draw sits at index 2 of nist_ai_100_1's draw order, which stays true whether or not
+    screening rejects it. The row's gold is intersected with the source's FULL candidate
+    population, which is the eligibility list and not the selection, so this derives the key
+    without consulting the answer it is about to check.
     """
     hits = sorted(set(row["expected_units"]) & {str(c) for c in spec["draw_order"]})
     assert len(hits) == 1, (
