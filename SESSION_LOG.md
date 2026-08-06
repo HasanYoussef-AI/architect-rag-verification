@@ -4,6 +4,51 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-06, carrier attribution corrected in a shipped docstring
+
+The `_bare_unit_key` docstring credited the frame with recording the GOVERN 1.3 statement as
+carried by `nist_ai_100_1`, `nist_ai_600_1` and `nist_playbook` units. The frame's
+`cross_stratum_gold_govern_1_3` finding names two, `nist_ai_100_1:sub_GOVERN_1.3` and
+`nist_ai_600_1:sub_GOVERN_1.3`, and states that one slot is satisfied by either carrier. A
+reviewer opening the frame to check that sentence finds two where the docstring claimed three.
+
+The playbook carrier is a real unit and is named by `structural_join` in all three relations
+files, on the basis of a same printed subcategory identifier. It is named by neither the
+duplication map nor `data/retrieval/verbatim_groups.json` nor the frame's finding, and
+`structural_join` is barred as a gold source by the pre-registration, so it is not a gold
+relation. The correction states no provenance for it at all. The argument the docstring exists to
+carry does not need it: `nist_ai_600_1:sub_GOVERN_1.3` carries the same statement and is not a
+candidate of the `nist_ai_100_1` source, which is what establishes that a slot may name carriers
+outside its source and that `expected_units` cannot therefore be the key.
+
+A second clause in the same sentence placed the draw among the eighteen. That is true of the draw
+and false as soon as screening rejects the pick and a backfill enters, which is a decision the
+next scope makes. It now reads as the draw index, invariant under any rejection.
+
+Fixed forward. Rule 10 permits no rewrite of committed history and states that a defect there is
+fixed forward or lived with, with no exception for an unmerged branch.
+
+One false positive, caught by the check that resolved the question. A substring count reported
+five occurrences of `nist_playbook:sub_GOVERN_1.3` in the frame and four in
+`data/retrieval/verbatim_groups.json`, which would have contradicted the finding. All nine are
+`nist_playbook:sub_GOVERN_1.3.ai_transparency_resources`, a different unit that also exists in the
+index. Occurrences of the unit id itself are zero in both files. Two real identifiers, one a
+prefix of the other, conflated by a substring test.
+
+The same misattributed sentence stands in the 2026-08-06 entry below, placed at 9a5cc9e, which
+records this scope's earlier work. It is left as written pending the owner's reading of that
+entry rather than edited here, so the correction is legible as a correction. This paragraph is
+what keeps the two entries from disagreeing silently.
+
+Bare-string rejection keys were exercised against the committed walk before the batch that will
+produce them. A single-hop rejection injected at draw index 3 of `eu_ai_act` is skipped, the next
+unrejected entry backfills in, and the count still equals the allocation of eleven. The committed
+log holds no single-hop rejection, so until this was run the serialisation had only ever been
+matched for pair-shaped keys.
+
+Commits:
+- dce916e fix(test): correct the carrier attribution in the _bare_unit_key docstring
+
 ## 2026-08-06, dangling module path corrected, authored-set reconstruction generalised
 
 The `ratio_supersession` field on the `anx_IV` to `art_13` rejection row cited
