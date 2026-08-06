@@ -4,6 +4,85 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-06, dangling module path corrected, authored-set reconstruction generalised
+
+The `ratio_supersession` field on the `anx_IV` to `art_13` rejection row cited
+`src/verify/attributability.py`, and no such file exists. `src/verify/` exists as a tracked empty
+`__init__.py`, so the citation resolved to a real package and an absent module, which is the form
+a reading is least likely to catch. The module that derives the replacing value is
+`src/goldset/attributability.py`, named correctly in `docs/attributability_calibration.md`.
+
+The defect is not orthographic. That row exists to record a retraction, and it asks a reviewer to
+accept a re-derived number while naming a file the reviewer cannot open. A retraction whose
+instrument cannot be located is the class of claim the row was written to replace.
+
+The correction is the path and nothing else. The superseded 0.894, the replacing 0.8982, the
+reason, the reason code `answer_duplicated_across_endpoints`, the draw index and the verdict do
+not move, and the retraction is not restated. Hasan-directed, logged here and in the commit
+message under Rule 4's discipline. `eval/test_frame_rejections.jsonl` is not one of the artifacts
+Rule 4 enumerates, nor one of those the pre-registration's ordering clause lists: it was created
+at a996d65 after the frame was sealed at c559130, and `eval/README.md` describes it as the
+draw-order rejections for the four drawing strata. It is a committed authoring record read by the
+frame's reconstruction test, and the discipline is applied to it as the conservative call.
+
+The set-equality check was hard-coded to the literal pair `("clean_multi_hop",
+"eu_internal_xref")`, leaving the other five drawing sources uncovered. It is generalised to run
+per source over the frame's own source list, and it lands before any row it will judge on
+single-hop, action-to-parent or near-miss exists. The ordering carries the claim: a check that
+lands beside the rows it judges cannot be told from a check written to fit them, which is the
+condition a996d65 was in, where the committed reconstruction asserted the count and the
+not-rejected property and never the set.
+
+The claim is that every candidate a source's rows were authored against is in that source's
+reconstruction, with equality once the source's row count reaches its allocation. Bound at every
+commit and exactness at completion, the form the row-count test already uses, because a stratum
+authored in batches is partial by construction until the last batch lands. It is not vacuous at
+landing: clean multi-hop stands at twelve rows against an allocation of twelve, so the exactness
+branch is live and the companion has real data to move. A per-source over-fill guard arrives with
+it, which the row-count test cannot supply, since that test guards per type and `multi_hop` spans
+two frame sources.
+
+What is tabulated is which element of a candidate a row is keyed by, and only that. The join is
+derived: frame stratum to row type inverts the committed stratum map, and row subtype is the
+frame's source key verbatim. Entry shape does not follow stratum, so it cannot be inferred:
+`near_miss/block_clusters` entries are bare unit ids while `action_to_parent/action_subcategory`
+entries are pairs, and applying a tuple conversion to a bare id yields a tuple of its sixteen
+characters rather than a one-element key. Three sources are absent from the table on purpose,
+their row shape being unsettled, so the first row authored against one of them fails rather than
+being skipped.
+
+Between-slot order is preserved and within-slot order is not constrained, and a measurement
+decides it rather than taste. On one of the twelve committed clean multi-hop picks the reversed
+pair is itself a separate draw-order entry, so the pair does not identify its candidate without
+its order. Within a slot the sealed rule makes any carrying unit sufficient, so membership is a
+set, and naming the drawn unit first would privilege it in the way that rule forbids, since the
+first thing a consumer does with a list is take element zero.
+
+The single-hop key is the row's gold intersected with that source's full candidate population,
+asserted to be a singleton, rather than the gold itself. A slot may name carriers outside the
+source: the frame's own `cross_stratum_gold_govern_1_3` finding records the GOVERN 1.3 statement
+as carried by `nist_ai_100_1`, `nist_ai_600_1` and `nist_playbook` units, and the single-hop draw
+on it sits at draw index 2 of an allocation of 5, so it is one of the eighteen. Intersecting
+against the eligibility list rather than the selection derives the key without consulting the
+answer being checked.
+
+Two rejections recorded. A prefix assertion over every gold unit on a row whose subtype names a
+document was specified and dropped: it fails on that GOVERN 1.3 row, and it would have landed
+green, because no single-hop row exists to fire it, then failed at authoring on the one pick the
+frame flags as its recorded cross-stratum case. Narrowing it to the extracted key was measured to
+assert nothing further, since all 431 single-hop draw-order entries carry their source prefix and
+the three sources share no candidate, so a mis-joined row is already caught by the singleton
+assertion returning zero. No assertion was kept in its place.
+
+One prediction was wrong. The path sweep was predicted to move from six resolving literals to
+seven. It moved from six to six: the corrected path is the literal already cited in the
+calibration record, so the distinct-literal count fell from seven to six and that literal now
+carries two occurrences. The count that carried the claim, non-resolving one to zero, held.
+
+Commits:
+- 5762a6e fix(eval): correct the module path cited in the anx_IV to art_13 supersession
+- 6e3c0ce test(eval): generalise the authored-set reconstruction to every drawing source
+
 ## 2026-08-06, attributability scan committed, one published ratio retracted
 
 The twelve clean multi-hop rows shipped a `duplication_scan` block carrying a reporting floor, a top ratio and a pair list, with no method, command or control. The `absence_checks` blocks in the same file carry command, predicate, target, result and a shape-matched control. One artifact held two verification blocks under two reproducibility standards, and eleven of the twelve duplication blocks reported an empty result that nothing in the repository could re-derive. The check that produced them was never committed in any form: no similarity implementation appears in the tracked tree, and a pickaxe search over the full history returns no commit that added or removed one.
