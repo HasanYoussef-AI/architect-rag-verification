@@ -4,6 +4,113 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-07, self-containedness candidate generator, and the segmentation artifact it surfaced
+
+Eighteen single-hop rows require an enumeration of every phrase pointing outside the unit, each
+quoted with its chunk id and verdicted a signpost or a dependency, with a funnel. Several of the
+eleven EU picks were expected to terminate that funnel at zero. No committed method for the
+property existed: `self.contain` and `points_only` appear across the tracked tree only as recorded
+data in `eval/test_frame_rejections.jsonl` and as prose in this file.
+
+The argument for committing an instrument is V10, not V7. A number carrying its method is the
+weaker case here, because the deliverable is a census with a human verdict on each item rather
+than a score, and V11 is already satisfied by the quote sitting beside the verdict. The exposure
+is that a human enumeration has no starting population, so a zero funnel cannot be distinguished
+from an unlooked-at funnel. What `src/goldset/self_containedness.py` produces is the denominator.
+Optimising its judgment was explicitly not attempted, because it has none.
+
+Chunk records are the artifact of record, read per record. `attributability.Corpus` was rejected
+as the reader. It builds unit text by concatenating chunk text with no separator, and across the
+64 multi-chunk `eu_ai_act` units outside the eleven picks, 90 adjacent chunk pairs join with no
+whitespace on either side, fabricating tokens that appear in no committed record: "this
+Regulation.For example", "AI models.They should". A candidate matched across such a join could
+not be attributed to a `chunk_id`. Every candidate now carries offsets that slice its own record
+back to its own surface, checked exhaustively over 2760 candidates rather than sampled.
+
+`data/chunks/eu_ai_act.xrefs.jsonl` was also rejected as an input. It is precision tuned and drops
+32 matches by design, which is backwards for a recall-tuned generator, and keeping the instrument
+to unit text alone means no question arises about a screening instrument reading a relation that
+defines gold for another stratum.
+
+Three arms with stated scope, and the third states that it has none. Arm 1 covers named pointers
+in three classes. The external-instrument class is named explicitly rather than reached through an
+adjacent locution, because the admissibility ruling makes a unit inadmissible where it defers to
+an instrument the corpus does not contain, and a bare naming with no locution would otherwise be
+invisible; the three committed `target_defers_out_of_corpus` positives carry exactly that surface
+and are pinned as its test. Arm 2 covers defined-term deference against a 67-term inventory
+derived from `eu_ai_act:art_3`. Arm 3 covers unnamed substantive deference, has no committed
+method, and records that as an explicit gap. A predicate over purposive prose either fires on
+substantially all recitals or is fitted to the observations it would judge, which V15 bars.
+
+The row carries four named parts and the roll-up is not their conjunction. Two empty funnels plus
+an unverdicted third part is not a verified property, and a committed method lends a zero an
+authority it did not earn. The emitted block states that in its own text rather than leaving a
+reviewer to infer it.
+
+Arm 2's scope is bounded by Article 3 and the bound is not where it would be assumed. "high-risk
+AI system" is not an Article 3 definition, classification living in Article 6, and it occurs in
+120 of the 295 non-pick `eu_ai_act` units that this arm does not reach on that ground. The limit
+is pinned by a test so it is visible in the suite. Reading the definitions unit by prefix rather
+than by exact id pulls in `art_30` through `art_39`; the inventory count is unchanged at 67
+either way, because those ten articles carry no quoted-term-plus-means construction, so the
+regression pins foreign text entering the read rather than a count difference that does not exist.
+
+Two calibration criteria were corrected before implementation. The first required every unit named
+in ten rejection rows to produce a candidate, but `rejected` is ordered as citing source then
+cited target, and on the six `source_points_only` rows the record characterises the target as
+answering without reference back. The criterion therefore required the instrument to contradict
+the record on six of eighteen units. The role split is twelve positives and six negatives, derived
+from `reason_code` rather than named. The six negatives bound a claim about the verdict step and
+not about the instrument: arm 1 fires on all six, on references unrelated to the rejection, and
+what they control is that a verdict protocol reading every named reference as a dependency would
+flag all six and be visibly wrong.
+
+The second criterion proposed the two recital-sourced entries of the internal cross-reference
+draw order as a register control. Both are in that relation precisely because their text names
+Article 26, so selecting them selects on the property under test, and the blindness the control
+existed to catch would pass through it. They are retained as a floor check on arm 1, with that
+limit recorded, and the register claim moved to the 145 held-out recitals carrying no named
+reference, that population defined by arm 1's own class and fixed before the distribution was
+observed.
+
+Calibration ran on held-out units only, with the eleven picks removed as the first filter of every
+enumeration. Twelve of twelve positives produced a candidate. Arm 2 fired on 131 of the 145
+register units, against a prediction of a large majority recorded before the run. Fourteen of
+those 145 produced nothing from arm 2 and 51 produced nothing from arm 1, but the two sets overlap
+on only six: `rct_4`, `rct_45`, `rct_98`, `rct_142`, `rct_144` and `rct_150`. Those six are the
+population where a row would ship two empty funnels and the whole question would rest on the arm
+that has no method. The count was first written as fourteen by taking the arm 2 zeroes for the
+intersection without measuring it.
+
+The near-absence of recitals from the internal cross-reference relation is a property of the text
+and not of the builder. `src/ingest/xref.py` applies no source-kind filter, and a synthetic
+recital-register sentence naming an Article of this Regulation yields an internal edge, so the
+builder is capable of emitting one. Of 180 recitals, 149 carry no Article or Annex surface form at
+all, and of the 31 that do, 54 of 68 matches are qualified to an external instrument. A zero-edge
+reading on a recital is therefore a true measurement of a much narrower property than
+self-containedness, and nothing about admissibility should rest on it.
+
+One measurement is reported rather than fixed, on the owner's instruction. The committed
+attributability segmentation consumes concatenated unit text, reproduced here on all 1150 units,
+and the boundary pattern requires whitespace after a terminator, so it does not split at a
+fabricated join. 144 of the 14626 raw segments span one, and 141 survive into the 13228
+comparable segments, 1.07 percent of the embedded segmentation. The recomputed raw total matches
+the manifest's `starting_population` exactly and the recomputed fingerprint matches
+`segmentation_fingerprint` exactly, so the manifest describes a segmentation with those 141
+segments in it and the committed cache embedded them. A control over units whose joins carry
+whitespace found none, so the measurement discriminates. Eighteen rows will ship attributability
+output over that segmentation.
+
+Recorded before any designation: four of the six recitals among the eleven picks carry no named
+Article or Annex reference. This was arithmetic over the committed cross-reference evidence field,
+not a run of this instrument, which has never been evaluated against a pick. It is recorded rather
+than buried, and the design was frozen against criteria that do not depend on it.
+
+Commits:
+- ee8e497 feat(goldset): add the self-containedness candidate generator with its calibration
+
+This entry is placed by the commit that follows `ee8e497` and touches only `SESSION_LOG.md`.
+
 ## 2026-08-06, carrier attribution corrected in a shipped docstring
 
 The `_bare_unit_key` docstring credited the frame with recording the GOVERN 1.3 statement as
