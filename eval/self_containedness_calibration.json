@@ -1,0 +1,552 @@
+{
+ "description": "Calibration of src/goldset/self_containedness.py against held-out units, run before any single-hop pick is screened. The eleven eu_ai_act single-hop picks are removed as the first filter of every enumeration, so no arm here is evaluated against a unit it will later judge.",
+ "command": "python -m src.goldset.calibrate_self_containedness",
+ "reproducibility_level": 1,
+ "inventory": {
+  "source_unit": "eu_ai_act:art_3",
+  "n_terms": 67,
+  "fingerprint": "18edc31bbebfead08f3f54e285c4106738630df03af76261f24fcce3079ecf2f"
+ },
+ "recorded_prediction": "Recorded before the register arm was run, so the result can contradict it. Arm 2 fires on a large majority of the held-out recitals carrying no named reference, because Article 3 defines terms such as AI system, provider and deployer that recital prose uses constantly. If it fires on few, the prediction is wrong about where recital deference lives and the design changes before anything is screened.",
+ "picks_disclosure": "Four of the six recitals among the eleven eu_ai_act single-hop picks carry no named Article or Annex reference. This was surfaced during the design round as arithmetic over the committed data/chunks/eu_ai_act.xrefs.jsonl evidence field, which records 149 of 180 recitals as carrying no such surface form against 145 of those held out from the picks. It is recorded here rather than buried, and it is an observation about a pre-existing committed artifact and NOT a run of this instrument, which has never been evaluated against a pick. The design was frozen against criteria that do not depend on it: the register population is defined by arm 1's own class over non-pick recitals, and the capability threshold was fixed before the distribution was observed.",
+ "role_split_funnel": {
+  "starting_population": 19,
+  "removed_reason_code_not_in_scope": {
+   "count": 9,
+   "predicate": "reason_code is not one of source_points_only or target_defers_out_of_corpus",
+   "removed_by_reason_code": {
+    "answer_duplicated_across_endpoints": 2,
+    "query_link_not_the_cited_link": 2,
+    "target_self_identifies": 4,
+    "target_already_covers_source": 1
+   }
+  },
+  "rows_kept": 10,
+  "role_split_predicate": "rejected is ordered [citing source, cited target]. On a source_points_only row the record characterises the target as answering without reference back, so the target is a negative and only the source is a positive. On a target_defers_out_of_corpus row both endpoints are positives: the source cites, and the target is what defers",
+  "positive_units": 12,
+  "negative_units": 6
+ },
+ "positive_arm": {
+  "claim": "Every unit the committed rejection record independently establishes as carrying an outward reference must produce at least one arm 1 candidate. This is the arm that can fail.",
+  "n_units": 12,
+  "units_producing_no_candidate": [],
+  "passed": true,
+  "units": [
+   {
+    "unit_id": "eu_ai_act:art_23",
+    "arm1_starting_population": 20,
+    "arm1_removed_self_reference": 0,
+    "arm1_candidates": 20,
+    "arm1_by_class": {
+     "article_or_annex": 8,
+     "deference_locution": 12,
+     "external_instrument": 0
+    },
+    "arm1_named_surfaces": [
+     "Annex IV",
+     "Article 11",
+     "Article 22",
+     "Article 23",
+     "Article 43",
+     "Article 47",
+     "Article 79"
+    ],
+    "arm2_candidates": 12,
+    "arm2_distinct_terms": 9,
+    "single_hop_draw_index": 13
+   },
+   {
+    "unit_id": "eu_ai_act:art_68",
+    "arm1_starting_population": 17,
+    "arm1_removed_self_reference": 0,
+    "arm1_candidates": 17,
+    "arm1_by_class": {
+     "article_or_annex": 5,
+     "deference_locution": 12,
+     "external_instrument": 0
+    },
+    "arm1_named_surfaces": [
+     "Article 68",
+     "Article 74",
+     "Article 81",
+     "Article 90",
+     "Article 98"
+    ],
+    "arm2_candidates": 7,
+    "arm2_distinct_terms": 6,
+    "single_hop_draw_index": 37
+   },
+   {
+    "unit_id": "eu_ai_act:art_2",
+    "arm1_starting_population": 25,
+    "arm1_removed_self_reference": 0,
+    "arm1_candidates": 25,
+    "arm1_by_class": {
+     "article_or_annex": 10,
+     "deference_locution": 12,
+     "external_instrument": 3
+    },
+    "arm1_named_surfaces": [
+     "Annex I",
+     "Article 10",
+     "Article 112",
+     "Article 2",
+     "Article 5",
+     "Article 57",
+     "Article 59",
+     "Article 6",
+     "Articles 102",
+     "Directive 2002/58/EC",
+     "Regulation (EU) 2016/679",
+     "Regulation (EU) 2022/2065"
+    ],
+    "arm2_candidates": 16,
+    "arm2_distinct_terms": 12,
+    "single_hop_draw_index": 49
+   },
+   {
+    "unit_id": "eu_ai_act:art_9",
+    "arm1_starting_population": 27,
+    "arm1_removed_self_reference": 0,
+    "arm1_candidates": 27,
+    "arm1_by_class": {
+     "article_or_annex": 4,
+     "deference_locution": 23,
+     "external_instrument": 0
+    },
+    "arm1_named_surfaces": [
+     "Article 13",
+     "Article 60",
+     "Article 72",
+     "Article 9"
+    ],
+    "arm2_candidates": 12,
+    "arm2_distinct_terms": 8,
+    "single_hop_draw_index": 60
+   },
+   {
+    "unit_id": "eu_ai_act:art_101",
+    "arm1_starting_population": 18,
+    "arm1_removed_self_reference": 0,
+    "arm1_candidates": 18,
+    "arm1_by_class": {
+     "article_or_annex": 7,
+     "deference_locution": 11,
+     "external_instrument": 0
+    },
+    "arm1_named_surfaces": [
+     "Article 101",
+     "Article 56",
+     "Article 91",
+     "Article 92",
+     "Article 93",
+     "Article 98"
+    ],
+    "arm2_candidates": 4,
+    "arm2_distinct_terms": 4,
+    "single_hop_draw_index": 130
+   },
+   {
+    "unit_id": "eu_ai_act:art_102",
+    "arm1_starting_population": 10,
+    "arm1_removed_self_reference": 1,
+    "arm1_candidates": 9,
+    "arm1_by_class": {
+     "article_or_annex": 2,
+     "deference_locution": 5,
+     "external_instrument": 2
+    },
+    "arm1_named_surfaces": [
+     "Article 102",
+     "Article 4",
+     "Regulation (EC) No 300/2008"
+    ],
+    "arm2_candidates": 0,
+    "arm2_distinct_terms": 0,
+    "single_hop_draw_index": 131
+   },
+   {
+    "unit_id": "eu_ai_act:art_109",
+    "arm1_starting_population": 11,
+    "arm1_removed_self_reference": 1,
+    "arm1_candidates": 10,
+    "arm1_by_class": {
+     "article_or_annex": 2,
+     "deference_locution": 6,
+     "external_instrument": 2
+    },
+    "arm1_named_surfaces": [
+     "Article 109",
+     "Article 11",
+     "Regulation (EU) 2019/2144"
+    ],
+    "arm2_candidates": 1,
+    "arm2_distinct_terms": 1,
+    "single_hop_draw_index": 135
+   },
+   {
+    "unit_id": "eu_ai_act:art_16",
+    "arm1_starting_population": 21,
+    "arm1_removed_self_reference": 0,
+    "arm1_candidates": 21,
+    "arm1_by_class": {
+     "article_or_annex": 9,
+     "deference_locution": 11,
+     "external_instrument": 1
+    },
+    "arm1_named_surfaces": [
+     "Article 16",
+     "Article 17",
+     "Article 18",
+     "Article 19",
+     "Article 20",
+     "Article 43",
+     "Article 47",
+     "Article 48",
+     "Article 49",
+     "Directives (EU) 2016/2102"
+    ],
+    "arm2_candidates": 6,
+    "arm2_distinct_terms": 6,
+    "single_hop_draw_index": 141
+   },
+   {
+    "unit_id": "eu_ai_act:art_56",
+    "arm1_starting_population": 23,
+    "arm1_removed_self_reference": 0,
+    "arm1_candidates": 23,
+    "arm1_by_class": {
+     "article_or_annex": 8,
+     "deference_locution": 15,
+     "external_instrument": 0
+    },
+    "arm1_named_surfaces": [
+     "Article 53",
+     "Article 56",
+     "Article 98",
+     "Articles 53"
+    ],
+    "arm2_candidates": 11,
+    "arm2_distinct_terms": 6,
+    "single_hop_draw_index": 166
+   },
+   {
+    "unit_id": "eu_ai_act:art_63",
+    "arm1_starting_population": 9,
+    "arm1_removed_self_reference": 0,
+    "arm1_candidates": 9,
+    "arm1_by_class": {
+     "article_or_annex": 3,
+     "deference_locution": 5,
+     "external_instrument": 1
+    },
+    "arm1_named_surfaces": [
+     "Article 17",
+     "Article 63",
+     "Articles 9",
+     "Recommendation 2003/361/EC"
+    ],
+    "arm2_candidates": 3,
+    "arm2_distinct_terms": 3,
+    "single_hop_draw_index": 171
+   },
+   {
+    "unit_id": "eu_ai_act:art_96",
+    "arm1_starting_population": 18,
+    "arm1_removed_self_reference": 0,
+    "arm1_candidates": 18,
+    "arm1_by_class": {
+     "article_or_annex": 8,
+     "deference_locution": 10,
+     "external_instrument": 0
+    },
+    "arm1_named_surfaces": [
+     "Annex I",
+     "Article 25",
+     "Article 3",
+     "Article 5",
+     "Article 50",
+     "Article 96",
+     "Articles 40",
+     "Articles 8"
+    ],
+    "arm2_candidates": 5,
+    "arm2_distinct_terms": 5,
+    "single_hop_draw_index": 192
+   },
+   {
+    "unit_id": "eu_ai_act:art_98",
+    "arm1_starting_population": 5,
+    "arm1_removed_self_reference": 0,
+    "arm1_candidates": 5,
+    "arm1_by_class": {
+     "article_or_annex": 2,
+     "deference_locution": 1,
+     "external_instrument": 2
+    },
+    "arm1_named_surfaces": [
+     "Article 5",
+     "Article 98",
+     "Regulation (EU) No 182/2011"
+    ],
+    "arm2_candidates": 0,
+    "arm2_distinct_terms": 0,
+    "single_hop_draw_index": 193
+   }
+  ]
+ },
+ "negative_arm": {
+  "claim": "The six source_points_only targets. This arm does NOT control the instrument. Arm 1 fires on all six, on references unrelated to the rejection. What it controls is the verdict step downstream of the instrument: the record independently characterises each of these six as answering without reference back, so a verdict protocol that reads every named reference as a dependency flags all six and is visibly wrong. The claim is bounded to the verdict step.",
+  "controls_the_instrument": false,
+  "controls_the_verdict_step": true,
+  "n_units": 6,
+  "units_where_arm1_fires": [
+   "eu_ai_act:art_72",
+   "eu_ai_act:art_15",
+   "eu_ai_act:art_20",
+   "eu_ai_act:art_43",
+   "eu_ai_act:art_5",
+   "eu_ai_act:art_81"
+  ],
+  "units": [
+   {
+    "unit_id": "eu_ai_act:art_72",
+    "arm1_starting_population": 21,
+    "arm1_removed_self_reference": 0,
+    "arm1_candidates": 21,
+    "arm1_by_class": {
+     "article_or_annex": 5,
+     "deference_locution": 16,
+     "external_instrument": 0
+    },
+    "arm1_named_surfaces": [
+     "Annex I",
+     "Annex III",
+     "Annex IV",
+     "Article 72",
+     "Article 98"
+    ],
+    "arm2_candidates": 6,
+    "arm2_distinct_terms": 6,
+    "single_hop_draw_index": 97
+   },
+   {
+    "unit_id": "eu_ai_act:art_15",
+    "arm1_starting_population": 3,
+    "arm1_removed_self_reference": 0,
+    "arm1_candidates": 3,
+    "arm1_by_class": {
+     "article_or_annex": 1,
+     "deference_locution": 2,
+     "external_instrument": 0
+    },
+    "arm1_named_surfaces": [
+     "Article 15"
+    ],
+    "arm2_candidates": 3,
+    "arm2_distinct_terms": 3,
+    "single_hop_draw_index": 140
+   },
+   {
+    "unit_id": "eu_ai_act:art_20",
+    "arm1_starting_population": 5,
+    "arm1_removed_self_reference": 0,
+    "arm1_candidates": 5,
+    "arm1_by_class": {
+     "article_or_annex": 3,
+     "deference_locution": 2,
+     "external_instrument": 0
+    },
+    "arm1_named_surfaces": [
+     "Article 20",
+     "Article 44",
+     "Article 79"
+    ],
+    "arm2_candidates": 8,
+    "arm2_distinct_terms": 8,
+    "single_hop_draw_index": 144
+   },
+   {
+    "unit_id": "eu_ai_act:art_43",
+    "arm1_starting_population": 71,
+    "arm1_removed_self_reference": 0,
+    "arm1_candidates": 71,
+    "arm1_by_class": {
+     "article_or_annex": 25,
+     "deference_locution": 46,
+     "external_instrument": 0
+    },
+    "arm1_named_surfaces": [
+     "Annex I",
+     "Annex III",
+     "Annex IV",
+     "Annex VI",
+     "Annex VII",
+     "Annexes VI",
+     "Article 31",
+     "Article 40",
+     "Article 41",
+     "Article 43",
+     "Article 74",
+     "Article 97"
+    ],
+    "arm2_candidates": 17,
+    "arm2_distinct_terms": 11,
+    "single_hop_draw_index": 158
+   },
+   {
+    "unit_id": "eu_ai_act:art_5",
+    "arm1_starting_population": 62,
+    "arm1_removed_self_reference": 0,
+    "arm1_candidates": 62,
+    "arm1_by_class": {
+     "article_or_annex": 5,
+     "deference_locution": 56,
+     "external_instrument": 1
+    },
+    "arm1_named_surfaces": [
+     "Annex II",
+     "Article 27",
+     "Article 49",
+     "Article 5",
+     "Article 9",
+     "Regulation (EU) 2016/679"
+    ],
+    "arm2_candidates": 31,
+    "arm2_distinct_terms": 15,
+    "single_hop_draw_index": 162
+   },
+   {
+    "unit_id": "eu_ai_act:art_81",
+    "arm1_starting_population": 14,
+    "arm1_removed_self_reference": 0,
+    "arm1_candidates": 14,
+    "arm1_by_class": {
+     "article_or_annex": 7,
+     "deference_locution": 6,
+     "external_instrument": 1
+    },
+    "arm1_named_surfaces": [
+     "Article 11",
+     "Article 5",
+     "Article 79",
+     "Article 81",
+     "Articles 40",
+     "Regulation (EU) No 1025/2012"
+    ],
+    "arm2_candidates": 5,
+    "arm2_distinct_terms": 5,
+    "single_hop_draw_index": 182
+   }
+  ]
+ },
+ "register_arm": {
+  "claim": "Capability. The batch to be screened is majority recital. If arm 2 fires on essentially none of the held-out recitals carrying no named reference, it has no coverage of that register and screening stops.",
+  "population_rule": "eu_ai_act recital units, minus the eleven single-hop picks, minus those where arm 1 emits at least one candidate of class article_or_annex. Fixed before the distribution was observed.",
+  "funnel": {
+   "starting_population": 180,
+   "removed_is_a_single_hop_pick": {
+    "count": 6,
+    "predicate": "the unit is one of the eleven eu_ai_act single-hop picks. Applied FIRST, so no arm is evaluated against a pick"
+   },
+   "removed_carries_a_named_article_or_annex_reference": {
+    "count": 29,
+    "predicate": "arm 1 emits at least one candidate of class article_or_annex for the unit",
+    "removed_items": [
+     "eu_ai_act:rct_104",
+     "eu_ai_act:rct_106",
+     "eu_ai_act:rct_121",
+     "eu_ai_act:rct_122",
+     "eu_ai_act:rct_126",
+     "eu_ai_act:rct_14",
+     "eu_ai_act:rct_140",
+     "eu_ai_act:rct_149",
+     "eu_ai_act:rct_160",
+     "eu_ai_act:rct_164",
+     "eu_ai_act:rct_169",
+     "eu_ai_act:rct_173",
+     "eu_ai_act:rct_176",
+     "eu_ai_act:rct_180",
+     "eu_ai_act:rct_3",
+     "eu_ai_act:rct_33",
+     "eu_ai_act:rct_38",
+     "eu_ai_act:rct_39",
+     "eu_ai_act:rct_40",
+     "eu_ai_act:rct_41",
+     "eu_ai_act:rct_48",
+     "eu_ai_act:rct_53",
+     "eu_ai_act:rct_54",
+     "eu_ai_act:rct_6",
+     "eu_ai_act:rct_62",
+     "eu_ai_act:rct_70",
+     "eu_ai_act:rct_84",
+     "eu_ai_act:rct_93",
+     "eu_ai_act:rct_94"
+    ]
+   },
+   "population": 145
+  },
+  "arm2_fired_on": 131,
+  "arm2_fired_on_fraction": 0.9034,
+  "distinct_terms_distribution": {
+   "3-5": 76,
+   "6-10": 20,
+   "1-2": 34,
+   "0": 14,
+   "11+": 1
+  },
+  "distinct_terms_min": 0,
+  "distinct_terms_median": 3,
+  "distinct_terms_max": 13,
+  "floor_check": {
+   "limit": "rct_40 and rct_41 are retained as a floor check on arm 1 because they cost nothing. They cannot carry the register claim. Both are the only two recitals appearing in the committed internal cross-reference relation, and they appear in it precisely because their text names Article 26, so selecting them selects on the property under test. A pointer pattern fires on them trivially, and passing this check is no evidence that arm 1 or arm 2 reaches the 149 recitals of 180 that name no Article at all.",
+   "units": [
+    {
+     "unit_id": "eu_ai_act:rct_40",
+     "arm1_starting_population": 24,
+     "arm1_removed_self_reference": 0,
+     "arm1_candidates": 24,
+     "arm1_by_class": {
+      "article_or_annex": 7,
+      "deference_locution": 11,
+      "external_instrument": 6
+     },
+     "arm1_named_surfaces": [
+      "Article 16",
+      "Article 26",
+      "Article 5",
+      "Protocol",
+      "TEU",
+      "TFEU"
+     ],
+     "arm2_candidates": 3,
+     "arm2_distinct_terms": 3,
+     "single_hop_draw_index": 113
+    },
+    {
+     "unit_id": "eu_ai_act:rct_41",
+     "arm1_starting_population": 23,
+     "arm1_removed_self_reference": 0,
+     "arm1_candidates": 23,
+     "arm1_by_class": {
+      "article_or_annex": 6,
+      "deference_locution": 12,
+      "external_instrument": 5
+     },
+     "arm1_named_surfaces": [
+      "Article 16",
+      "Article 26",
+      "Article 5",
+      "Articles 2",
+      "Protocol",
+      "TEU",
+      "TFEU"
+     ],
+     "arm2_candidates": 3,
+     "arm2_distinct_terms": 3,
+     "single_hop_draw_index": 261
+    }
+   ]
+  }
+ }
+}
