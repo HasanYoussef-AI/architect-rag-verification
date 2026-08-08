@@ -1,6 +1,6 @@
 """Build the segment embedding cache the dense attributability arm reads.
 
-The cache is deliberately NOT committed, on size: 40,636,416 bytes, 10.2 times the committed
+The cache is deliberately NOT committed, on size: 40,906,752 bytes, 10.3 times the committed
 chunk embeddings. This is NOT the retrieval pattern, which commits data/retrieval/embeddings.npy
 so retrieval reproduces at level 2 without the model. The cost of declining here is that the dense
 arm sits at level 3. What commits is this generator, the pinned model revision it records, and the
@@ -59,7 +59,7 @@ def write_manifest(corpus: Corpus) -> dict:
     manifest = {
         "description": (
             "Reproduction manifest for the attributability dense arm's segment embedding cache. "
-            "The cache itself is not committed, at 40.6 MB against the 3.9 MB committed chunk "
+            "The cache itself is not committed, at 40.9 MB against the 3.9 MB committed chunk "
             "embeddings, so this manifest is what makes the dense arm checkable: regenerate the "
             "cache with the command below and compare cache_sha256."
         ),

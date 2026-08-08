@@ -29,13 +29,13 @@ The dense arm embeds segments rather than chunks because a chunk-level arm is no
 Measured: on the published 0.940 pair, a chunk-level dense arm ranks the known partner
 eu_ai_act:art_72 at 207 of 1149, cosine 0.5895, while the lexical arm ranks it first at 0.9397.
 The span is 123 characters against art_72's 2318, so 5.3 percent of the text carries the match
-and the remaining 94.7 percent sets the direction. Recital units in the corpus run 145 to 4,447
+and the remaining 94.7 percent sets the direction. Recital units in the corpus run 145 to 4,448
 characters at a median of 1,030, against an answer that can occupy one sentence, so the same
 dilution applies to the paraphrase case this arm was added to reach. Segment embeddings put both
 arms on the same footing.
 
-The segment embedding cache is not committed, on size. At 13228 segments by 768 float32 it is
-40,636,416 bytes, 10.2 times the committed chunk embeddings at 3,975,296. Note this is NOT the
+The segment embedding cache is not committed, on size. At 13316 segments by 768 float32 it is
+40,906,752 bytes, 10.3 times the committed chunk embeddings at 3,975,296. Note this is NOT the
 pattern the retrieval artifacts follow: data/retrieval/embeddings.npy IS committed, which is what
 lets retrieval reproduce at level 2 without the model. Declining to commit this cache is a size
 decision and its cost is precisely that the dense arm sits at level 3 instead. What commits is the
@@ -97,6 +97,13 @@ SEGMENT_INDEX = CACHE / "segment_index.json"
 MANIFEST = REPO_ROOT / "eval" / "segment_embedding_manifest.json"
 
 SEGMENTER_ID = "comparable_segments/1"
+
+# The text the chunker recorded between two chunks of the same unit. NOT a chosen separator:
+# every one of the 144 inter-chunk gaps in the normalised files is exactly this string, and
+# BLOCK_SEPARATOR in src/ingest/eu_ai_act.py, nist_ai_100_1.py and nist_pdf_common.py is the same
+# value, because it is what ingest wrote. Joining on it reconstructs the unit's source text on
+# 1150 of 1150 units; joining on "" reconstructs it on 1053 and fabricates a token on the other 97.
+CHUNK_JOIN = "\n"
 
 DOCUMENTS = ("eu_ai_act", "nist_ai_100_1", "nist_ai_600_1", "nist_playbook")
 
@@ -179,7 +186,7 @@ def is_own_heading(text: str, unit_label: str | None) -> bool:
     single pair.
 
     Own label only, and the narrowness is load-bearing. Enumerated over all 1150 units: 341 of
-    14626 segments equal their own unit's label, none longer than two words or 17 characters, and
+    14770 segments equal their own unit's label, none longer than two words or 17 characters, and
     a further 16 segments equal some OTHER unit's label. A broad any-label form would remove
     those 16. They are kept.
     """
@@ -237,7 +244,10 @@ class Corpus:
                     continue
                 row = json.loads(line)
                 unit = unit_of(row["chunk_id"])
-                unit_text[unit] = unit_text.get(unit, "") + row["text"]
+                previous = unit_text.get(unit)
+                unit_text[unit] = (
+                    row["text"] if previous is None else previous + CHUNK_JOIN + row["text"]
+                )
                 unit_label.setdefault(unit, row.get("unit_label"))
         unit_segments = {
             u: comparable_segments(t, unit_label[u]) for u, t in sorted(unit_text.items())

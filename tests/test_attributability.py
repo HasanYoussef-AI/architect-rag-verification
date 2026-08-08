@@ -37,7 +37,10 @@ import pytest
 
 from src.ingest.corpus_integrity import REPO_ROOT
 from src.goldset.attributability import (
+    CHUNK_JOIN,
+    CHUNKS,
     DENSE_TOP_N,
+    DOCUMENTS,
     LEXICAL_FLOOR,
     MANIFEST,
     SEGMENT_INDEX,
@@ -295,10 +298,10 @@ def test_every_unit_carries_a_committed_unit_label(corpus):
 def test_the_exclusion_funnel_is_reported_and_balances(corpus):
     """A reviewer sees the whole funnel and can disagree with a predicate on the record."""
     report = exclusion_report(corpus)
-    assert report["starting_population"] == 14626
-    assert report["removed_no_alphabetic_word"]["count"] == 1057
+    assert report["starting_population"] == 14770
+    assert report["removed_no_alphabetic_word"]["count"] == 1113
     assert report["removed_own_heading"]["count"] == 341
-    assert report["comparable_segments"] == 13228
+    assert report["comparable_segments"] == 13316
     assert (
         report["starting_population"]
         - report["removed_no_alphabetic_word"]["count"]
@@ -307,6 +310,58 @@ def test_the_exclusion_funnel_is_reported_and_balances(corpus):
     )
     for key in ("removed_no_alphabetic_word", "removed_own_heading"):
         assert report[key]["predicate"].strip()
+
+
+def test_unit_text_reconstructs_the_source_on_every_unit(corpus):
+    """Regression on the concatenation defect. Reversing the join fails this test.
+
+    Corpus.load previously joined a unit's chunks with no separator, which dropped the newline the
+    chunker recorded and fabricated tokens that appear in no committed record: "this
+    Regulation.For example", "AI models.They should". Every one of the 144 inter-chunk gaps in the
+    normalised files is a single newline, and BLOCK_SEPARATOR in the ingest modules is the same
+    value, so the join is a reconstruction of the source and not a chosen separator.
+
+    Enumerated over all 1150 units rather than sampled. Under the previous join this passes on
+    1053 units and fails on the other 97.
+    """
+    assert CHUNK_JOIN == "\n"
+    checked = 0
+    for doc in DOCUMENTS:
+        normalised = (CHUNKS / f"{doc}.normalized.txt").read_text(encoding="utf-8")
+        by_unit: dict[str, list[dict]] = {}
+        for line in (CHUNKS / f"{doc}.chunks.jsonl").read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                record = json.loads(line)
+                by_unit.setdefault(unit_of(record["chunk_id"]), []).append(record)
+        for unit, records in by_unit.items():
+            records.sort(key=lambda r: r["seq"])
+            source = normalised[records[0]["char_start"]: records[-1]["char_end"]]
+            assert corpus.unit_text[unit] == source, unit
+            checked += 1
+    assert checked == 1150
+
+
+def test_no_segment_spans_a_chunk_boundary(corpus):
+    """The consequence of the join, checked on the segmentation the arms actually consume.
+
+    Under the previous join, 144 raw segments straddled an inter-chunk boundary and 141 of them
+    survived into the comparable segmentation the committed cache embedded. A segment that
+    straddles a boundary contains text from two chunk records joined by a character that is in
+    neither.
+    """
+    for doc in DOCUMENTS:
+        by_unit: dict[str, list[dict]] = {}
+        for line in (CHUNKS / f"{doc}.chunks.jsonl").read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                record = json.loads(line)
+                by_unit.setdefault(unit_of(record["chunk_id"]), []).append(record)
+        for unit, records in by_unit.items():
+            if len(records) < 2:
+                continue
+            records.sort(key=lambda r: r["seq"])
+            texts = [r["text"] for r in records]
+            for segment in corpus.unit_segments[unit]:
+                assert any(segment in t for t in texts), (unit, segment[:80])
 
 
 def test_the_funnel_balances_for_every_single_unit(corpus):
@@ -421,7 +476,7 @@ def test_dense_arm_records_its_absence_rather_than_omitting_it(corpus):
     assert block["dense_arm"]["reproducibility_level"] == 3
     assert block["lexical_arm"]["pairs_at_or_above_floor"]
     assert block["segmenter"]["shared_by_both_arms"] is True
-    assert block["exclusion_funnel"]["comparable_segments"] == 13228
+    assert block["exclusion_funnel"]["comparable_segments"] == 13316
 
 
 def _dense_or_skip(corpus):
@@ -473,7 +528,7 @@ def test_dense_arm_scores_the_shared_segments(corpus):
     """The shared-segmenter condition, asserted on the dense side too."""
     session = _dense_or_skip(corpus)
     result = dense_arm(CASE_A_LEFT, {"eu_ai_act:art_26"}, corpus, session)
-    assert result["segments_scored"] == len(corpus.ordered_segments()) == 13228
+    assert result["segments_scored"] == len(corpus.ordered_segments()) == 13316
     for entry in result["top_units"]:
         assert entry["segment"] in corpus.unit_segments[entry["unit"]]
 
@@ -575,6 +630,6 @@ def test_the_dense_arm_scored_population_equals_the_segment_population(corpus):
     session = _dense_or_skip(corpus)
     result = dense_arm(CASE_A_LEFT, {"eu_ai_act:art_26"}, corpus, session)
     assert result["segments_scored"] == len(corpus.ordered_segments())
-    assert result["segments_scored"] == corpus.funnel["comparable_segments"] == 13228
+    assert result["segments_scored"] == corpus.funnel["comparable_segments"] == 13316
     for entry in result["top_units"]:
         assert entry["segment"] in corpus.unit_segments[entry["unit"]]
