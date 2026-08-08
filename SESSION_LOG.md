@@ -4,6 +4,98 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-08, Corpus rejoined on the newline the chunker recorded
+
+`Corpus.load` built a unit's text by concatenating its chunk records with no separator. The
+chunker had written a newline between blocks and the reader dropped it, so on 97 of the 1150 units
+the reconstructed text contained tokens present in no committed record: `this Regulation.For
+example`, `AI models.They should`. The segmenter's boundary pattern requires whitespace after a
+terminator, so it did not split at those points, and 144 raw segments straddled an inter-chunk
+boundary with 141 surviving into the comparable segmentation the committed cache embedded.
+
+The newline is not a separator chosen for its effect. Three independent lines fix it: every one of
+the 144 inter-chunk gaps in the four `normalized.txt` files is exactly one newline with no other
+value observed; `BLOCK_SEPARATOR` in the ingest modules is that same value, because it is what
+ingest wrote; and joining on it reconstructs each unit's slice of the normalised source on 1150 of
+1150 units, against 1053 for the empty join. Framing the change as inserting a separator was
+rejected on that evidence. It restores the corpus text.
+
+Repairing was chosen over disclosing. The decisive evidence is that all twelve committed
+`duplication_scan` blocks reproduce identically under both segmentations, measured before the
+change landed, so the repair costs nothing in sealed-set churn. An earlier argument for repair,
+that the previous segmentation suppressed real candidates at better than three to one on 442 pairs
+gained against 135 lost, was withdrawn: the counts are measured but the gained pairs are dominated
+by bibliography fragments in the playbook reference sections, and the word describing them as real
+was never measured. What the repair actually buys is source fidelity and case B.
+
+Case B surfaces. Comparing Annex IV against Article 13 segment by segment, the previous
+segmentation returned no pair and the repaired one returns two. The first is
+0.8935064935064935, rounding to the published 0.894, with its Annex IV side inside point 3 and its
+Article 13 side inside 13(3)(d). The second returns 0.721 and fails the span criterion, its Annex
+IV side sitting in point 2(e).
+
+That reproduction is not fitted, on three checkable grounds. The target predates the repaired
+segmentation: `0.894`, `Annex IV point 3` and `Article 13(3)(d)` are all in the
+`src/goldset/attributability.py` docstring at `c2106e5`, and `CASE_B_PUBLISHED = 0.894` is a
+constant in the tests at the same commit. The defect was found while building an unrelated
+instrument under an instruction to report and not fix, and the entry recording it at `6cc9e6c`
+contains no occurrence of `case B`, `0.894`, `Annex IV`, `art_13`, `13(3)`, `supersession` or any
+decimal matching `0.\d{2,4}`, against positive controls of `141`, `13228`, `14626`, `fabricated`
+and `segmentation` in the same entry. And the span criterion rejected an available alternative at
+0.721. The residual is stated rather than glossed: the reproduction test was fixed after the ratio
+had been reported, so the number was known and could not have failed, while the spans were not
+known and could, and did. The test was not blind.
+
+The `ratio_supersession` stands. A superseded number returning under a different segmentation is a
+finding about the segmentation, not a reinstatement, and settling it needs a designated span that
+does not exist.
+
+The exclusion funnel moved to 14,770 raw, 1,113 removed as carrying no alphabetic word, 341
+removed as own headings and 13,316 comparable. The arithmetic closes: splitting 144 straddling
+segments exposes 56 fragments with no alphabetic word, and 144 less 56 is the 88 the comparable
+count gained. Re-derived and unchanged across the repair: 1150 units, 341 own-label and 16
+other-label segments, twelve of twelve blocks reproducing, test_16 at 0.996 and 0.821, the
+772-character Annex IV point 3 block and its 768-character period-only span, 0.2968, 0.8982, and
+the pre-heading-predicate values 0.8 and 0.9474. The whole case A normalisation table compares two
+committed literal strings and never touches `Corpus`, so it could not move; the calibration record
+states that rather than presenting it among the re-derivations.
+
+The period-only control column in `check_committed_duplication_scans` is weak and is recorded as
+weak rather than repaired. Its top ratio is 1.0 on eight of the twelve rows in both segmentations,
+from bare paragraph numbers matching each other, which is the artefact `carries_alphabetic_content`
+exists to remove and which that column does not apply. Under the repair it moves on two rows,
+test_09 from four pairs to five and test_15 from eleven to fifteen, adding more of the same, with
+no top ratio changing and no null flipping. Changing a control after measuring what it does would
+fit it to that measurement.
+
+Measuring that column before the change was ordered on the ground that measuring afterwards would
+lose the attribution. That ground does not hold, and the correction is recorded because it was a
+claim about how the code behaves: both conditions reconstruct from the frozen chunk records by a
+one-character difference in the join, in either order, and nothing is lost by measuring later. The
+ordering was kept on V16 and V19, that a measurement committed before a change cannot be shaped by
+it and a result stated beforehand can contradict the plan.
+
+The cache was regenerated twice from a clean state. The array is byte-identical across both at
+`186a1ffdf7cd1860e21a10e2a7ee5f1bbb360c6b3ecbc4104fcf2ed84013bba2`, 40,906,880 bytes, and the
+committed manifest is byte-identical across both. `segment_index.json` is not, at 1135 bytes each,
+and the difference is its `build_seconds` field alone; every other field it carries, including
+`n_segments`, the funnel and the segmentation fingerprint, was identical. The index is untracked
+and no committed value depends on it. Recorded because a determinism claim that quietly covers one
+of two files is the failure this kind of note exists to prevent.
+
+A stale size string was caught by sweeping rather than by reading the diff: the manifest generator
+carried `40.6 MB` in a description it emits into the committed manifest, which then contradicted
+the `cache_bytes` field in the same file.
+
+Two regression tests pin the join. One asserts unit text reconstructs the normalised source on all
+1150 units; the other that no comparable segment of a multi-chunk unit is absent from every one of
+that unit's chunk records. Reversing the join fails both.
+
+Commits:
+- 769f6ea fix(goldset): join a unit's chunks with the newline the chunker recorded
+
+This entry is placed by the commit that follows `769f6ea` and touches only `SESSION_LOG.md`.
+
 ## 2026-08-07, self-containedness candidate generator, and the segmentation artifact it surfaced
 
 Eighteen single-hop rows require an enumeration of every phrase pointing outside the unit, each
