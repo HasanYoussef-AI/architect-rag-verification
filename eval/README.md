@@ -94,18 +94,47 @@ the same shape and the same norms. Nothing else in the suite depends on the mode
   alignment is a property of the commit in hand.
 - `test_query_verification.jsonl`: one row per test query, carrying each absence claim with
   its command, target, predicate, result and shape-matched control, the identifier assertions,
-  and the bounds on any target that cannot discriminate.
+  and the bounds on any target that cannot discriminate. Each stratum adds its own nested block,
+  null on every row outside it, so the file holds one key set across every row rather than a key
+  set that varies by stratum. `tests/test_test_query_verification.py` asserts that key set, the
+  one-for-one alignment with `test_queries.jsonl` by id, in order, and with matching query text,
+  and the per-stratum properties the blocks carry.
 - `test_query_rejections.jsonl`: the adversarial stratum's authoring scan. Each row records an
   identifier considered and not used, with the class rule it was scanned under, its ordinal in
   that scan, and the evidence for the decision. The adversarial stratum has no draw order in the
   frame, so these rows are not draw-order rejections and no selected set reconstructs from them.
-- `test_frame_rejections.jsonl`: draw-order rejections for the four drawing strata. Each row
-  names its `stratum` and `source`, which together index the frame's draw order, and carries the
-  rejected candidate verbatim in `rejected` so it compares equal to a draw-order entry.
+- `test_frame_rejections.jsonl`: draw-order rejections for the four drawing strata.
   `tests/test_test_frame.py` reconstructs each stratum's selected set from the committed draw
-  order plus these rows alone. A row may also carry `ratio_supersession`, an optional field
-  present only where a measurement published on that row has been retracted and replaced. It
-  names the superseded value, the value replacing it, and the reason the two do not reconcile, so
-  a retraction is legible from the row itself rather than only from the history. The field is
-  sparse by construction: it is absent wherever nothing has been superseded, and its absence
-  asserts nothing.
+  order plus these rows alone. The fields:
+
+  - `stratum` and `source` together index the frame's draw order.
+  - `rejected` carries the rejected candidate verbatim, so it compares equal to a draw-order
+    entry. It is a pair for a source whose draw order holds pairs and a bare unit id for a source
+    whose draw order holds bare unit ids.
+  - `draw_index` is that candidate's position in its source's draw order.
+  - `reason_code` is from the closed vocabulary its stratum fixed before its first pick was
+    screened. The vocabularies differ by stratum because the rejection mechanisms do: an edge
+    stratum can fail on the relation between two units, a one-endpoint stratum cannot.
+  - `reason` is the prose reason, and it is the field a reviewer reads.
+  - `selected_instead` is present and null on every row. The walk is a forward pass that stops
+    once a source has its allocation, so on any source carrying more than one rejection every
+    rejection resolves to the same marginal entry and none of them individually caused it to be
+    selected. A per-row value would invent a distinction the walk does not support. Where a
+    source carries exactly one rejection the marginal entry is individually determinate, and the
+    null there is the stratum-wide convention rather than a derivation; a row in that position
+    says so in its `reason` so the two cases are distinguishable on the page.
+
+  Two fields are sparse, and sparseness means different things for each. `ratio_supersession` is
+  present only where a measurement published on that row has been retracted and replaced, naming
+  the superseded value, the value replacing it, and the reason the two do not reconcile, so a
+  retraction is legible from the row itself rather than only from the history. It is absent
+  wherever nothing has been superseded, and its absence asserts nothing.
+
+  `matcher_revision` and `matcher_recheck` are scoped by stratum rather than by row. They record
+  which revision of the citing-sentence matcher produced a rejection and what a re-derivation
+  under the later revision returned, which is a question only an edge-drawing stratum raises.
+  They are required present on every `clean_multi_hop` row and asserted absent on every row of
+  any other stratum, so a value outside that stratum fails rather than passing as an optional
+  extra. Within the stratum, `matcher_revision` carries a value on every row and
+  `matcher_recheck` is null wherever the row was not re-derived, so the key is required and its
+  value is not.

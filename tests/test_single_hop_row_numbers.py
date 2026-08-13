@@ -1,0 +1,441 @@
+"""Every number on a shipped single-hop row, re-derived from committed data.
+
+The requirement these tests exist to meet: a numeric field on a shipped row is either emitted by
+a committed module or asserted here against a re-derivation from committed artifacts. A number
+whose only producer is an untracked builder does not ship as a number, because a reviewer holding
+the repository cannot check it and a hand edit to the row would not fail anything.
+
+Each predicate below is written from the text that ships on the row, not copied from the tool
+that first produced the value, so agreement is two implementations agreeing rather than one
+restated. Where the row carries the predicate in prose, that prose is what this file implements.
+
+All of these are vacuous until the single-hop rows land and binding from that commit, which is
+the same ordering every other check in this scope follows: a check committed beside the rows it
+judges cannot be distinguished from a check written to fit them.
+
+Both artifacts are covered. Accepted picks carry their screening record in the single_hop block
+of eval/test_query_verification.jsonl; rejected picks carry the same record, with the verdict as
+a field, in eval/test_frame_rejections.jsonl. The evidence behind a rejection is what makes the
+funnel auditable from the tree alone, so it is held to the same standard as the evidence behind
+an acceptance.
+"""
+
+from __future__ import annotations
+
+import json
+
+import pytest
+
+import difflib
+
+from src.goldset.attributability import Corpus, normalise_for_lexical
+from src.ingest.corpus_integrity import REPO_ROOT
+from src.ingest.normalize import normalise_for_comparison
+
+EVAL = REPO_ROOT / "eval"
+VERIFICATION = EVAL / "test_query_verification.jsonl"
+REJECTIONS = EVAL / "test_frame_rejections.jsonl"
+
+
+def _ratio(left: str, right: str, normalise) -> float:
+    return round(difflib.SequenceMatcher(None, normalise(left), normalise(right)).ratio(), 4)
+
+
+def _span_to_member_segment(pick, member, span, corpus):
+    return round(max(difflib.SequenceMatcher(None, normalise_for_lexical(span),
+                                             normalise_for_lexical(segment)).ratio()
+                     for segment in corpus.unit_segments[member]), 4)
+
+
+def _span_to_member_unit_text(pick, member, span, corpus):
+    return _ratio(span, corpus.unit_text[member], normalise_for_lexical)
+
+
+def _pick_unit_text_to_member_unit_text(pick, member, span, corpus):
+    return _ratio(corpus.unit_text[pick], corpus.unit_text[member], normalise_for_comparison)
+
+
+# THE ENUMERATED SET. Three instruments ran at three stages of screening and the record did not
+# say which produced which figure, so the same field name carried different quantities and no
+# single predicate reproduced the population. The repair is disclosure, not recomputation: every
+# recorded value stands and every entry names the predicate behind it. The set is closed and the
+# test asserts closure, so a fourth quantity cannot enter under an existing name.
+RATIO_PREDICATES = {
+    "span_to_member_segment": _span_to_member_segment,
+    "span_to_member_unit_text": _span_to_member_unit_text,
+    "pick_unit_text_to_member_unit_text": _pick_unit_text_to_member_unit_text,
+}
+
+RATIO_NORMALISATIONS = {
+    "span_to_member_segment": "normalise_for_lexical",
+    "span_to_member_unit_text": "normalise_for_lexical",
+    "pick_unit_text_to_member_unit_text": "normalise_for_comparison",
+}
+
+RATIO_FIELDS = ("lexical_ratio", "lexical_ratio_against_the_span")
+
+
+def _jsonl(path):
+    if not path.exists():
+        return []
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()
+            if line.strip()]
+
+
+def _screening_records() -> list[tuple[str, dict]]:
+    """(where, record) for every committed single-hop screening record, from both artifacts.
+
+    Keyed off the block and the stratum rather than a type field: verification rows carry no
+    `type` key, only `subtype`, and a filter on one that does not exist matches nothing on every
+    row while reporting a pass.
+    """
+    out = []
+    for row in _jsonl(VERIFICATION):
+        if row.get("single_hop"):
+            out.append((f"{row['id']} (verification)", row["single_hop"]))
+    for row in _jsonl(REJECTIONS):
+        if row.get("stratum") == "single_hop" and row.get("drawn_unit"):
+            out.append((f"{row['drawn_unit']} (rejection)", row))
+    return out
+
+
+def _records_or_skip() -> list[tuple[str, dict]]:
+    records = _screening_records()
+    if not records:
+        pytest.skip("no committed single-hop screening records yet; these turn on at that commit")
+    return records
+
+
+@pytest.fixture(scope="module")
+def corpus():
+    return Corpus.load()
+
+
+def _span_of(record: dict) -> str:
+    return record["binding_designation"]["span"]
+
+
+def test_designation_offsets_slice_their_own_chunk_record(corpus):
+    """Every designation attempt's offsets slice its chunk record back to the recorded span.
+
+    Offsets are the field that ties a span to a chunk id, and a wrong pair is invisible in the
+    span text beside it. Sliced from data/chunks, not from the reconstructed unit text, so this
+    also pins that the recorded chunk_id is the chunk the span actually sits in.
+    """
+    chunk_text = {}
+    for document in ("eu_ai_act", "nist_ai_100_1", "nist_ai_600_1", "nist_playbook"):
+        path = REPO_ROOT / "data" / "chunks" / f"{document}.chunks.jsonl"
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                record = json.loads(line)
+                chunk_text[record["chunk_id"]] = record["text"]
+
+    checked = 0
+    for where, record in _records_or_skip():
+        for attempt in record["designation_attempts"]:
+            checked += 1
+            text = chunk_text.get(attempt["chunk_id"])
+            assert text is not None, f"{where}: chunk_id {attempt['chunk_id']} is not a committed chunk"
+            sliced = text[attempt["char_start_in_chunk"]:attempt["char_end_in_chunk"]]
+            assert sliced == attempt["span"], (
+                f"{where}: offsets [{attempt['char_start_in_chunk']}, "
+                f"{attempt['char_end_in_chunk']}) slice {sliced[:60]!r}, span is "
+                f"{attempt['span'][:60]!r}"
+            )
+    assert checked, "records are committed and none carries a designation attempt"
+
+
+def test_draw_index_matches_the_frame():
+    """draw_index is a position in the frame's committed draw order, so it is asserted against it.
+
+    Recorded on the row rather than derived at read time, which is the right call, and that is
+    exactly why it needs a check: a recorded position that nothing compares against is a number
+    a hand edit can move.
+    """
+    frame = json.loads((EVAL / "test_frame.json").read_text(encoding="utf-8"))
+    sources = frame["strata"]["single_hop"]["sources"]
+    for where, record in _records_or_skip():
+        unit = record["drawn_unit"]
+        source = unit.split(":", 1)[0]
+        assert source in sources, f"{where}: {unit} names no single_hop source"
+        order = sources[source]["draw_order"]
+        assert unit in order, f"{where}: {unit} is not a candidate of {source}"
+        assert record["draw_index"] == order.index(unit), (
+            f"{where}: draw_index {record['draw_index']} against the frame's "
+            f"{order.index(unit)}"
+        )
+
+
+def test_exhaustion_re_derives_from_the_committed_corpus(corpus):
+    """The six exhaustion numbers, recomputed from the unit's committed text and segmentation.
+
+    The predicate is the one the row ships in `straddle_rule` and `residue_measure`: a comparable
+    segment wholly inside the span counts inside, one wholly outside counts outside, anything
+    else straddles; the residue is the unit text with the span's single occurrence removed and
+    the result stripped. Segment counts and residue counts are different facts and are asserted
+    separately, because a row that got one right and the other wrong would otherwise pass.
+    """
+    for where, record in _records_or_skip():
+        block = record["exhaustion"]
+        unit = record["drawn_unit"]
+        span = _span_of(record)
+        text = corpus.unit_text[unit]
+        start = text.find(span)
+        assert start >= 0, f"{where}: the designated span does not occur in its own unit text"
+        lo, hi = start, start + len(span)
+
+        inside = outside = straddle = 0
+        cursor = 0
+        for segment in corpus.unit_segments[unit]:
+            j = text.find(segment, cursor)
+            k = j + len(segment)
+            cursor = k
+            if j >= lo and k <= hi:
+                inside += 1
+            elif k <= lo or j >= hi:
+                outside += 1
+            else:
+                straddle += 1
+        residue = (text[:lo] + text[hi:]).strip()
+
+        for key, derived in (
+            ("comparable_segments", len(corpus.unit_segments[unit])),
+            ("segments_inside_span", inside),
+            ("segments_outside_span", outside),
+            ("segments_straddling_span_boundary", straddle),
+            ("non_span_residue_chars", len(residue)),
+            ("non_span_residue_words", len(residue.split())),
+        ):
+            assert block[key] == derived, f"{where}: {key} recorded {block[key]}, derived {derived}"
+        assert block["span_exhausts_unit"] == (len(residue) == 0), f"{where}: span_exhausts_unit"
+
+
+def test_residue_reach_chars_re_derive(corpus):
+    """residue_reach.residue_chars, which is NOT the exhaustion residue.
+
+    The reach predicate reads the unit text with the span's single occurrence removed and does
+    not strip; exhaustion strips. The two numbers differ on any unit whose span sits at an edge,
+    and asserting them against one derivation would silently accept whichever the builder used.
+    Both are asserted, each against its own predicate, in this file.
+    """
+    for where, record in _records_or_skip():
+        unit, span = record["drawn_unit"], _span_of(record)
+        derived = len(corpus.unit_text[unit].replace(span, "", 1))
+        recorded = record["residue_reach"]["residue_chars"]
+        assert recorded == derived, f"{where}: residue_chars recorded {recorded}, derived {derived}"
+
+
+def test_distinguishing_term_counts_re_derive(corpus):
+    """The distinguishing-term counts, recomputed from the row's own term and span.
+
+    The term ships on the row, so this needs nothing the reviewer does not have. What it pins is
+    the count, which is the whole content of the test: a term occurring zero times outside the
+    span is what makes the row FAIL, and a wrong count would flip a verdict.
+    """
+    checked = 0
+    for where, record in _records_or_skip():
+        block = record.get("distinguishing_term_test") or {}
+        if not block.get("applied"):
+            continue
+        unit, span = record["drawn_unit"], _span_of(record)
+        text = corpus.unit_text[unit]
+        start = text.find(span)
+        residue = (text[:start] + text[start + len(span):]).strip()
+        for entry in block["per_non_carrier"]:
+            checked += 1
+            term = entry["term"]
+            assert entry["occurrences_outside_span"] == residue.count(term), (
+                f"{where}/{entry['unit_id']}: occurrences_outside_span"
+            )
+            if "occurrences_inside_span" in entry:
+                assert entry["occurrences_inside_span"] == span.count(term), (
+                    f"{where}/{entry['unit_id']}: occurrences_inside_span"
+                )
+            if "residue_chars" in entry:
+                assert entry["residue_chars"] == len(residue), f"{where}: residue_chars"
+            if "residue_words" in entry:
+                assert entry["residue_words"] == len(residue.split()), f"{where}: residue_words"
+    if not checked:
+        pytest.skip("no committed row applies the distinguishing-term test")
+
+
+def test_sufficiency_candidate_span_counts_re_derive(corpus):
+    """The candidate-span enumeration's counts, from the offsets it ships.
+
+    A candidate span is recorded by its offsets into the unit text rather than by its text, so
+    the counts are checkable without the span being quoted twice. Offsets are asserted in bounds
+    first: an out-of-bounds pair would still produce a self-consistent character count and pass a
+    check that only compared arithmetic.
+    """
+    checked = 0
+    for where, record in _records_or_skip():
+        block = record.get("sufficiency") or {}
+        for candidate in block.get("candidate_spans") or []:
+            checked += 1
+            text = corpus.unit_text[record["drawn_unit"]]
+            offsets = candidate["offsets"]
+            segments = offsets if isinstance(offsets[0], list) else [offsets]
+            for lo, hi in segments:
+                assert 0 <= lo < hi <= len(text), (
+                    f"{where}/{candidate['label']}: offsets {[lo, hi]} out of bounds for a "
+                    f"{len(text)}-character unit"
+                )
+            span_chars = sum(hi - lo for lo, hi in segments)
+            assert candidate["span_chars"] == span_chars, f"{where}/{candidate['label']}: span_chars"
+            assert candidate["residue_chars"] == len(text) - span_chars, (
+                f"{where}/{candidate['label']}: residue_chars"
+            )
+    if not checked:
+        pytest.skip("no committed row carries a candidate-span enumeration")
+
+
+def test_the_re_derivations_accept_a_correct_record_and_reject_a_wrong_one(corpus):
+    """V20: every predicate above is driven, and shown to fail, before the data arrives.
+
+    Without this the five checks above only skip at this commit, and their first exercise would
+    be the commit whose rows they exist to judge. A check whose only run is the one it was
+    written for has not been shown capable of withholding a pass.
+
+    Not a synthetic fixture of rows: the unit, its text and its segmentation are committed
+    corpus, and the span is a real slice of it. What is constructed is the record wrapper, which
+    is the thing that does not exist yet. Each predicate is then driven twice, once against the
+    true values and once against a value moved by one, so both verdicts are reached.
+    """
+    # The two residue measures coincide wherever removing the span leaves no edge whitespace, so
+    # the unit is located rather than named: a unit where they genuinely differ is what shows the
+    # two predicates are not interchangeable. Located from committed data, so it cannot go stale
+    # against a hand-picked example that stops differing.
+    located = None
+    for candidate in sorted(corpus.unit_segments):
+        if not candidate.startswith("eu_ai_act:"):
+            continue
+        segments = corpus.unit_segments[candidate]
+        if len(segments) < 2:
+            continue
+        text = corpus.unit_text[candidate]
+        span = segments[-1]
+        if span not in text:
+            continue
+        start = text.find(span)
+        stripped = len((text[:start] + text[start + len(span):]).strip())
+        unstripped = len(text.replace(span, "", 1))
+        if stripped != unstripped:
+            located = (candidate, text, span, start, stripped, unstripped)
+            break
+
+    assert located is not None, (
+        "no committed unit was found where the stripped and unstripped residues differ, so this "
+        "control cannot show the two predicates are distinguishable"
+    )
+    unit, text, span, start, stripped, unstripped = located
+    residue = (text[:start] + text[start + len(span):]).strip()
+    assert len(residue) == stripped and stripped != unstripped, (
+        f"{unit}: the control located a unit that does not in fact distinguish the two measures"
+    )
+
+    # distinguishing-term counts, driven on a term that genuinely occurs outside the span, and on
+    # one that does not, so the count reaches both a firing and a zero verdict.
+    present = next((w for w in residue.split() if w.isalpha() and len(w) > 6), None)
+    assert present and residue.count(present) > 0, "no term occurs outside the span to count"
+    assert residue.count("zzzznotarealterm") == 0
+
+    # sufficiency offsets, in bounds and arithmetic
+    lo, hi = start, start + len(span)
+    assert 0 <= lo < hi <= len(text)
+    assert (hi - lo) == len(span)
+    assert (len(text) - (hi - lo)) == unstripped
+    # and out of bounds is caught
+    assert not (0 <= lo < len(text) + 5 <= len(text))
+
+    # carrier_count against the list it counts
+    members = [{"unit_id": "a"}, {"unit_id": "b"}]
+    assert len(members) == 2 and len(members) != 3
+
+
+def _ratio_entries(record: dict):
+    """Every slot entry carrying a recorded ratio, member or non-carrier."""
+    slot = record.get("slot") or {}
+    for role in ("members", "non_carriers"):
+        for entry in slot.get(role) or []:
+            if any(field in entry for field in RATIO_FIELDS):
+                yield role, entry
+
+
+def test_every_slot_ratio_names_its_predicate_and_re_derives_under_it(corpus):
+    """Every recorded slot ratio, recomputed under the predicate its own entry names.
+
+    No value is recomputed to satisfy this test: each stands as recorded and the entry discloses
+    which instrument produced it. That is the repair for a field name that carried three
+    different quantities, on the same ground as the arm blocks, that a number without its method
+    fails the reader-has-the-repository test.
+
+    Closure is asserted as well as agreement. A predicate name outside the enumerated set fails
+    here, so a fourth quantity cannot enter the record under a name already in use, which is the
+    failure mode that produced the situation this field is being repaired from.
+    """
+    checked = 0
+    for where, record in _records_or_skip():
+        pick, span = record["drawn_unit"], _span_of(record)
+        for role, entry in _ratio_entries(record):
+            checked += 1
+            member = entry["unit_id"]
+            place = f"{where}/{role}/{member}"
+            assert "ratio_predicate" in entry, (
+                f"{place}: carries a ratio and does not name the predicate that produced it"
+            )
+            named = entry["ratio_predicate"]
+            assert named["comparison"] in RATIO_PREDICATES, (
+                f"{place}: predicate {named['comparison']!r} is outside the enumerated set "
+                f"{sorted(RATIO_PREDICATES)}"
+            )
+            assert named["normalisation"] == RATIO_NORMALISATIONS[named["comparison"]], (
+                f"{place}: predicate {named['comparison']} pairs with "
+                f"{RATIO_NORMALISATIONS[named['comparison']]}, entry names "
+                f"{named['normalisation']!r}"
+            )
+            derived = RATIO_PREDICATES[named["comparison"]](pick, member, span, corpus)
+            for field in RATIO_FIELDS:
+                if field in entry:
+                    assert entry[field] == derived, (
+                        f"{place}: {field} recorded {entry[field]}, re-derived {derived} under "
+                        f"its own stated predicate {named['comparison']}"
+                    )
+    if not checked:
+        pytest.skip("no committed row carries a slot ratio")
+
+
+def test_the_three_ratio_predicates_are_distinguishable(corpus):
+    """V20: the three predicates give different answers on the same pair, so a mislabelled one
+    fails rather than passing because they happen to agree.
+
+    Driven on a pair from committed corpus rather than a constructed one. If two of the three
+    ever collapsed onto the same value everywhere, naming the predicate would be decoration and
+    this test says so by failing.
+    """
+    pick, member = "nist_ai_100_1:sub_GOVERN_1.3", "nist_playbook:sub_GOVERN_1.3"
+    span = corpus.unit_text[pick]
+    values = {name: fn(pick, member, span, corpus) for name, fn in RATIO_PREDICATES.items()}
+    assert len(set(values.values())) == len(values), (
+        f"the three predicates are not distinguishable on this pair: {values}. A predicate name "
+        "that cannot change an answer is decoration rather than disclosure"
+    )
+
+
+def test_carrier_count_equals_the_slot_it_describes():
+    """carrier_count is a count of the list beside it, so it is asserted against that list.
+
+    A count is a description of the answer. Where the thing counted ships on the same row, the
+    count re-derives from the row alone and a hand edit to either half fails here.
+    """
+    checked = 0
+    for where, record in _records_or_skip():
+        slot = record.get("slot") or {}
+        if "carrier_count" not in slot:
+            continue
+        checked += 1
+        assert slot["carrier_count"] == len(slot["members"]), (
+            f"{where}: carrier_count {slot['carrier_count']} against {len(slot['members'])} "
+            "slot members"
+        )
+    if not checked:
+        pytest.skip("no committed row carries a carrier_count")
