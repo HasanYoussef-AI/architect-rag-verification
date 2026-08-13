@@ -4,6 +4,119 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-14, single-hop stratum committed, eighteen rows across three sources
+
+The stratum closes at its allocation on every source: eleven `eu_ai_act`, five `nist_ai_100_1`
+and two `nist_ai_600_1`, drawn from eligible populations of 298, 109 and 24. Nine picks were
+rejected, six on the EU source and two and one on the NIST sources, under three of the four
+codes the vocabulary fixed before the first pick was screened: `unit_defers_for_substance` on
+four, `answer_attributable_outside_slot` on three, `no_designable_span` on two.
+`needs_two_slots` has never fired. Five picks fell at screening and four at authoring. Slot
+widths over the accepted rows are thirteen at one member, two at two and three at three.
+
+Each source's selected set reconstructs from its own committed draw order plus the rejection log
+alone, and now at exactness rather than as a bound, because each stands at its allocation. The
+subset form the check falls back to exists for a stratum authored in batches and is not a
+weaker claim held permanently.
+
+Rejected picks ship the full screening record with the verdict as a field, rather than the
+narrow draw-order row clean multi-hop used. That stratum carried structured evidence on its
+acceptances and prose on its rejections, so a reader could not tell whether the same evidence
+was gathered on both sides. The nine rejection rows carry the same arms, the same funnels and
+the same slot derivation as the eighteen acceptances, which is what puts the conservatism in the
+tree instead of in a claim about it.
+
+Every assertion the rows are judged by was committed before any row existed. The reason is not
+tidiness: a check landing beside the rows it judges cannot be distinguished from a check written
+to fit them, which is the condition `a996d65` was in and which `6e3c0ce` corrected for the
+reconstruction. Two committed checks were wrong and were corrected under that ordering rather
+than after the data arrived. The draw-order key extractor asserted that a row's gold names
+exactly one candidate of its source, which fails on two rows whose slots carry a second unit
+that is itself eligible in the same document; the recorded `drawn_unit` disambiguates, and the
+derivation stays the sole authority where the intersection is a singleton, so a record
+disagreeing with a determined draw fails rather than redirecting it. The rejection log's
+`matcher_revision` requirement had never met a row lacking it, all nineteen rows then in the
+file being clean multi-hop, so it could not have failed; it is scoped to that stratum and
+asserted absent outside it, with `matcher_recheck` required present and not required non-empty,
+because over those nineteen rows it is present on nineteen and non-null on six and a
+non-emptiness rule would have failed thirteen committed rows.
+
+One producer defect was found in committed code and fixed before the rows landed. The
+self-containedness calibration took its population as every row of
+`eval/test_frame_rejections.jsonl` and reported `starting_population` as that file's length. The
+file holds every drawing stratum's rejections, so the figure would have moved from 19 to 25 the
+moment an unrelated stratum wrote there. The role split was already confined to its own rows in
+effect, since no other stratum uses `source_points_only` or `target_defers_out_of_corpus`, and
+its arms do not move; but a filter by effect is not a filter, and the same function unpacks
+`rejected` as an ordered source and target pair, which a bare unit id would not survive. The
+stratum is now named in code as artifact, field and accepted value.
+`eval/self_containedness_calibration.json` re-derives byte-identically and the committed 19
+stands unedited. A regression pins it in two halves: a control drives the scoping predicate over
+constructed rows of two strata, and the half derived from the file reports a named skip while
+the file holds one stratum and goes red if it ever stops holding another. The general rule taken
+from this is that a committed producer reading a shared artifact states its population as
+artifact, field and accepted values. The other committed reader of a shared artifact was
+measured against that rule and states its population already.
+
+Recorded ratios ship under a per-entry predicate drawn from a closed set of three, and no
+recorded value was recomputed. Three instruments had run at three stages of screening while the
+record disclosed none of them, so one field name carried three different quantities and no single
+predicate reproduced the population: six entries are the designated span against the member
+unit's best comparable segment, seven the span against the member's whole text, and one the pick
+unit's text against the member's text under the comparison-time normalisation. That last is the
+0.9338 the carrier standard's refusal of the Playbook GOVERN 1.3 unit rests on, and it now
+reproduces from committed code. Unifying the three would have recomputed recorded measurements
+to satisfy the check that judges them, and dropping the figures would have left the carrier
+standard quoting a number the tree could not produce, which is the condition the 0.894
+retraction was the cost of. The disclosure is the repair. One entry reproduces under two of the
+three, because its member unit holds a single comparable segment so its best segment and its
+whole text are the same string; that entry names the predicate its sibling classifies under, on
+the ground that one instrument ran on both members of a pick at one stage, and labels the
+assignment an inference rather than a measurement.
+
+Three instrument-wide tables were removed from the rows. They measure how far the
+self-containedness detector reaches across the corpus and how the segmenter behaves per
+document, which are properties of the instrument rather than of the row, and they belong to
+reporting. One figure that lived in the removed material, the register-arm base rate re-derived
+with the backfill unit excluded, is not restated anywhere on the row: its only producer is
+untracked, and a number with no committed producer does not ship as a number. Its re-derivation
+is owed at the sealing boundary, where both base rates ship with their pick sets named. Removing
+the tables left `eu_ai_act:rct_87`'s calibration exposure pointing at a field the row no longer
+carries; the clause now points at the committed calibration artifact, and the row carries a
+marked correction saying what moved and that no figure did.
+
+`nist_ai_600_1:sec_A.1` is the only rejection on its source, so the entry it admitted is
+individually determinate: `nist_ai_600_1:sec_2.4` enters that walk because this rejection
+removed `sec_A.1` from it. Its `selected_instead` is null by the convention that holds across the
+stratum rather than by derivation, and the row says which. On a source carrying more than one
+rejection the null is derived, because the walk stops once the source has its allocation and
+every rejection there resolves to the same marginal entry, so a per-row value would invent a
+distinction the walk does not support. The disclosure is emitted wherever a source carries
+exactly one rejection rather than written onto a named row.
+
+Every rejection row names the field its prose reason came from, because the source differs by
+the stage at which the pick fell. The five rejections at screening draw on the human verdict
+recorded inside the self-containedness record, which that record marks as the one part no
+committed method covers: a judgment rather than a computed output, sitting beside two arms that
+do have committed methods. Three of the four rejections at authoring draw on the sufficiency
+result. The fourth, `eu_ai_act:rct_74`, reached authoring in an earlier pass and its sufficiency
+result was recorded there rather than in the screening record the row is built from; its reason
+is taken from the distinguishing-term test, the instrument that carried the rejection, and the
+absent block is disclosed on the row rather than reconstructed.
+
+The eleven `eu_ai_act` rows rewrote the twenty verification rows already committed, adding the
+null `single_hop` block that keeps one key set across the file. No model answer exists, so
+nothing scored was disturbed.
+
+Commits:
+- 5c78d5a docs(methodology): cross-reference the attributability calibration record
+- 69b4a86 test(eval): assert the single-hop row properties before any row lands
+- cf7ad28 fix(goldset): scope the calibration population to its own stratum
+- ac93eed feat(eval): the eleven eu_ai_act single-hop rows with their screening records
+- 6bb7878 feat(eval): the seven NIST single-hop rows, completing the stratum
+
+This entry is placed by the commit that follows `6bb7878` and touches only `SESSION_LOG.md`.
+
 ## 2026-08-08, Corpus rejoined on the newline the chunker recorded
 
 `Corpus.load` built a unit's text by concatenating its chunk records with no separator. The
