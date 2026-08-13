@@ -115,7 +115,17 @@ the same shape and the same norms. Nothing else in the suite depends on the mode
   - `reason_code` is from the closed vocabulary its stratum fixed before its first pick was
     screened. The vocabularies differ by stratum because the rejection mechanisms do: an edge
     stratum can fail on the relation between two units, a one-endpoint stratum cannot.
-  - `reason` is the prose reason, and it is the field a reviewer reads.
+  - `reason` is the prose reason, and it is the field a reviewer reads. It is drawn from
+    whichever field of the screening record actually carried the rejection rather than being
+    summarised for this field, so `reason_source` names that field. The source differs by the
+    stage at which the pick fell: a rejection at screening is carried by the self-containedness
+    arm that has no committed method, and a rejection at authoring by the sufficiency result.
+  - `reason_source_note` is sparse and appears only where the field named by `reason_source` is
+    not the one that would normally carry the reason, stating why. Its one occurrence records a
+    row that reached authoring in an earlier pass, whose sufficiency result was recorded there
+    and not in the screening record this row is built from; the reason is taken from the
+    instrument that carried the rejection and the absent block is disclosed rather than
+    reconstructed.
   - `selected_instead` is present and null on every row. The walk is a forward pass that stops
     once a source has its allocation, so on any source carrying more than one rejection every
     rejection resolves to the same marginal entry and none of them individually caused it to be
