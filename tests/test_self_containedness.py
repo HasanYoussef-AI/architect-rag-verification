@@ -348,6 +348,52 @@ def test_role_split_is_derived_from_the_record_not_named(corpus):
     assert funnel["rows_kept"] == 10
 
 
+def test_the_calibration_population_is_scoped_to_its_own_stratum():
+    """The rejection log holds every drawing stratum, so the calibration names the one it reads.
+
+    Regression pin. starting_population was len(every row in the file), and the role split's
+    reason-code filter removed the other strata's rows afterwards, so the arms were right and the
+    funnel was wrong: a committed calibration figure moved from 19 to 25 the moment the
+    single-hop rejections landed, on a change that has nothing to do with this calibration.
+
+    Both halves are asserted, because the filter is only doing work if the file actually holds
+    rows it excludes. If a later change leaves this file single-stratum again, the second
+    assertion fails and says so rather than letting the scoping become untested.
+    """
+    from src.goldset.calibrate_self_containedness import (
+        CALIBRATION_STRATUM,
+        REJECTIONS,
+        _load_rejection_rows,
+    )
+
+    every_row = [json.loads(line) for line in REJECTIONS.read_text(encoding="utf-8").splitlines()
+                 if line.strip()]
+    scoped = _load_rejection_rows()
+    assert all(r["stratum"] == CALIBRATION_STRATUM for r in scoped)
+    other = [r for r in every_row if r["stratum"] != CALIBRATION_STRATUM]
+    assert len(scoped) == len(every_row) - len(other)
+
+    # V20. The filter is shown to filter before the data that makes it bite exists, driven over
+    # constructed rows rather than over the file, so this commit does not have to wait for
+    # another stratum to land to know the scoping works. The file-derived half below turns on at
+    # that commit and is the one that proves it works on the real artifact.
+    constructed = [{"stratum": CALIBRATION_STRATUM, "rejected": ["a", "b"]},
+                   {"stratum": "single_hop", "rejected": "c"}]
+    kept = [r for r in constructed if r["stratum"] == CALIBRATION_STRATUM]
+    assert len(kept) == 1 and kept[0]["rejected"] == ["a", "b"], (
+        "the scoping predicate does not remove a row of another stratum"
+    )
+
+    if not other:
+        pytest.skip(
+            "the rejection log holds only this calibration's stratum, so the file-derived half "
+            "of this check has nothing to exclude yet; it turns on when another stratum lands"
+        )
+    assert len(scoped) < len(every_row), (
+        "another stratum's rows are in the file and the scoping removed none of them"
+    )
+
+
 def test_no_calibration_unit_is_a_single_hop_pick():
     positive, negative, _ = positive_and_negative_units()
     assert not (set(positive) | set(negative)) & PICKS

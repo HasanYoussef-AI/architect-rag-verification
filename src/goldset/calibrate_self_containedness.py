@@ -82,11 +82,26 @@ FLOOR_CHECK_LIMIT = (
 )
 
 
+# The calibration's population is the clean_multi_hop draw-order rejections, whose `rejected`
+# entry is an ordered [citing source, cited target] pair and whose reason codes are the ones the
+# role split reads. eval/test_frame_rejections.jsonl holds every drawing stratum's rejections, so
+# the stratum is named here rather than left implicit. Without it the funnel's starting_population
+# counts rows of other strata that the reason-code filter then removes, which moves a committed
+# calibration figure whenever an unrelated stratum lands. The role split itself was already
+# scoped in effect, since no other stratum uses these reason codes, but "in effect" is not a
+# filter; it also unpacks `rejected` as a pair, which a bare unit id would not survive.
+CALIBRATION_STRATUM = "clean_multi_hop"
+
+
 def _load_rejection_rows() -> list[dict]:
     return [
-        json.loads(line)
-        for line in REJECTIONS.read_text(encoding="utf-8").splitlines()
-        if line.strip()
+        row
+        for row in (
+            json.loads(line)
+            for line in REJECTIONS.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        )
+        if row.get("stratum") == CALIBRATION_STRATUM
     ]
 
 

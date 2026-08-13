@@ -404,6 +404,32 @@ def test_every_slot_ratio_names_its_predicate_and_re_derives_under_it(corpus):
         pytest.skip("no committed row carries a slot ratio")
 
 
+def test_the_untaken_designation_alternative_re_derives(corpus):
+    """The measured-and-not-taken alternative's lexical block is the module's output on its span.
+
+    A designation choice between two admissible spans is a recorded content judgment, and the
+    untaken candidate ships in full so the choice is auditable. That only works if its numbers
+    are checkable: an alternative whose figures nothing re-derives is an assertion that the other
+    candidate was worse.
+    """
+    from src.goldset.attributability import lexical_arm
+
+    checked = 0
+    for where, record in _records_or_skip():
+        alternative = (record.get("slot") or {}).get(
+            "designation_alternative_measured_and_not_taken")
+        if not alternative:
+            continue
+        checked += 1
+        derived = lexical_arm(alternative["span"], [record["drawn_unit"]], corpus)
+        recorded = alternative["lexical"]
+        for key in ("top_ratio", "segments_compared", "units_compared", "floor",
+                    "reproducibility_level", "pairs_at_or_above_floor"):
+            assert recorded[key] == derived[key], f"{where}: alternative lexical {key}"
+    if not checked:
+        pytest.skip("no committed row carries a measured-and-not-taken alternative")
+
+
 def test_the_three_ratio_predicates_are_distinguishable(corpus):
     """V20: the three predicates give different answers on the same pair, so a mislabelled one
     fails rather than passing because they happen to agree.
