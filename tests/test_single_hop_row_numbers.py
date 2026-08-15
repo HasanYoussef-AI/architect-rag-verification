@@ -352,13 +352,56 @@ def test_the_re_derivations_accept_a_correct_record_and_reject_a_wrong_one(corpu
     assert len(members) == 2 and len(members) != 3
 
 
+# The unit a block's recorded ratios are anchored on. Named per block because the field differs
+# by what the stratum draws: single-hop and near-miss anchor on the drawn unit, action-to-parent
+# on the parent, since that is the unit the slot hangs off.
+RATIO_ANCHOR_FIELD = {
+    "single_hop": "drawn_unit",
+    "action_to_parent": "drawn_parent",
+    "near_miss": "drawn_unit",
+}
+
+
+def _ratio_records() -> list[tuple[str, str, dict]]:
+    """(where, anchor, record) for every screening record that can carry a slot ratio.
+
+    Wider than _screening_records above, which is single-hop only by design because the numbers
+    it feeds are single-hop row fields. The closed predicate set is a different question: it must
+    hold wherever a ratio is recorded, or a fourth quantity enters under an existing name in a
+    stratum this file happened not to reach. Both artifacts, both verdicts.
+    """
+    out = []
+    for row in _jsonl(VERIFICATION):
+        for block, field in RATIO_ANCHOR_FIELD.items():
+            held = row.get(block)
+            if held and held.get(field):
+                out.append((f"{row['id']} ({block})", held[field], held))
+    for row in _jsonl(REJECTIONS):
+        field = RATIO_ANCHOR_FIELD.get(row.get("stratum"))
+        if field and row.get(field):
+            out.append((f"{row[field]} ({row['stratum']} rejection)", row[field], row))
+    return out
+
+
 def _ratio_entries(record: dict):
-    """Every slot entry carrying a recorded ratio, member or non-carrier."""
+    """Every entry carrying a recorded ratio: slot member, non-carrier, or near-miss competitor.
+
+    The competitor sits beside the slot rather than inside it, because it is not a candidate for
+    membership: it is the unit the gold must be discriminated FROM. Its ratio is nonetheless the
+    same quantity the closed set computes, so it is held to the same closure.
+    """
     slot = record.get("slot") or {}
     for role in ("members", "non_carriers"):
         for entry in slot.get(role) or []:
             if any(field in entry for field in RATIO_FIELDS):
                 yield role, entry
+    competitor = record.get("competitor_ratio")
+    if isinstance(competitor, dict) and any(field in competitor for field in RATIO_FIELDS):
+        assert "unit_id" in competitor, (
+            "competitor_ratio carries a ratio and no unit_id, so nothing names what it was "
+            "measured against and the predicate cannot be re-derived"
+        )
+        yield "competitor", competitor
 
 
 def test_every_slot_ratio_names_its_predicate_and_re_derives_under_it(corpus):
@@ -374,8 +417,11 @@ def test_every_slot_ratio_names_its_predicate_and_re_derives_under_it(corpus):
     failure mode that produced the situation this field is being repaired from.
     """
     checked = 0
-    for where, record in _records_or_skip():
-        pick, span = record["drawn_unit"], _span_of(record)
+    records = _ratio_records()
+    if not records:
+        pytest.skip("no committed screening record can carry a slot ratio yet")
+    for where, pick, record in records:
+        span = _span_of(record)
         for role, entry in _ratio_entries(record):
             checked += 1
             member = entry["unit_id"]

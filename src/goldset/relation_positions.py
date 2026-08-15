@@ -79,3 +79,60 @@ def relation_positions(pick: str, member: str, groups: list, duplication_map: li
 def verdicts(positions: dict) -> dict:
     """The bare verdict per relation, for asserting on without matching prose."""
     return {k: v.split(":", 1)[0] for k, v in positions.items()}
+
+
+def document_of(unit_id: str) -> str:
+    """The document a unit id belongs to. Every unit id in this corpus is `<doc_id>:<local>`."""
+    return unit_id.split(":", 1)[0]
+
+
+def nominated_for_testing(pick: str, groups: list, duplication_map: list) -> dict[str, list[str]]:
+    """Every unit either committed relation records alongside `pick`, mapped to the relations
+    naming it. Document-blind, deliberately.
+
+    Nomination is not admission. The locked rule is that the union decides which units get TESTED
+    and never which units skip the test, so a same-document identity twin is nominated here, put
+    to the carrier standard, and recorded on the row with its verdict and its ground. Narrowing
+    this set would remove evidence rather than add rigour: a twin that never appears on the row is
+    a twin nobody can see was considered.
+
+    Membership is read from each relation's own structure, the group's member list and the map
+    row's source_unit_id plus duplicated_in, never by whole-file containment. Matching is exact
+    string equality against the member list, the same rule relation_positions uses, so the two
+    cannot disagree about what a relation says.
+    """
+    found: dict[str, list[str]] = {}
+    held = next((g["members"] for g in groups if pick in g["members"]), None)
+    if held is not None:
+        for unit in held:
+            if unit != pick:
+                found.setdefault(unit, []).append("verbatim_groups")
+    row = next((r for r in duplication_map
+                if r["source_unit_id"] == pick
+                or any(d["unit_id"] == pick for d in r["duplicated_in"])), None)
+    if row is not None:
+        covered = {row["source_unit_id"]} | {d["unit_id"] for d in row["duplicated_in"]}
+        for unit in covered:
+            if unit != pick:
+                found.setdefault(unit, []).append("duplication_map")
+    return {unit: sorted(rels) for unit, rels in sorted(found.items())}
+
+
+def relation_derived_carriers(pick: str, groups: list,
+                              duplication_map: list) -> dict[str, list[str]]:
+    """The nominated units a committed relation may ADMIT to `pick`'s gold slot.
+
+    Cross-document only. PREREGISTRATION.md scopes the any-carrier clause in its own words to a
+    statement "duplicated verbatim across documents", so a relation cannot admit a unit sharing
+    `pick`'s document. Measured over this corpus the restriction narrows 49 units, every one of
+    them nist_playbook, which is the same-document block duplication the near-miss stratum draws
+    its distractors from: those twins are the legitimate competitors and admitting them would put
+    the competitor inside the slot it is supposed to be discriminated from.
+
+    Individual verification is the other route into a slot and is unrestricted by document. It is
+    a recorded human verdict under the carrier standard, not a derivation, so it is deliberately
+    outside this function: this is the mechanical arm alone.
+    """
+    return {unit: rels
+            for unit, rels in nominated_for_testing(pick, groups, duplication_map).items()
+            if document_of(unit) != document_of(pick)}

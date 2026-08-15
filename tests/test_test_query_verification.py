@@ -27,6 +27,12 @@ import json
 
 import pytest
 
+from src.goldset.relation_positions import (
+    INCLUDES,
+    document_of,
+    load_relations,
+    relation_derived_carriers,
+)
 from src.ingest.corpus_integrity import REPO_ROOT
 from src.retrieve.tokenize import tokenize_query
 
@@ -37,7 +43,30 @@ QUERIES = EVAL / "test_queries.jsonl"
 # The nested per-stratum blocks. A row carries every key and nulls the blocks that are not its
 # own, so this names which keys are blocks rather than leaving it to be inferred from a value
 # that happens to be a dict.
-STRATUM_BLOCKS = ("multi_hop", "single_hop")
+#
+# Appended in authoring order rather than sorted, so a stratum commit shows one added key at the
+# end of every row instead of a reshuffle of the ordered key set.
+STRATUM_BLOCKS = ("multi_hop", "single_hop", "action_to_parent", "near_miss")
+
+# Top-level keys that are dict-valued and are NOT stratum blocks. The adversarial stratum ships
+# its evidence on nulled top-level keys rather than in a nested block, a convention this file has
+# carried since that stratum landed, so a detector that failed every dict-valued non-block key
+# would fail three committed fields across four rows.
+#
+# Registered explicitly for the same reason STRATUM_BLOCKS is: the unregistered-block detector
+# below is content-independent and consults both lists, so adding either kind of field is a
+# deliberate edit that shows in the diff rather than something a value's shape decides.
+NON_BLOCK_FIELDS = ("identifier", "vocabulary", "retrieval_mechanism_prediction")
+
+# The unit a block's slot and its recorded ratios are anchored on. Named per block because the
+# field differs by what the stratum draws: single-hop and near-miss draw one unit, action-to-parent
+# draws an action and its parent and the slot hangs off the parent.
+SLOT_ANCHOR_FIELD = {
+    "multi_hop": None,
+    "single_hop": "drawn_unit",
+    "action_to_parent": "drawn_parent",
+    "near_miss": "drawn_unit",
+}
 
 # One re-designation is permitted, both attempts are recorded on the row, and a second failure
 # rejects the pick. The rule is forced rather than optional because span choice is an unbounded
@@ -95,6 +124,11 @@ def test_stratum_blocks_are_nulled_rather_than_omitted():
     STRATUM_BLOCKS is still named, and used in the other direction: a non-null block whose name
     is not in it fails, so a block added under a new name is a deliberate act rather than a
     silent one.
+
+    The unregistered-block half is content-independent. An earlier form matched on the literal
+    `drawn_unit` inside the value, which is a detector deciding a structural question from one
+    field name: a block that happened not to carry that field passed unseen, the pass-by-blindness
+    V20 names. It now consults the two registries and nothing else.
     """
     rows = _verification()
     seen = {k for row in rows for k in row if k in STRATUM_BLOCKS}
@@ -106,12 +140,69 @@ def test_stratum_blocks_are_nulled_rather_than_omitted():
             f"{row['id']}: carries {len(present)} stratum blocks, {present}. A row belongs to one "
             "stratum, so a second non-null block means a block was copied rather than authored"
         )
-        unknown = [k for k, v in row.items()
-                   if isinstance(v, dict) and k not in STRATUM_BLOCKS and "drawn_unit" in v]
-        assert not unknown, (
-            f"{row['id']}: carries what looks like a stratum block under an unregistered name, "
-            f"{unknown}. Add it to STRATUM_BLOCKS deliberately rather than defaulting"
+        assert not _unregistered_dict_fields(row), (
+            f"{row['id']}: carries dict-valued top-level key(s) "
+            f"{_unregistered_dict_fields(row)} registered neither as a stratum block nor as a "
+            "non-block field. Add the name to STRATUM_BLOCKS or NON_BLOCK_FIELDS deliberately "
+            "rather than defaulting"
         )
+
+
+def _unregistered_dict_fields(row: dict) -> list[str]:
+    """Dict-valued top-level keys in neither registry. One predicate, driven by the check above
+    and by its companion, so what is shown capable of failing is what actually runs."""
+    return sorted(k for k, v in row.items()
+                  if isinstance(v, dict)
+                  and k not in STRATUM_BLOCKS
+                  and k not in NON_BLOCK_FIELDS)
+
+
+def test_the_non_block_field_registry_matches_the_committed_file():
+    """NON_BLOCK_FIELDS is a literal, so it can go stale against the file it describes.
+
+    Asserted in the tight direction: every dict-valued non-block key the file actually holds is
+    registered, and every registered name is one the file actually uses as a dict somewhere. A
+    registry naming a field nobody carries would let the detector pass a name that has quietly
+    changed meaning.
+    """
+    rows = _verification()
+    dict_keys = {k for row in rows for k, v in row.items() if isinstance(v, dict)}
+    held = dict_keys - set(STRATUM_BLOCKS)
+    assert held == set(NON_BLOCK_FIELDS), (
+        f"the file holds dict-valued non-block keys {sorted(held)} and NON_BLOCK_FIELDS names "
+        f"{sorted(NON_BLOCK_FIELDS)}"
+    )
+
+
+def test_the_unregistered_block_detector_can_fail():
+    """V20, both directions, driven through the predicate the check itself runs.
+
+    The direction that matters most is the second: the blanket form of this detector, failing any
+    dict-valued key outside STRATUM_BLOCKS, would have failed three committed adversarial fields
+    on twelve row-instances. A detector that cannot admit the file it guards is not stricter, it
+    is broken.
+    """
+    caught = {"id": "test_00", "near_miss": None, "surprise": {"anything": 1}}
+    assert _unregistered_dict_fields(caught) == ["surprise"], (
+        "a dict under an unregistered name was not caught"
+    )
+
+    no_drawn_unit = {"id": "test_00", "surprise": {"competitor_unit": "x"}}
+    assert _unregistered_dict_fields(no_drawn_unit) == ["surprise"], (
+        "the superseded form keyed on the literal 'drawn_unit' and would pass this row, which is "
+        "the pass-by-blindness the content-independent form removes"
+    )
+
+    for field in NON_BLOCK_FIELDS:
+        legitimate = {"id": "test_00", field: {"evidence": 1}}
+        assert _unregistered_dict_fields(legitimate) == [], (
+            f"{field} is a committed non-block dict field and must not be flagged"
+        )
+    for block in STRATUM_BLOCKS:
+        legitimate = {"id": "test_00", block: {"drawn_unit": "x"}}
+        assert _unregistered_dict_fields(legitimate) == [], f"{block} is a registered block"
+
+    assert _unregistered_dict_fields({"id": "test_00", "note": "a string, not a dict"}) == []
 
 
 def test_verification_rows_align_one_for_one_with_the_query_set():
@@ -202,3 +293,272 @@ def test_recorded_query_to_span_overlap_re_derives():
         assert round(len(shared) / len(query_tokens | span_tokens), 4) == overlap["jaccard"], (
             where + f"jaccard, re-derived {len(shared)}/{len(query_tokens | span_tokens)}"
         )
+
+
+# ---------------------------------------------------------------------------------------------
+# The ordering guard, and the carrier predicate.
+
+PRODUCER = "src.goldset.relation_positions.relation_derived_carriers"
+
+
+def _resolved_values(row: dict):
+    """Every recorded outcome of a pre-registered retrieval prediction on this row."""
+    prediction = row.get("retrieval_mechanism_prediction")
+    if not isinstance(prediction, dict) or "resolved" not in prediction:
+        return []
+    return [prediction["resolved"]]
+
+
+def test_no_row_records_the_outcome_of_a_retrieval_prediction():
+    """A prediction may ship before retrieval; its outcome may not.
+
+    PREREGISTRATION.md orders the queries and their embeddings before retrieval runs on them, so
+    a field holding which branch of a pre-registered prediction actually fired could only be
+    filled after that ordering is spent. The branch table is pre-registration and belongs here;
+    the branch that fired is a result and does not.
+
+    Asserted as "no non-null resolved anywhere" rather than as "every prediction carries a null
+    resolved", because the second would demand a key from rows that do not exist yet, which is
+    asserting a later commit's property from an earlier one. Absent is no value, which is the
+    thing being protected. The four committed adversarial predictions carry no resolved key and
+    pass unchanged.
+    """
+    for row in _verification():
+        for value in _resolved_values(row):
+            assert value is None, (
+                f"{row['id']}: retrieval_mechanism_prediction.resolved is {value!r}. That is the "
+                "outcome of a prediction, and no outcome exists until retrieval runs on this set"
+            )
+
+
+def test_the_post_retrieval_guard_can_fail():
+    """V20, through the same accessor the check runs."""
+    fabricated = {"id": "test_00",
+                  "retrieval_mechanism_prediction": {"prediction": "first-pass miss",
+                                                     "resolved": "hit"}}
+    assert _resolved_values(fabricated) == ["hit"], "the accessor did not reach a resolved value"
+    nulled = {"id": "test_00",
+              "retrieval_mechanism_prediction": {"prediction": "x", "resolved": None}}
+    assert _resolved_values(nulled) == [None]
+    absent = {"id": "test_00", "retrieval_mechanism_prediction": {"prediction": "x"}}
+    assert _resolved_values(absent) == []
+    assert _resolved_values({"id": "test_00", "retrieval_mechanism_prediction": None}) == []
+
+
+def _slot_members(block: str):
+    """(row, anchor, member) for every slot member of one block, across the file."""
+    field = SLOT_ANCHOR_FIELD[block]
+    out = []
+    for row, held in _blocks(block):
+        if field is None or "slot" not in held:
+            continue
+        for member in held["slot"].get("members") or []:
+            out.append((row, held[field], member))
+    return out
+
+
+def _relation_admits(member: dict) -> list[str]:
+    """The relations recording this member as a carrier, read off the enumerated verdicts.
+
+    Asserted on the verdict constants rather than on the free-text contributing_relation field.
+    The committed rows write that field as prose, "individual verification at pass one" against
+    "committed duplication map", and a substring match on prose is the compare-structure-where-
+    the-claim-is-content failure this repository has paid for three times. The mechanical fact is
+    already on every member in committed_relation_positions, whose verdicts come from the SILENT,
+    INCLUDES and EXCLUDES constants in src/goldset/relation_positions.py.
+    """
+    positions = member.get("committed_relation_positions") or {}
+    return sorted(name for name, sentence in positions.items()
+                  if sentence.split(":", 1)[0] == INCLUDES)
+
+
+def test_a_slot_member_admitted_by_a_relation_is_cross_document():
+    """Part one of the carrier ruling, asserted from the row.
+
+    PREREGISTRATION.md scopes the any-carrier clause in its own words to a statement duplicated
+    verbatim ACROSS DOCUMENTS, so a committed relation cannot admit a unit sharing the anchor's
+    document. Individual verification is the other route and is unrestricted by document, which
+    is how the two committed same-document members entered.
+
+    Live in both directions on committed data today, not vacuous, and both directions are
+    asserted to have fired so a reader returning nothing cannot pass this.
+    """
+    checked, admitted, same_document = 0, 0, 0
+    for block in STRATUM_BLOCKS:
+        for row, anchor, member in _slot_members(block):
+            unit = member["unit_id"]
+            if unit == anchor:
+                continue
+            checked += 1
+            admits = _relation_admits(member)
+            where = f"{row['id']}/{block}/{unit}"
+            if admits:
+                admitted += 1
+                assert document_of(unit) != document_of(anchor), (
+                    f"{where}: admitted by {admits} while sharing the anchor's document. A "
+                    "relation may admit only across documents"
+                )
+            if document_of(unit) == document_of(anchor):
+                same_document += 1
+                assert not admits, (
+                    f"{where}: a same-document slot member is recorded as admitted by {admits}. "
+                    "A relation may admit only across documents; a same-document member enters "
+                    "by individual verification alone"
+                )
+    assert checked, "no slot member was reached, so this assertion ran on nothing"
+    assert admitted, (
+        "no slot member anywhere reads INCLUDES, so the cross-document half of this assertion "
+        "never fired and a reader that returned nothing would pass it"
+    )
+    assert same_document, (
+        "no same-document slot member exists, so the individual-verification half never fired. "
+        "Measured at this commit: two, eu_ai_act:rct_179 on test_22 and eu_ai_act:art_3 on "
+        "test_25, both SILENT on both relations"
+    )
+
+
+def test_relation_derived_carriers_agrees_with_every_committed_slot_member():
+    """The row's recorded relation position, re-derived from the relations themselves.
+
+    Two implementations rather than one: the row carries what relation_positions said at
+    authoring, and this re-runs the shipped predicate now. A row edited by hand, or a relation
+    that moved underneath it, fails here.
+    """
+    groups, duplication_map = load_relations()
+    checked = 0
+    for block in STRATUM_BLOCKS:
+        for row, anchor, member in _slot_members(block):
+            unit = member["unit_id"]
+            if unit == anchor:
+                continue
+            checked += 1
+            derived = relation_derived_carriers(anchor, groups, duplication_map)
+            recorded = _relation_admits(member)
+            where = f"{row['id']}/{block}/{unit}"
+            if recorded:
+                assert unit in derived, (
+                    f"{where}: the row records admission by {recorded} and "
+                    f"relation_derived_carriers does not return it. Derived: {sorted(derived)}"
+                )
+                assert derived[unit] == recorded, (
+                    f"{where}: the row records {recorded} and the predicate derives "
+                    f"{derived[unit]}"
+                )
+            else:
+                assert unit not in derived, (
+                    f"{where}: the row records no relation admitting this member and "
+                    f"relation_derived_carriers returns {derived.get(unit)}"
+                )
+    assert checked, "no slot member was reached, so this assertion ran on nothing"
+
+
+def _near_miss_defects(block: dict, groups: list, duplication_map: list) -> list[str]:
+    """Every way a near-miss block violates the carrier ruling, as a list of messages.
+
+    One predicate, driven by the check below and by its companion, so what is shown capable of
+    failing is what actually runs rather than a second copy that can drift.
+    """
+    defects: list[str] = []
+    anchor, competitor = block["drawn_unit"], block["competitor_unit"]
+    flag = block["competitor_is_a_carrier_of_gold"]
+    derived = relation_derived_carriers(anchor, groups, duplication_map)
+    arm = flag["mechanical_arm"]
+
+    if arm["competitor_in_relation_derived_carriers"] != (competitor in derived):
+        defects.append(
+            f"mechanical arm records {arm['competitor_in_relation_derived_carriers']} and the "
+            f"predicate derives {competitor in derived}")
+    if arm["relations"] != derived.get(competitor, []):
+        defects.append(f"mechanical arm records relations {arm['relations']} and the predicate "
+                       f"derives {derived.get(competitor, [])}")
+    if arm["producer"] != PRODUCER:
+        defects.append(f"mechanical arm names producer {arm['producer']!r}, expected {PRODUCER!r}")
+
+    expected = bool(competitor in derived) or flag["individual_verification"] == "carrier"
+    if flag["value"] != expected:
+        defects.append(
+            f"value recorded {flag['value']}, re-derived {expected} from the mechanical arm and "
+            f"the recorded individual verification {flag['individual_verification']!r}")
+    if block.get("verdict") == "accepted" and flag["value"]:
+        defects.append(
+            "accepted with a competitor that carries its gold, so no discrimination failure on "
+            "this row is observable by the metrics")
+    return defects
+
+
+def test_near_miss_blocks_satisfy_the_carrier_ruling():
+    """The near-miss admissibility screen, through one predicate.
+
+    Vacuous until near-miss rows land and binding from that commit, the matcher-scoping precedent.
+    The mechanical arm is relation_derived_carriers; a competitor that individual verification
+    verdicts a carrier also sets the flag, which only ever removes a pick.
+
+    Measured before any pick was screened: 54 of the 71 near_duplicate draw-order pairs have a
+    competitor that is a carrier of the gold, so this rejects rather than decorates.
+    """
+    pairs = _blocks("near_miss")
+    if not pairs:
+        pytest.skip("no committed near_miss rows yet; this turns on at that commit")
+    groups, duplication_map = load_relations()
+    for row, block in pairs:
+        defects = _near_miss_defects(block, groups, duplication_map)
+        assert not defects, f"{row['id']}: " + "; ".join(defects)
+
+
+def test_the_near_miss_carrier_checks_can_fail():
+    """V20, on real corpus units rather than invented ids, driving the predicate the check runs.
+
+    nist_ai_600_1:sub_MAP_2.2 against nist_ai_100_1:sub_MAP_2.2 is draw index 0 of the committed
+    near_duplicate order and is one of the 54 whose competitor carries its gold, so it is the
+    case this screen exists to reject. nist_playbook:sub_MAP_3.4.ai_transparency_resources
+    against nist_playbook:sub_MAP_1.5.ai_transparency_resources is draw index 3 and is clean on
+    the same screen, so both verdicts are reachable.
+    """
+    groups, duplication_map = load_relations()
+    colliding = "nist_ai_600_1:sub_MAP_2.2"
+    competitor = "nist_ai_100_1:sub_MAP_2.2"
+    derived = relation_derived_carriers(colliding, groups, duplication_map)
+    assert competitor in derived, (
+        "the corpus case this control is built on no longer collides, so the control proves "
+        "nothing; re-derive it before trusting the screen")
+
+    honest = {
+        "drawn_unit": colliding, "competitor_unit": competitor, "verdict": "rejected",
+        "competitor_is_a_carrier_of_gold": {
+            "value": True, "individual_verification": "carrier",
+            "mechanical_arm": {"competitor_in_relation_derived_carriers": True,
+                               "relations": derived[competitor], "producer": PRODUCER}}}
+    assert _near_miss_defects(honest, groups, duplication_map) == [], (
+        "the companion's baseline block must itself pass")
+
+    accepted = {**honest, "verdict": "accepted"}
+    assert _near_miss_defects(accepted, groups, duplication_map), (
+        "a pick accepted with a carrier competitor was not caught, which is the whole screen")
+
+    lied = json.loads(json.dumps(honest))
+    lied["competitor_is_a_carrier_of_gold"]["value"] = False
+    lied["competitor_is_a_carrier_of_gold"]["individual_verification"] = "non-carrier"
+    lied["competitor_is_a_carrier_of_gold"]["mechanical_arm"][
+        "competitor_in_relation_derived_carriers"] = False
+    lied["competitor_is_a_carrier_of_gold"]["mechanical_arm"]["relations"] = []
+    assert _near_miss_defects(lied, groups, duplication_map), (
+        "a block asserting its competitor is not a carrier when the relations say otherwise was "
+        "not caught")
+
+    wrong_producer = json.loads(json.dumps(honest))
+    wrong_producer["competitor_is_a_carrier_of_gold"]["mechanical_arm"]["producer"] = "somewhere"
+    assert _near_miss_defects(wrong_producer, groups, duplication_map)
+
+    clean_anchor = "nist_playbook:sub_MAP_3.4.ai_transparency_resources"
+    clean_competitor = "nist_playbook:sub_MAP_1.5.ai_transparency_resources"
+    clean_derived = relation_derived_carriers(clean_anchor, groups, duplication_map)
+    assert clean_competitor not in clean_derived
+    clean = {
+        "drawn_unit": clean_anchor, "competitor_unit": clean_competitor, "verdict": "accepted",
+        "competitor_is_a_carrier_of_gold": {
+            "value": False, "individual_verification": "non-carrier",
+            "mechanical_arm": {"competitor_in_relation_derived_carriers": False,
+                               "relations": [], "producer": PRODUCER}}}
+    assert _near_miss_defects(clean, groups, duplication_map) == [], (
+        "an admissible near-miss pick must pass, or the screen bars the rows it was written to "
+        "admit")

@@ -27,6 +27,7 @@ import pytest
 from src.ingest.corpus_integrity import REPO_ROOT
 from src.retrieve.build_test_frame import OUTPUT, _sha256, build_frame, compute_closure, to_bytes
 from tests.test_test_queries import STRATUM_TO_FRAME
+from tests.test_test_query_verification import STRATUM_BLOCKS
 
 EVAL = REPO_ROOT / "eval"
 REJECTIONS = EVAL / "test_frame_rejections.jsonl"
@@ -209,6 +210,56 @@ def test_near_miss_rules_hold_through_backfill():
     assert len(set(groups)) == len(groups), f"backfilled picks share an identity group: {groups}"
     # rule A: the two sources did not select the same unit
     assert not (set(three) & {_gold(c) for c in five}), "backfilled sources selected the same unit"
+
+
+def test_the_cross_source_seed_is_capable_of_removing_a_candidate():
+    """V20 on the cross-source rule itself, which nothing else drives to a firing state.
+
+    The rule is implemented and correct, and on the committed draw it is inert: the three
+    block_clusters picks remove zero near_duplicate candidates, and the synthetic log in the
+    backfill test above removes zero as well, so rule A's assertion there passes without the
+    mechanism having done anything. A guard that has never been shown able to change an answer is
+    the pass-by-blindness V20 names, and this is the missing half.
+
+    The firing state is derived from the frame rather than written as a literal, so a change to
+    either draw order reports the move instead of leaving the test asserting nothing.
+    """
+    frame = _frame()
+    nm = frame["strata"]["near_miss"]["sources"]
+    bc, nd = nm["block_clusters"], nm["near_duplicate"]
+
+    baseline = _near_miss_selected(frame, {})
+    baseline_anchors = [_gold(c) for c in baseline["near_duplicate"]]
+    target = next((u for u in bc["draw_order"] if u in baseline_anchors), None)
+    assert target is not None, (
+        "no block_clusters candidate heads a near_duplicate entry inside the selected window, so "
+        "the seed cannot bite on this frame and this control cannot be built"
+    )
+
+    rejected: set[str] = set()
+    for candidate in bc["draw_order"]:
+        picks = _near_miss_selected(
+            frame, {("near_miss", "block_clusters"): set(rejected)})["block_clusters"]
+        if target in picks:
+            break
+        assert candidate != target, "the walk passed the target without taking it"
+        rejected.add(json.dumps(candidate))
+
+    log = {("near_miss", "block_clusters"): rejected}
+    picks = _near_miss_selected(frame, log)
+    assert target in picks["block_clusters"], (
+        f"{len(rejected)} rejections did not put {target} into the three")
+
+    seeded = picks["near_duplicate"]
+    unseeded = _selected(nd, set())
+    assert seeded != unseeded, (
+        "block_clusters holds a unit that heads a selected near_duplicate entry and the seeded "
+        "and unseeded walks still agree, so the seed is not being threaded"
+    )
+    removed = [c for c in unseeded if c not in seeded]
+    assert [_gold(c) for c in removed] == [target], (
+        f"the seed removed {[_gold(c) for c in removed]}, expected exactly [{target}]")
+    assert len(seeded) == nd["allocation"], "the source no longer fills after the seed removes one"
 
 
 def test_closure_lists_all_50_units_with_provenance():
@@ -414,19 +465,47 @@ def _draw_order_key(candidate):
     return tuple(candidate) if isinstance(candidate, list) else candidate
 
 
-def _recorded_drawn_unit(row_id: str) -> str | None:
-    """The drawn unit as the verification record states it, or None where no record carries one.
+# Which field or fields carry a block's draw identity. Named per block rather than inferred,
+# because the shape differs by what the stratum draws: single-hop and near-miss draw one unit,
+# clean multi-hop draws a source and a target, action-to-parent draws an action and its parent.
+# A single accessor assuming one field name would return half an identity on the pair-shaped
+# blocks, silently.
+DRAW_IDENTITY_FIELDS = {
+    "multi_hop": ("source_unit", "target_unit"),
+    "single_hop": ("drawn_unit",),
+    "action_to_parent": ("drawn_action", "drawn_parent"),
+    "near_miss": ("drawn_unit",),
+}
 
-    drawn_unit is recorded rather than derived, deliberately: the draw-order intersection below
-    is a derivation, the field is a record, and two independent implementations beat one.
+
+def _recorded_draw_identity(row_id: str):
+    """The draw identity as the verification record states it, or None where none is recorded.
+
+    Recorded rather than derived, deliberately: the draw-order intersection below is a
+    derivation, the field is a record, and two independent implementations beat one. A string
+    where the block draws one unit, a tuple where it draws two.
     """
     record = _verification().get(row_id)
     if not record:
         return None
-    for block in ("single_hop",):
-        if record.get(block):
-            return record[block].get("drawn_unit")
+    for block in STRATUM_BLOCKS:
+        held = record.get(block)
+        if not held:
+            continue
+        values = tuple(held.get(field) for field in DRAW_IDENTITY_FIELDS[block])
+        if any(value is None for value in values):
+            return None
+        return values[0] if len(values) == 1 else values
     return None
+
+
+def test_every_registered_block_has_a_draw_identity_accessor():
+    """A block registered with no accessor would fall through to None and quietly disable the
+    disambiguation the extractors below depend on."""
+    assert set(DRAW_IDENTITY_FIELDS) == set(STRATUM_BLOCKS), (
+        f"DRAW_IDENTITY_FIELDS covers {sorted(DRAW_IDENTITY_FIELDS)} against registered blocks "
+        f"{sorted(STRATUM_BLOCKS)}"
+    )
 
 
 def _bare_unit_key(row, spec):
@@ -458,7 +537,11 @@ def _bare_unit_key(row, spec):
         f"{row['id']}: gold names none of this source's candidates, so the row does not join to "
         f"the source its subtype names. Gold {sorted(row['expected_units'])}."
     )
-    recorded = _recorded_drawn_unit(row["id"])
+    recorded = _recorded_draw_identity(row["id"])
+    assert recorded is None or isinstance(recorded, str), (
+        f"{row['id']}: this source draws bare unit ids and the record states a draw identity of "
+        f"{recorded!r}, which is not one"
+    )
     if len(hits) == 1:
         # The derivation decides. A record that disagrees is a defect either way, so it fails
         # here rather than being ignored; silence on a disagreement is the blind-detector form
@@ -489,17 +572,166 @@ def _pair_key(row, spec):
     return tuple(row["expected_units"])
 
 
+def _parent_key(row, spec, identity=None):
+    """A row drawn from action_to_parent/action_subcategory, keyed by its whole draw-order pair.
+
+    _pair_key cannot serve here and the reason is measured, not stylistic. It returns
+    tuple(row["expected_units"]), which under the any-carrier gold rule is the PARENT'S CARRIER
+    SET and names no action at all. And the parent alone does not identify the entry: the frame's
+    draw order holds 196 pairs over 45 distinct parents, a mean of 4.4 actions per parent, so
+    unlike every other source there is no arrangement of the row's gold that recovers the draw.
+    The recorded drawn_action is therefore load-bearing rather than a convenience.
+
+    The record is checked rather than trusted: the pair it names must be a draw-order entry of
+    this source, and the parent it names must be in the row's gold. A record pointing anywhere
+    else fails here instead of redirecting the row.
+    """
+    identity = _recorded_draw_identity(row["id"]) if identity is None else identity
+    assert isinstance(identity, tuple) and len(identity) == 2, (
+        f"{row['id']}: this source draws (action, parent) pairs and the verification record "
+        f"states a draw identity of {identity!r}. Record drawn_action and drawn_parent: the "
+        "parent alone does not identify the draw-order entry on this source"
+    )
+    action, parent = identity
+    entries = {tuple(c) for c in spec["draw_order"]}
+    assert (action, parent) in entries, (
+        f"{row['id']}: the record states the pair {(action, parent)}, which is not a draw-order "
+        "entry of this source"
+    )
+    assert parent in row["expected_units"], (
+        f"{row['id']}: the record states drawn_parent {parent}, which the row's gold does not "
+        f"name. Gold {sorted(row['expected_units'])}"
+    )
+    return (action, parent)
+
+
+def _gold_anchor_key(row, spec, identity=None):
+    """A row drawn from near_miss/near_duplicate, keyed by the pair its gold anchor heads.
+
+    Determinate on this source, and the determinacy is asserted rather than assumed: the draw
+    order holds 71 pairs over 71 distinct element-0 units, so the anchor identifies the entry.
+    The competitor is element 1 and is not gold, which is the whole point of the stratum, so it
+    cannot be recovered from expected_units and the pair is rebuilt from the anchor instead.
+    """
+    anchor = _recorded_draw_identity(row["id"]) if identity is None else identity
+    assert isinstance(anchor, str), (
+        f"{row['id']}: this source is keyed by its gold anchor and the record states a draw "
+        f"identity of {anchor!r}"
+    )
+    matches = [tuple(c) for c in spec["draw_order"] if c[0] == anchor]
+    assert len(matches) == 1, (
+        f"{row['id']}: the anchor {anchor} heads {len(matches)} draw-order entries, so it does "
+        "not identify the draw. This source was measured at 71 pairs over 71 distinct anchors; "
+        "if that has changed the key needs the competitor as well"
+    )
+    assert anchor in row["expected_units"], (
+        f"{row['id']}: the anchor {anchor} is not in the row's gold. Gold "
+        f"{sorted(row['expected_units'])}"
+    )
+    return matches[0]
+
+
 # Which element of a candidate a row is keyed by differs per source, so each is named rather than
-# inferred, following the same practice as tests/test_unit_chunk_cardinality.py. Absent on
-# purpose: action_to_parent/action_subcategory, near_miss/block_clusters and
-# near_miss/near_duplicate have no authored rows and no settled row shape. They are not defaulted,
-# so the first row authored against them fails here rather than being skipped silently.
+# inferred, following the same practice as tests/test_unit_chunk_cardinality.py.
+#
+# near_miss/block_clusters reuses _bare_unit_key because its draw order holds bare unit ids and
+# the primitive is identical. Under the ruled carrier predicate every block_clusters slot is a
+# relation-derived singleton, so the intersection is normally a singleton and the derivation is
+# sole authority; the ambiguity path stays live for a member added by individual verification
+# that is itself a candidate of this source.
 KEY_EXTRACTORS = {
     ("single_hop", "eu_ai_act"): _bare_unit_key,
     ("single_hop", "nist_ai_100_1"): _bare_unit_key,
     ("single_hop", "nist_ai_600_1"): _bare_unit_key,
     ("clean_multi_hop", "eu_internal_xref"): _pair_key,
+    ("action_to_parent", "action_subcategory"): _parent_key,
+    ("near_miss", "block_clusters"): _bare_unit_key,
+    ("near_miss", "near_duplicate"): _gold_anchor_key,
 }
+
+
+def test_every_drawing_source_has_a_key_extractor():
+    """Registered ahead of the rows, so the first authored row is judged rather than skipped.
+
+    The assert inside _verdicts fires on an unregistered source, but only once a row exists to
+    reach it. This says the same thing at every commit, including the ones before any row lands.
+    """
+    frame = _frame()
+    sources = {(stratum, source) for stratum, source, _ in _sources(frame)}
+    assert sources == set(KEY_EXTRACTORS), (
+        f"frame drawing sources {sorted(sources)} against registered extractors "
+        f"{sorted(KEY_EXTRACTORS)}"
+    )
+
+
+def test_the_near_duplicate_anchor_identifies_its_draw_entry():
+    """_gold_anchor_key rests on element 0 being unique across the draw order. Asserted against
+    the frame rather than carried from the measurement that established it."""
+    spec = _frame()["strata"]["near_miss"]["sources"]["near_duplicate"]
+    anchors = [c[0] for c in spec["draw_order"]]
+    assert len(set(anchors)) == len(anchors), (
+        "a gold anchor heads more than one near_duplicate entry, so the anchor no longer "
+        "identifies the draw and _gold_anchor_key needs the competitor as well"
+    )
+
+
+def test_the_action_parent_pair_is_not_recoverable_from_the_parent_alone():
+    """Why _parent_key needs the recorded drawn_action, asserted rather than asserted about.
+
+    If this ever became one-to-one, _parent_key could derive the pair and the recorded field
+    would stop being load-bearing. It is not one-to-one, and the margin is wide.
+    """
+    spec = _frame()["strata"]["action_to_parent"]["sources"]["action_subcategory"]
+    parents = [c[1] for c in spec["draw_order"]]
+    assert len(set(parents)) < len(parents), (
+        "each parent now heads exactly one draw-order entry, so the pair is recoverable from the "
+        "row's gold and drawn_action is no longer load-bearing"
+    )
+    assert len(spec["draw_order"]) == 196 and len(set(parents)) == 45, (
+        f"measured {len(spec['draw_order'])} entries over {len(set(parents))} parents"
+    )
+
+
+def test_the_new_key_extractors_can_fail():
+    """V20 on both new extractors, driven through the extractors themselves.
+
+    Fabricated rows rather than committed ones, because no row of either source exists yet. What
+    is shown is that each rejects a record naming something the draw order does not support,
+    which is the failure mode a defaulted extractor would let through.
+    """
+    frame = _frame()
+    atp = frame["strata"]["action_to_parent"]["sources"]["action_subcategory"]
+    nd = frame["strata"]["near_miss"]["sources"]["near_duplicate"]
+    action, parent = atp["draw_order"][0]
+    anchor, competitor = nd["draw_order"][0]
+    row = {"id": "test_00", "expected_units": [parent]}
+
+    # _parent_key, the honest case first, or the failures below prove nothing.
+    assert _parent_key(row, atp, identity=(action, parent)) == (action, parent)
+
+    with pytest.raises(AssertionError, match="not a draw-order entry"):
+        _parent_key(row, atp, identity=(action, "nist_ai_600_1:sub_NOT_A_PARENT"))
+
+    with pytest.raises(AssertionError, match=r"draws \(action, parent\) pairs"):
+        _parent_key(row, atp, identity=parent)
+
+    with pytest.raises(AssertionError, match="the row's gold does not name"):
+        _parent_key({"id": "test_00", "expected_units": ["eu_ai_act:art_1"]}, atp,
+                    identity=(action, parent))
+
+    # _gold_anchor_key, same shape.
+    anchor_row = {"id": "test_00", "expected_units": [anchor]}
+    assert _gold_anchor_key(anchor_row, nd, identity=anchor) == (anchor, competitor)
+
+    with pytest.raises(AssertionError, match="not in the row's gold"):
+        _gold_anchor_key({"id": "test_00", "expected_units": [competitor]}, nd, identity=anchor)
+
+    with pytest.raises(AssertionError, match="heads 0 draw-order entries"):
+        _gold_anchor_key({"id": "test_00", "expected_units": ["x"]}, nd,
+                         identity="nist_playbook:sub_NOT_AN_ANCHOR")
+
+    with pytest.raises(AssertionError, match="keyed by its gold anchor"):
+        _gold_anchor_key(anchor_row, nd, identity=(anchor, competitor))
 
 
 def _query_rows() -> list[dict]:
@@ -627,6 +859,46 @@ def test_authored_reconstruction_check_can_fail():
     )
 
 
+def _source_picks(frame, rejected_by_source, stratum, source):
+    """The candidates a source selects under a given log, through the same path _verdicts uses."""
+    if stratum == "near_miss":
+        return _near_miss_selected(frame, rejected_by_source)[source]
+    spec = frame["strata"][stratum]["sources"][source]
+    return _selected(spec, rejected_by_source.get((stratum, source), set()))
+
+
+def _blocking_explanation(frame, rejected_by_source, stratum, source, dropped):
+    """Why re-admitting `dropped` changes nothing: the distinctness key it collides on, the
+    already-taken candidate holding that key, and which source that holder belongs to.
+
+    Returns None where no blocker accounts for it, which is what turns an unexplained inert drop
+    into a failure rather than an escape hatch. The holder may belong to another source: under
+    select_distinct_from the taken set is seeded from the source named there, so a near_duplicate
+    entry can be held out by a block_clusters pick.
+    """
+    spec = frame["strata"][stratum]["sources"][source]
+    key = _distinct_key(spec)
+    if key is None:
+        return None
+    candidate = json.loads(dropped)
+    blocked_on = key(candidate)
+    if blocked_on is None:
+        return None
+
+    holders = [(c, (stratum, source))
+               for c in _source_picks(frame, rejected_by_source, stratum, source)
+               if key(c) == blocked_on]
+    seeding = spec.get("select_distinct_from")
+    if seeding:
+        holders += [(c, (stratum, seeding))
+                    for c in _source_picks(frame, rejected_by_source, stratum, seeding)
+                    if _gold(c) == blocked_on]
+    if not holders:
+        return None
+    holder, holder_key = holders[0]
+    return blocked_on, holder, holder_key
+
+
 def test_drop_a_rejection_control_holds_for_every_full_source():
     """V20 generalised: the same control, per source, on whatever data has landed.
 
@@ -645,15 +917,30 @@ def test_drop_a_rejection_control_holds_for_every_full_source():
     a rejection lets the dropped candidate back in and pushes the marginal entry out. That the
     reconstruction MOVES is asserted rather than assumed, so a source where the drop changes
     nothing fails here instead of yielding a control that cannot fail.
+
+    MOVES OR PROVABLY INERT. On a source with a distinctness rule the unconditional form is
+    wrong: re-admitting a candidate whose key is already taken is a no-op, and the two near-miss
+    sources can both reach that state. Measured on the committed frame, block_clusters holds two
+    identity-group keys shared by two candidates each, and 12 of near_duplicate's 71 pairs have
+    an anchor that block_clusters can seed. So an inert drop is allowed, but only when the test
+    can NAME the blocking key and the already-taken candidate holding it, and then show that
+    removing that blocker lets the dropped candidate back in. An unexplained inert drop still
+    fails, and every full source must still show at least one moving drop so per-source
+    sensitivity stays proven.
+
+    Nothing loosens where there is no distinctness rule. On such a source _distinct_key returns
+    None, no blocker can exist, and the inert branch is unreachable: an inert drop there is a
+    hard failure, which is the behaviour this test had before the amendment.
     """
     frame = _frame()
     rows = _query_rows()
     full = _rejected_by_source()
     baseline = _verdicts(frame, full, rows)
 
-    exercised, skipped = [], []
+    exercised, skipped, inert = [], [], []
     for key, v in sorted(baseline.items()):
-        where = f"{key[0]}/{key[1]}"
+        stratum, source = key
+        where = f"{stratum}/{source}"
         if v["rows"] != v["allocation"]:
             skipped.append(f"{where}: {v['rows']} of {v['allocation']} rows, not full")
             continue
@@ -662,13 +949,40 @@ def test_drop_a_rejection_control_holds_for_every_full_source():
             continue
         assert v["authored"] == v["reconstructed"], f"{where}: baseline is already mismatched"
 
+        spec = frame["strata"][stratum]["sources"][source]
+        moved_here = 0
         for dropped in sorted(full[key]):
             perturbed_log = {k: (val - {dropped} if k == key else val) for k, val in full.items()}
             perturbed = _verdicts(frame, perturbed_log, rows)
-            assert perturbed[key]["reconstructed"] != v["reconstructed"], (
-                f"{where}: dropping rejection {dropped} did not change the reconstruction, so "
-                "the control moves nothing and would pass whatever the authored set held"
-            )
+
+            if perturbed[key]["reconstructed"] == v["reconstructed"]:
+                assert _distinct_key(spec) is not None, (
+                    f"{where}: dropping rejection {dropped} did not change the reconstruction on "
+                    "a source with no distinctness rule. Nothing can block re-admission there, "
+                    "so the walk is monotone and this is a defect rather than an explained inert "
+                    "drop"
+                )
+                explanation = _blocking_explanation(frame, perturbed_log, stratum, source, dropped)
+                assert explanation is not None, (
+                    f"{where}: dropping rejection {dropped} changed nothing and no blocking key "
+                    "holds it out, so the control moves nothing and would pass whatever the "
+                    "authored set held"
+                )
+                blocking_key, holder, holder_source = explanation
+                unblocked = {k: set(val) for k, val in perturbed_log.items()}
+                unblocked[holder_source] = (unblocked.get(holder_source, set())
+                                            | {json.dumps(holder)})
+                freed = _verdicts(frame, unblocked, rows)
+                assert _draw_order_key(json.loads(dropped)) in freed[key]["reconstructed"], (
+                    f"{where}: {dropped} was claimed inert because {holder} holds the "
+                    f"distinctness key {blocking_key!r}, and rejecting that holder still does not "
+                    "let it back in. The explanation is wrong: the drop is inert for some other "
+                    "reason, so nothing here demonstrates the key was what held it out"
+                )
+                inert.append(f"{where}: {dropped} inert, blocked on {blocking_key!r} by {holder}")
+                continue
+
+            moved_here += 1
             assert perturbed[key]["authored"] != perturbed[key]["reconstructed"], (
                 f"{where}: the reconstruction moved when {dropped} was dropped and the equality "
                 "comparison did not detect it; the check is blind"
@@ -677,12 +991,92 @@ def test_drop_a_rejection_control_holds_for_every_full_source():
                 f"{where}: the reconstruction moved when {dropped} was dropped and the subset "
                 "comparison did not detect it; the check is blind"
             )
-        exercised.append(f"{where}: {len(full[key])} rejections each shown to move the walk")
+
+        assert moved_here, (
+            f"{where}: every dropped rejection was explained inert and none moved the "
+            "reconstruction, so this source has no demonstrated sensitivity at all"
+        )
+        exercised.append(
+            f"{where}: {len(full[key])} rejections, {moved_here} moved the walk, "
+            f"{len(full[key]) - moved_here} explained inert")
 
     assert exercised, (
         "no source is both full and carrying a rejection, so this control exercised nothing. "
         f"Sources considered and why each was skipped: {skipped}"
     )
+
+
+def test_the_inert_drop_branch_can_fail_and_is_unreachable_without_a_distinctness_rule():
+    """V20 on both branches of the amendment above, driven on the committed frame.
+
+    The inert branch is the one that could become an escape hatch, so it is driven to a real
+    firing state rather than described. block_clusters holds two identity-group keys shared by two
+    candidates each, measured on the committed frame, and the scenario below reaches one of them:
+    the walk takes the earlier holder, the later holder is then key-blocked, and dropping its
+    rejection changes nothing until the holder is itself removed.
+
+    Driven through _blocking_explanation and _source_picks, the functions the control runs, rather
+    than a private copy, and without authored rows, so this is live from this commit.
+    """
+    frame = _frame()
+    bc = frame["strata"]["near_miss"]["sources"]["block_clusters"]
+    table = bc["select_distinct_identity_group"]["key_by_candidate"]
+    order = bc["draw_order"]
+
+    shared = {}
+    for candidate in order:
+        k = table.get(candidate)
+        if k is not None:
+            shared.setdefault(k, []).append(candidate)
+    pairs = {k: v for k, v in shared.items() if len(v) > 1}
+    assert pairs, (
+        "no identity-group key is held by two candidates, so no drop can be key-blocked here and "
+        "the inert branch has no firing state on this frame")
+
+    blocking_key, holders = sorted(pairs.items())[0]
+    holder, later = holders[0], holders[1]
+    hi, li = order.index(holder), order.index(later)
+    assert hi < li, "the holder must precede the blocked candidate in the draw order"
+
+    # Reject everything before the holder, and everything between it and the later holder, so the
+    # walk takes the holder and then reaches the later one.
+    rejected = {json.dumps(order[i]) for i in range(hi)}
+    rejected |= {json.dumps(order[i]) for i in range(hi + 1, li)}
+    rejected |= {json.dumps(later)}
+    log = {("near_miss", "block_clusters"): set(rejected)}
+
+    picks = _source_picks(frame, log, "near_miss", "block_clusters")
+    assert holder in picks, "the scenario did not put the holder into the selected set"
+
+    dropped = json.dumps(later)
+    without = {k: (v - {dropped}) for k, v in log.items()}
+    assert _source_picks(frame, without, "near_miss", "block_clusters") == picks, (
+        "dropping the later holder's rejection moved the walk, so this scenario is not the inert "
+        "case it was built to be")
+
+    explanation = _blocking_explanation(frame, without, "near_miss", "block_clusters", dropped)
+    assert explanation is not None, "the inert drop was not explained, so the branch cannot pass"
+    named_key, named_holder, named_source = explanation
+    assert named_key == blocking_key
+    assert named_holder == holder
+    assert named_source == ("near_miss", "block_clusters")
+
+    unblocked = {k: set(v) for k, v in without.items()}
+    unblocked[("near_miss", "block_clusters")] |= {json.dumps(holder)}
+    freed = _source_picks(frame, unblocked, "near_miss", "block_clusters")
+    assert later in freed, (
+        "removing the named holder did not let the dropped candidate back in, so the explanation "
+        "would be wrong and the control would fail, which is what it is here to show it can do")
+
+    # The other branch: no distinctness rule means no blocker can ever be named, so an inert drop
+    # on such a source stays a hard failure rather than being explainable.
+    for stratum, source, spec in _sources(frame):
+        if _distinct_key(spec) is not None:
+            continue
+        some = json.dumps(spec["draw_order"][0])
+        assert _blocking_explanation(frame, {}, stratum, source, some) is None, (
+            f"{stratum}/{source} carries no distinctness rule and an explanation was produced "
+            "for it, which would turn a real defect into an explained inert drop")
 
 
 def test_every_authored_source_has_a_registered_key_extractor():
