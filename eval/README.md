@@ -103,6 +103,42 @@ the same shape and the same norms. Nothing else in the suite depends on the mode
   identifier considered and not used, with the class rule it was scanned under, its ordinal in
   that scan, and the evidence for the decision. The adversarial stratum has no draw order in the
   frame, so these rows are not draw-order rejections and no selected set reconstructs from them.
+- `pass_one_designations.jsonl`: what pass-one screening fixed for each accepted pick of the
+  action-to-parent and near-miss strata, committed at the boundary between pass one and pass two
+  and before any query text for those strata existed. Twelve rows, one key set, ordered by
+  `id_predicted`.
+
+  It exists for the ordering. The commit that places it holds no query text, so a later commit
+  carrying query text postdates it, and `tests/test_pass_one_designations.py` then asserts that
+  the binding designation, the question class and its fixed-at marker on each authored row are
+  the ones committed here, byte for byte. Before this file the evidence that a class and a
+  designation predated their query was file modification times in an untracked working tree; it
+  is now ordering in git, which is what a reviewer holding the repository can check.
+
+  `id_predicted` is a prediction, not a fact. Ids are assigned in authoring order and an
+  authoring rejection at pass two shifts every id after it, which happened four times in the
+  single-hop stratum. A row's stable identity is `stratum`, `source` and `draw_entry`; the id is
+  asserted separately so a shifted id reports as a contradicted prediction rather than as a lost
+  pick, and the contingency is that the rejection appends to the draw-order log, the replacement
+  is screened to the full standard after a reviewed boundary, and its designation and class
+  append here in their own correction commit before its query is authored.
+
+  The key set is a whitelist pinned as a literal in the test, which is what keeps the file to its
+  purpose: no query text, no span beyond the one designation screening fixed, no prediction
+  content, no verdicts, arms or slots. Those belong on the verification and rejection rows. A
+  separate check compares every value against the committed query set in both directions, because
+  a whitelist bars an added field and cannot bar a query spelled as a class.
+
+  One property of the near-miss half is worth stating here rather than leaving to be rediscovered.
+  All eight near-miss rows record an empty `anchor_runs_absent_from_competitor` in their
+  verification block: the anchor says nothing its designated competitor does not also say. Text
+  cannot discriminate anywhere on that stratum. Every one of those units opens with the generic
+  heading `AI Transparency Resources` and names no subcategory in its text, so the subcategory
+  identity lives in the unit id and in `unit_label` rather than in the span. That is the recorded
+  foundation under the scoping rule that decides which screen applies: where the anchor and the
+  competitor carry different subcategory identifiers the differential check is evidence and never
+  a gate, and where they carry the same identifier it is a rejection route.
+
 - `test_frame_rejections.jsonl`: draw-order rejections for the four drawing strata.
   `tests/test_test_frame.py` reconstructs each stratum's selected set from the committed draw
   order plus these rows alone. The fields:
@@ -139,6 +175,13 @@ the same shape and the same norms. Nothing else in the suite depends on the mode
   the superseded value, the value replacing it, and the reason the two do not reconcile, so a
   retraction is legible from the row itself rather than only from the history. It is absent
   wherever nothing has been superseded, and its absence asserts nothing.
+
+  A row rejected before any span was designated carries no designation and no attributability
+  arms, and says so in `evidence_bound`. That is not a thinner record on one side of the verdict:
+  a pick that falls on the carrier screen never reaches designation, so the row carries exactly
+  what the screen that rejected it looked at. Running the arms for it afterwards would put
+  evidence on the row that no verdict rested on. Twenty-two of the near-miss rejections are in
+  that position and each names it.
 
   `matcher_revision` and `matcher_recheck` are scoped by stratum rather than by row. They record
   which revision of the citing-sentence matcher produced a rejection and what a re-derivation

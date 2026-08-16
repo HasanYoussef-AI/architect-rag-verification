@@ -421,8 +421,20 @@ def test_every_slot_ratio_names_its_predicate_and_re_derives_under_it(corpus):
     if not records:
         pytest.skip("no committed screening record can carry a slot ratio yet")
     for where, pick, record in records:
-        span = _span_of(record)
+        # A record can carry a ratio and no designation. A pick rejected on the carrier screen
+        # falls before any span is designated, so its row records the screen that rejected it and
+        # nothing further, and only the span-free predicate is derivable there. Asserted rather
+        # than skipped: an entry naming a span-dependent predicate on such a record would be
+        # quoting a span that does not exist.
+        span = record["binding_designation"]["span"] if record.get("binding_designation") else None
         for role, entry in _ratio_entries(record):
+            if span is None:
+                named = (entry.get("ratio_predicate") or {}).get("comparison")
+                assert named == "pick_unit_text_to_member_unit_text", (
+                    f"{where}/{role}/{entry.get('unit_id')}: this record carries no binding "
+                    f"designation, so a ratio here can only be the span-free predicate, and the "
+                    f"entry names {named!r}"
+                )
             checked += 1
             member = entry["unit_id"]
             place = f"{where}/{role}/{member}"
