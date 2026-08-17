@@ -586,3 +586,176 @@ def test_carrier_count_equals_the_slot_it_describes():
         )
     if not checked:
         pytest.skip("no committed row carries a carrier_count")
+
+
+# ---------------------------------------------------------------------------------------------
+# Three re-derivations that had no committed check before this commit.
+
+
+def _near_miss_blocks() -> list[tuple[str, dict]]:
+    return [(r["id"], r["near_miss"]) for r in _jsonl(VERIFICATION) if r.get("near_miss")]
+
+
+def _differential_defects(block: dict, corpus) -> list[str]:
+    """Every way a differential_span_check disagrees with its own re-derivation.
+
+    One predicate, driven by the check and by its companion. The opcodes are built through
+    ratio_matcher, so this is the corrected predicate rather than difflib's default; the pass-one
+    script ran the default and its figures were re-derived under this one before they shipped.
+    """
+    dsc = block["differential_span_check"]
+    a = normalise_for_lexical(corpus.unit_text[block["drawn_unit"]])
+    b = normalise_for_lexical(corpus.unit_text[dsc["competitor_unit"]])
+    matcher = ratio_matcher(a, b)
+    absent_from_b, absent_from_a = [], []
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag in ("delete", "replace") and a[i1:i2].strip():
+            absent_from_b.append(a[i1:i2].strip())
+        if tag in ("insert", "replace") and b[j1:j2].strip():
+            absent_from_a.append(b[j1:j2].strip())
+    derived = {
+        "ratio": round(matcher.ratio(), 4),
+        "lexical_normalised_equal": a == b,
+        "anchor_runs_absent_from_competitor": absent_from_b,
+        "competitor_runs_absent_from_anchor": absent_from_a,
+    }
+    return [f"{f} recorded {dsc[f]!r}, re-derived {v!r}"
+            for f, v in derived.items() if dsc[f] != v]
+
+
+def test_differential_span_check_re_derives(corpus):
+    """The stratum's own primitive, recomputed from the two unit texts.
+
+    It shipped with no committed producer at all until this commit: the script that produced it
+    was untracked, so a figure a reviewer could not re-derive was carrying the discrimination
+    claim on every row of the stratum.
+    """
+    blocks = _near_miss_blocks()
+    if not blocks:
+        pytest.skip("no committed near_miss rows yet; this turns on at that commit")
+    for row_id, block in blocks:
+        defects = _differential_defects(block, corpus)
+        assert not defects, f"{row_id}: " + "; ".join(defects)
+
+
+def test_the_differential_re_derivation_can_fail(corpus):
+    """V20, through the predicate the check runs."""
+    blocks = _near_miss_blocks()
+    if not blocks:
+        pytest.skip("no committed near_miss rows yet")
+    row_id, block = blocks[0]
+    assert not _differential_defects(block, corpus), f"{row_id}: the honest block does not re-derive"
+    moved = json.loads(json.dumps(block))
+    moved["differential_span_check"]["ratio"] = round(
+        moved["differential_span_check"]["ratio"] - 0.01, 4)
+    assert _differential_defects(moved, corpus), "a moved ratio was not caught"
+    planted = json.loads(json.dumps(block))
+    planted["differential_span_check"]["anchor_runs_absent_from_competitor"] = ["planted run"]
+    assert _differential_defects(planted, corpus), "a planted anchor run was not caught"
+
+
+def test_every_near_miss_block_records_an_empty_anchor_runs(corpus):
+    """eval/README.md states this property in prose and nothing asserted it.
+
+    The anchor says nothing its designated competitor does not also say, on every row, which is
+    why text cannot discriminate anywhere on this stratum and the identifier must. That is the
+    recorded foundation under the scoping rule deciding which screen applies, so a row that
+    quietly gained a differentiating run would move the ground under the whole stratum.
+    """
+    blocks = _near_miss_blocks()
+    if not blocks:
+        pytest.skip("no committed near_miss rows yet; this turns on at that commit")
+    for row_id, block in blocks:
+        runs = block["differential_span_check"]["anchor_runs_absent_from_competitor"]
+        assert runs == [], (
+            f"{row_id}: anchor_runs_absent_from_competitor is {runs}, so the anchor says "
+            "something its competitor does not and eval/README.md's stated property no longer "
+            "holds for this stratum")
+
+
+def test_the_empty_anchor_runs_are_a_real_empty(corpus):
+    """V8 on eight empty results. The same extraction with the arguments swapped returns runs on
+    five of the eight, so the extraction is shown able to see a non-empty result before its
+    empties are trusted."""
+    blocks = _near_miss_blocks()
+    if not blocks:
+        pytest.skip("no committed near_miss rows yet")
+    non_empty = 0
+    for _, block in blocks:
+        swapped = json.loads(json.dumps(block))
+        swapped["drawn_unit"] = block["differential_span_check"]["competitor_unit"]
+        swapped["differential_span_check"]["competitor_unit"] = block["drawn_unit"]
+        defects = _differential_defects(swapped, corpus)
+        if any("anchor_runs_absent_from_competitor" in d for d in defects):
+            non_empty += 1
+    assert non_empty >= 1, (
+        "swapping the arguments produced no anchor-side run on any row, so the extraction has "
+        "not been shown capable of a non-empty result and the eight empties prove nothing")
+
+
+def _lexical_arm_blocks() -> list[tuple[str, str, set, dict]]:
+    """(where, span, gold argument, committed block) for every committed lexical arm, at any
+    depth, from both artifacts."""
+    out = []
+    for row in _jsonl(VERIFICATION):
+        for name, held in row.items():
+            if not isinstance(held, dict):
+                continue
+            if held.get("lexical") and held.get("binding_designation"):
+                gold = set(held["lexical"].get("gold_units_argument")
+                           or [m["unit_id"] for m in ((held.get("slot") or {}).get("members") or [])
+                               if isinstance(m, dict)])
+                out.append((f"{row['id']}/{name}", held["binding_designation"]["span"], gold,
+                            held["lexical"]))
+            alt = (held.get("slot") or {}).get("designation_alternative_measured_and_not_taken")
+            if alt:
+                out.append((f"{row['id']}/{name}/untaken", alt["span"], {held["drawn_unit"]},
+                            alt["lexical"]))
+    for row in _jsonl(REJECTIONS):
+        if row.get("lexical") and row.get("binding_designation"):
+            members = (row.get("slot") or {}).get("members") or []
+            gold = set(row["lexical"].get("gold_units_argument")
+                       or [m["unit_id"] if isinstance(m, dict) else m for m in members])
+            out.append((f"{row.get('drawn_unit') or json.dumps(row.get('rejected'))} (rejection)",
+                        row["binding_designation"]["span"], gold, row["lexical"]))
+    return out
+
+
+def test_committed_lexical_arms_re_derive(corpus):
+    """Every committed lexical arm, recomputed from its own span and its own gold argument.
+
+    Nothing re-derived these before this commit. A coverage probe run against the autojunk
+    supersession reverted a corrected figure inside one of them and was observed green, so half
+    of that correction was pinned by nothing. The gold argument is read from the block's own
+    gold_units_argument, which is what the call actually excluded, rather than reconstructed from
+    the slot: the two differ, and the slot form silently empties the argument on a row recording
+    its members as bare strings.
+    """
+    from src.goldset.attributability import lexical_arm
+
+    blocks = _lexical_arm_blocks()
+    if not blocks:
+        pytest.skip("no committed lexical arm yet")
+    for where, span, gold, committed in blocks:
+        derived = lexical_arm(span, gold, corpus)
+        assert committed["top_ratio"] == derived["top_ratio"], (
+            f"{where}: top_ratio recorded {committed['top_ratio']}, re-derived "
+            f"{derived['top_ratio']}")
+        assert committed["pairs_at_or_above_floor"] == derived["pairs_at_or_above_floor"], (
+            f"{where}: the pair list does not re-derive")
+
+
+def test_the_lexical_arm_re_derivation_can_fail(corpus):
+    """V20. The probe that was green before this check existed must now be red."""
+    from src.goldset.attributability import lexical_arm
+
+    blocks = [b for b in _lexical_arm_blocks() if b[3]["pairs_at_or_above_floor"]]
+    assert blocks, "no committed lexical arm carries a pair, so this control ran on nothing"
+    where, span, gold, committed = blocks[0]
+    derived = lexical_arm(span, gold, corpus)
+    assert committed["pairs_at_or_above_floor"] == derived["pairs_at_or_above_floor"]
+    moved = json.loads(json.dumps(committed))
+    moved["pairs_at_or_above_floor"][0]["ratio"] = round(
+        moved["pairs_at_or_above_floor"][0]["ratio"] - 0.01, 4)
+    assert moved["pairs_at_or_above_floor"] != derived["pairs_at_or_above_floor"], (
+        f"{where}: a moved pair ratio compares equal, so the check cannot see it")

@@ -91,25 +91,71 @@ def test_row_count_per_stratum_matches_the_frame():
     authored in separate batches, so that type is partial by construction until both land. The
     over-fill guard and the guard against a count edited to fit hold at every commit, and
     exactness is restored at sealing, which is where the strong claim belongs."""
-    strata = _strata()
-    counts = Counter(row["type"] for row in _rows())
-    assert set(counts) <= set(STRATUM_TO_FRAME), f"unmapped type(s): {set(counts) - set(STRATUM_TO_FRAME)}"
+    defects = _row_count_defects(Counter(row["type"] for row in _rows()), len(_rows()), _strata())
+    assert not defects, "; ".join(defects)
+
+
+def _row_count_defects(counts: Counter, n_rows: int, strata: dict) -> list[str]:
+    """Every way the per-stratum counts violate the frame, as a list of messages.
+
+    Factored into a predicate at the commit where the equality branch fires for the first time,
+    so the companion below can drive the branch that has never run rather than assert around it.
+    One predicate, driven by the check and by the companion.
+    """
+    defects = []
+    unmapped = set(counts) - set(STRATUM_TO_FRAME)
+    if unmapped:
+        return [f"unmapped type(s): {unmapped}"]
     declared_by_type = {
         stratum: sum(strata[key]["total"] for key in keys)
         for stratum, keys in STRATUM_TO_FRAME.items()
     }
     for stratum, observed in counts.items():
-        assert observed <= declared_by_type[stratum], (
-            f"{stratum}: {observed} rows over the frame's declared "
-            f"{declared_by_type[stratum]} from {list(STRATUM_TO_FRAME[stratum])}"
-        )
+        if observed > declared_by_type[stratum]:
+            defects.append(
+                f"{stratum}: {observed} rows over the frame's declared "
+                f"{declared_by_type[stratum]} from {list(STRATUM_TO_FRAME[stratum])}")
     grand_total = sum(declared_by_type.values())
-    if len(_rows()) == grand_total:
+    if n_rows == grand_total:
         for stratum, declared in declared_by_type.items():
-            assert counts.get(stratum, 0) == declared, (
-                f"{stratum}: {counts.get(stratum, 0)} rows against the frame's declared "
-                f"{declared}, with the file at its grand total of {grand_total}"
-            )
+            if counts.get(stratum, 0) != declared:
+                defects.append(
+                    f"{stratum}: {counts.get(stratum, 0)} rows against the frame's declared "
+                    f"{declared}, with the file at its grand total of {grand_total}")
+    return defects
+
+
+def test_the_grand_total_equality_branch_can_fail():
+    """V20 on the branch that fires for the first time at this commit.
+
+    Until the file reached fifty the equality half had never run, so its green was untested. It
+    is driven here over constructed counts: a set at the grand total with one stratum short and
+    another long passes the over-fill guard on neither and must be caught by the equality half
+    alone, and the honest counts must pass.
+    """
+    strata = _strata()
+    declared = {
+        stratum: sum(strata[key]["total"] for key in keys)
+        for stratum, keys in STRATUM_TO_FRAME.items()
+    }
+    total = sum(declared.values())
+    honest = Counter(declared)
+    assert _row_count_defects(honest, total, strata) == [], (
+        "the frame's own declared counts do not satisfy the check they define")
+
+    short, long = sorted(declared)[0], sorted(declared)[1]
+    shifted = Counter(declared)
+    shifted[short] -= 1
+    shifted[long] += 1
+    caught = _row_count_defects(shifted, total, strata)
+    assert caught, (
+        "a stratum one short against another one long, at the grand total, was not caught. The "
+        "equality branch is the only half that sees it, since the total is unchanged")
+    assert any(short in c for c in caught), f"the short stratum was not named: {caught}"
+
+    assert _row_count_defects(shifted, total - 1, strata) != caught, (
+        "the same counts below the grand total produce the same verdict, so the equality branch "
+        "is not gated on the grand total at all")
 
 
 def test_adversarial_subtypes_match_the_frame_spec():
