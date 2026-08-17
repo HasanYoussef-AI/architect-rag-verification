@@ -106,6 +106,55 @@ def _records_or_skip() -> list[tuple[str, dict]]:
     return records
 
 
+# The unit a block's designated span sits inside, named per block because the field differs by
+# what the stratum draws. Separate from RATIO_ANCHOR_FIELD below even though the two currently
+# agree: a ratio anchor is the unit ratios are measured FROM, a span anchor is the unit the span
+# was cut OUT of, and coupling them would make a future divergence silent.
+SPAN_ANCHOR_FIELD = {
+    "single_hop": "drawn_unit",
+    "action_to_parent": "drawn_parent",
+    "near_miss": "drawn_unit",
+}
+
+
+def _residue_records() -> list[tuple[str, str, dict]]:
+    """(where, anchor unit, block) for every block carrying a residue_reach.
+
+    Selected on the field rather than on the single_hop block. The superseded form read
+    _records_or_skip(), which is single-hop only, so the action-to-parent rows would have shipped
+    residue_chars with no committed re-derivation while this test reported a pass over the rows it
+    did reach. Those are the four numbers the deletion_counterfactual_disposition on those rows
+    quotes, which is what makes the gap load-bearing rather than cosmetic.
+    """
+    out = []
+    for row in _jsonl(VERIFICATION):
+        for block, field in SPAN_ANCHOR_FIELD.items():
+            held = row.get(block)
+            if held and "residue_reach" in held and held.get(field):
+                out.append((f"{row['id']} ({block})", held[field], held))
+    for row in _jsonl(REJECTIONS):
+        field = SPAN_ANCHOR_FIELD.get(row.get("stratum"))
+        if field and row.get(field) and "residue_reach" in row:
+            out.append((f"{row[field]} ({row['stratum']} rejection)", row[field], row))
+    return out
+
+
+def test_the_span_anchor_registry_covers_every_block_shipping_a_residue():
+    """SPAN_ANCHOR_FIELD is a literal, so it can go stale against the file it describes. A block
+    shipping a residue_reach under an unregistered name would be skipped in silence, which is the
+    failure this registry exists to prevent rather than to reproduce."""
+    unregistered = set()
+    for row in _jsonl(VERIFICATION):
+        for key, value in row.items():
+            if isinstance(value, dict) and "residue_reach" in value:
+                if key not in SPAN_ANCHOR_FIELD:
+                    unregistered.add(key)
+    assert not unregistered, (
+        f"block(s) {sorted(unregistered)} ship a residue_reach and are not in SPAN_ANCHOR_FIELD, "
+        "so their residue_chars re-derive nowhere"
+    )
+
+
 @pytest.fixture(scope="module")
 def corpus():
     return Corpus.load()
@@ -217,12 +266,26 @@ def test_residue_reach_chars_re_derive(corpus):
     not strip; exhaustion strips. The two numbers differ on any unit whose span sits at an edge,
     and asserting them against one derivation would silently accept whichever the builder used.
     Both are asserted, each against its own predicate, in this file.
+
+    Selected on residue_reach across every registered block rather than on single_hop. See
+    _residue_records. The residue string itself is asserted alongside the count, because a count
+    agreeing while the recorded residue text disagrees would leave the quoted residue unchecked,
+    and the action-to-parent disposition quotes those residues verbatim.
     """
-    for where, record in _records_or_skip():
-        unit, span = record["drawn_unit"], _span_of(record)
-        derived = len(corpus.unit_text[unit].replace(span, "", 1))
+    records = _residue_records()
+    if not records:
+        pytest.skip("no committed block carries a residue_reach yet")
+    for where, unit, record in records:
+        span = _span_of(record)
+        residue = corpus.unit_text[unit].replace(span, "", 1)
         recorded = record["residue_reach"]["residue_chars"]
-        assert recorded == derived, f"{where}: residue_chars recorded {recorded}, derived {derived}"
+        assert recorded == len(residue), (
+            f"{where}: residue_chars recorded {recorded}, derived {len(residue)}"
+        )
+        assert record["residue_reach"]["residue"] == residue, (
+            f"{where}: residue recorded {record['residue_reach']['residue']!r}, derived "
+            f"{residue!r}"
+        )
 
 
 def test_distinguishing_term_counts_re_derive(corpus):
