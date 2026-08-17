@@ -4,6 +4,149 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-17, the sealed set closed at fifty, and a predicate corrected under it
+
+The query set stands at fifty rows: eighteen single-hop, sixteen multi-hop over twelve clean
+cross-references and four action-to-parent, eight near-miss and eight adversarial, each stratum
+equal to its frame allocation. The verification file carries fifty rows at one ordered key set of
+fifteen, every stratum block present on every row and nulled outside its own.
+
+For the last twelve rows the ordering claim is git's rather than prose's. `b6a827b` committed
+twelve boundary rows carrying the binding designation, the question class and its fixed-at marker
+and no query text, so a commit carrying query text postdates it and the sequence is the one the
+history records. Two committed checks then compare each authored row against that artifact and
+require byte equality on the designation, its chunk id, the class and the marker; both are live on
+all twelve and both pass. The artifact exists because the alternative is a designation and the
+query it binds arriving in one commit with nothing ordering them.
+
+Its identifier field is a prediction and is recorded as one. Ids are assigned in authoring order,
+so an authoring rejection shifts every id after it, which the single-hop stratum saw four times. A
+row's stable identity is its stratum, its source and its draw entry, and the id is asserted
+separately: a predicted id either exists in the query file or its draw entry appears in the
+rejection log marked rejected at authoring, and a pick that simply vanished satisfies neither. A
+shift therefore reports as a contradicted prediction rather than as a lost pick, and the two
+failure modes carry different messages.
+
+### The ratio predicate, corrected under a sealed set
+
+Every committed similarity ratio and every committed opcode set was built with difflib's
+`autojunk` default, which treats a character appearing in more than one percent of the second
+sequence as junk once that sequence reaches two hundred elements. It is a heuristic for diffing
+source files, and in a similarity measurement it makes the score depend on the length of one side.
+On the pair that exposed it, a Playbook resource block against another that is a near prefix of it
+at 133 characters against 209, the default junks sixteen characters and returns 0.2865 where the
+corrected constructor returns 0.7719.
+
+The corrected predicate moved seven committed figures across three populations. In the eval
+artifacts: a non-carrier ratio from 0.6385 to 0.6667, quoted in twenty-one places across the two
+files because the carrier standard's prose repeats per row; a rejection row's top ratio from
+0.8011 to 0.8182; an empty lexical arm gaining two pairs at 0.6786 and 0.644; an empty duplication
+scan gaining one pair at 0.671; and a duplication pair from 0.821 to 0.951 beside a third pair at
+0.696. In the prose record: the calibration record and two prior entries. In the test-asserted
+constants: the period-only segmenter's blindness figure from 0.2968 to 0.3621, in six places
+across four files including a module docstring. Every moved figure ships its superseded value with
+the mechanism named.
+
+No verdict, admission, rejection, slot membership or reason code depended on any of them, and that
+is a derivation from the rules the verdicts cite rather than an observation about the numbers. The
+carrier standard is not a ratio threshold and says so on the row, and the non-carrier is refused
+for stating the same predicate for a different addressee and a different amount; the rejection at
+0.8182 rests on the self-containedness arm, a different instrument; the two duplication verdicts
+rest on whether the designated answer sentence occurs in both endpoints, and it is the target of
+no corrected pair on either row; and the segmenter was selected on a comparison that is unchanged,
+since 0.3621 is still far below the 0.60 floor and its companion at 0.8982 did not move.
+
+Two alternatives were rejected. Correcting forward only would have left one artifact carrying two
+predicates under one name, which is the defect the closed predicate set exists to prevent. Keeping
+the default and disclosing it would have shipped a figure that is not a measurement of what its
+name claims, and a disclosure does not repair that.
+
+One row is where the correction reached reasoning rather than only numbers. Its lexical arm was
+empty and now surfaces two scope exclusions, so the row records that the corrected arm surfaces
+evidence toward a second and independently sufficient ground while the recorded reason code stands
+on the ground the verdict rested on, an exhaustive thirty-six-span enumeration over the unit's own
+text. The eleven-empty positive control was re-measured whole rather than adjusted: the twelve
+committed duplication blocks are ten empty and two non-empty, so two rows demonstrate the
+instrument firing where one did.
+
+Two prior entries carry marked corrections for their share of this. Both were applied on Hasan's
+explicit direction under the correction rule, and that provenance is stated because it is what
+licenses editing a shipped entry; neither deletes what it corrects.
+
+### The near-miss stratum
+
+Fifty-four of the seventy-one `near_duplicate` draw-order pairs have a competitor that a committed
+relation records as a cross-document carrier of the anchor's own statement. The sealed gold rule
+scopes the any-carrier clause to a statement duplicated verbatim across documents, so a competitor
+that carries the gold cannot be the unit the query discriminates from, and those pairs are
+inadmissible. That is a property of the population measured before any pick was screened; the
+committed log holds twenty-two rejections, from a walk that stopped once the source reached its
+allocation, twenty on the mechanical arm and two on individual verification where the duplication
+map does not reach.
+
+Text cannot discriminate anywhere on this stratum. Every one of these units opens with the generic
+heading `AI Transparency Resources` and names no subcategory anywhere in its text, measured on all
+eight anchors against a control where the subcategory's own statement unit does carry its printed
+identifier. The anchor says nothing its designated competitor does not also say, recorded as an
+empty run list on all eight rows and now asserted by a committed check whose control swaps the
+arguments and returns runs on five of the eight, so the empties are shown to be real rather than
+assumed. Corpus-wide the identifier tokens reach none of the seventy-two resource blocks while the
+class's own terms reach all seventy-two.
+
+The discriminating pair is therefore the identifier in the query against the identity in the unit
+id, which is the mechanism the layer-gold firewall already names as legitimate: a signal present in
+the query text, compared against identifiers the retrieved blocks carry, touching no gold-defining
+relation.
+
+### Action-to-parent authoring
+
+The query carries the action's prose statement alone under one interrogative wrapper fixed before
+the first was drafted. Three components of the stored chunk are excluded and each exclusion is
+recorded on its row. The printed identifier is the gold-defining relation in string form, the two
+hundred and twelve edges being derived from printed identifiers, so a layer parsing it out of the
+query recovers the parent without traversing the relation the firewall bars, and the firewall's own
+standard makes that recovery a non-finding. The trailing trustworthiness lines are table furniture,
+and they were measured supplying a term shared with the designated span on two of the four rows
+that the action prose does not supply. The page number on one row is an extraction artifact, and
+the corpus manifest already rules that artifacts are inherited where they sit rather than authored
+into the query set.
+
+The stratum's prediction of record is the pre-registered first-pass miss. Its basis is the
+diagnostic's fused recall of 4.7 percent over the two hundred and twelve action-to-subcategory
+edges against a random baseline of 0.77 percent on the same population, stated as the recorded
+basis of a pre-registration rather than as a measurement of any authored query, since the
+diagnostic queried with the action unit's whole chunk text and took its dense side from that
+chunk's committed embedding. No per-edge figure for a row's own edge appears in any field.
+
+### What this scope got wrong
+
+Two suite-count predictions were contradicted, each by a companion the work required and the tally
+omitted: a registry staleness guard the first time and a detector's can-fail demonstration the
+second. Neither companion was removed to meet its prediction. The predicted count is now produced
+by a collect-only run against the working tree immediately before the full run, with the
+arithmetic beside it as a cross-check and any disagreement investigated before the run rather than
+after.
+
+Three near-miss competitor ratios named `pick_unit_text_to_member_unit_text` under
+`normalise_for_comparison` while holding the figure a different instrument produced under
+`normalise_for_lexical`: one field name carrying two quantities, which is the defect the closed
+predicate set was built to prevent, caught before any of the three was committed. The values that
+re-derive under the predicate they name are what ship.
+
+No committed test re-derived the row-level lexical arms. A coverage probe reverted a corrected
+figure inside one and ran green, so half of the supersession was pinned by nothing. The gap was
+closed at the data commit rather than booked forward, because that commit added eight more such
+blocks, and the probe is now the mutation that turns the new check red.
+
+Commits:
+- 2c9b33c test(eval): assert the action-to-parent and near-miss properties before any row lands
+- b6a827b feat(eval): seal the pass-one designations and classes at the boundary
+- 9a8d48f feat(eval): the four action-to-parent rows, the block migration and the command correction
+- 2ebcaf7 fix(goldset): disable autojunk in the ratio path and supersede the seven figures it moved
+- 66c7af7 feat(eval): the eight near-miss rows, closing the sealed set at fifty
+
+This entry is placed by the commit that follows `66c7af7` and touches only `SESSION_LOG.md`.
+
 ## 2026-08-14, single-hop stratum committed, eighteen rows across three sources
 
 The stratum closes at its allocation on every source: eleven `eu_ai_act`, five `nist_ai_100_1`
