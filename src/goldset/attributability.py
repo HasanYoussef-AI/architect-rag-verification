@@ -50,8 +50,10 @@ SEGMENTATION, AND WHY THE SEMICOLON IS CALIBRATION RATHER THAN FITTING.
 A period-terminated segmenter is blind to the published 0.894 case. Annex IV point 3 of the EU AI
 Act is one period-terminated block whose clauses are separated by semicolons, so a period-only
 split leaves the matching clause buried in a 768-character span and the best reachable ratio
-against Article 13(3)(d) is 0.2968, far below the floor: the pick passes and the detector reports
-nothing. Segmenting on semicolons as well reaches 0.8982 on the same pair.
+against Article 13(3)(d) is 0.3621, superseding 0.2968 under the autojunk correction, far below
+the floor either way: the pick passes and the detector reports nothing. Segmenting on semicolons
+as well reaches 0.8982 on the same pair, unmoved by that correction, so the comparison the
+segmenter choice rests on is the same one.
 
 Case A and case B are not observations this instrument will judge. Both are positives published
 in eval/test_frame_rejections.jsonl before this instrument existed, on picks already rejected.
@@ -137,12 +139,34 @@ HEADING_PREDICATE = (
     "some OTHER unit's label is kept, because that is a content match rather than a heading"
 )
 
+def ratio_matcher(a: str = "", b: str = "") -> difflib.SequenceMatcher:
+    """The one constructor behind every committed ratio and every committed opcode set.
+
+    autojunk is disabled. difflib's default treats a character appearing in more than one percent
+    of the second sequence as junk once that sequence reaches 200 elements, a heuristic built for
+    diffing source files and wrong for similarity between prose spans: it makes the score depend
+    on the length of one side. Measured on the pair that exposed it,
+    nist_playbook:sub_MANAGE_4.3.ai_transparency_resources against
+    sub_MANAGE_4.2.ai_transparency_resources, a 133-character sequence against a 209-character
+    one that is a near prefix of it, the default junks sixteen characters and returns 0.2865
+    where autojunk=False returns 0.7719. A ratio field exists to record similarity, so a
+    length-triggered artifact cannot be what it records.
+
+    Every call site that feeds a committed number is routed here. The two deliberate exemptions
+    are named in tests/test_test_query_verification.py, both short-string controls with no
+    exposure.
+    """
+    return difflib.SequenceMatcher(None, a, b, autojunk=False)
+
+
 LEXICAL_PREDICATE = (
-    "difflib.SequenceMatcher(None, a, b).ratio() over character sequences, where a is the "
-    "normalised designated span and b is a normalised corpus segment. Normalisation is "
-    "normalise_for_comparison, then casefold, then every non-alphanumeric character to a space, "
-    "then whitespace collapse. Segments come from comparable_segments. Every pair at or above the "
-    "floor is reported. The floor decides nothing."
+    "difflib.SequenceMatcher(None, a, b, autojunk=False).ratio() over character sequences, built "
+    "through src.goldset.attributability.ratio_matcher, where a is the normalised designated span "
+    "and b is a normalised corpus segment. Normalisation is normalise_for_comparison, then "
+    "casefold, then every non-alphanumeric character to a space, then whitespace collapse. "
+    "Segments come from comparable_segments. Every pair at or above the floor is reported. The "
+    "floor decides nothing. autojunk is disabled because difflib's default makes the score depend "
+    "on the length of the second sequence; see ratio_matcher for the measured case."
 )
 
 DENSE_PREDICATE = (
@@ -312,7 +336,7 @@ def lexical_arm(
     test_prefilter_does_not_change_the_result pins that against an unfiltered pass.
     """
     target = normalise_for_lexical(span)
-    matcher = difflib.SequenceMatcher(None, target, "")
+    matcher = ratio_matcher(target, "")
     hits: list[dict] = []
     for unit, segs in sorted(corpus.unit_segments.items()):
         if unit in gold_units:

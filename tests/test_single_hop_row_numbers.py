@@ -28,7 +28,7 @@ import pytest
 
 import difflib
 
-from src.goldset.attributability import Corpus, normalise_for_lexical
+from src.goldset.attributability import Corpus, normalise_for_lexical, ratio_matcher
 from src.ingest.corpus_integrity import REPO_ROOT
 from src.ingest.normalize import normalise_for_comparison
 
@@ -38,12 +38,12 @@ REJECTIONS = EVAL / "test_frame_rejections.jsonl"
 
 
 def _ratio(left: str, right: str, normalise) -> float:
-    return round(difflib.SequenceMatcher(None, normalise(left), normalise(right)).ratio(), 4)
+    return round(ratio_matcher(normalise(left), normalise(right)).ratio(), 4)
 
 
 def _span_to_member_segment(pick, member, span, corpus):
-    return round(max(difflib.SequenceMatcher(None, normalise_for_lexical(span),
-                                             normalise_for_lexical(segment)).ratio()
+    return round(max(ratio_matcher(normalise_for_lexical(span),
+                                   normalise_for_lexical(segment)).ratio()
                      for segment in corpus.unit_segments[member]), 4)
 
 

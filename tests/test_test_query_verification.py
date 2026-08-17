@@ -734,3 +734,113 @@ def test_the_command_resolution_check_can_fail():
     assert _node_defects(good) == [], f"the corrected citation does not resolve: {good}"
     assert _node_defects("tests/does_not_exist.py::test_x"), "a missing file was not caught"
     assert _node_defects("not a node id"), "a value with no node id was not caught"
+
+
+# ---------------------------------------------------------------------------------------------
+# The ratio path. Every committed ratio and every committed opcode set is built through one
+# constructor with autojunk disabled, and this pins both halves of that.
+
+RATIO_PATH_MODULES = (
+    "src/goldset/attributability.py",
+    "src/goldset/check_committed_duplication_scans.py",
+    "tests/test_single_hop_row_numbers.py",
+    "tests/test_attributability.py",
+    "tests/test_test_query_verification.py",
+)
+
+
+def _direct_constructions() -> list[tuple[str, str]]:
+    """(module, enclosing function) for every direct difflib.SequenceMatcher construction."""
+    found = []
+    for rel in RATIO_PATH_MODULES:
+        tree = ast.parse((REPO_ROOT / rel).read_text(encoding="utf-8"))
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.FunctionDef):
+                continue
+            for inner in ast.walk(node):
+                if (isinstance(inner, ast.Call)
+                        and isinstance(inner.func, ast.Attribute)
+                        and inner.func.attr == "SequenceMatcher"):
+                    found.append((rel, node.name))
+    return sorted(set(found))
+
+
+def test_the_ratio_path_builds_every_matcher_through_one_constructor():
+    """No module in the ratio path constructs difflib.SequenceMatcher directly, bar the
+    registered controls.
+
+    Paid for by a length-triggered artifact: difflib junks characters appearing in more than one
+    percent of the second sequence once it reaches 200 elements, so a similarity score depended
+    on the length of one side. Six committed figures moved when it was disabled. A second call
+    site reintroducing the default would move them back silently, so the construction point is
+    pinned here rather than left to review.
+
+    The exemptions are read from the file rather than pinned to a literal, because the two that
+    exist are inside tests whose whole subject is a superseded or degenerate comparison, and a
+    literal list would go stale against a renamed test. What is asserted is the property that
+    matters: every direct construction sits in a function this file can name and account for.
+    """
+    found = _direct_constructions()
+    accounted = {
+        # The one constructor. Every other site routes through it, so this is the site the rule
+        # exists to concentrate rather than a breach of it.
+        ("src/goldset/attributability.py", "ratio_matcher"),
+        # Two controls, both measured unexposed: CASE_A_LEFT is 123 characters and CASE_A_RIGHT
+        # 109 against difflib's 200-element threshold on the second sequence, and the "1." pair is
+        # two. The first reproduces a superseded normalisation to show the hyphen fold is
+        # load-bearing; the second exists to score 1.0. Routing either through the corrected
+        # constructor would change what the control demonstrates for no measured gain.
+        ("tests/test_attributability.py",
+         "test_case_a_needs_the_hyphen_fold_and_would_miss_without_it"),
+        ("tests/test_attributability.py",
+         "test_bare_paragraph_numbers_are_not_comparable_segments"),
+        # The regression below, which must construct the default to pin the artifact it removes.
+        ("tests/test_test_query_verification.py",
+         "test_autojunk_is_disabled_and_the_artifact_it_removes_is_pinned"),
+    }
+    unexpected = [c for c in found if c not in accounted]
+    assert not unexpected, (
+        f"direct difflib.SequenceMatcher construction outside the accounted set: {unexpected}. "
+        "Build it through src.goldset.attributability.ratio_matcher, or account for the call here "
+        "with its measured exposure"
+    )
+
+
+def test_the_ratio_path_guard_can_fail():
+    """V20. The detector must find the constructions that do exist, or it would pass a module
+    that reintroduced the default."""
+    found = _direct_constructions()
+    assert found, (
+        "no direct construction was found anywhere, so this detector proves nothing. The two "
+        "controls in tests/test_attributability.py are expected to be found"
+    )
+    assert all(rel in RATIO_PATH_MODULES for rel, _ in found)
+
+
+def test_autojunk_is_disabled_and_the_artifact_it_removes_is_pinned():
+    """The observed defect, kept as a regression so reversing the fix costs a failing test.
+
+    nist_playbook:sub_MANAGE_4.3.ai_transparency_resources against
+    sub_MANAGE_4.2.ai_transparency_resources: a 133-character sequence against a 209-character one
+    that is a near prefix of it. difflib's default junks sixteen characters and returns 0.2865;
+    the corrected constructor returns 0.7719. That gap is the whole reason the correction exists.
+    """
+    import difflib
+
+    from src.goldset.attributability import Corpus, ratio_matcher
+    from src.ingest.normalize import normalise_for_comparison
+
+    corpus = Corpus.load()
+    a = normalise_for_comparison(
+        corpus.unit_text["nist_playbook:sub_MANAGE_4.3.ai_transparency_resources"])
+    b = normalise_for_comparison(
+        corpus.unit_text["nist_playbook:sub_MANAGE_4.2.ai_transparency_resources"])
+    assert (len(a), len(b)) == (133, 209), (
+        f"the pinned pair changed shape: {len(a)} against {len(b)}. The 200-element threshold on "
+        "the second sequence is what makes this case fire"
+    )
+    assert round(ratio_matcher(a, b).ratio(), 4) == 0.7719, "the corrected value moved"
+    assert round(difflib.SequenceMatcher(None, a, b).ratio(), 4) == 0.2865, (
+        "difflib's default no longer produces the artifact this correction removed, so the "
+        "regression pins nothing and the reason for the fix needs re-measuring"
+    )

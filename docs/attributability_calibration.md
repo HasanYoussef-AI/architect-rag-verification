@@ -38,14 +38,14 @@ and returned what they returned before. That is a result, not an assumption.
 | Segments equal to some other unit's label, kept | 16 |
 | Longest own-label segment | 17 characters, maximum two words |
 | Twelve committed blocks reproducing | 12 of 12 |
-| test_16 ratios | 0.996 and 0.821 |
+| test_16 ratios | 0.996 and 0.951, superseding 0.821 under the autojunk correction |
 | Units scored, 1150 less the gold unit | 1,149 |
 | `art_72` characters | 2,318 |
 | Recital minimum and median characters | 145 and 1,030 |
 | Recitals inside the withdrawn 1,200 to 3,200 band | 68 of 180 |
 | Annex IV point 3 block | 772 characters |
 | Longest period-only segment inside that block | 768 characters |
-| Period-only blindness on case B | 0.2968 |
+| Period-only blindness on case B | 0.3621, superseding 0.2968 under the autojunk correction |
 | Shipped segmentation on the same pair | 0.8982 |
 | `Article 43` against `Article 97`, pre-heading-predicate | 0.8 |
 | `ANNEX VIII` against `ANNEX III`, pre-heading-predicate | 0.9474 |
@@ -192,8 +192,15 @@ the open, not silently replaced and not left standing.
 A period-terminated segmenter is blind to case B. Annex IV point 3 is one period-terminated block
 whose clauses are separated by semicolons, so the matching clause never becomes its own segment.
 It stays buried in a **768**-character span, the longest period-only segment inside a 772-character
-block, and the best reachable ratio against Article 13(3)(d) is **0.2968**, far below the floor.
+block, and the best reachable ratio against Article 13(3)(d) is **0.3621**, far below the floor.
 The pick passes and the detector reports nothing on the very case it exists to catch.
+
+MARKED CORRECTION, autojunk. That ratio was **0.2968** while every ratio was built under difflib's
+`autojunk=True` default, which junks characters appearing in more than one percent of the second
+sequence once it reaches 200 elements. The 768-character period-only span is far past that
+threshold, so the blind form's score depended on the length of the span it was blind to. The
+control is unchanged in what it establishes: 0.3621 is still far below the 0.60 floor, and the
+semicolon companion is unmoved at 0.8982, so the segmenter was selected on the same comparison.
 
 Segmenting on semicolons as well reaches **0.8982** on the same pair. Both the blind form and the
 shipped form are driven over the same pair in
@@ -274,9 +281,22 @@ segment rather than an enumeration, and is corrected here.
 `eval/test_query_verification.jsonl`.
 
 **12 of 12 rows reproduce**, on both `top_ratio` and pair count, under the repaired segmentation
-and under the previous one. test_16's committed 0.996 and 0.821 both re-derive to three decimals.
-The other eleven rows carry `top_ratio: null` with an empty pair list and the instrument finds
-nothing on any of them. That the repair costs nothing here was measured before the repair landed.
+and under the previous one. That the repair costs nothing here was measured before the repair
+landed.
+
+MARKED CORRECTION, autojunk. This paragraph read that test_16's committed 0.996 and 0.821 both
+re-derive to three decimals, and that the other eleven rows carry `top_ratio: null` with an empty
+pair list. Both figures are superseded. `difflib.SequenceMatcher` defaults to `autojunk=True`,
+which junks characters appearing in more than one percent of the second sequence once it reaches
+200 elements and so makes a similarity score depend on the length of one side; every ratio is now
+built through `src.goldset.attributability.ratio_matcher` with autojunk disabled. Re-measured
+whole under the corrected predicate rather than adjusted: test_16 carries three pairs at 0.996,
+0.951 and 0.696, its 0.821 superseded by 0.951; test_10 carries one pair at 0.671 where it
+carried none; and the twelve blocks are **ten empty and two non-empty**, not eleven and one. The
+positive control is stronger for it, two rows now demonstrating the instrument firing where one
+did before. No verdict moves: the duplication verdict rests on whether the designated answer
+sentence occurs in both endpoints, and on neither row does it appear as the target of any
+corrected pair.
 
 An earlier run of the same check, before the heading predicate, diverged on eleven of twelve by
 exactly one pair each. Every one of those was a unit heading matching another unit heading, such
@@ -365,11 +385,16 @@ kind of claim this record exists to prevent.
 
 ## What this closes
 
-One sealed artifact currently ships two verification block types under two standards. The
-adversarial `absence_checks` blocks carry `command`, `predicate`, `target`, `result` and
-`control`. The twelve `duplication_scan` blocks carry none of those, and eleven of the twelve
-report `top_ratio: null` with an empty list, so eleven of twelve carry no re-derivable content at
-all.
+One sealed artifact shipped two verification block types under two standards. The adversarial
+`absence_checks` blocks carry `command`, `predicate`, `target`, `result` and `control`. The twelve
+`duplication_scan` blocks carried none of those, and eleven of the twelve reported
+`top_ratio: null` with an empty list, so eleven of twelve carried no re-derivable content at all.
+
+Tense-marked and corrected, autojunk. The eleven-of-twelve figure describes the artifact as it
+stood when this record was written. Under the corrected predicate the split is ten and two, since
+test_10 gains a pair at 0.671. The sentence is tense-marked rather than deleted, because it states
+what the defect was at the moment it was found, and the count that was true then is what makes the
+defect legible.
 
 That is a reproducibility defect and not a V20 breach. The rejection log's two rows show the check
 firing and killing two picks, so it was capable of failing and did. The verdicts rest on

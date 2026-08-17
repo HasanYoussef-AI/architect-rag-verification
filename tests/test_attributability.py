@@ -55,6 +55,7 @@ from src.goldset.attributability import (
     load_segment_cache,
     normalise_for_lexical,
     onnx_session,
+    ratio_matcher,
     scan,
     segmentation_funnel,
     segments,
@@ -97,9 +98,7 @@ def corpus():
 
 
 def _ratio(left: str, right: str) -> float:
-    return difflib.SequenceMatcher(
-        None, normalise_for_lexical(left), normalise_for_lexical(right)
-    ).ratio()
+    return ratio_matcher(normalise_for_lexical(left), normalise_for_lexical(right)).ratio()
 
 
 # Calibration against the two published positives
@@ -147,7 +146,14 @@ def test_period_only_segmentation_is_blind_to_the_published_case():
     period_only = [s.strip() for s in re.split(r"(?<=[.!?])\s+", block) if s.strip()]
     best_blind = max(_ratio(CASE_B_ARTICLE, s) for s in period_only)
     assert best_blind < LEXICAL_FLOOR, "the blind form was expected to miss and did not"
-    assert round(best_blind, 4) == 0.2968
+    # SUPERSEDED VALUE, autojunk: this was 0.2968 while every ratio was built with difflib's
+    # autojunk default, which junks characters appearing in more than one percent of the second
+    # sequence once it reaches 200 elements. The 768-character period-only span is well past that
+    # threshold, so the blind form's score depended on the length of the span it was blind to.
+    # The control is unaffected in what it demonstrates: 0.3621 is still far below the 0.60 floor
+    # and the semicolon companion is unmoved at 0.8982, so the segmenter decision stands on the
+    # same evidence.
+    assert round(best_blind, 4) == 0.3621
 
     best_shipped = max(_ratio(CASE_B_ARTICLE, s) for s in segments(block))
     assert best_shipped >= LEXICAL_FLOOR
@@ -413,7 +419,7 @@ def test_prefilter_does_not_change_the_result(corpus):
         for segment in segs:
             candidate = normalise_for_lexical(segment)
             if candidate:
-                ratio = difflib.SequenceMatcher(None, target, candidate).ratio()
+                ratio = ratio_matcher(target, candidate).ratio()
                 if ratio >= LEXICAL_FLOOR:
                     reference.append((unit, round(ratio, 4), segment))
     assert reference, "positive control: the unfiltered reference must find something"

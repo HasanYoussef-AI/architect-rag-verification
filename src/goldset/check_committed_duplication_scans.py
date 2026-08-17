@@ -22,6 +22,7 @@ from src.goldset.attributability import (
     Corpus,
     exclusion_report,
     normalise_for_lexical,
+    ratio_matcher,
 )
 
 EVAL = REPO_ROOT / "eval"
@@ -55,7 +56,7 @@ def cross_pairs(left, right, floor=LEXICAL_FLOOR):
         ln = normalise_for_lexical(ls)
         if not ln:
             continue
-        m = difflib.SequenceMatcher(None, ln, "")
+        m = ratio_matcher(ln, "")
         for rs in right:
             rn = normalise_for_lexical(rs)
             if not rn:
