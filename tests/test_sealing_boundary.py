@@ -258,6 +258,19 @@ def test_the_disjointness_check_can_fail():
     assert slot_overlaps([["a"]]) == [], "a single slot cannot overlap itself"
 
 
+def flatten_mismatch(row: dict) -> list[str] | None:
+    """The in-place flatten of this row's gold_slots when expected_units differs from it.
+
+    Returns None when the row is consistent. Factored out so the companion below drives the SAME
+    predicate the check runs, which the superseded companion did not: it rebuilt the comparison
+    from two locals it had constructed itself and asserted a property of Python's sorted, so the
+    real check had never been shown red anywhere. A companion that restates a check demonstrates
+    the restatement.
+    """
+    expected = [unit for slot in row["gold_slots"] for unit in slot]
+    return expected if row["expected_units"] != expected else None
+
+
 def test_expected_units_is_the_in_place_flatten_of_gold_slots():
     """gold_slots is the authoritative structure and expected_units is its derived flattening.
 
@@ -267,24 +280,47 @@ def test_expected_units_is_the_in_place_flatten_of_gold_slots():
     identify its candidate without its order.
     """
     for r in _rows():
-        expected = [u for slot in r["gold_slots"] for u in slot]
-        assert r["expected_units"] == expected, (
+        mismatch = flatten_mismatch(r)
+        assert mismatch is None, (
             f"{r['id']}: expected_units {r['expected_units']} against the in-place flatten "
-            f"{expected}"
+            f"{mismatch}"
         )
 
 
 def test_the_flatten_check_is_order_sensitive():
-    """V20, and the companion is chosen to be the one a set comparison would pass.
+    """V20, through the predicate the check runs, on the one case a set comparison cannot see.
 
-    A sorted flattening has the same members as an in-place one, so a membership test cannot tell
-    them apart. This drives the real comparison against exactly that case.
+    A sorted flattening has the same members as an in-place one, so a membership test passes it.
+    The fabricated row below is exactly that: gold_slots in the order [art_97], [art_43], with
+    expected_units carrying the sorted order instead. The predicate must report it, and a set
+    comparison must not, and both halves are asserted so relaxing the real check to a set
+    comparison turns this red rather than leaving the relaxation invisible.
     """
-    gold = [["eu_ai_act:art_97"], ["eu_ai_act:art_43"]]
-    in_place = [u for slot in gold for u in slot]
-    sorted_flat = sorted(in_place)
-    assert set(in_place) == set(sorted_flat), "the two flattenings differ in membership"
-    assert in_place != sorted_flat, "this fixture does not distinguish the two orders"
+    reordered = {
+        "id": "test_00",
+        "gold_slots": [["eu_ai_act:art_97"], ["eu_ai_act:art_43"]],
+        "expected_units": ["eu_ai_act:art_43", "eu_ai_act:art_97"],
+    }
+    assert set(reordered["expected_units"]) == {"eu_ai_act:art_97", "eu_ai_act:art_43"}, (
+        "the fixture does not hold the same members, so it does not isolate ordering"
+    )
+    assert flatten_mismatch(reordered) == ["eu_ai_act:art_97", "eu_ai_act:art_43"], (
+        "the predicate did not detect a sorted flattening standing in for an in-place one"
+    )
+
+    dropped = {
+        "id": "test_00",
+        "gold_slots": [["a:1"], ["b:2"]],
+        "expected_units": ["a:1"],
+    }
+    assert flatten_mismatch(dropped) == ["a:1", "b:2"], "a dropped unit was not detected"
+
+    consistent = {
+        "id": "test_00",
+        "gold_slots": [["a:1"], ["b:2"]],
+        "expected_units": ["a:1", "b:2"],
+    }
+    assert flatten_mismatch(consistent) is None, "a consistent row was reported as a mismatch"
 
 
 def test_no_gold_unit_of_the_fifty_sits_in_the_fifty_unit_closure():
