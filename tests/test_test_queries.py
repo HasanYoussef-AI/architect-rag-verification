@@ -193,17 +193,22 @@ def test_only_adversarial_notes_carry_the_grader_predeclaration():
     """Recorded before any run, so what counts as a failure cannot be settled after seeing answers.
 
     Adversarial rows need a per-row pre-declaration because they are scored by a binary
-    behavioural judgment the rate metrics cannot express: PREREGISTRATION.md line 41 removes the
+    behavioural judgment the rate metrics cannot express: PREREGISTRATION.md line 42 removes the
     retrieval metrics from them because their gold is empty, and an abstention carries no atomic
-    claims for the unsupported-claim rate at line 33 to score.
+    claims for the unsupported-claim rate at line 34 to score.
 
     Gold-bearing rows need none, and the paragraph is false about them because it defines failure
     as asserting substantive content rather than abstaining. Their failure condition is declared
-    before any query existed: line 33 for the generation side, lines 36 to 41 for the retrieval
-    side slot by slot, line 49 making the headline a rate delta rather than a per-query verdict,
-    and line 86 for the wrong-but-grounded case, which scores clean on faithfulness and a miss on
+    before any query existed: line 34 for the generation side, lines 37 to 42 for the retrieval
+    side slot by slot, line 50 making the headline a rate delta rather than a per-query verdict,
+    and line 87 for the wrong-but-grounded case, which scores clean on faithfulness and a miss on
     recall. Writing a per-row failure condition for them would invent a verdict this study does
     not use.
+
+    Line numbers re-pointed when the Revision note gained the relation-name correction bullet,
+    which shifted every line below it by one. Citing a governance file by line number is fragile
+    in exactly this way, and the durable fix is a quoted anchor rather than an ordinal; that is a
+    design change and is proposed rather than made here.
 
     The complement is asserted, not merely the scoping, because copying the paragraph onto a
     gold-bearing row later would be a defect that a scoped-only test would not see.
