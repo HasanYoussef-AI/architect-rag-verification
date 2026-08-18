@@ -383,6 +383,30 @@ time, and every other field, including `n_segments`, the exclusion funnel and
 on it. Recorded here because a determinism claim that quietly means "one of the two files" is the
 kind of claim this record exists to prevent.
 
+MARKED CORRECTION, the index dependency. The last sentence but one of that paragraph read that
+the index is untracked and **no committed value depends on it**. Two did. The manifest generator
+read the index and copied `n_segments` and `n_units` out of it into
+`eval/segment_embedding_manifest.json`, which ships. The claim was disproved by mutation rather
+than by reading: moving `n_segments` to **13317** in the untracked index and re-running the
+generator's own `write_manifest` moved the committed manifest to 13317, where it contradicted the
+corpus-derived `comparable_segments` of 13316 in the same file, and nothing raised. The exposure
+was asymmetric between the two fields. `n_segments` was re-derived from the corpus by
+`test_manifest_matches_the_cache_it_describes`, but that test skips when the cache is absent and
+the cache is untracked, so the only committed re-derivation never ran for a reviewer who clones
+the repository. `n_units` was re-derived by nothing at all.
+
+Corrected in the code rather than in the sentence. `write_manifest` now derives `n_segments` and
+`n_units` from the corpus under `data/chunks/`, cross-checks the segment count against the cache
+array's row count, and refuses to emit a manifest when the array is absent. The index is read for
+the staleness fingerprint alone, a guard that can only refuse, and no value it carries reaches the
+committed file. `build_seconds` is removed from the index, so the file is now a function of the
+corpus and the segment count alone and the determinism claim covers both files rather than one.
+The committed manifest's bytes did not move: the derivation changed and the values did not, at
+2403 bytes and `3a2f5de26ea2fea292f83628e15a97b6020c005d7b95a98e9fa14b17fa6ef266` before and
+after. Pinned by `tests/test_attributability.py::
+test_the_manifest_takes_no_value_from_the_untracked_index`, shown red against the previous
+generator on the 13317 mutation and green against this one.
+
 ## What this closes
 
 One sealed artifact shipped two verification block types under two standards. The adversarial

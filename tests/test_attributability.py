@@ -595,6 +595,93 @@ def test_the_digest_comparison_can_fail():
     assert len(mutated) == len(m["cache_sha256"]) == 64
 
 
+def test_the_manifest_takes_no_value_from_the_untracked_index(corpus, tmp_path, monkeypatch):
+    """No committed value is copied from an artifact nothing re-derives.
+
+    The manifest ships. embeddings_cache/segment_index.json does not, and no committed test can
+    re-derive it, because it is written by the generator and read by nothing else that ships. A
+    manifest field copied out of it is therefore a committed number whose only source is a file a
+    reviewer never sees, and the divergence is silent: the funnel in the same manifest is derived
+    from the corpus, so a copied count can contradict its own neighbour without anything raising.
+
+    Measured before this test existed. Moving n_segments to 13317 in the untracked index and
+    re-running the generator's own write_manifest moved the committed manifest to 13317, where it
+    disagreed with its corpus-derived comparable_segments of 13316, and nothing raised.
+
+    Driven through the real write_manifest with both paths redirected, so what is exercised is the
+    shipped derivation and not a restatement of it. The index handed in carries deliberately wrong
+    counts and the correct fingerprint, so the staleness guard passes and the counts are the only
+    thing under test.
+    """
+    if not SEGMENT_VECTORS.exists():
+        pytest.skip("the cache itself is not present; only the manifest ships.")
+    import src.goldset.build_segment_embeddings as gen
+
+    corrupted = json.loads(SEGMENT_INDEX.read_text(encoding="utf-8"))
+    corrupted["n_segments"] = 13317
+    corrupted["n_units"] = 999
+    index_path = tmp_path / "segment_index.json"
+    index_path.write_text(json.dumps(corrupted, indent=1, ensure_ascii=False) + "\n",
+                          encoding="utf-8")
+    out = tmp_path / "segment_embedding_manifest.json"
+    monkeypatch.setattr(gen, "SEGMENT_INDEX", index_path)
+    monkeypatch.setattr(gen, "MANIFEST", out)
+
+    emitted = gen.write_manifest(corpus)
+
+    pairs = corpus.ordered_segments()
+    assert emitted["n_segments"] == len(pairs), (
+        f"n_segments is {emitted['n_segments']} against {len(pairs)} segments derived from the "
+        "corpus. It was taken from the untracked index rather than re-derived"
+    )
+    assert emitted["n_units"] == len({unit for unit, _ in pairs}), (
+        f"n_units is {emitted['n_units']} and was taken from the untracked index"
+    )
+    assert emitted["n_segments"] == emitted["exclusion_funnel"]["comparable_segments"], (
+        "the manifest disagrees with its own funnel, which is the shape the copied value produced"
+    )
+
+
+def test_the_index_carries_no_wall_clock_field(corpus):
+    """build_seconds made the index non-byte-deterministic, and it is gone.
+
+    Two clean-state generations produced byte-identical arrays and byte-identical manifests, and
+    indexes that differed in this field alone. Removing it is what lets the index be compared
+    across runs at all.
+
+    Asserted against the generator's emitted payload and deliberately not against the file on
+    disk. The payload is the property this repository can hold for every reviewer's build; a local
+    cache written before this change is stale environment, not a repository defect, and after the
+    manifest stopped reading values from the index a leftover field there reaches nothing that
+    ships. Asserting on the file would turn one operator's un-regenerated cache into a red suite
+    and would be checking the machine rather than the code.
+    """
+    import src.goldset.build_segment_embeddings as gen
+
+    emitted = gen.index_payload(corpus, n_segments=13316)
+    assert "build_seconds" not in emitted, (
+        "build_seconds is back in the index payload. It records wall time, so it makes the index "
+        "differ between two runs that produced identical embeddings"
+    )
+    assert not any("second" in k for k in emitted), f"a wall-clock field remains: {sorted(emitted)}"
+
+
+def test_the_index_payload_is_a_function_of_the_corpus_alone(corpus):
+    """V20 companion: the emitted payload is shown to be reproducible and to be able to differ.
+
+    Two calls with the same arguments are equal, and a call with a different segment count is not,
+    so the equality above is a property of the payload rather than of the comparison.
+    """
+    import src.goldset.build_segment_embeddings as gen
+
+    a = gen.index_payload(corpus, n_segments=13316)
+    b = gen.index_payload(corpus, n_segments=13316)
+    assert a == b, "two identical calls disagreed"
+    c = gen.index_payload(corpus, n_segments=13317)
+    assert a != c, "the comparison cannot distinguish two different payloads"
+    assert c["n_segments"] == 13317
+
+
 def test_the_dense_arm_compares_the_segment_population_not_chunks():
     """The invariant that replaces a regression test the removed code path can no longer support.
 
