@@ -202,7 +202,7 @@ superseded ordinal, the corrected one and the cause. Nothing else in the row mov
 measured: the edit was surgical on the raw line, 49 of 49 other lines byte-identical, the file
 still fifty rows at one key set, and the only leaf whose value changed was the citation itself.
 
-An eighth ordinal, in the 2026-07-28 entry above, is corrected in the commit that follows this one.
+An eighth ordinal, in the 2026-07-28 entry above, was corrected at `3912b41`, ahead of this entry.
 
 ### Suite
 
@@ -228,7 +228,8 @@ condition is named rather than left for a reviewer to discover when their own co
 - 356f23d feat(eval): retrieval on the sealed fifty, the frozen metrics and the gate opening
 - 14251d1 test(eval): pin the retrieval results artifact under its own regime
 
-This entry is placed by the commit that follows `14251d1` and touches only `SESSION_LOG.md`.
+This entry was placed at `eb5a5a9`. That commit and `3912b41` touch only `SESSION_LOG.md` and are
+exempt from naming under Rule 11, as is `13d296b` earlier in the scope.
 
 ## 2026-08-17, the sealed set closed at fifty, and a predicate corrected under it
 
