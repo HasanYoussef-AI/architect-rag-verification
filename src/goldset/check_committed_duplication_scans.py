@@ -13,7 +13,6 @@ Run:  python -m src.goldset.check_committed_duplication_scans
 
 from __future__ import annotations
 
-import difflib
 import json
 import re
 from src.ingest.corpus_integrity import REPO_ROOT

@@ -26,7 +26,6 @@ import json
 
 import pytest
 
-import difflib
 
 from src.goldset.attributability import Corpus, normalise_for_lexical, ratio_matcher
 from src.ingest.corpus_integrity import REPO_ROOT
