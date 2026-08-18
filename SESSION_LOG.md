@@ -929,7 +929,28 @@ The frame's near-miss stratum drew its three measured picks from one of the two
 populations the sealed specification names for them. Sealed line 58 names the 12
 hand-audited near-block-duplicate pairs both as a source for those three and inside
 the committed near_duplicate class the five authored picks come from; the builder
-gave them to near_duplicate alone and recorded no choice. The three were therefore
+gave them to near_duplicate alone and recorded no choice.
+
+MARKED CORRECTION, added under the RAG-12 close on Hasan's explicit direction. The ordinal in
+"Sealed line 58" above is superseded twice over; the cited text now sits at line 65. The
+superseded ordinal is left standing in the sentence and corrected here rather than edited in
+place, on the autojunk precedent for log corrections, so a reader sees what was cited and what
+moved rather than a pointer that was quietly made right. The citation was
+correct when this entry was written: at `ee6a0f3` line 58 of `PREREGISTRATION.md` was the
+near-miss composition bullet, and it names both the 12 fixture near-block-duplicates and the
+`near_duplicate` class, which is what the sentence attributes to it. It went stale at `bc4b2d4`,
+the retrieval metric definitions correction, which added lines above it and moved that bullet to
+64, and again at `4915b99`, the relation-name correction, whose revision-note bullet moved it to
+65. Neither move touched a word of the cited text and the referent is unchanged throughout; what
+was wrong was the pointer alone.
+
+Recorded rather than silently re-pointed because the failure is general and this entry is its
+second instance in one scope. Citing a governance file by ordinal breaks whenever a line is
+inserted above the target, and nothing detects it: the same insertion at `4915b99` broke six
+citations in a test docstring and one inside the sealed verification file, which took a Rule 4
+correction at `f9dc582`. The detector that found this one had to be built twice, the first form
+being unable to match the plural "lines N to M". A durable fix is a quoted anchor rather than an
+ordinal, and that is a design change proposed rather than made here. The three were therefore
 drawn entirely from the normalise-identical population, where 16 of 17 candidates
 were the lexicographic minimum of their own identity group, so the chunk-id
 tie-break rather than retrieval decides the ordering among byte-identical text. The
