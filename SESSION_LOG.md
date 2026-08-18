@@ -341,6 +341,21 @@ and the difference is its `build_seconds` field alone; every other field it carr
 and no committed value depends on it. Recorded because a determinism claim that quietly covers one
 of two files is the failure this kind of note exists to prevent.
 
+MARKED CORRECTION, added under the index-derivation correction on Hasan's explicit direction. The
+clause that no committed value depends on the index is superseded. Two did. The manifest generator
+read `segment_index.json` and copied `n_segments` and `n_units` out of it into
+`eval/segment_embedding_manifest.json`, which ships. The claim was disproved by mutation rather
+than by re-reading: moving `n_segments` to 13317 in the untracked index and re-running the
+generator's own `write_manifest` moved the committed manifest to 13317, where it contradicted the
+corpus-derived `comparable_segments` of 13316 in the same file, and nothing raised. The exposure
+was uneven across the two fields, and the uneven half is the part worth keeping: `n_segments` was
+re-derived from the corpus by a committed test, but that test skips when the cache is absent and
+the cache is untracked, so the only re-derivation never ran for a reviewer holding a clone;
+`n_units` was re-derived by nothing. The rest of the paragraph stands. The array and the manifest
+were byte-identical across the two generations, `build_seconds` was the only field that differed,
+and the determinism note the paragraph exists to give is unchanged in what it establishes. What is
+corrected is the reach of the consequence, not the measurement.
+
 A stale size string was caught by sweeping rather than by reading the diff: the manifest generator
 carried `40.6 MB` in a description it emits into the committed manifest, which then contradicted
 the `cache_bytes` field in the same file.
