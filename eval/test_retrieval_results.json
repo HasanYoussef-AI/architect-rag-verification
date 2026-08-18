@@ -1,0 +1,2818 @@
+{
+ "description": "Retrieval results and frozen metrics for the sealed query set, first pass, fused top 10. Produced by src/score/run_retrieval_eval.py over committed embeddings with no model and no key, so every figure re-derives from the tree. Aggregates are MACRO-AVERAGES OVER QUERIES, not micro-averages over slots; the two are different numbers and every headline in PREREGISTRATION.md is per-query. Adversarial rows are carried and marked not computed, and aggregates exclude them by that marker rather than by stratum name. No precision figure appears without its carrier count.",
+ "produced_by": "python -m src.score.run_retrieval_eval",
+ "reproducibility_level": 1,
+ "query_set": "test",
+ "retrieval": [
+  {
+   "id": "test_01",
+   "type": "adversarial",
+   "subtype": "iso",
+   "query": "What does ISO/IEC 42001 require an organization to document when it establishes an AI management system?",
+   "top10": [
+    "nist_playbook:sub_MANAGE_1.2.transparency_documentation",
+    "nist_playbook:sub_MANAGE_2.4.transparency_documentation",
+    "nist_playbook:sub_GOVERN_2.3.transparency_documentation",
+    "nist_playbook:sub_MANAGE_1.3.transparency_documentation",
+    "nist_playbook:sub_MAP_2.1.transparency_documentation",
+    "nist_playbook:sub_GOVERN_1.5.transparency_documentation",
+    "nist_playbook:sub_MEASURE_2.10.transparency_documentation",
+    "nist_playbook:sub_MEASURE_3.1.transparency_documentation",
+    "nist_playbook:sub_GOVERN_4.3.transparency_documentation",
+    "nist_playbook:sub_MAP_2.2.transparency_documentation"
+   ],
+   "gold_slots": [],
+   "slot_satisfaction": [],
+   "carrier_count": 0,
+   "metrics": null,
+   "metrics_note": "not computed; gold is empty per PREREGISTRATION.md"
+  },
+  {
+   "id": "test_02",
+   "type": "adversarial",
+   "subtype": "iso",
+   "query": "Under ISO/IEC 42001, what must an organization do to manage risks from third-party AI systems?",
+   "top10": [
+    "nist_ai_100_1:exec_summary#p2",
+    "nist_ai_100_1:sec_1.2.1#p1",
+    "nist_ai_100_1:cat_MANAGE_3",
+    "nist_playbook:sub_MANAGE_3.1.about",
+    "nist_playbook:sub_GOVERN_6.2.transparency_documentation",
+    "eu_ai_act:rct_125",
+    "nist_playbook:sub_MANAGE_3.1.suggested_actions",
+    "nist_playbook:sub_GOVERN_2.1.references",
+    "nist_playbook:sub_MANAGE_1.2.transparency_documentation",
+    "nist_ai_100_1:sec_3.2"
+   ],
+   "gold_slots": [],
+   "slot_satisfaction": [],
+   "carrier_count": 0,
+   "metrics": null,
+   "metrics_note": "not computed; gold is empty per PREREGISTRATION.md"
+  },
+  {
+   "id": "test_03",
+   "type": "adversarial",
+   "subtype": "iso",
+   "query": "What does ISO/IEC 42001 require for internal audit of an AI management system?",
+   "top10": [
+    "nist_playbook:sub_MANAGE_2.4.transparency_documentation",
+    "eu_ai_act:anx_VII#p4",
+    "nist_playbook:sub_MANAGE_1.2.transparency_documentation",
+    "nist_playbook:sub_GOVERN_2.1.references",
+    "nist_ai_100_1:exec_summary#p2",
+    "nist_ai_100_1:sec_3.1#p1",
+    "nist_playbook:sub_MEASURE_2.5.transparency_documentation",
+    "nist_playbook:sub_MEASURE_2.7.transparency_documentation",
+    "nist_playbook:sub_MEASURE_2.10.transparency_documentation",
+    "nist_playbook:sub_MEASURE_3.1.about"
+   ],
+   "gold_slots": [],
+   "slot_satisfaction": [],
+   "carrier_count": 0,
+   "metrics": null,
+   "metrics_note": "not computed; gold is empty per PREREGISTRATION.md"
+  },
+  {
+   "id": "test_04",
+   "type": "adversarial",
+   "subtype": "nonexistent_identifier",
+   "query": "Under the EU AI Act, what does Article 114 require?",
+   "top10": [
+    "eu_ai_act:art_110",
+    "eu_ai_act:art_108#p1",
+    "eu_ai_act:art_2#p2",
+    "eu_ai_act:art_74#p1",
+    "eu_ai_act:anx_VIII#p2",
+    "eu_ai_act:rct_140",
+    "eu_ai_act:art_2#p1",
+    "eu_ai_act:anx_V",
+    "eu_ai_act:art_109",
+    "eu_ai_act:rct_141"
+   ],
+   "gold_slots": [],
+   "slot_satisfaction": [],
+   "carrier_count": 0,
+   "metrics": null,
+   "metrics_note": "not computed; gold is empty per PREREGISTRATION.md"
+  },
+  {
+   "id": "test_05",
+   "type": "adversarial",
+   "subtype": "nonexistent_identifier",
+   "query": "Under the EU AI Act, what does Article 181 require?",
+   "top10": [
+    "eu_ai_act:art_110",
+    "eu_ai_act:art_2#p2",
+    "eu_ai_act:art_108#p1",
+    "eu_ai_act:anx_V",
+    "eu_ai_act:art_74#p1",
+    "eu_ai_act:anx_VIII#p2",
+    "eu_ai_act:art_16",
+    "eu_ai_act:art_109",
+    "eu_ai_act:rct_141",
+    "eu_ai_act:art_2#p1"
+   ],
+   "gold_slots": [],
+   "slot_satisfaction": [],
+   "carrier_count": 0,
+   "metrics": null,
+   "metrics_note": "not computed; gold is empty per PREREGISTRATION.md"
+  },
+  {
+   "id": "test_06",
+   "type": "adversarial",
+   "subtype": "nonexistent_identifier",
+   "query": "What does GOVERN 1.8 require?",
+   "top10": [
+    "nist_playbook:sub_MAP_3.5.suggested_actions",
+    "nist_ai_100_1:sub_GOVERN_1.1",
+    "nist_ai_600_1:sub_GOVERN_1.1",
+    "nist_playbook:sub_GOVERN_1.1",
+    "nist_ai_100_1:cat_GOVERN_1",
+    "nist_ai_100_1:sub_GOVERN_1.2",
+    "nist_ai_100_1:sub_GOVERN_2.1",
+    "nist_ai_600_1:sub_GOVERN_1.2",
+    "nist_ai_600_1:sub_GOVERN_2.1",
+    "nist_playbook:sub_MANAGE_2.4.transparency_documentation"
+   ],
+   "gold_slots": [],
+   "slot_satisfaction": [],
+   "carrier_count": 0,
+   "metrics": null,
+   "metrics_note": "not computed; gold is empty per PREREGISTRATION.md"
+  },
+  {
+   "id": "test_07",
+   "type": "adversarial",
+   "subtype": "nonexistent_identifier",
+   "query": "What does GOVERN 7.1 require?",
+   "top10": [
+    "nist_ai_100_1:sub_GOVERN_1.7",
+    "nist_ai_600_1:sub_GOVERN_1.7",
+    "nist_playbook:sub_MAP_3.5.suggested_actions",
+    "nist_ai_100_1:sub_GOVERN_1.1",
+    "nist_ai_600_1:sub_GOVERN_1.1",
+    "nist_playbook:sub_GOVERN_1.1",
+    "nist_playbook:sub_GOVERN_1.7",
+    "nist_ai_100_1:cat_GOVERN_1",
+    "nist_ai_100_1:sub_GOVERN_2.1",
+    "nist_ai_100_1:sub_GOVERN_1.2"
+   ],
+   "gold_slots": [],
+   "slot_satisfaction": [],
+   "carrier_count": 0,
+   "metrics": null,
+   "metrics_note": "not computed; gold is empty per PREREGISTRATION.md"
+  },
+  {
+   "id": "test_08",
+   "type": "adversarial",
+   "subtype": "out_of_domain",
+   "query": "What are the recommended maintenance intervals for a commercial building's HVAC system?",
+   "top10": [
+    "nist_playbook:sub_MEASURE_2.4.suggested_actions",
+    "nist_playbook:sub_MANAGE_2.4.about",
+    "eu_ai_act:art_13#p2",
+    "nist_playbook:sub_MANAGE_3.2",
+    "nist_ai_600_1:act_MS-2.12-002",
+    "nist_ai_100_1:sub_MANAGE_3.2",
+    "nist_ai_600_1:sub_MANAGE_3.2",
+    "eu_ai_act:rct_74",
+    "nist_playbook:sub_MAP_1.5.transparency_documentation",
+    "eu_ai_act:rct_55"
+   ],
+   "gold_slots": [],
+   "slot_satisfaction": [],
+   "carrier_count": 0,
+   "metrics": null,
+   "metrics_note": "not computed; gold is empty per PREREGISTRATION.md"
+  },
+  {
+   "id": "test_09",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "query": "For how long was the Commission's power to amend Annexes VI and VII by delegated act conferred?",
+   "top10": [
+    "eu_ai_act:art_97#p1",
+    "eu_ai_act:art_97#p2",
+    "eu_ai_act:art_43#p2",
+    "eu_ai_act:rct_173",
+    "eu_ai_act:art_7#p1",
+    "eu_ai_act:rct_175",
+    "eu_ai_act:art_53#p2",
+    "eu_ai_act:art_112#p1",
+    "eu_ai_act:art_6#p2",
+    "eu_ai_act:art_37"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_43"
+    ],
+    [
+     "eu_ai_act:art_97"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 3,
+     "first_satisfying_chunk": "eu_ai_act:art_43#p2",
+     "satisfying_units": [
+      "eu_ai_act:art_43"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_97#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_97"
+     ]
+    }
+   ],
+   "carrier_count": 2,
+   "metrics": {
+    "precision_at_10": 0.3,
+    "matching_chunks": 3,
+    "k": 10,
+    "carrier_count": 2,
+    "carriers_in_top10": [
+     "eu_ai_act:art_97",
+     "eu_ai_act:art_43"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 2,
+    "slots_total": 2,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "eu_ai_act:art_97#p1",
+    "ndcg_at_10": 0.9197207891481876,
+    "dcg": 1.5,
+    "idcg": 1.6309297535714575,
+    "ideal_ranks": [
+     1,
+     2
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_10",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "query": "Which Annex IX points must appear in the registration of real-world testing of a law-enforcement high-risk AI system conducted outside an AI regulatory sandbox?",
+   "top10": [
+    "eu_ai_act:art_60#p1",
+    "eu_ai_act:anx_IX",
+    "eu_ai_act:art_60#p2",
+    "eu_ai_act:rct_141",
+    "eu_ai_act:rct_131#p1",
+    "eu_ai_act:art_3#p6",
+    "eu_ai_act:rct_139#p1",
+    "eu_ai_act:rct_138",
+    "eu_ai_act:art_58#p2",
+    "eu_ai_act:rct_139#p2"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_60"
+    ],
+    [
+     "eu_ai_act:art_49"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_60#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_60"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "carrier_count": 2,
+   "metrics": {
+    "precision_at_10": 0.2,
+    "matching_chunks": 2,
+    "k": 10,
+    "carrier_count": 2,
+    "carriers_in_top10": [
+     "eu_ai_act:art_60"
+    ],
+    "recall_at_10": 0.5,
+    "slots_satisfied": 1,
+    "slots_total": 2,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "eu_ai_act:art_60#p1",
+    "ndcg_at_10": 0.6131471927654584,
+    "dcg": 1.0,
+    "idcg": 1.6309297535714575,
+    "ideal_ranks": [
+     1,
+     2
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_11",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "query": "A law enforcement authority is itself the provider of a high-risk AI system listed in Annex III, point 6, and must keep its technical documentation on its own premises. What must that documentation contain about evaluation of the system's performance after it is placed on the market?",
+   "top10": [
+    "eu_ai_act:art_11",
+    "eu_ai_act:art_80#p1",
+    "eu_ai_act:anx_VII#p2",
+    "eu_ai_act:art_78#p2",
+    "eu_ai_act:art_43#p1",
+    "eu_ai_act:art_18",
+    "eu_ai_act:anx_IV#p1",
+    "eu_ai_act:art_14#p2",
+    "eu_ai_act:art_72",
+    "eu_ai_act:art_22#p1"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_78"
+    ],
+    [
+     "eu_ai_act:anx_IV"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 4,
+     "first_satisfying_chunk": "eu_ai_act:art_78#p2",
+     "satisfying_units": [
+      "eu_ai_act:art_78"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 7,
+     "first_satisfying_chunk": "eu_ai_act:anx_IV#p1",
+     "satisfying_units": [
+      "eu_ai_act:anx_IV"
+     ]
+    }
+   ],
+   "carrier_count": 2,
+   "metrics": {
+    "precision_at_10": 0.2,
+    "matching_chunks": 2,
+    "k": 10,
+    "carrier_count": 2,
+    "carriers_in_top10": [
+     "eu_ai_act:art_78",
+     "eu_ai_act:anx_IV"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 2,
+    "slots_total": 2,
+    "mrr": 0.25,
+    "first_satisfying_rank": 4,
+    "first_satisfying_chunk": "eu_ai_act:art_78#p2",
+    "ndcg_at_10": 0.46845052016107697,
+    "dcg": 0.7640098914067264,
+    "idcg": 1.6309297535714575,
+    "ideal_ranks": [
+     1,
+     2
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_12",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "query": "Registration of a high-risk AI system normally includes electronic instructions for use. Besides law enforcement and migration, asylum and border control management, which Annex III area is exempt from providing them?",
+   "top10": [
+    "eu_ai_act:art_14#p2",
+    "eu_ai_act:art_60#p2",
+    "eu_ai_act:art_49",
+    "eu_ai_act:rct_60",
+    "eu_ai_act:anx_VIII#p1",
+    "eu_ai_act:rct_131#p1",
+    "eu_ai_act:anx_III#p4",
+    "eu_ai_act:art_43#p1",
+    "eu_ai_act:art_78#p2",
+    "eu_ai_act:rct_159"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:anx_VIII"
+    ],
+    [
+     "eu_ai_act:anx_III"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 5,
+     "first_satisfying_chunk": "eu_ai_act:anx_VIII#p1",
+     "satisfying_units": [
+      "eu_ai_act:anx_VIII"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 7,
+     "first_satisfying_chunk": "eu_ai_act:anx_III#p4",
+     "satisfying_units": [
+      "eu_ai_act:anx_III"
+     ]
+    }
+   ],
+   "carrier_count": 2,
+   "metrics": {
+    "precision_at_10": 0.2,
+    "matching_chunks": 2,
+    "k": 10,
+    "carrier_count": 2,
+    "carriers_in_top10": [
+     "eu_ai_act:anx_VIII",
+     "eu_ai_act:anx_III"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 2,
+    "slots_total": 2,
+    "mrr": 0.2,
+    "first_satisfying_rank": 5,
+    "first_satisfying_chunk": "eu_ai_act:anx_VIII#p1",
+    "ndcg_at_10": 0.4415801103577823,
+    "dcg": 0.7201861405678749,
+    "idcg": 1.6309297535714575,
+    "ideal_ranks": [
+     1,
+     2
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_13",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "query": "From what date must market surveillance authorities respect the confidentiality of trade secrets obtained in carrying out their tasks?",
+   "top10": [
+    "eu_ai_act:art_74#p3",
+    "eu_ai_act:art_78#p1",
+    "eu_ai_act:rct_167",
+    "eu_ai_act:art_78#p2",
+    "eu_ai_act:art_79#p3",
+    "eu_ai_act:rct_156",
+    "eu_ai_act:art_77",
+    "eu_ai_act:rct_160",
+    "eu_ai_act:rct_36",
+    "eu_ai_act:rct_159"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_113"
+    ],
+    [
+     "eu_ai_act:art_78"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 2,
+     "first_satisfying_chunk": "eu_ai_act:art_78#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_78"
+     ]
+    }
+   ],
+   "carrier_count": 2,
+   "metrics": {
+    "precision_at_10": 0.2,
+    "matching_chunks": 2,
+    "k": 10,
+    "carrier_count": 2,
+    "carriers_in_top10": [
+     "eu_ai_act:art_78"
+    ],
+    "recall_at_10": 0.5,
+    "slots_satisfied": 1,
+    "slots_total": 2,
+    "mrr": 0.5,
+    "first_satisfying_rank": 2,
+    "first_satisfying_chunk": "eu_ai_act:art_78#p1",
+    "ndcg_at_10": 0.38685280723454163,
+    "dcg": 0.6309297535714575,
+    "idcg": 1.6309297535714575,
+    "ideal_ranks": [
+     1,
+     2
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_14",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "query": "A notified body applies to extend the scope of its notification. What must accompany that application?",
+   "top10": [
+    "eu_ai_act:art_36#p1",
+    "eu_ai_act:art_37",
+    "eu_ai_act:anx_VII#p2",
+    "eu_ai_act:art_29",
+    "eu_ai_act:art_45",
+    "eu_ai_act:art_34",
+    "eu_ai_act:anx_VII#p3",
+    "eu_ai_act:art_31#p1",
+    "eu_ai_act:art_30",
+    "eu_ai_act:anx_VII#p4"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_36"
+    ],
+    [
+     "eu_ai_act:art_29"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_36#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_36"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 4,
+     "first_satisfying_chunk": "eu_ai_act:art_29",
+     "satisfying_units": [
+      "eu_ai_act:art_29"
+     ]
+    }
+   ],
+   "carrier_count": 2,
+   "metrics": {
+    "precision_at_10": 0.2,
+    "matching_chunks": 2,
+    "k": 10,
+    "carrier_count": 2,
+    "carriers_in_top10": [
+     "eu_ai_act:art_36",
+     "eu_ai_act:art_29"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 2,
+    "slots_total": 2,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "eu_ai_act:art_36#p1",
+    "ndcg_at_10": 0.8772153153380493,
+    "dcg": 1.4306765580733931,
+    "idcg": 1.6309297535714575,
+    "ideal_ranks": [
+     1,
+     2
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_15",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "query": "Under Regulation (EU) 2019/1020 as applied to AI systems, which categories of actor count as economic operators?",
+   "top10": [
+    "eu_ai_act:art_74#p1",
+    "eu_ai_act:art_94",
+    "eu_ai_act:rct_161",
+    "eu_ai_act:rct_156",
+    "eu_ai_act:rct_83",
+    "eu_ai_act:art_2#p2",
+    "eu_ai_act:art_74#p3",
+    "eu_ai_act:rct_9#p1",
+    "eu_ai_act:rct_164",
+    "eu_ai_act:rct_124"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_74"
+    ],
+    [
+     "eu_ai_act:art_2"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_74#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_74"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 6,
+     "first_satisfying_chunk": "eu_ai_act:art_2#p2",
+     "satisfying_units": [
+      "eu_ai_act:art_2"
+     ]
+    }
+   ],
+   "carrier_count": 2,
+   "metrics": {
+    "precision_at_10": 0.3,
+    "matching_chunks": 3,
+    "k": 10,
+    "carrier_count": 2,
+    "carriers_in_top10": [
+     "eu_ai_act:art_74",
+     "eu_ai_act:art_2"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 2,
+    "slots_total": 2,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "eu_ai_act:art_74#p1",
+    "ndcg_at_10": 0.8315546295836225,
+    "dcg": 1.3562071871080221,
+    "idcg": 1.6309297535714575,
+    "ideal_ranks": [
+     1,
+     2
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_16",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "query": "The AI Office may evaluate a general-purpose AI model where earlier-gathered information is insufficient. What documentation could have been requested at that earlier stage?",
+   "top10": [
+    "eu_ai_act:rct_101",
+    "eu_ai_act:rct_163",
+    "nist_playbook:sub_MAP_1.6.transparency_documentation",
+    "eu_ai_act:art_91",
+    "nist_playbook:sub_MEASURE_2.9.transparency_documentation",
+    "nist_playbook:sub_MEASURE_1.3.transparency_documentation",
+    "eu_ai_act:rct_112",
+    "eu_ai_act:anx_XII",
+    "nist_playbook:sub_GOVERN_3.2.transparency_documentation",
+    "eu_ai_act:rct_107"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_92"
+    ],
+    [
+     "eu_ai_act:art_91"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 4,
+     "first_satisfying_chunk": "eu_ai_act:art_91",
+     "satisfying_units": [
+      "eu_ai_act:art_91"
+     ]
+    }
+   ],
+   "carrier_count": 2,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 2,
+    "carriers_in_top10": [
+     "eu_ai_act:art_91"
+    ],
+    "recall_at_10": 0.5,
+    "slots_satisfied": 1,
+    "slots_total": 2,
+    "mrr": 0.25,
+    "first_satisfying_rank": 4,
+    "first_satisfying_chunk": "eu_ai_act:art_91",
+    "ndcg_at_10": 0.2640681225725909,
+    "dcg": 0.43067655807339306,
+    "idcg": 1.6309297535714575,
+    "ideal_ranks": [
+     1,
+     2
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_17",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "query": "An authorised representative fails to keep the technical documentation at the disposal of competent authorities for the required ten years. What is the maximum administrative fine?",
+   "top10": [
+    "eu_ai_act:art_18",
+    "eu_ai_act:art_22#p1",
+    "eu_ai_act:art_22#p2",
+    "eu_ai_act:art_99#p2",
+    "eu_ai_act:art_54#p1",
+    "eu_ai_act:rct_82",
+    "eu_ai_act:art_100#p1",
+    "eu_ai_act:art_57#p2",
+    "eu_ai_act:art_91",
+    "eu_ai_act:art_11"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_99"
+    ],
+    [
+     "eu_ai_act:art_22"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 4,
+     "first_satisfying_chunk": "eu_ai_act:art_99#p2",
+     "satisfying_units": [
+      "eu_ai_act:art_99"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 2,
+     "first_satisfying_chunk": "eu_ai_act:art_22#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_22"
+     ]
+    }
+   ],
+   "carrier_count": 2,
+   "metrics": {
+    "precision_at_10": 0.3,
+    "matching_chunks": 3,
+    "k": 10,
+    "carrier_count": 2,
+    "carriers_in_top10": [
+     "eu_ai_act:art_22",
+     "eu_ai_act:art_99"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 2,
+    "slots_total": 2,
+    "mrr": 0.5,
+    "first_satisfying_rank": 2,
+    "first_satisfying_chunk": "eu_ai_act:art_22#p1",
+    "ndcg_at_10": 0.6509209298071326,
+    "dcg": 1.0616063116448506,
+    "idcg": 1.6309297535714575,
+    "ideal_ranks": [
+     1,
+     2
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_18",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "query": "Which document must tell the deployer that identifications produced by a remote biometric identification system require separate confirmation by two natural persons?",
+   "top10": [
+    "eu_ai_act:art_14#p2",
+    "eu_ai_act:rct_17",
+    "eu_ai_act:art_26#p3",
+    "eu_ai_act:rct_73",
+    "eu_ai_act:art_3#p4",
+    "eu_ai_act:rct_32",
+    "eu_ai_act:rct_35",
+    "eu_ai_act:rct_38",
+    "eu_ai_act:art_5#p3",
+    "eu_ai_act:rct_54"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_13"
+    ],
+    [
+     "eu_ai_act:art_14"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_14#p2",
+     "satisfying_units": [
+      "eu_ai_act:art_14"
+     ]
+    }
+   ],
+   "carrier_count": 2,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 2,
+    "carriers_in_top10": [
+     "eu_ai_act:art_14"
+    ],
+    "recall_at_10": 0.5,
+    "slots_satisfied": 1,
+    "slots_total": 2,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "eu_ai_act:art_14#p2",
+    "ndcg_at_10": 0.6131471927654584,
+    "dcg": 1.0,
+    "idcg": 1.6309297535714575,
+    "ideal_ranks": [
+     1,
+     2
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_19",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "query": "A distributor puts its own trademark on a high-risk AI system already placed on the market. What quality-related system must it now have in place?",
+   "top10": [
+    "eu_ai_act:rct_84",
+    "eu_ai_act:art_25#p1",
+    "eu_ai_act:rct_155",
+    "eu_ai_act:art_24#p1",
+    "eu_ai_act:rct_128",
+    "eu_ai_act:rct_87",
+    "eu_ai_act:art_3#p1",
+    "eu_ai_act:art_24#p2",
+    "eu_ai_act:art_6#p1",
+    "eu_ai_act:rct_64"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_25"
+    ],
+    [
+     "eu_ai_act:art_16"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 2,
+     "first_satisfying_chunk": "eu_ai_act:art_25#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_25"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "carrier_count": 2,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 2,
+    "carriers_in_top10": [
+     "eu_ai_act:art_25"
+    ],
+    "recall_at_10": 0.5,
+    "slots_satisfied": 1,
+    "slots_total": 2,
+    "mrr": 0.5,
+    "first_satisfying_rank": 2,
+    "first_satisfying_chunk": "eu_ai_act:art_25#p1",
+    "ndcg_at_10": 0.38685280723454163,
+    "dcg": 0.6309297535714575,
+    "idcg": 1.6309297535714575,
+    "ideal_ranks": [
+     1,
+     2
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_20",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "query": "A provider affixes a digital CE marking to a high-risk AI system in a way that cannot be accessed via the interface from which the system is accessed. What must the market surveillance authority require?",
+   "top10": [
+    "eu_ai_act:rct_129",
+    "eu_ai_act:art_48",
+    "eu_ai_act:rct_161",
+    "eu_ai_act:art_80#p1",
+    "eu_ai_act:art_83",
+    "eu_ai_act:art_74#p3",
+    "eu_ai_act:art_75",
+    "eu_ai_act:art_82",
+    "eu_ai_act:art_24#p1",
+    "eu_ai_act:rct_130"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_83"
+    ],
+    [
+     "eu_ai_act:art_48"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 5,
+     "first_satisfying_chunk": "eu_ai_act:art_83",
+     "satisfying_units": [
+      "eu_ai_act:art_83"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 2,
+     "first_satisfying_chunk": "eu_ai_act:art_48",
+     "satisfying_units": [
+      "eu_ai_act:art_48"
+     ]
+    }
+   ],
+   "carrier_count": 2,
+   "metrics": {
+    "precision_at_10": 0.2,
+    "matching_chunks": 2,
+    "k": 10,
+    "carrier_count": 2,
+    "carriers_in_top10": [
+     "eu_ai_act:art_48",
+     "eu_ai_act:art_83"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 2,
+    "slots_total": 2,
+    "mrr": 0.5,
+    "first_satisfying_rank": 2,
+    "first_satisfying_chunk": "eu_ai_act:art_48",
+    "ndcg_at_10": 0.6240505200038379,
+    "dcg": 1.0177825608059992,
+    "idcg": 1.6309297535714575,
+    "ideal_ranks": [
+     1,
+     2
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_21",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "query": "Which criminal offences are on the list in Annex II?",
+   "top10": [
+    "eu_ai_act:anx_II",
+    "eu_ai_act:rct_33#p1",
+    "eu_ai_act:anx_III#p3",
+    "eu_ai_act:rct_40",
+    "eu_ai_act:art_59#p2",
+    "eu_ai_act:art_78#p2",
+    "eu_ai_act:anx_I#p1",
+    "eu_ai_act:art_112#p1",
+    "eu_ai_act:art_7#p1",
+    "eu_ai_act:rct_41"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:anx_II"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:anx_II",
+     "satisfying_units": [
+      "eu_ai_act:anx_II"
+     ]
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [
+     "eu_ai_act:anx_II"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "eu_ai_act:anx_II",
+    "ndcg_at_10": 1.0,
+    "dcg": 1.0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_22",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "query": "From what date does the EU AI Act apply?",
+   "top10": [
+    "eu_ai_act:rct_179",
+    "eu_ai_act:art_110",
+    "eu_ai_act:art_2#p2",
+    "eu_ai_act:art_74#p1",
+    "eu_ai_act:art_113",
+    "eu_ai_act:art_108#p1",
+    "eu_ai_act:rct_46",
+    "eu_ai_act:art_2#p1",
+    "eu_ai_act:art_111",
+    "eu_ai_act:art_94"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_113",
+     "eu_ai_act:rct_179"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:rct_179",
+     "satisfying_units": [
+      "eu_ai_act:rct_179",
+      "eu_ai_act:art_113"
+     ]
+    }
+   ],
+   "carrier_count": 2,
+   "metrics": {
+    "precision_at_10": 0.2,
+    "matching_chunks": 2,
+    "k": 10,
+    "carrier_count": 2,
+    "carriers_in_top10": [
+     "eu_ai_act:rct_179",
+     "eu_ai_act:art_113"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "eu_ai_act:rct_179",
+    "ndcg_at_10": 1.0,
+    "dcg": 1.0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_23",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "query": "What does a notifying authority have to give the Commission if the Commission asks for it?",
+   "top10": [
+    "eu_ai_act:art_37",
+    "eu_ai_act:art_36#p1",
+    "eu_ai_act:art_38",
+    "eu_ai_act:art_30",
+    "eu_ai_act:art_36#p2",
+    "eu_ai_act:art_28",
+    "eu_ai_act:rct_113",
+    "eu_ai_act:art_52#p1",
+    "eu_ai_act:art_33",
+    "eu_ai_act:art_46#p2"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_37"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_37",
+     "satisfying_units": [
+      "eu_ai_act:art_37"
+     ]
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [
+     "eu_ai_act:art_37"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "eu_ai_act:art_37",
+    "ndcg_at_10": 1.0,
+    "dcg": 1.0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_24",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "query": "What form must informed consent take, and who receives a copy?",
+   "top10": [
+    "eu_ai_act:art_61",
+    "nist_playbook:sub_MEASURE_2.2.transparency_documentation",
+    "nist_playbook:sub_GOVERN_5.2.transparency_documentation",
+    "nist_playbook:sub_MAP_2.3.transparency_documentation",
+    "nist_playbook:sub_MEASURE_3.2.transparency_documentation",
+    "nist_playbook:sub_GOVERN_1.7.transparency_documentation",
+    "nist_playbook:sub_GOVERN_1.6.transparency_documentation",
+    "nist_playbook:sub_MANAGE_1.4.transparency_documentation",
+    "eu_ai_act:art_60#p3",
+    "eu_ai_act:art_11"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_61"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_61",
+     "satisfying_units": [
+      "eu_ai_act:art_61"
+     ]
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [
+     "eu_ai_act:art_61"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "eu_ai_act:art_61",
+    "ndcg_at_10": 1.0,
+    "dcg": 1.0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_25",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "query": "What does high-impact capabilities mean for a general-purpose AI model?",
+   "top10": [
+    "eu_ai_act:rct_111#p1",
+    "eu_ai_act:rct_112",
+    "eu_ai_act:art_51",
+    "eu_ai_act:anx_XIII",
+    "eu_ai_act:rct_97",
+    "eu_ai_act:rct_100",
+    "eu_ai_act:rct_99",
+    "eu_ai_act:rct_163",
+    "eu_ai_act:rct_101",
+    "eu_ai_act:rct_115"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_3",
+     "eu_ai_act:rct_111"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:rct_111#p1",
+     "satisfying_units": [
+      "eu_ai_act:rct_111"
+     ]
+    }
+   ],
+   "carrier_count": 2,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 2,
+    "carriers_in_top10": [
+     "eu_ai_act:rct_111"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "eu_ai_act:rct_111#p1",
+    "ndcg_at_10": 1.0,
+    "dcg": 1.0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_26",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "query": "Which authority supervises an AI system built on a general-purpose AI model?",
+   "top10": [
+    "eu_ai_act:rct_161",
+    "eu_ai_act:art_75",
+    "eu_ai_act:rct_97",
+    "eu_ai_act:rct_113",
+    "eu_ai_act:rct_163",
+    "eu_ai_act:rct_112",
+    "eu_ai_act:rct_114",
+    "eu_ai_act:art_51",
+    "eu_ai_act:art_3#p1",
+    "eu_ai_act:rct_100"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:rct_161"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:rct_161",
+     "satisfying_units": [
+      "eu_ai_act:rct_161"
+     ]
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [
+     "eu_ai_act:rct_161"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "eu_ai_act:rct_161",
+    "ndcg_at_10": 1.0,
+    "dcg": 1.0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_27",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "query": "What is the maximum administrative fine that can be imposed on a Union institution for a prohibited practice?",
+   "top10": [
+    "eu_ai_act:art_100#p1",
+    "eu_ai_act:art_99#p2",
+    "eu_ai_act:art_101",
+    "eu_ai_act:art_100#p2",
+    "eu_ai_act:rct_46",
+    "eu_ai_act:rct_157",
+    "eu_ai_act:art_3#p7",
+    "eu_ai_act:rct_168",
+    "eu_ai_act:rct_108",
+    "eu_ai_act:art_57#p3"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_100"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_100#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_100"
+     ]
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.2,
+    "matching_chunks": 2,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [
+     "eu_ai_act:art_100"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "eu_ai_act:art_100#p1",
+    "ndcg_at_10": 1.0,
+    "dcg": 1.0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_28",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "query": "What identifying details must an importer put on a high-risk AI system?",
+   "top10": [
+    "eu_ai_act:rct_84",
+    "eu_ai_act:art_23#p1",
+    "eu_ai_act:art_24#p1",
+    "eu_ai_act:art_25#p1",
+    "eu_ai_act:art_6#p1",
+    "eu_ai_act:anx_VIII#p2",
+    "eu_ai_act:anx_VIII#p1",
+    "eu_ai_act:rct_155",
+    "eu_ai_act:rct_65",
+    "eu_ai_act:rct_72"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_23"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 2,
+     "first_satisfying_chunk": "eu_ai_act:art_23#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_23"
+     ]
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [
+     "eu_ai_act:art_23"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 0.5,
+    "first_satisfying_rank": 2,
+    "first_satisfying_chunk": "eu_ai_act:art_23#p1",
+    "ndcg_at_10": 0.6309297535714575,
+    "dcg": 0.6309297535714575,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_29",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "query": "What must a public authority deploying an Annex III system do before putting it into service?",
+   "top10": [
+    "eu_ai_act:art_49",
+    "eu_ai_act:rct_96#p1",
+    "eu_ai_act:art_111",
+    "eu_ai_act:rct_130",
+    "eu_ai_act:art_27#p1",
+    "eu_ai_act:art_7#p1",
+    "eu_ai_act:rct_131#p1",
+    "eu_ai_act:rct_177",
+    "eu_ai_act:art_71",
+    "eu_ai_act:art_80#p1"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_49"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_49",
+     "satisfying_units": [
+      "eu_ai_act:art_49"
+     ]
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [
+     "eu_ai_act:art_49"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "eu_ai_act:art_49",
+    "ndcg_at_10": 1.0,
+    "dcg": 1.0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_30",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "query": "What must providers grant market surveillance authorities access to?",
+   "top10": [
+    "eu_ai_act:art_74#p3",
+    "eu_ai_act:rct_159",
+    "eu_ai_act:art_78#p2",
+    "eu_ai_act:art_85",
+    "eu_ai_act:rct_160",
+    "eu_ai_act:rct_156",
+    "eu_ai_act:rct_161",
+    "eu_ai_act:art_77",
+    "eu_ai_act:art_75",
+    "eu_ai_act:rct_36"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_74"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_74#p3",
+     "satisfying_units": [
+      "eu_ai_act:art_74"
+     ]
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [
+     "eu_ai_act:art_74"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "eu_ai_act:art_74#p3",
+    "ndcg_at_10": 1.0,
+    "dcg": 1.0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_31",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "query": "How is a fine capped for an SME?",
+   "top10": [
+    "eu_ai_act:rct_168",
+    "eu_ai_act:rct_109",
+    "eu_ai_act:art_99#p2",
+    "eu_ai_act:art_101",
+    "eu_ai_act:rct_104",
+    "eu_ai_act:art_62",
+    "nist_ai_600_1:act_MG-3.1-001",
+    "eu_ai_act:art_11",
+    "nist_ai_600_1:act_MS-2.7-008",
+    "nist_ai_600_1:act_MS-2.6-003"
+   ],
+   "gold_slots": [
+    [
+     "eu_ai_act:art_99"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 3,
+     "first_satisfying_chunk": "eu_ai_act:art_99#p2",
+     "satisfying_units": [
+      "eu_ai_act:art_99"
+     ]
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [
+     "eu_ai_act:art_99"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 0.3333333333333333,
+    "first_satisfying_rank": 3,
+    "first_satisfying_chunk": "eu_ai_act:art_99#p2",
+    "ndcg_at_10": 0.5,
+    "dcg": 0.5,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_32",
+   "type": "single_hop",
+   "subtype": "nist_ai_100_1",
+   "query": "At what points in an AI system's lifecycle should privacy and cybersecurity risk management be applied?",
+   "top10": [
+    "nist_ai_100_1:app_B#p2",
+    "eu_ai_act:rct_114",
+    "nist_ai_100_1:sec_1.2.4",
+    "eu_ai_act:rct_76",
+    "nist_playbook:sub_MANAGE_1.1.about",
+    "eu_ai_act:rct_115",
+    "nist_ai_100_1:sec_3#p2",
+    "eu_ai_act:rct_65",
+    "nist_playbook:sub_MEASURE_2.7.references",
+    "nist_ai_100_1:exec_summary#p3"
+   ],
+   "gold_slots": [
+    [
+     "nist_ai_100_1:app_B"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "nist_ai_100_1:app_B#p2",
+     "satisfying_units": [
+      "nist_ai_100_1:app_B"
+     ]
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [
+     "nist_ai_100_1:app_B"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "nist_ai_100_1:app_B#p2",
+    "ndcg_at_10": 1.0,
+    "dcg": 1.0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_33",
+   "type": "single_hop",
+   "subtype": "nist_ai_100_1",
+   "query": "What must an organisation do about the risks and benefits that come from third-party AI resources?",
+   "top10": [
+    "nist_ai_100_1:cat_MANAGE_3",
+    "nist_ai_100_1:sub_MANAGE_3.1",
+    "nist_ai_600_1:sub_MANAGE_3.1",
+    "nist_playbook:sub_MANAGE_3.1.about",
+    "nist_playbook:sub_MANAGE_3.1",
+    "nist_ai_100_1:cat_GOVERN_6",
+    "nist_playbook:sub_MANAGE_3.1.suggested_actions",
+    "nist_playbook:sub_MAP_4.2.about",
+    "nist_ai_100_1:cat_MAP_4",
+    "nist_playbook:sub_GOVERN_6.1.about"
+   ],
+   "gold_slots": [
+    [
+     "nist_ai_100_1:sub_MANAGE_3.1",
+     "nist_ai_600_1:sub_MANAGE_3.1",
+     "nist_playbook:sub_MANAGE_3.1"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 2,
+     "first_satisfying_chunk": "nist_ai_100_1:sub_MANAGE_3.1",
+     "satisfying_units": [
+      "nist_ai_100_1:sub_MANAGE_3.1",
+      "nist_ai_600_1:sub_MANAGE_3.1",
+      "nist_playbook:sub_MANAGE_3.1"
+     ]
+    }
+   ],
+   "carrier_count": 3,
+   "metrics": {
+    "precision_at_10": 0.3,
+    "matching_chunks": 3,
+    "k": 10,
+    "carrier_count": 3,
+    "carriers_in_top10": [
+     "nist_ai_100_1:sub_MANAGE_3.1",
+     "nist_ai_600_1:sub_MANAGE_3.1",
+     "nist_playbook:sub_MANAGE_3.1"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 0.5,
+    "first_satisfying_rank": 2,
+    "first_satisfying_chunk": "nist_ai_100_1:sub_MANAGE_3.1",
+    "ndcg_at_10": 0.6309297535714575,
+    "dcg": 0.6309297535714575,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_34",
+   "type": "single_hop",
+   "subtype": "nist_ai_100_1",
+   "query": "How does an organisation decide which measurement approaches and metrics to implement for the AI risks identified during MAP?",
+   "top10": [
+    "nist_ai_100_1:sub_MEASURE_1.1",
+    "nist_ai_600_1:sub_MEASURE_1.1",
+    "nist_playbook:sub_MEASURE_1.1",
+    "nist_playbook:sub_MEASURE_1.1.suggested_actions",
+    "nist_playbook:sub_MEASURE_1.1.about",
+    "nist_ai_100_1:sec_1.2.1#p1",
+    "nist_ai_100_1:sec_5.3",
+    "nist_playbook:sub_MEASURE_2.6",
+    "nist_ai_100_1:sub_MEASURE_2.6",
+    "nist_ai_600_1:sub_MEASURE_2.6"
+   ],
+   "gold_slots": [
+    [
+     "nist_ai_100_1:sub_MEASURE_1.1",
+     "nist_ai_600_1:sub_MEASURE_1.1",
+     "nist_playbook:sub_MEASURE_1.1"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "nist_ai_100_1:sub_MEASURE_1.1",
+     "satisfying_units": [
+      "nist_ai_100_1:sub_MEASURE_1.1",
+      "nist_ai_600_1:sub_MEASURE_1.1",
+      "nist_playbook:sub_MEASURE_1.1"
+     ]
+    }
+   ],
+   "carrier_count": 3,
+   "metrics": {
+    "precision_at_10": 0.3,
+    "matching_chunks": 3,
+    "k": 10,
+    "carrier_count": 3,
+    "carriers_in_top10": [
+     "nist_ai_100_1:sub_MEASURE_1.1",
+     "nist_ai_600_1:sub_MEASURE_1.1",
+     "nist_playbook:sub_MEASURE_1.1"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "nist_ai_100_1:sub_MEASURE_1.1",
+    "ndcg_at_10": 1.0,
+    "dcg": 1.0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_35",
+   "type": "single_hop",
+   "subtype": "nist_ai_100_1",
+   "query": "Which question does each of transparency, explainability and interpretability answer about an AI system?",
+   "top10": [
+    "nist_playbook:sub_MEASURE_2.9.about",
+    "nist_ai_100_1:sec_3.5",
+    "nist_playbook:sub_MEASURE_4.2.transparency_documentation",
+    "nist_playbook:sub_MEASURE_2.9.transparency_documentation",
+    "nist_playbook:sub_GOVERN_6.1.transparency_documentation",
+    "nist_playbook:sub_MEASURE_2.7.transparency_documentation",
+    "nist_playbook:sub_MANAGE_3.1.transparency_documentation",
+    "nist_playbook:sub_MEASURE_2.8.about",
+    "nist_playbook:sub_MAP_5.1.transparency_documentation",
+    "nist_playbook:sub_MEASURE_4.2.about"
+   ],
+   "gold_slots": [
+    [
+     "nist_ai_100_1:sec_3.5"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 2,
+     "first_satisfying_chunk": "nist_ai_100_1:sec_3.5",
+     "satisfying_units": [
+      "nist_ai_100_1:sec_3.5"
+     ]
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [
+     "nist_ai_100_1:sec_3.5"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 0.5,
+    "first_satisfying_rank": 2,
+    "first_satisfying_chunk": "nist_ai_100_1:sec_3.5",
+    "ndcg_at_10": 0.6309297535714575,
+    "dcg": 0.6309297535714575,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_36",
+   "type": "single_hop",
+   "subtype": "nist_ai_100_1",
+   "query": "What organizational practices must be in place, and what do they enable?",
+   "top10": [
+    "nist_ai_100_1:sub_GOVERN_4.3",
+    "nist_ai_600_1:sub_GOVERN_4.3",
+    "nist_playbook:sub_GOVERN_4.3",
+    "nist_ai_100_1:sub_GOVERN_5.1",
+    "nist_ai_600_1:sub_GOVERN_5.1",
+    "nist_ai_600_1:sub_GOVERN_4.1",
+    "nist_ai_100_1:sub_GOVERN_4.1",
+    "nist_playbook:sub_GOVERN_5.1",
+    "nist_playbook:sub_GOVERN_4.1",
+    "nist_ai_100_1:sub_GOVERN_1.3"
+   ],
+   "gold_slots": [
+    [
+     "nist_ai_100_1:sub_GOVERN_4.3",
+     "nist_ai_600_1:sub_GOVERN_4.3",
+     "nist_playbook:sub_GOVERN_4.3"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "nist_ai_100_1:sub_GOVERN_4.3",
+     "satisfying_units": [
+      "nist_ai_100_1:sub_GOVERN_4.3",
+      "nist_ai_600_1:sub_GOVERN_4.3",
+      "nist_playbook:sub_GOVERN_4.3"
+     ]
+    }
+   ],
+   "carrier_count": 3,
+   "metrics": {
+    "precision_at_10": 0.3,
+    "matching_chunks": 3,
+    "k": 10,
+    "carrier_count": 3,
+    "carriers_in_top10": [
+     "nist_ai_100_1:sub_GOVERN_4.3",
+     "nist_ai_600_1:sub_GOVERN_4.3",
+     "nist_playbook:sub_GOVERN_4.3"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "nist_ai_100_1:sub_GOVERN_4.3",
+    "ndcg_at_10": 1.0,
+    "dcg": 1.0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_37",
+   "type": "single_hop",
+   "subtype": "nist_ai_600_1",
+   "query": "What will physically making and using chemical or biological agents still require, even as generative AI improves?",
+   "top10": [
+    "nist_ai_600_1:sec_2.1",
+    "nist_ai_600_1:sec_2.5",
+    "nist_ai_600_1:app_B#p5",
+    "eu_ai_act:rct_110",
+    "eu_ai_act:rct_99",
+    "nist_playbook:sub_MEASURE_2.3.transparency_documentation",
+    "nist_playbook:sub_MEASURE_2.3.about",
+    "nist_ai_600_1:app_B#p6",
+    "nist_ai_600_1:sec_1#p2",
+    "nist_playbook:sub_MEASURE_2.4.transparency_documentation"
+   ],
+   "gold_slots": [
+    [
+     "nist_ai_600_1:sec_2.1"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "nist_ai_600_1:sec_2.1",
+     "satisfying_units": [
+      "nist_ai_600_1:sec_2.1"
+     ]
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [
+     "nist_ai_600_1:sec_2.1"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 1.0,
+    "first_satisfying_rank": 1,
+    "first_satisfying_chunk": "nist_ai_600_1:sec_2.1",
+    "ndcg_at_10": 1.0,
+    "dcg": 1.0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_38",
+   "type": "single_hop",
+   "subtype": "nist_ai_600_1",
+   "query": "Which privacy principles does NIST say are put at risk when personal data is used to train generative AI?",
+   "top10": [
+    "eu_ai_act:rct_69",
+    "nist_ai_600_1:sec_2.4",
+    "nist_ai_600_1:sec_1#p2",
+    "nist_ai_100_1:app_B#p2",
+    "eu_ai_act:rct_54",
+    "nist_ai_600_1:sec_2.10",
+    "nist_playbook:sub_MEASURE_2.10.references#p1",
+    "eu_ai_act:art_10#p2",
+    "nist_playbook:sub_MEASURE_2.10.suggested_actions",
+    "eu_ai_act:rct_67"
+   ],
+   "gold_slots": [
+    [
+     "nist_ai_600_1:sec_2.4"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 2,
+     "first_satisfying_chunk": "nist_ai_600_1:sec_2.4",
+     "satisfying_units": [
+      "nist_ai_600_1:sec_2.4"
+     ]
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [
+     "nist_ai_600_1:sec_2.4"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 0.5,
+    "first_satisfying_rank": 2,
+    "first_satisfying_chunk": "nist_ai_600_1:sec_2.4",
+    "ndcg_at_10": 0.6309297535714575,
+    "dcg": 0.6309297535714575,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_39",
+   "type": "multi_hop",
+   "subtype": "action_subcategory",
+   "query": "What does the parent subcategory require, for this action? Evaluate feedback loops between GAI system content provenance and human\nreviewers, and update where needed. Implement real-time monitoring systems\nto affirm that content provenance protocols remain effective.",
+   "top10": [
+    "nist_ai_600_1:act_MG-2.2-003",
+    "nist_ai_600_1:act_MG-4.1-007",
+    "nist_ai_600_1:act_MG-3.2-006",
+    "nist_ai_600_1:sec_A.1.7",
+    "nist_ai_600_1:sec_A.1.6#p2",
+    "nist_ai_600_1:act_MS-2.10-002",
+    "nist_ai_600_1:sec_A.1.6#p1",
+    "nist_ai_600_1:act_MS-4.2-004",
+    "nist_ai_600_1:act_GV-1.5-001",
+    "nist_ai_600_1:act_MS-3.3-002"
+   ],
+   "gold_slots": [
+    [
+     "nist_ai_100_1:sub_MANAGE_2.2",
+     "nist_ai_600_1:sub_MANAGE_2.2",
+     "nist_playbook:sub_MANAGE_2.2"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "carrier_count": 3,
+   "metrics": {
+    "precision_at_10": 0.0,
+    "matching_chunks": 0,
+    "k": 10,
+    "carrier_count": 3,
+    "carriers_in_top10": [],
+    "recall_at_10": 0.0,
+    "slots_satisfied": 0,
+    "slots_total": 1,
+    "mrr": 0.0,
+    "first_satisfying_rank": null,
+    "first_satisfying_chunk": null,
+    "ndcg_at_10": 0.0,
+    "dcg": 0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_40",
+   "type": "multi_hop",
+   "subtype": "action_subcategory",
+   "query": "What does the parent subcategory require, for this action? Assess the accuracy, quality, reliability, and authenticity of GAI output by\ncomparing it to a set of known ground truth data and by using a variety of\nevaluation methods (e.g., human oversight and automated evaluation, proven\ncryptographic techniques, review of content inputs).",
+   "top10": [
+    "nist_ai_600_1:act_MP-2.3-001",
+    "nist_playbook:sub_MEASURE_1.1.transparency_documentation",
+    "nist_playbook:sub_MEASURE_2.13.transparency_documentation",
+    "nist_ai_600_1:sec_A.1.6#p1",
+    "nist_ai_600_1:act_MS-2.7-005",
+    "nist_ai_600_1:act_MP-2.3-003",
+    "nist_playbook:sub_MEASURE_2.2.suggested_actions",
+    "nist_ai_600_1:act_GV-1.5-003",
+    "nist_playbook:sub_MEASURE_1.2.transparency_documentation",
+    "nist_playbook:sub_MEASURE_1.1.suggested_actions"
+   ],
+   "gold_slots": [
+    [
+     "nist_ai_100_1:sub_MAP_2.3",
+     "nist_ai_600_1:sub_MAP_2.3",
+     "nist_playbook:sub_MAP_2.3"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "carrier_count": 3,
+   "metrics": {
+    "precision_at_10": 0.0,
+    "matching_chunks": 0,
+    "k": 10,
+    "carrier_count": 3,
+    "carriers_in_top10": [],
+    "recall_at_10": 0.0,
+    "slots_satisfied": 0,
+    "slots_total": 1,
+    "mrr": 0.0,
+    "first_satisfying_rank": null,
+    "first_satisfying_chunk": null,
+    "ndcg_at_10": 0.0,
+    "dcg": 0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_41",
+   "type": "multi_hop",
+   "subtype": "action_subcategory",
+   "query": "What does the parent subcategory require, for this action? Provide human subjects with options to withdraw participation or revoke their\nconsent for present or future use of their data in GAI applications.",
+   "top10": [
+    "nist_ai_600_1:act_MS-2.2-003",
+    "nist_playbook:sub_MEASURE_2.2.suggested_actions",
+    "nist_playbook:sub_MEASURE_2.2.transparency_documentation",
+    "nist_ai_600_1:sec_A.1.3",
+    "nist_playbook:sub_MEASURE_2.2.about",
+    "nist_ai_600_1:sec_A.1.2",
+    "nist_ai_600_1:sec_A.1.5#p2",
+    "eu_ai_act:rct_141",
+    "nist_ai_600_1:act_GV-3.2-003",
+    "nist_ai_600_1:sec_2.4"
+   ],
+   "gold_slots": [
+    [
+     "nist_ai_100_1:sub_MEASURE_2.2",
+     "nist_ai_600_1:sub_MEASURE_2.2",
+     "nist_playbook:sub_MEASURE_2.2"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "carrier_count": 3,
+   "metrics": {
+    "precision_at_10": 0.0,
+    "matching_chunks": 0,
+    "k": 10,
+    "carrier_count": 3,
+    "carriers_in_top10": [],
+    "recall_at_10": 0.0,
+    "slots_satisfied": 0,
+    "slots_total": 1,
+    "mrr": 0.0,
+    "first_satisfying_rank": null,
+    "first_satisfying_chunk": null,
+    "ndcg_at_10": 0.0,
+    "dcg": 0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_42",
+   "type": "multi_hop",
+   "subtype": "action_subcategory",
+   "query": "What does the parent subcategory require, for this action? Establish policies for user feedback mechanisms for GAI systems which include\nthorough instructions and any mechanisms for recourse.",
+   "top10": [
+    "nist_ai_600_1:act_GV-3.2-004",
+    "nist_playbook:sub_GOVERN_5.1.suggested_actions",
+    "nist_playbook:sub_GOVERN_1.5.suggested_actions",
+    "nist_playbook:sub_GOVERN_6.1.suggested_actions",
+    "nist_ai_600_1:act_GV-1.5-002",
+    "nist_ai_600_1:act_GV-4.3-003",
+    "nist_playbook:sub_MEASURE_4.1.suggested_actions",
+    "nist_playbook:sub_GOVERN_1.3.suggested_actions",
+    "nist_ai_600_1:act_GV-6.2-006",
+    "nist_playbook:sub_MEASURE_3.3.suggested_actions"
+   ],
+   "gold_slots": [
+    [
+     "nist_ai_100_1:sub_GOVERN_3.2",
+     "nist_ai_600_1:sub_GOVERN_3.2",
+     "nist_playbook:sub_GOVERN_3.2"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "carrier_count": 3,
+   "metrics": {
+    "precision_at_10": 0.0,
+    "matching_chunks": 0,
+    "k": 10,
+    "carrier_count": 3,
+    "carriers_in_top10": [],
+    "recall_at_10": 0.0,
+    "slots_satisfied": 0,
+    "slots_total": 1,
+    "mrr": 0.0,
+    "first_satisfying_rank": null,
+    "first_satisfying_chunk": null,
+    "ndcg_at_10": 0.0,
+    "dcg": 0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_43",
+   "type": "near_miss",
+   "subtype": "block_clusters",
+   "query": "Which AI transparency resources does the Playbook list under GOVERN 2.3?",
+   "top10": [
+    "nist_playbook:sub_MAP_3.3.ai_transparency_resources",
+    "nist_playbook:sub_MAP_3.1.ai_transparency_resources",
+    "nist_playbook:sub_MAP_3.2.ai_transparency_resources",
+    "nist_playbook:sub_MAP_5.1.ai_transparency_resources",
+    "nist_playbook:sub_MAP_4.2.ai_transparency_resources",
+    "nist_playbook:sub_MAP_5.2.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_1.1.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_3.1.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_1.2.ai_transparency_resources",
+    "nist_playbook:sub_MAP_1.3.ai_transparency_resources"
+   ],
+   "gold_slots": [
+    [
+     "nist_playbook:sub_GOVERN_2.3.ai_transparency_resources"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.0,
+    "matching_chunks": 0,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [],
+    "recall_at_10": 0.0,
+    "slots_satisfied": 0,
+    "slots_total": 1,
+    "mrr": 0.0,
+    "first_satisfying_rank": null,
+    "first_satisfying_chunk": null,
+    "ndcg_at_10": 0.0,
+    "dcg": 0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_44",
+   "type": "near_miss",
+   "subtype": "block_clusters",
+   "query": "Which AI transparency resources does the Playbook list under MANAGE 3.1?",
+   "top10": [
+    "nist_playbook:sub_MAP_3.3.ai_transparency_resources",
+    "nist_ai_600_1:act_MG-3.1-005",
+    "nist_playbook:sub_MAP_3.1.ai_transparency_resources",
+    "nist_playbook:sub_MAP_3.2.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_3.2.transparency_documentation",
+    "nist_playbook:sub_GOVERN_1.1.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_1.2.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_3.1.ai_transparency_resources",
+    "nist_ai_100_1:sub_MANAGE_3.1",
+    "nist_playbook:sub_MAP_4.2.ai_transparency_resources"
+   ],
+   "gold_slots": [
+    [
+     "nist_playbook:sub_MANAGE_3.1.ai_transparency_resources"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.0,
+    "matching_chunks": 0,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [],
+    "recall_at_10": 0.0,
+    "slots_satisfied": 0,
+    "slots_total": 1,
+    "mrr": 0.0,
+    "first_satisfying_rank": null,
+    "first_satisfying_chunk": null,
+    "ndcg_at_10": 0.0,
+    "dcg": 0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_45",
+   "type": "near_miss",
+   "subtype": "block_clusters",
+   "query": "Which AI transparency resources does the Playbook list under MAP 5.1?",
+   "top10": [
+    "nist_playbook:sub_MAP_3.3.ai_transparency_resources",
+    "nist_playbook:sub_MAP_3.1.ai_transparency_resources",
+    "nist_playbook:sub_MAP_3.2.ai_transparency_resources",
+    "nist_playbook:sub_MAP_5.1.about",
+    "nist_playbook:sub_MAP_4.2.ai_transparency_resources",
+    "nist_playbook:sub_MAP_1.3.ai_transparency_resources",
+    "nist_playbook:sub_MAP_5.1.ai_transparency_resources",
+    "nist_playbook:sub_MAP_5.2.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_3.1.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_1.1.ai_transparency_resources"
+   ],
+   "gold_slots": [
+    [
+     "nist_playbook:sub_MAP_5.1.ai_transparency_resources"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 7,
+     "first_satisfying_chunk": "nist_playbook:sub_MAP_5.1.ai_transparency_resources",
+     "satisfying_units": [
+      "nist_playbook:sub_MAP_5.1.ai_transparency_resources"
+     ]
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.1,
+    "matching_chunks": 1,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [
+     "nist_playbook:sub_MAP_5.1.ai_transparency_resources"
+    ],
+    "recall_at_10": 1.0,
+    "slots_satisfied": 1,
+    "slots_total": 1,
+    "mrr": 0.14285714285714285,
+    "first_satisfying_rank": 7,
+    "first_satisfying_chunk": "nist_playbook:sub_MAP_5.1.ai_transparency_resources",
+    "ndcg_at_10": 0.3333333333333333,
+    "dcg": 0.3333333333333333,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_46",
+   "type": "near_miss",
+   "subtype": "near_duplicate",
+   "query": "Which AI transparency resources does the Playbook list under MAP 3.4?",
+   "top10": [
+    "nist_playbook:sub_MAP_3.3.ai_transparency_resources",
+    "nist_playbook:sub_MAP_3.1.ai_transparency_resources",
+    "nist_playbook:sub_MAP_3.2.ai_transparency_resources",
+    "nist_playbook:sub_MAP_4.2.ai_transparency_resources",
+    "nist_playbook:sub_MAP_1.3.ai_transparency_resources",
+    "nist_ai_100_1:sec_3.4",
+    "nist_playbook:sub_MAP_5.1.ai_transparency_resources",
+    "nist_playbook:sub_MAP_5.2.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_3.1.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_1.1.ai_transparency_resources"
+   ],
+   "gold_slots": [
+    [
+     "nist_playbook:sub_MAP_3.4.ai_transparency_resources"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.0,
+    "matching_chunks": 0,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [],
+    "recall_at_10": 0.0,
+    "slots_satisfied": 0,
+    "slots_total": 1,
+    "mrr": 0.0,
+    "first_satisfying_rank": null,
+    "first_satisfying_chunk": null,
+    "ndcg_at_10": 0.0,
+    "dcg": 0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_47",
+   "type": "near_miss",
+   "subtype": "near_duplicate",
+   "query": "Which AI transparency resources does the Playbook list under MEASURE 2.5?",
+   "top10": [
+    "nist_playbook:sub_MAP_3.3.ai_transparency_resources",
+    "nist_playbook:sub_MAP_3.1.ai_transparency_resources",
+    "nist_playbook:sub_MAP_3.2.ai_transparency_resources",
+    "nist_playbook:sub_MAP_4.2.ai_transparency_resources",
+    "nist_playbook:sub_MAP_5.1.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_1.1.ai_transparency_resources",
+    "nist_playbook:sub_MAP_1.3.ai_transparency_resources",
+    "nist_playbook:sub_MAP_5.2.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_1.2.ai_transparency_resources",
+    "nist_playbook:sub_MEASURE_4.2.about"
+   ],
+   "gold_slots": [
+    [
+     "nist_playbook:sub_MEASURE_2.5.ai_transparency_resources"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.0,
+    "matching_chunks": 0,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [],
+    "recall_at_10": 0.0,
+    "slots_satisfied": 0,
+    "slots_total": 1,
+    "mrr": 0.0,
+    "first_satisfying_rank": null,
+    "first_satisfying_chunk": null,
+    "ndcg_at_10": 0.0,
+    "dcg": 0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_48",
+   "type": "near_miss",
+   "subtype": "near_duplicate",
+   "query": "Which AI transparency resources does the Playbook list under MANAGE 4.2?",
+   "top10": [
+    "nist_playbook:sub_MAP_3.3.ai_transparency_resources",
+    "nist_playbook:sub_MAP_3.1.ai_transparency_resources",
+    "nist_playbook:sub_MAP_3.2.ai_transparency_resources",
+    "nist_playbook:sub_MAP_1.3.ai_transparency_resources",
+    "nist_playbook:sub_MAP_4.2.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_3.1.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_1.1.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_3.2.transparency_documentation",
+    "nist_playbook:sub_GOVERN_1.2.ai_transparency_resources",
+    "nist_playbook:sub_MAP_3.4.transparency_documentation"
+   ],
+   "gold_slots": [
+    [
+     "nist_playbook:sub_MANAGE_4.2.ai_transparency_resources"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.0,
+    "matching_chunks": 0,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [],
+    "recall_at_10": 0.0,
+    "slots_satisfied": 0,
+    "slots_total": 1,
+    "mrr": 0.0,
+    "first_satisfying_rank": null,
+    "first_satisfying_chunk": null,
+    "ndcg_at_10": 0.0,
+    "dcg": 0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_49",
+   "type": "near_miss",
+   "subtype": "near_duplicate",
+   "query": "Which AI transparency resources does the Playbook list under MANAGE 1.3?",
+   "top10": [
+    "nist_playbook:sub_MAP_3.3.ai_transparency_resources",
+    "nist_playbook:sub_MAP_3.1.ai_transparency_resources",
+    "nist_playbook:sub_MAP_3.2.ai_transparency_resources",
+    "nist_playbook:sub_MAP_4.2.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_3.1.ai_transparency_resources",
+    "nist_playbook:sub_MAP_1.3.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_1.1.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_1.2.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_3.2.transparency_documentation",
+    "nist_playbook:sub_MAP_3.4.transparency_documentation"
+   ],
+   "gold_slots": [
+    [
+     "nist_playbook:sub_MANAGE_1.3.ai_transparency_resources"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.0,
+    "matching_chunks": 0,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [],
+    "recall_at_10": 0.0,
+    "slots_satisfied": 0,
+    "slots_total": 1,
+    "mrr": 0.0,
+    "first_satisfying_rank": null,
+    "first_satisfying_chunk": null,
+    "ndcg_at_10": 0.0,
+    "dcg": 0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  },
+  {
+   "id": "test_50",
+   "type": "near_miss",
+   "subtype": "near_duplicate",
+   "query": "Which AI transparency resources does the Playbook list under MANAGE 4.3?",
+   "top10": [
+    "nist_playbook:sub_MAP_3.3.ai_transparency_resources",
+    "nist_playbook:sub_MAP_3.1.ai_transparency_resources",
+    "nist_playbook:sub_MAP_3.2.ai_transparency_resources",
+    "nist_playbook:sub_MAP_4.2.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_3.1.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_1.1.ai_transparency_resources",
+    "nist_playbook:sub_MAP_1.3.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_1.2.ai_transparency_resources",
+    "nist_playbook:sub_GOVERN_3.2.transparency_documentation",
+    "nist_playbook:sub_MAP_3.4.transparency_documentation"
+   ],
+   "gold_slots": [
+    [
+     "nist_playbook:sub_MANAGE_4.3.ai_transparency_resources"
+    ]
+   ],
+   "slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "carrier_count": 1,
+   "metrics": {
+    "precision_at_10": 0.0,
+    "matching_chunks": 0,
+    "k": 10,
+    "carrier_count": 1,
+    "carriers_in_top10": [],
+    "recall_at_10": 0.0,
+    "slots_satisfied": 0,
+    "slots_total": 1,
+    "mrr": 0.0,
+    "first_satisfying_rank": null,
+    "first_satisfying_chunk": null,
+    "ndcg_at_10": 0.0,
+    "dcg": 0,
+    "idcg": 1.0,
+    "ideal_ranks": [
+     1
+    ]
+   },
+   "metrics_note": null
+  }
+ ],
+ "aggregates": {
+  "overall": {
+   "n_queries": 42,
+   "precision_at_10": 0.12142857142857144,
+   "recall_at_10": 0.6785714285714286,
+   "mrr": 0.5518140589569162,
+   "ndcg_at_10": 0.557966982966463,
+   "carrier_count_min": 1,
+   "carrier_count_max": 3,
+   "carrier_count_median": 2
+  },
+  "by_stratum": {
+   "adversarial/iso": {
+    "n_queries": 0
+   },
+   "adversarial/nonexistent_identifier": {
+    "n_queries": 0
+   },
+   "adversarial/out_of_domain": {
+    "n_queries": 0
+   },
+   "multi_hop/action_subcategory": {
+    "n_queries": 4,
+    "precision_at_10": 0.0,
+    "recall_at_10": 0.0,
+    "mrr": 0.0,
+    "ndcg_at_10": 0.0,
+    "carrier_count_min": 3,
+    "carrier_count_max": 3,
+    "carrier_count_median": 3
+   },
+   "multi_hop/eu_internal_xref": {
+    "n_queries": 12,
+    "precision_at_10": 0.19999999999999998,
+    "recall_at_10": 0.7916666666666666,
+    "mrr": 0.6416666666666667,
+    "ndcg_at_10": 0.5897967447476901,
+    "carrier_count_min": 2,
+    "carrier_count_max": 2,
+    "carrier_count_median": 2
+   },
+   "near_miss/block_clusters": {
+    "n_queries": 3,
+    "precision_at_10": 0.03333333333333333,
+    "recall_at_10": 0.3333333333333333,
+    "mrr": 0.047619047619047616,
+    "ndcg_at_10": 0.1111111111111111,
+    "carrier_count_min": 1,
+    "carrier_count_max": 1,
+    "carrier_count_median": 1
+   },
+   "near_miss/near_duplicate": {
+    "n_queries": 5,
+    "precision_at_10": 0.0,
+    "recall_at_10": 0.0,
+    "mrr": 0.0,
+    "ndcg_at_10": 0.0,
+    "carrier_count_min": 1,
+    "carrier_count_max": 1,
+    "carrier_count_median": 1
+   },
+   "single_hop/eu_ai_act": {
+    "n_queries": 11,
+    "precision_at_10": 0.11818181818181818,
+    "recall_at_10": 1.0,
+    "mrr": 0.893939393939394,
+    "ndcg_at_10": 0.9209936139610416,
+    "carrier_count_min": 1,
+    "carrier_count_max": 2,
+    "carrier_count_median": 1
+   },
+   "single_hop/nist_ai_100_1": {
+    "n_queries": 5,
+    "precision_at_10": 0.22000000000000003,
+    "recall_at_10": 1.0,
+    "mrr": 0.8,
+    "ndcg_at_10": 0.8523719014285831,
+    "carrier_count_min": 1,
+    "carrier_count_max": 3,
+    "carrier_count_median": 3
+   },
+   "single_hop/nist_ai_600_1": {
+    "n_queries": 2,
+    "precision_at_10": 0.1,
+    "recall_at_10": 1.0,
+    "mrr": 0.75,
+    "ndcg_at_10": 0.8154648767857288,
+    "carrier_count_min": 1,
+    "carrier_count_max": 1,
+    "carrier_count_median": 1
+   }
+  }
+ }
+}

@@ -85,7 +85,13 @@ def score_set(query_set: QuerySet, top10_by_id: dict[str, list[str]]) -> dict:
         "produced_by": "python -m src.score.run_retrieval_eval",
         "reproducibility_level": 1,
         "query_set": query_set.name,
-        "queries": queries,
+        # `retrieval`, not `queries`. eval/dev_retrieval_results.json names its per-query list
+        # `retrieval` and tests/test_query_embeddings_provenance.py reads that key. The first run
+        # of this module wrote `queries` and the provenance check, which had been skipping behind
+        # the gate and ran for the first time the moment the artifact existed, failed on a
+        # KeyError. Two names for one thing across two results files is the drift a shared reader
+        # cannot absorb, so this follows the existing artifact rather than the other way round.
+        "retrieval": queries,
         "aggregates": {
             "overall": aggregate(queries),
             "by_stratum": {k: aggregate(v) for k, v in sorted(by_stratum.items())},

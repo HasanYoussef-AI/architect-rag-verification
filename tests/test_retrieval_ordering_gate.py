@@ -97,10 +97,15 @@ def test_no_registered_set_declares_a_null_results_path():
 def test_the_registry_reflects_the_repository_as_it_stands():
     """Both registered sets, and which of them is gated right now, from the files themselves.
 
-    Live in both directions today and asserted to be: the development set has committed results
-    and is open, the sealed test set does not and is closed. When the sealed set's results land
-    this test is what turns red, and it should, because it is the record of which side of the
-    ordering the repository is on.
+    FLIPPED AT THE RESULTS COMMIT, which is what this test exists to force. Until then it read
+    that the sealed set had no results and was gated, and it turned red the moment
+    eval/test_retrieval_results.json was written. That red was designed: it is the one place the
+    repository records which side of the retrieval ordering it is on, and the flip is landed in
+    the same commit as the artifact so no commit in history has the two disagreeing.
+
+    Both sets are now open, and both are asserted open from the files rather than from a literal.
+    Nothing here can be satisfied by editing a flag: deleting either results file turns this red
+    again, which is the property the superseded gate did not have.
     """
     by_name = {q.name: q for q in QUERY_SETS}
     assert set(by_name) == {"development", "test"}
@@ -110,11 +115,12 @@ def test_the_registry_reflects_the_repository_as_it_stands():
     assert dev.rank_reproduction_gated is False
 
     sealed = by_name["test"]
-    assert not sealed.results.exists(), (
-        f"{sealed.results} exists. Retrieval has run on the sealed set, so this test and the two "
-        "provenance skips it governs both change together, deliberately and in one commit"
+    assert sealed.results.exists(), (
+        f"{sealed.results} is missing. Retrieval has run on the sealed set and its results are "
+        "committed, so this file's absence means the artifact was removed rather than that the "
+        "ordering was restored; the two provenance checks this governs would silently skip again"
     )
-    assert sealed.rank_reproduction_gated is True
+    assert sealed.rank_reproduction_gated is False
 
 
 def test_the_gate_is_not_consulted_by_the_outcome_guard():
