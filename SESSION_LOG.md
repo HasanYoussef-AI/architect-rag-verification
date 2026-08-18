@@ -4,6 +4,232 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-18, retrieval on the sealed fifty, and the ordering spent
+
+The first result exists. Retrieval ran once on the fifty through the committed retriever, its
+metrics are frozen in `eval/test_retrieval_results.json`, and from this commit the sealed set and
+`PREREGISTRATION.md` move only by a logged Rule 4 correction. The two provenance checks that had
+skipped since the query set was committed now run and pass, which is the ordering's own evidence:
+they could not have passed before the results existed and cannot skip after.
+
+### The run
+
+One command, `python -m src.score.run_retrieval_eval`, exit 0, no key, no API, no model.
+Reproducibility level 1: the query file, the query embeddings, the chunk embeddings and the chunk
+order are all committed, so every figure below re-derives from the tree. The artifact is 71,723
+bytes at `daf58a42a9d77acf91ef0cb168f940f774bc395a08da17dafff27eb91bd763d2`, pinned at `14251d1`
+under its own regime rather than beside the pre-registration digests, because a result is not a
+pre-registration artifact and filing it as one would assert the thing the commit ordering exists to
+make false.
+
+The five sealed digests were checked before the run and after it and did not move. A sealed input
+changing in the commit that produces the first result is the contamination the ordering prevents,
+and that check was the stop condition.
+
+### The frozen metrics
+
+Macro-averaged over queries, not micro-averaged over slots, stated in the artifact's own
+description because the two are different numbers and every headline in the sealed file is
+per-query. Every precision figure carries its carrier count, which the module enforces by
+returning them together: no function yields the fraction alone.
+
+| stratum | n | P@10 | carriers | R@10 | MRR | NDCG@10 |
+| --- | --- | --- | --- | --- | --- | --- |
+| single_hop/eu_ai_act | 11 | 0.1182 | 1 to 2, median 1 | 1.0000 | 0.8939 | 0.9210 |
+| single_hop/nist_ai_100_1 | 5 | 0.2200 | 1 to 3, median 3 | 1.0000 | 0.8000 | 0.8524 |
+| single_hop/nist_ai_600_1 | 2 | 0.1000 | 1 | 1.0000 | 0.7500 | 0.8155 |
+| multi_hop/eu_internal_xref | 12 | 0.2000 | 2 | 0.7917 | 0.6417 | 0.5898 |
+| multi_hop/action_subcategory | 4 | 0.0000 | 3 | 0.0000 | 0.0000 | 0.0000 |
+| near_miss/block_clusters | 3 | 0.0333 | 1 | 0.3333 | 0.0476 | 0.1111 |
+| near_miss/near_duplicate | 5 | 0.0000 | 1 | 0.0000 | 0.0000 | 0.0000 |
+| adversarial, three subtypes | 8 | not computed, gold is empty | 0 | | | |
+| **overall** | **42** | **0.1214** | 1 to 3, median 2 | **0.6786** | **0.5518** | **0.5580** |
+
+Carrier counts over the fifty: 8 rows at 0, which are the adversarial rows; 21 at 1; 14 at 2; 7 at
+3. Precision is bounded above by the available gold chunk count over ten, so the ceiling on a
+three-carrier row is 0.3 and on a one-carrier row 0.1. That bound is a property of precision at a
+fixed k rather than of the retriever, which is why recall, MRR and NDCG carry the result.
+
+### The predictions
+
+Written to the working record before the command ran, dated, and scored against the run. Six held
+and two were contradicted.
+
+Held. All four action-to-parent rows missed on the first pass, the stratum-level pre-registration
+resting on the diagnostic's fused recall of 4.7 percent over the 212 `action_subcategory` edges
+against a random baseline of 0.77 percent. The eight adversarial rows carry `metrics` null and
+enter no aggregate, so the denominator is 42. Single-hop is retrieval-easy at 18 of 18 at recall 1.
+At least six of eight near-miss rows missed, at seven. At least 16 of 18 single-hop rows at recall
+1, at 18. At least one clean multi-hop row below recall 1, at five.
+
+Contradicted, and named as contradicted. The near-miss stratum was predicted to miss on all eight
+rows and missed on seven; `test_45` retrieved its anchor at rank 7. And `test_44` and `test_45`
+were predicted the likeliest hits on their committed tie-break blocks; `test_45` hit and `test_44`
+missed.
+
+The second contradiction leaves its reasoning standing, which is worth separating from the verdict.
+Those tie-break blocks state, derived from the chunk ids before any retrieval, that the pair is
+byte-identical under `normalise_for_comparison` with equal document lengths, so both arms tie and
+the chunk-id lexicographic tie-break decides for the anchor. The competitor therefore cannot
+outrank the anchor on those two rows, and the only route to a miss is the whole pair leaving the
+top 10. On `test_44` that is precisely what happened. The prediction was wrong; the mechanism it
+named was not.
+
+No rank direction was predicted on the five rows carrying `no_rank_prediction`, and none is
+recorded now. Inventing one after the run is the fitting those fields exist to prevent.
+
+### What the near-miss stratum measured, and what it did not
+
+The stratum-level result and the per-row mechanism came apart, and both halves ship.
+
+At the stratum level the prediction is nearly right: seven of eight anchors are absent from the
+fused top 10. At the row level the predicted mechanism holds on none of the eight. The rows predict
+a discrimination failure, a near-identical neighbour surfacing while the anchor's own block is
+absent. On the seven misses NEITHER the anchor NOR its designated competitor is in the top 10,
+which is a failure to retrieve the pair at all rather than a failure to choose within it. On
+`test_45` both are retrieved, the anchor at 7 and the competitor at 8, in the order its tie-break
+block predicted.
+
+What fills those positions is other subcategories' blocks under the same generic heading, between
+7 and 10 of the ten places, median 8. That is the crowding structure `PREREGISTRATION.md` describes
+for this stratum from the development query 11 case, a subcategory's own block crowded out by other
+subcategories' near-identical blocks. So the stratum measured the mechanism the specification
+names and not the one its own rows predicted, and the layer's completeness check will be acting on
+crowding rather than on pairwise displacement.
+
+### The miss list
+
+Every unsatisfied slot, in full rather than as a count.
+
+Clean multi-hop, five rows: `test_10` slot 1, `eu_ai_act:art_49`; `test_13` slot 0,
+`eu_ai_act:art_113`; `test_16` slot 0, `eu_ai_act:art_92`; `test_18` slot 0, `eu_ai_act:art_13`;
+`test_19` slot 1, `eu_ai_act:art_16`.
+
+Action-to-parent, four rows, each a single slot of three carriers: `test_39` MANAGE 2.2, `test_40`
+MAP 2.3, `test_41` MEASURE 2.2, `test_42` GOVERN 3.2, each naming the AI 100-1, AI 600-1 and
+Playbook units.
+
+Near-miss, seven rows, each a single slot: `test_43` GOVERN 2.3, `test_44` MANAGE 3.1, `test_46`
+MAP 3.4, `test_47` MEASURE 2.5, `test_48` MANAGE 4.2, `test_49` MANAGE 1.3, `test_50` MANAGE 4.3,
+each the `.ai_transparency_resources` block of the named subcategory.
+
+Single-hop: none.
+
+### What the run does not establish
+
+Nothing about generation, faithfulness or the layer, none of which exists. No unsupported-claim
+rate, no abstention behaviour, no layer-minus-raw delta. The adversarial stratum contributes no
+retrieval number at all, by the specification's own exclusion, so the abstention story is untouched
+by everything above. And a retrieval metric says nothing about whether an answer built from the
+retrieved context would be right: the wrong-but-grounded case scores clean on faithfulness and a
+miss on recall, which is the reason both surfaces are reported separately.
+
+### The ordering, and the gate that enforces it
+
+The clause ordering queries before retrieval is read literally, and that reading is settled rather
+than left to whichever interpretation is convenient: no code path may execute retrieval against a
+set whose results are not committed. The gate implements it, and at this commit it opens by itself
+because writing the artifact is what opens it.
+
+That was not true when the scope opened. The gate read `self.results is None` against a field whose
+value for the sealed set was the literal `None` in a test registry, so it was a flag wearing a
+path's type: a set naming a results path that did not exist reported itself open, measured. Its own
+test compared the gate against that same expression, which cannot fail. The docstring beside it
+said the gate "tracks the absence of a results file, so it cannot be flipped by editing a flag"
+while editing exactly one literal was what opened it. The claim was false for the whole period
+between the check landing and `8d7acf1`.
+
+The gate now reads the filesystem and lives in `src/score/gate.py`, where the scorer consults the
+same predicate rather than a second copy. The registry assertion that recorded which side of the
+ordering the repository was on turned red the moment the artifact existed and was flipped in the
+same commit, so no commit has the two disagreeing.
+
+### What this scope got wrong
+
+Four defects, recorded at the weight of the results above.
+
+A companion that demonstrated nothing. The invariant tying `expected_units` to the in-place
+flattening of `gold_slots` had never been shown red anywhere. Its companion rebuilt the comparison
+from two locals it had constructed itself and asserted a property of `sorted`, so what it exercised
+was the restatement, while its docstring claimed it drove the real check. The predicate was factored
+out at `2ae960a` and the companion now drives it on a row whose `expected_units` carries the sorted
+rather than the in-place order, the one case a membership test cannot see. The demonstration that
+followed is the point: the same relaxation is green over the committed fifty and red on that row,
+which is why it had been invisible.
+
+A schema divergence the gate opening found immediately. The runner's first execution wrote its
+per-query list under `queries`; `eval/dev_retrieval_results.json` names that list `retrieval` and
+the provenance check reads that key, so the check failed on a `KeyError` the first time it had ever
+run. The runner now follows the existing artifact. The module was re-executed and the two runs
+compared: rankings, metrics and aggregates identical on all fifty rows, top-level keys differing in
+that one name alone. The runner is deterministic and level 1, so nothing was resampled.
+
+An unmeasured figure in a permanent place. The `9cde4fc` commit message states that without the
+untracked segment embedding cache the suite reports 387 passed and 8 skipped. It reports 386 and 9.
+The figure was derived from an earlier six-skip delta rather than measured, and the regression that
+commit added skips without the cache, making a ninth. Rule 10 makes a commit message
+forward-uneditable, so the message stands and the divergence is recorded here. It is a belief
+written down as a measurement, in the same round that added V23 against that habit.
+
+A guard narrower than its own description. The check barring a retrieval outcome from the sealed
+verification file read one field path, and a row field described it as barring any row from
+recording which branch fired. Measured through the guard's own accessor, five shapes recording an
+outcome passed it, including a `fired` flag inside the row's own branch table one level below where
+it looked. The description was false from the moment it was written until `8d7acf1` widened the
+guard to walk every leaf. Both exemptions it needed were found by the widened detector rather than
+reasoned about in advance: `outcome` is overloaded across 32 designation-attempt leaves, and the
+prediction exemption was drafted expecting twelve rows and matches four, the eight near-miss rows
+stating their prediction as prose no vocabulary entry matches. That limit is written into the check
+rather than papered over.
+
+### The corrections carried
+
+Two citations were re-pointed under Rule 4 and one relation name corrected, all before the run.
+
+`action_to_subcategory` in `CLAUDE.md` and `PREREGISTRATION.md` is corrected to
+`action_subcategory`, the name the committed relation carries as its own top-level key in
+`data/chunks/nist_ai_600_1.relations.jsonl`, 212 of its 267 rows holding a non-empty list. That is
+the only form in any data file, in the frame, in the four sealed query rows or in the retrieval
+manifest; the superseded form appeared twice, in prose only.
+
+That correction's revision-note bullet shifted every line below it by one, which broke seven
+ordinal citations. Six in a test docstring were re-pointed at `4915b99`. The seventh sits in the
+sealed `eval/test_query_verification.jsonl`, on the `test_39` row's `rule_f_disposition` field,
+which cited line 61 for the phrase "given its action text" while that text had moved to 62 and line
+61 had become the single-hop bullet. It was corrected at `f9dc582` under an explicit owner
+direction, with the supersession recorded on the row's own `recorded_corrections` field naming the
+superseded ordinal, the corrected one and the cause. Nothing else in the row moved, and that is
+measured: the edit was surgical on the raw line, 49 of 49 other lines byte-identical, the file
+still fifty rows at one key set, and the only leaf whose value changed was the citation itself.
+
+An eighth ordinal, in the 2026-07-28 entry above, is corrected in the commit that follows this one.
+
+### Suite
+
+451 passed and 0 skipped at 451 collected, with the untracked segment embedding cache present. The
+skip count is zero for the first time in this scope, which is the ordering having been spent: the
+two skips it carried throughout were the retrieval gate on the test set, and they are now passes.
+
+Without that cache the run is 444 passed and 7 skipped, measured rather than derived from the
+difference. All seven skips are the absent cache, in `tests/test_attributability.py`. The cache is
+git-ignored under `embeddings_cache/`, so a fresh clone or a new worktree skips the dense
+attributability arm, and every suite figure in this entry is conditional on its presence. The
+condition is named rather than left for a reviewer to discover when their own count differs.
+
+### Commits
+
+- 4915b99 docs(governance): add V22 and V23, extend V11 to attributions, correct one relation name
+- 9cde4fc fix(goldset): derive the manifest's counts rather than copying them from the untracked index
+- f9dc582 fix(eval): re-point the test_39 citation under Rule 4 and record the supersession
+- 19bb6eb chore: remove two unused difflib imports
+- 8d7acf1 test(eval): rebuild the ordering gate, widen the outcome guard, pin the sealed set
+- fa1e996 feat(score): the four sealed retrieval metrics, the gold model and the results runner
+- 2ae960a test(eval): drive the flatten companion through the predicate it exists to demonstrate
+- 356f23d feat(eval): retrieval on the sealed fifty, the frozen metrics and the gate opening
+- 14251d1 test(eval): pin the retrieval results artifact under its own regime
+
+This entry is placed by the commit that follows `14251d1` and touches only `SESSION_LOG.md`.
+
 ## 2026-08-17, the sealed set closed at fifty, and a predicate corrected under it
 
 The query set stands at fifty rows: eighteen single-hop, sixteen multi-hop over twelve clean
