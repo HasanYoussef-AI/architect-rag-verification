@@ -373,48 +373,272 @@ def test_the_overlap_re_derivation_can_fail():
 PRODUCER = "src.goldset.relation_positions.relation_derived_carriers"
 
 
-def _resolved_values(row: dict):
-    """Every recorded outcome of a pre-registered retrieval prediction on this row."""
-    prediction = row.get("retrieval_mechanism_prediction")
-    if not isinstance(prediction, dict) or "resolved" not in prediction:
-        return []
-    return [prediction["resolved"]]
+# Leaf keys that record how retrieval actually went, as opposed to how it was predicted to go.
+# A closed vocabulary rather than a pattern, so adding a name is a deliberate edit visible in the
+# diff. Checked anywhere in the row at any depth, not at one field path.
+OUTCOME_KEYS = frozenset({
+    "resolved", "resolved_branch", "outcome", "fired", "actual", "observed",
+    "result_branch", "which_branch", "retrieval_outcome", "branch_that_fired",
+})
+
+# Values that assert an outcome whatever key carries them. The value vocabulary exists beside the
+# key vocabulary because a detector keyed on structure alone is the pass-by-blindness V20 names,
+# and this repository has paid for that three times. It is what catches an outcome written under a
+# key nobody thought to enumerate.
+OUTCOME_VALUES = frozenset({
+    "bm25_anchored", "dense_anchored", "equal_rank",
+    "hit", "miss", "first-pass hit", "first-pass miss", "recovered", "not recovered",
+})
+
+# The exemptions, by exact field path. None of these claims a retrieval outcome. Every count is
+# asserted below, so an exemption cannot silently widen.
+EXEMPT_LEAF_PATHS = (
+    ".retrieval_mechanism_prediction.prediction",
+    ".retrieval_mechanism_prediction.branches[].branch",
+    ".retrieval_mechanism_prediction.branches[].condition",
+)
+
+# `outcome` is an overloaded word in this file and the overload was found by this detector rather
+# than reasoned about in advance. Three stratum blocks record a DESIGNATION outcome under that
+# key, .single_hop, .near_miss and .action_to_parent designation_attempts[].outcome, holding
+# 'binding' or 'rejected'. Those say which span bound, not how retrieval went, and they predate
+# any retrieval. Exempted by path suffix rather than by dropping `outcome` from OUTCOME_KEYS,
+# because dropping it would blind the guard to an outcome written under that name anywhere else.
+EXEMPT_LEAF_SUFFIXES = (".designation_attempts[].outcome",)
+
+
+def _leaves(value, path=""):
+    """Every (path, leaf) in a row. List indices collapse to [] so a path is stable across rows."""
+    if isinstance(value, dict):
+        for key, inner in value.items():
+            yield from _leaves(inner, f"{path}.{key}")
+    elif isinstance(value, list):
+        for inner in value:
+            yield from _leaves(inner, f"{path}[]")
+    else:
+        yield path, value
+
+
+def recorded_outcomes(row: dict) -> list[tuple[str, object]]:
+    """Every leaf anywhere in the row that records how retrieval actually went.
+
+    Two independent grounds, either sufficient. A leaf whose key is an outcome key and whose value
+    is not None; or a leaf whose value is an outcome value, whatever its key. The exemptions are
+    subtracted by exact path rather than by key, so a `prediction` key appearing somewhere new is
+    still judged.
+    """
+    found = []
+    for path, leaf in _leaves(row):
+        if path in EXEMPT_LEAF_PATHS or path.endswith(EXEMPT_LEAF_SUFFIXES):
+            continue
+        key = path.rsplit(".", 1)[-1].removesuffix("[]")
+        if key in OUTCOME_KEYS and leaf is not None:
+            found.append((path, leaf))
+        elif isinstance(leaf, str) and leaf in OUTCOME_VALUES:
+            found.append((path, leaf))
+    return found
 
 
 def test_no_row_records_the_outcome_of_a_retrieval_prediction():
-    """A prediction may ship before retrieval; its outcome may not.
+    """A prediction may ship before retrieval; its outcome may not. Anywhere in the row.
 
     PREREGISTRATION.md orders the queries and their embeddings before retrieval runs on them, so
     a field holding which branch of a pre-registered prediction actually fired could only be
     filled after that ordering is spent. The branch table is pre-registration and belongs here;
-    the branch that fired is a result and does not.
+    the branch that fired is a result and does not. Prediction scoring lives in the retrieval
+    results artifact and in the session log entry.
 
-    Asserted as "no non-null resolved anywhere" rather than as "every prediction carries a null
-    resolved", because the second would demand a key from rows that do not exist yet, which is
-    asserting a later commit's property from an earlier one. Absent is no value, which is the
-    thing being protected. The four committed adversarial predictions carry no resolved key and
-    pass unchanged.
+    UNCONDITIONAL BY DECISION, and it never consults the retrieval gate. Where an outcome lives is
+    a question about this artifact, not a question about when retrieval ran, so the guard reads
+    the same before and after the results commit. tests/test_retrieval_ordering_gate.py asserts
+    this module never imports the gate, so that cannot be quietly reversed.
+
+    WIDENED, and this is why. The superseded accessor read exactly one field path,
+    retrieval_mechanism_prediction.resolved. Measured through that accessor, five shapes that
+    record which branch fired returned nothing and passed: a differently named sibling, a `fired`
+    flag nested inside the row's own `branches` table, a value on a stratum block, a new scalar
+    top-level key, and the prediction block replaced by a list of outcome dicts. The third is the
+    sharp one: the branch table sits on the same row, one level below where the guard looked. Each
+    of the five is now a mutation companion below.
     """
     for row in _verification():
-        for value in _resolved_values(row):
-            assert value is None, (
-                f"{row['id']}: retrieval_mechanism_prediction.resolved is {value!r}. That is the "
-                "outcome of a prediction, and no outcome exists until retrieval runs on this set"
-            )
+        found = recorded_outcomes(row)
+        assert not found, (
+            f"{row['id']}: an outcome is recorded at "
+            + ", ".join(f"{path} = {leaf!r}" for path, leaf in found)
+            + ". That is the outcome of a prediction, and outcomes belong in the retrieval "
+            "results artifact and the log entry, not in this pre-registration record"
+        )
 
 
 def test_the_post_retrieval_guard_can_fail():
-    """V20, through the same accessor the check runs."""
+    """V20, through the same accessor the check runs, on the guarded path."""
     fabricated = {"id": "test_00",
                   "retrieval_mechanism_prediction": {"prediction": "first-pass miss",
                                                      "resolved": "hit"}}
-    assert _resolved_values(fabricated) == ["hit"], "the accessor did not reach a resolved value"
+    found = recorded_outcomes(fabricated)
+    assert found, "the accessor did not reach a resolved value"
+    assert any(p.endswith(".resolved") for p, _ in found)
     nulled = {"id": "test_00",
               "retrieval_mechanism_prediction": {"prediction": "x", "resolved": None}}
-    assert _resolved_values(nulled) == [None]
+    assert recorded_outcomes(nulled) == []
     absent = {"id": "test_00", "retrieval_mechanism_prediction": {"prediction": "x"}}
-    assert _resolved_values(absent) == []
-    assert _resolved_values({"id": "test_00", "retrieval_mechanism_prediction": None}) == []
+    assert recorded_outcomes(absent) == []
+    assert recorded_outcomes({"id": "test_00", "retrieval_mechanism_prediction": None}) == []
+
+
+def test_the_guard_catches_a_renamed_sibling():
+    """Shape one of five measured passing the superseded accessor."""
+    row = {"id": "test_00",
+           "retrieval_mechanism_prediction": {"prediction": "first-pass miss",
+                                              "resolved_branch": "bm25_anchored"}}
+    found = recorded_outcomes(row)
+    assert found, "an outcome under a renamed sibling was not seen"
+    assert found[0][1] == "bm25_anchored"
+
+
+def test_the_guard_catches_a_flag_inside_the_branch_table():
+    """Shape two, the sharp one: the branch table is on the row the guard already reads."""
+    row = {"id": "test_00",
+           "retrieval_mechanism_prediction": {
+               "prediction": "first-pass miss",
+               "branches": [{"branch": "bm25_anchored", "condition": "x", "fired": True},
+                            {"branch": "dense_anchored", "condition": "y", "fired": False}]}}
+    found = recorded_outcomes(row)
+    paths = {p for p, _ in found}
+    assert ".retrieval_mechanism_prediction.branches[].fired" in paths, (
+        f"a fired flag inside the branch table was not seen; found {sorted(paths)}"
+    )
+    assert ".retrieval_mechanism_prediction.branches[].branch" not in paths, (
+        "the branch table's own names were flagged; naming a branch is not claiming it fired"
+    )
+
+
+def test_the_guard_catches_an_outcome_on_a_stratum_block():
+    """Shape three: a stratum block is a dict like any other and the walk reaches it."""
+    row = {"id": "test_00",
+           "retrieval_mechanism_prediction": {"prediction": "first-pass miss"},
+           "action_to_parent": {"drawn_parent": "x:y", "resolved": "dense_anchored"}}
+    found = recorded_outcomes(row)
+    assert (".action_to_parent.resolved", "dense_anchored") in found
+
+
+def test_the_guard_catches_a_new_top_level_key():
+    """Shape four. A scalar top-level key passes every other check in this file."""
+    row = {"id": "test_00",
+           "retrieval_mechanism_prediction": {"prediction": "first-pass miss"},
+           "retrieval_outcome": "bm25_anchored"}
+    found = recorded_outcomes(row)
+    assert (".retrieval_outcome", "bm25_anchored") in found
+
+
+def test_the_guard_catches_a_list_valued_prediction_block():
+    """Shape five. The superseded accessor required a dict and returned nothing for a list."""
+    row = {"id": "test_00",
+           "retrieval_mechanism_prediction": [{"resolved": "hit"}]}
+    found = recorded_outcomes(row)
+    assert found, "a list-valued prediction block was not walked"
+    assert found[0][1] == "hit"
+
+
+def test_the_prediction_exemption_reaches_exactly_the_committed_predictions():
+    """The exemption is bounded by count, so it cannot silently widen.
+
+    Measured rather than assumed, and the first measurement contradicted the guess behind it.
+    Twelve rows carry a resolved key, but only FOUR carry a prediction string that is in the
+    outcome vocabulary, the action-to-parent rows at 'first-pass miss'. The eight near-miss rows
+    state their prediction as a sentence, 'first-pass discrimination failure: a near-identical
+    neighbour of the anchor surfaces and the anchor's own block is absent from the fused top 10',
+    which no vocabulary entry matches.
+
+    That is a stated limit of the value clause and not a hole to paper over. A vocabulary of exact
+    strings cannot catch an outcome phrased as a sentence, so the value clause is a supplement and
+    the key clause is the primary net. An outcome recorded in prose under a key nobody enumerated
+    would pass, and nothing in this file claims otherwise.
+    """
+    rows = _verification()
+    with_prediction = [
+        r for r in rows
+        if isinstance(r.get("retrieval_mechanism_prediction"), dict)
+        and r["retrieval_mechanism_prediction"].get("prediction") in OUTCOME_VALUES
+    ]
+    assert len(with_prediction) == 4, (
+        f"{len(with_prediction)} rows carry a prediction in the outcome vocabulary, not 4"
+    )
+    assert [r["id"] for r in with_prediction] == ["test_39", "test_40", "test_41", "test_42"]
+    for row in with_prediction:
+        assert recorded_outcomes(row) == [], f"{row['id']} was flagged despite the exemption"
+
+    resolved_bearing = [
+        r for r in rows
+        if isinstance(r.get("retrieval_mechanism_prediction"), dict)
+        and "resolved" in r["retrieval_mechanism_prediction"]
+    ]
+    assert len(resolved_bearing) == 12
+    prose = [r for r in resolved_bearing if r not in with_prediction]
+    assert len(prose) == 8, f"{len(prose)} rows state their prediction as prose, not 8"
+    for row in prose:
+        assert recorded_outcomes(row) == [], f"{row['id']} was flagged"
+
+
+def test_the_designation_outcome_exemption_is_bounded():
+    """`outcome` is overloaded, and the exemption for the other meaning is counted.
+
+    Three stratum blocks record a designation outcome under that key. Measured: 20 on
+    single_hop, 8 on near_miss, 4 on action_to_parent, 32 leaves, holding 'binding' on 30 and
+    'rejected' on 2. None is a retrieval outcome and all predate any retrieval. A fourth block
+    gaining the field, or one of these gaining a row, moves this number and has to be looked at.
+    """
+    rows = _verification()
+    hits = [(path, leaf) for row in rows for path, leaf in _leaves(row)
+            if path.endswith(EXEMPT_LEAF_SUFFIXES)]
+    assert len(hits) == 32, f"the designation exemption matches {len(hits)} leaves, not 32"
+    assert {leaf for _, leaf in hits} == {"binding", "rejected"}, (
+        f"designation outcomes now hold {sorted({leaf for _, leaf in hits})}"
+    )
+    blocks = sorted({path.split(".")[1] for path, _ in hits})
+    assert blocks == ["action_to_parent", "near_miss", "single_hop"], (
+        f"designation_attempts now appears under {blocks}"
+    )
+
+
+def test_the_designation_exemption_does_not_blind_the_guard_elsewhere():
+    """V20 on the exemption itself: it is scoped to the path, not to the word.
+
+    An `outcome` key anywhere other than a designation attempt is still caught, which is the
+    reason the exemption is a path suffix rather than a removal from OUTCOME_KEYS.
+    """
+    row = {"id": "test_00",
+           "single_hop": {"designation_attempts": [{"outcome": "binding"}],
+                          "outcome": "bm25_anchored"}}
+    found = recorded_outcomes(row)
+    paths = {p for p, _ in found}
+    assert ".single_hop.outcome" in paths, f"the guard was blinded; found {sorted(paths)}"
+    assert ".single_hop.designation_attempts[].outcome" not in paths
+
+
+def test_the_branch_table_exemption_reaches_exactly_the_committed_branches():
+    """The other exemption, bounded the same way.
+
+    One row carries a branch table, test_41's three-branch note, so the two exempt branch paths
+    match three leaves each. A fourth branch, or a table appearing on a second row, moves this.
+    """
+    rows = _verification()
+    branches = [
+        (path, leaf)
+        for row in rows
+        for path, leaf in _leaves(row)
+        if path in (".retrieval_mechanism_prediction.branches[].branch",
+                    ".retrieval_mechanism_prediction.branches[].condition")
+    ]
+    assert len(branches) == 6, (
+        f"the branch exemptions match {len(branches)} leaves, not the 6 on test_41's three "
+        "branches"
+    )
+    carriers = [r["id"] for r in rows
+                if isinstance(r.get("retrieval_mechanism_prediction"), dict)
+                and r["retrieval_mechanism_prediction"].get("branches")]
+    assert carriers == ["test_41"], f"branch tables now sit on {carriers}"
 
 
 def _slot_members(block: str):

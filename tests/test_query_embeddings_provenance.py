@@ -48,7 +48,6 @@ from __future__ import annotations
 
 import inspect
 import json
-from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
@@ -56,46 +55,20 @@ import pytest
 
 from src.ingest.corpus_integrity import REPO_ROOT
 from src.retrieve.embed import EMBED_DIM
+from src.score.gate import QUERY_SETS, QuerySet, gate_reason
 
 EVAL = REPO_ROOT / "eval"
 
 
-@dataclass(frozen=True)
-class QuerySet:
-    """A committed query set and the artifacts that must travel with it."""
-
-    name: str
-    queries: Path
-    embeddings: Path
-    results: Path | None
-
-    @property
-    def rank_reproduction_gated(self) -> bool:
-        """True while no code path may execute retrieval against this set.
-
-        A set has no committed retrieval results exactly while retrieval has not run on it,
-        which is the state PREREGISTRATION.md requires the query and embedding commit to be
-        made in. Deriving the gate from that fact rather than from a separate flag means it
-        opens at the commit that adds the results and cannot be left closed or forced open
-        by accident.
-        """
-        return self.results is None
-
-
-QUERY_SETS = [
-    QuerySet(
-        "development",
-        EVAL / "dev_queries.jsonl",
-        EVAL / "dev_query_embeddings.npy",
-        EVAL / "dev_retrieval_results.json",
-    ),
-    QuerySet(
-        "test",
-        EVAL / "test_queries.jsonl",
-        EVAL / "test_query_embeddings.npy",
-        None,
-    ),
-]
+# QuerySet, QUERY_SETS and the gate now live in src/score/gate.py and are imported above. They
+# moved because the scoring module has to refuse a gated set too, and a predicate two callers
+# share is a predicate that cannot drift between them.
+#
+# The superseded local form read `self.results is None` against a `Path | None` field whose value
+# for the sealed set was the literal None in this registry, so the gate was a flag wearing a
+# path's type: a set naming a results path that did not exist reported itself open. Its own test
+# then compared the gate against that same expression and could not fail. Both directions are now
+# demonstrated in tests/test_retrieval_ordering_gate.py.
 
 _REGENERATED: dict[str, np.ndarray] = {}
 
@@ -110,14 +83,14 @@ def _skip_if_not_committed(query_set: QuerySet) -> None:
 
 
 def _skip_if_retrieval_is_gated(query_set: QuerySet) -> None:
-    """Refuse to run retrieval against a set whose results are not committed yet."""
-    if query_set.rank_reproduction_gated:
-        pytest.skip(
-            f"{query_set.name}: retrieval is gated for this set. PREREGISTRATION.md commits the "
-            "queries and their embeddings before retrieval runs on them, so no code path may "
-            "execute retrieval against this set until its retrieval results are committed. "
-            "Rank reproduction turns on at that commit."
-        )
+    """Refuse to run retrieval against a set whose results are not committed yet.
+
+    The message comes from src/score/gate.py so the refusal a reader sees here is the same one the
+    scoring module will raise, rather than two wordings of one rule.
+    """
+    reason = gate_reason(query_set)
+    if reason is not None:
+        pytest.skip(reason)
 
 
 def _regenerate(query_set: QuerySet, session) -> np.ndarray:
@@ -163,34 +136,17 @@ def retriever():
     return load_retriever()
 
 
-def test_retrieval_is_gated_for_every_set_without_committed_results():
-    """The ordering constraint, pinned so that removing it costs a failing test.
+def test_both_retrieval_running_checks_consult_the_gate():
+    """Deleting the call would reopen retrieval against a sealed set silently.
 
-    PREREGISTRATION.md commits a query set and its embeddings before retrieval runs on it. Three
-    things have to hold for that to be enforced rather than merely intended, and each is checked
-    here because each can be undone independently:
-
-    1. The gate tracks the absence of a results file, so it cannot be flipped by editing a flag.
-    2. The gate helper actually raises for a gated set, and does not raise for an open one, so it
-       is not a no-op that happens to be called in the right places.
-    3. Both checks that call retriever.search actually call the helper. Deleting the call would
-       otherwise reopen retrieval against a sealed set silently.
-
-    Not parameterised over QUERY_SETS on purpose: the constraint is a property of the whole
-    registry, and one failing test naming the registry reads better than one failing per set.
+    This is the surviving third of the superseded
+    test_retrieval_is_gated_for_every_set_without_committed_results, kept verbatim in what it
+    asserts. Its first part compared the gate against its own definition and could not fail, and
+    its second part is now in tests/test_retrieval_ordering_gate.py where both directions are
+    exercised against files written and not written under tmp_path. This part was never
+    tautological: it reads the source of the two checks that actually call retriever.search and
+    requires the helper to still be named in each.
     """
-    for query_set in QUERY_SETS:
-        expected = query_set.results is None
-        assert query_set.rank_reproduction_gated is expected, (
-            f"{query_set.name}: gate is {query_set.rank_reproduction_gated} but results "
-            f"{'are absent' if expected else 'are committed'}"
-        )
-        if expected:
-            with pytest.raises(pytest.skip.Exception):
-                _skip_if_retrieval_is_gated(query_set)
-        else:
-            _skip_if_retrieval_is_gated(query_set)
-
     for check in (
         test_regenerated_rankings_match_committed_results,
         test_committed_array_reproduces_regenerated_rankings,
