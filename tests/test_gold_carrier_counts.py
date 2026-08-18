@@ -18,6 +18,7 @@ import collections
 import json
 
 from src.ingest.corpus_integrity import REPO_ROOT
+from src.score.carriers import carrier_classes
 
 MANIFEST = REPO_ROOT / "data" / "retrieval" / "retrieval_manifest.json"
 DUP_MAP = REPO_ROOT / "data" / "chunks" / "nist_ai_100_1.duplication_map.json"
@@ -33,36 +34,12 @@ def _unit_of(chunk_id: str) -> str:
     return chunk_id.split("#", 1)[0]
 
 
-def carrier_classes() -> dict[str, str]:
-    """Union-find over both duplication relations. Returns unit id -> class representative.
-
-    The duplication map carries semantic restatement structure; the normalise-identity
-    groups carry byte-level identity after comparison normalisation. Neither is a subset of
-    the other, so a carrier set built from one alone is short.
-    """
-    parent: dict[str, str] = {}
-
-    def find(x: str) -> str:
-        parent.setdefault(x, x)
-        while parent[x] != x:
-            parent[x] = parent[parent[x]]
-            x = parent[x]
-        return x
-
-    def union(a: str, b: str) -> None:
-        ra, rb = find(a), find(b)
-        if ra != rb:
-            parent[ra] = rb
-
-    for row in _load(DUP_MAP):
-        members = [row["source_unit_id"], *[d["unit_id"] for d in row["duplicated_in"]]]
-        for m in members[1:]:
-            union(members[0], m)
-    for group in _load(VERBATIM)["bases"]["normalised_identity"]["groups"]:
-        members = [_unit_of(m) for m in group["members"]]
-        for m in members[1:]:
-            union(members[0], m)
-    return {u: find(u) for u in parent}
+# carrier_classes moved to src/score/carriers.py and is imported above. It moved because the
+# scoring module needs the same composition for the per-query carrier count, and two definitions
+# of gold-carrier identity in one repository is the defect a cross-check exists to catch, stated
+# the other way round. This module keeps the oracle: the manifest figures below were derived
+# before the move, so re-deriving them through the moved function is a real check rather than a
+# restatement.
 
 
 def derive() -> dict:
