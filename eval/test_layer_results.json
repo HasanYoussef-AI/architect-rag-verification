@@ -1,0 +1,3825 @@
+{
+ "description": "Layer retrieval results for the sealed query set: the same first pass, followed by the deterministic corrective pass in src/complete/. Companion to eval/test_retrieval_results.json, which is quoted here unchanged and never recomputed. Produced with no model, no key and no optional dependency, so every figure re-derives from committed files. THE TWO CONDITIONS NEVER SHARE A METRIC LABEL: the first pass reports Recall@10 over the fused top 10, the layer condition reports recovered-passage recall over the final context set with that set's size beside it, and the layer condition reports no Precision@10, MRR or NDCG because k is not ten and the fetched units carry no comparable rank order. Aggregates are macro-averages over queries. Adversarial rows are carried and marked not computed, and aggregates exclude them by that marker rather than by stratum name.",
+ "produced_by": "python -m src.score.run_layer_eval",
+ "reproducibility_level": 1,
+ "reproducibility_claim": "The layer condition re-derives from committed files alone: no model, no key, no network and no optional dependency. The first pass is read from eval/test_retrieval_results.json rather than recomputed, and the corrective pass is deterministic reference resolution against eval/corpus_unit_index.json followed by direct fetch from data/chunks/*.chunks.jsonl. Verified by running this module in a default environment with the build-only embed group absent.",
+ "query_set": "test",
+ "first_pass_source": {
+  "path": "eval/test_retrieval_results.json",
+  "sha256": "daf58a42a9d77acf91ef0cb168f940f774bc395a08da17dafff27eb91bd763d2",
+  "quoted_unchanged": "first_pass_slot_satisfaction and first_pass_recall_at_10 are copied from that artifact and are never recomputed here."
+ },
+ "layer_components": [
+  "src/complete/references.py",
+  "src/complete/absence.py",
+  "src/complete/augment.py"
+ ],
+ "measurement_convention": {
+  "first_pass": "Recall@10, Precision@10, MRR and NDCG@10 against the fused top 10 of chunks, as defined in PREREGISTRATION.md and frozen in eval/test_retrieval_results.json. Quoted unchanged.",
+  "layer_condition": "recovered-passage recall over the final context set, with the final context set size reported per row beside it.",
+  "why_no_rank_metrics_for_the_layer": "Under augmentation the context set is not ten chunks, and the fetched units carry no rank order comparable to a fused ranking, so every rank-based figure would be about arithmetic rather than about the layer. A precision that fell purely because k grew would be the clearest case.",
+  "term_provenance": "recovered-passage recall is PREREGISTRATION.md's own term, from the null-interpretation clause written before any result existed.",
+  "scored_by": "src/score/slots.py, the grader of record, a separate implementation from the layer's own membership rule in src/complete/absence.py."
+ },
+ "augmentation_policy": {
+  "trigger": "predicate a, context absence: any resolved unit no retrieved chunk belongs to.",
+  "policy": "augmentation only. The first-pass ten are never removed, never reordered and never truncated; the chunks of every absent resolved unit are appended after them.",
+  "uniform": "Applied identically to all fifty rows including the adversarial stratum. The layer cannot condition on stratum, because type and subtype are barred, so no stratum-varying policy is implementable without breaking the firewall.",
+  "no_bound": "No bound on augmentation volume is applied. eval/layer_predictions.md section 5 records the absence of a bound as a named condition: the ranks carrying each recovery were known when that file was written, so a bound chosen after them would be fitted to its own observations. A future bound is a cost decision, set from the cost budget, shipping with the recoveries it removes reported by row.",
+  "predicate_b_is_a_diagnostic": "The narrow query-reference predicate is reported per row and is not the trigger. Measured, it is silent on three of the ten rows where the layer recovers a missing gold unit, test_10, test_19 and test_41, whose recoveries come from references printed in retrieved text or in a unit_label rather than in the query."
+ },
+ "layer": [
+  {
+   "id": "test_01",
+   "type": "adversarial",
+   "subtype": "iso",
+   "first_pass_slot_satisfaction": [],
+   "first_pass_recall_at_10": null,
+   "context_set_size": 37,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MANAGE_1.2",
+    "nist_playbook:sub_MANAGE_1.2",
+    "nist_ai_100_1:sub_MANAGE_2.4",
+    "nist_ai_600_1:sub_MANAGE_2.4",
+    "nist_playbook:sub_MANAGE_2.4",
+    "nist_ai_100_1:sub_GOVERN_2.3",
+    "nist_playbook:sub_GOVERN_2.3",
+    "nist_ai_100_1:sub_MANAGE_1.3",
+    "nist_ai_600_1:sub_MANAGE_1.3",
+    "nist_playbook:sub_MANAGE_1.3",
+    "nist_ai_100_1:sub_MAP_2.1",
+    "nist_ai_600_1:sub_MAP_2.1",
+    "nist_playbook:sub_MAP_2.1",
+    "nist_ai_100_1:sub_GOVERN_1.5",
+    "nist_ai_600_1:sub_GOVERN_1.5",
+    "nist_playbook:sub_GOVERN_1.5",
+    "nist_ai_100_1:sub_MEASURE_2.10",
+    "nist_ai_600_1:sub_MEASURE_2.10",
+    "nist_playbook:sub_MEASURE_2.10",
+    "nist_ai_100_1:sub_MEASURE_3.1",
+    "nist_playbook:sub_MEASURE_3.1",
+    "nist_ai_100_1:sub_GOVERN_4.3",
+    "nist_ai_600_1:sub_GOVERN_4.3",
+    "nist_playbook:sub_GOVERN_4.3",
+    "nist_ai_100_1:sub_MAP_2.2",
+    "nist_ai_600_1:sub_MAP_2.2",
+    "nist_playbook:sub_MAP_2.2"
+   ],
+   "fetched_chunk_count": 27,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MANAGE_1.2",
+      "nist_playbook:sub_MANAGE_1.2",
+      "nist_ai_100_1:sub_MANAGE_2.4",
+      "nist_ai_600_1:sub_MANAGE_2.4",
+      "nist_playbook:sub_MANAGE_2.4",
+      "nist_ai_100_1:sub_GOVERN_2.3",
+      "nist_playbook:sub_GOVERN_2.3",
+      "nist_ai_100_1:sub_MANAGE_1.3",
+      "nist_ai_600_1:sub_MANAGE_1.3",
+      "nist_playbook:sub_MANAGE_1.3",
+      "nist_ai_100_1:sub_MAP_2.1",
+      "nist_ai_600_1:sub_MAP_2.1",
+      "nist_playbook:sub_MAP_2.1",
+      "nist_ai_100_1:sub_GOVERN_1.5",
+      "nist_ai_600_1:sub_GOVERN_1.5",
+      "nist_playbook:sub_GOVERN_1.5",
+      "nist_ai_100_1:sub_MEASURE_2.10",
+      "nist_ai_600_1:sub_MEASURE_2.10",
+      "nist_playbook:sub_MEASURE_2.10",
+      "nist_ai_100_1:sub_MEASURE_3.1",
+      "nist_playbook:sub_MEASURE_3.1",
+      "nist_ai_100_1:sub_GOVERN_4.3",
+      "nist_ai_600_1:sub_GOVERN_4.3",
+      "nist_playbook:sub_GOVERN_4.3",
+      "nist_ai_100_1:sub_MAP_2.2",
+      "nist_ai_600_1:sub_MAP_2.2",
+      "nist_playbook:sub_MAP_2.2"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 10,
+    "resolved_units": 27,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": null,
+   "recovered_units": [],
+   "metrics_note": "not computed; gold is empty per PREREGISTRATION.md"
+  },
+  {
+   "id": "test_02",
+   "type": "adversarial",
+   "subtype": "iso",
+   "first_pass_slot_satisfaction": [],
+   "first_pass_recall_at_10": null,
+   "context_set_size": 21,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MANAGE_3.1",
+    "nist_ai_600_1:sub_MANAGE_3.1",
+    "nist_playbook:sub_MANAGE_3.1",
+    "nist_ai_100_1:sub_GOVERN_6.2",
+    "nist_ai_600_1:sub_GOVERN_6.2",
+    "nist_playbook:sub_GOVERN_6.2",
+    "nist_ai_100_1:sub_GOVERN_2.1",
+    "nist_ai_600_1:sub_GOVERN_2.1",
+    "nist_playbook:sub_GOVERN_2.1",
+    "nist_ai_100_1:sub_MANAGE_1.2",
+    "nist_playbook:sub_MANAGE_1.2"
+   ],
+   "fetched_chunk_count": 11,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MANAGE_3.1",
+      "nist_ai_600_1:sub_MANAGE_3.1",
+      "nist_playbook:sub_MANAGE_3.1",
+      "nist_ai_100_1:sub_GOVERN_6.2",
+      "nist_ai_600_1:sub_GOVERN_6.2",
+      "nist_playbook:sub_GOVERN_6.2",
+      "nist_ai_100_1:sub_GOVERN_2.1",
+      "nist_ai_600_1:sub_GOVERN_2.1",
+      "nist_playbook:sub_GOVERN_2.1",
+      "nist_ai_100_1:sub_MANAGE_1.2",
+      "nist_playbook:sub_MANAGE_1.2"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 5,
+    "resolved_units": 11,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": null,
+   "recovered_units": [],
+   "metrics_note": "not computed; gold is empty per PREREGISTRATION.md"
+  },
+  {
+   "id": "test_03",
+   "type": "adversarial",
+   "subtype": "iso",
+   "first_pass_slot_satisfaction": [],
+   "first_pass_recall_at_10": null,
+   "context_set_size": 29,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MANAGE_2.4",
+    "nist_ai_600_1:sub_MANAGE_2.4",
+    "nist_playbook:sub_MANAGE_2.4",
+    "nist_ai_100_1:sub_MANAGE_1.2",
+    "nist_playbook:sub_MANAGE_1.2",
+    "nist_ai_100_1:sub_GOVERN_2.1",
+    "nist_ai_600_1:sub_GOVERN_2.1",
+    "nist_playbook:sub_GOVERN_2.1",
+    "nist_ai_100_1:sub_MEASURE_2.5",
+    "nist_ai_600_1:sub_MEASURE_2.5",
+    "nist_playbook:sub_MEASURE_2.5",
+    "nist_ai_100_1:sub_MEASURE_2.7",
+    "nist_ai_600_1:sub_MEASURE_2.7",
+    "nist_playbook:sub_MEASURE_2.7",
+    "nist_ai_100_1:sub_MEASURE_2.10",
+    "nist_ai_600_1:sub_MEASURE_2.10",
+    "nist_playbook:sub_MEASURE_2.10",
+    "nist_ai_100_1:sub_MEASURE_3.1",
+    "nist_playbook:sub_MEASURE_3.1"
+   ],
+   "fetched_chunk_count": 19,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MANAGE_2.4",
+      "nist_ai_600_1:sub_MANAGE_2.4",
+      "nist_playbook:sub_MANAGE_2.4",
+      "nist_ai_100_1:sub_MANAGE_1.2",
+      "nist_playbook:sub_MANAGE_1.2",
+      "nist_ai_100_1:sub_GOVERN_2.1",
+      "nist_ai_600_1:sub_GOVERN_2.1",
+      "nist_playbook:sub_GOVERN_2.1",
+      "nist_ai_100_1:sub_MEASURE_2.5",
+      "nist_ai_600_1:sub_MEASURE_2.5",
+      "nist_playbook:sub_MEASURE_2.5",
+      "nist_ai_100_1:sub_MEASURE_2.7",
+      "nist_ai_600_1:sub_MEASURE_2.7",
+      "nist_playbook:sub_MEASURE_2.7",
+      "nist_ai_100_1:sub_MEASURE_2.10",
+      "nist_ai_600_1:sub_MEASURE_2.10",
+      "nist_playbook:sub_MEASURE_2.10",
+      "nist_ai_100_1:sub_MEASURE_3.1",
+      "nist_playbook:sub_MEASURE_3.1"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 7,
+    "resolved_units": 19,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": null,
+   "recovered_units": [],
+   "metrics_note": "not computed; gold is empty per PREREGISTRATION.md"
+  },
+  {
+   "id": "test_04",
+   "type": "adversarial",
+   "subtype": "nonexistent_identifier",
+   "first_pass_slot_satisfaction": [],
+   "first_pass_recall_at_10": null,
+   "context_set_size": 57,
+   "fetched_units": [
+    "eu_ai_act:anx_I",
+    "eu_ai_act:art_17",
+    "eu_ai_act:art_19",
+    "eu_ai_act:art_43",
+    "eu_ai_act:art_47",
+    "eu_ai_act:art_10",
+    "eu_ai_act:art_59",
+    "eu_ai_act:art_5",
+    "eu_ai_act:art_79",
+    "eu_ai_act:art_14",
+    "eu_ai_act:art_6",
+    "eu_ai_act:art_49",
+    "eu_ai_act:art_27",
+    "eu_ai_act:art_26",
+    "eu_ai_act:art_9",
+    "eu_ai_act:art_4",
+    "eu_ai_act:art_22",
+    "eu_ai_act:art_24",
+    "eu_ai_act:art_102",
+    "eu_ai_act:art_112",
+    "eu_ai_act:art_57"
+   ],
+   "fetched_chunk_count": 47,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:anx_I",
+      "eu_ai_act:art_17",
+      "eu_ai_act:art_19",
+      "eu_ai_act:art_43",
+      "eu_ai_act:art_47",
+      "eu_ai_act:art_10",
+      "eu_ai_act:art_59",
+      "eu_ai_act:art_5",
+      "eu_ai_act:art_79",
+      "eu_ai_act:art_14",
+      "eu_ai_act:art_6",
+      "eu_ai_act:art_49",
+      "eu_ai_act:art_27",
+      "eu_ai_act:art_26",
+      "eu_ai_act:art_9",
+      "eu_ai_act:art_4",
+      "eu_ai_act:art_22",
+      "eu_ai_act:art_24",
+      "eu_ai_act:art_102",
+      "eu_ai_act:art_112",
+      "eu_ai_act:art_57"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": true,
+     "surfaces": [
+      "Article 114"
+     ]
+    }
+   },
+   "reference_counts": {
+    "surfaces": 47,
+    "resolved_units": 26,
+    "dropped_external": 6
+   },
+   "recovered_passage_recall": null,
+   "recovered_units": [],
+   "metrics_note": "not computed; gold is empty per PREREGISTRATION.md"
+  },
+  {
+   "id": "test_05",
+   "type": "adversarial",
+   "subtype": "nonexistent_identifier",
+   "first_pass_slot_satisfaction": [],
+   "first_pass_recall_at_10": null,
+   "context_set_size": 53,
+   "fetched_units": [
+    "eu_ai_act:anx_I",
+    "eu_ai_act:art_10",
+    "eu_ai_act:art_59",
+    "eu_ai_act:art_5",
+    "eu_ai_act:art_17",
+    "eu_ai_act:art_19",
+    "eu_ai_act:art_43",
+    "eu_ai_act:art_47",
+    "eu_ai_act:art_79",
+    "eu_ai_act:art_14",
+    "eu_ai_act:art_6",
+    "eu_ai_act:art_49",
+    "eu_ai_act:art_27",
+    "eu_ai_act:art_26",
+    "eu_ai_act:art_18",
+    "eu_ai_act:art_48",
+    "eu_ai_act:art_20",
+    "eu_ai_act:art_102",
+    "eu_ai_act:art_112",
+    "eu_ai_act:art_57"
+   ],
+   "fetched_chunk_count": 43,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:anx_I",
+      "eu_ai_act:art_10",
+      "eu_ai_act:art_59",
+      "eu_ai_act:art_5",
+      "eu_ai_act:art_17",
+      "eu_ai_act:art_19",
+      "eu_ai_act:art_43",
+      "eu_ai_act:art_47",
+      "eu_ai_act:art_79",
+      "eu_ai_act:art_14",
+      "eu_ai_act:art_6",
+      "eu_ai_act:art_49",
+      "eu_ai_act:art_27",
+      "eu_ai_act:art_26",
+      "eu_ai_act:art_18",
+      "eu_ai_act:art_48",
+      "eu_ai_act:art_20",
+      "eu_ai_act:art_102",
+      "eu_ai_act:art_112",
+      "eu_ai_act:art_57"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": true,
+     "surfaces": [
+      "Article 181"
+     ]
+    }
+   },
+   "reference_counts": {
+    "surfaces": 51,
+    "resolved_units": 26,
+    "dropped_external": 5
+   },
+   "recovered_passage_recall": null,
+   "recovered_units": [],
+   "metrics_note": "not computed; gold is empty per PREREGISTRATION.md"
+  },
+  {
+   "id": "test_06",
+   "type": "adversarial",
+   "subtype": "nonexistent_identifier",
+   "first_pass_slot_satisfaction": [],
+   "first_pass_recall_at_10": null,
+   "context_set_size": 17,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MAP_3.5",
+    "nist_playbook:sub_MAP_3.5",
+    "nist_playbook:sub_GOVERN_1.2",
+    "nist_playbook:sub_GOVERN_2.1",
+    "nist_ai_100_1:sub_MANAGE_2.4",
+    "nist_ai_600_1:sub_MANAGE_2.4",
+    "nist_playbook:sub_MANAGE_2.4"
+   ],
+   "fetched_chunk_count": 7,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MAP_3.5",
+      "nist_playbook:sub_MAP_3.5",
+      "nist_playbook:sub_GOVERN_1.2",
+      "nist_playbook:sub_GOVERN_2.1",
+      "nist_ai_100_1:sub_MANAGE_2.4",
+      "nist_ai_600_1:sub_MANAGE_2.4",
+      "nist_playbook:sub_MANAGE_2.4"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": true,
+     "surfaces": [
+      "GOVERN 1.8"
+     ]
+    }
+   },
+   "reference_counts": {
+    "surfaces": 17,
+    "resolved_units": 14,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": null,
+   "recovered_units": [],
+   "metrics_note": "not computed; gold is empty per PREREGISTRATION.md"
+  },
+  {
+   "id": "test_07",
+   "type": "adversarial",
+   "subtype": "nonexistent_identifier",
+   "first_pass_slot_satisfaction": [],
+   "first_pass_recall_at_10": null,
+   "context_set_size": 16,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MAP_3.5",
+    "nist_playbook:sub_MAP_3.5",
+    "nist_ai_600_1:sub_GOVERN_2.1",
+    "nist_playbook:sub_GOVERN_2.1",
+    "nist_ai_600_1:sub_GOVERN_1.2",
+    "nist_playbook:sub_GOVERN_1.2"
+   ],
+   "fetched_chunk_count": 6,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MAP_3.5",
+      "nist_playbook:sub_MAP_3.5",
+      "nist_ai_600_1:sub_GOVERN_2.1",
+      "nist_playbook:sub_GOVERN_2.1",
+      "nist_ai_600_1:sub_GOVERN_1.2",
+      "nist_playbook:sub_GOVERN_1.2"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": true,
+     "surfaces": [
+      "GOVERN 7.1"
+     ]
+    }
+   },
+   "reference_counts": {
+    "surfaces": 18,
+    "resolved_units": 14,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": null,
+   "recovered_units": [],
+   "metrics_note": "not computed; gold is empty per PREREGISTRATION.md"
+  },
+  {
+   "id": "test_08",
+   "type": "adversarial",
+   "subtype": "out_of_domain",
+   "first_pass_slot_satisfaction": [],
+   "first_pass_recall_at_10": null,
+   "context_set_size": 23,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MEASURE_2.4",
+    "nist_playbook:sub_MEASURE_2.4",
+    "nist_ai_100_1:sub_GOVERN_1.7",
+    "nist_ai_600_1:sub_GOVERN_1.7",
+    "nist_playbook:sub_GOVERN_1.7",
+    "nist_ai_100_1:sub_MANAGE_2.4",
+    "nist_ai_600_1:sub_MANAGE_2.4",
+    "nist_playbook:sub_MANAGE_2.4",
+    "eu_ai_act:art_14",
+    "eu_ai_act:art_12",
+    "nist_ai_100_1:sub_MAP_1.5",
+    "nist_playbook:sub_MAP_1.5"
+   ],
+   "fetched_chunk_count": 13,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MEASURE_2.4",
+      "nist_playbook:sub_MEASURE_2.4",
+      "nist_ai_100_1:sub_GOVERN_1.7",
+      "nist_ai_600_1:sub_GOVERN_1.7",
+      "nist_playbook:sub_GOVERN_1.7",
+      "nist_ai_100_1:sub_MANAGE_2.4",
+      "nist_ai_600_1:sub_MANAGE_2.4",
+      "nist_playbook:sub_MANAGE_2.4",
+      "eu_ai_act:art_14",
+      "eu_ai_act:art_12",
+      "nist_ai_100_1:sub_MAP_1.5",
+      "nist_playbook:sub_MAP_1.5"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 15,
+    "resolved_units": 17,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": null,
+   "recovered_units": [],
+   "metrics_note": "not computed; gold is empty per PREREGISTRATION.md"
+  },
+  {
+   "id": "test_09",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 3,
+     "first_satisfying_chunk": "eu_ai_act:art_43#p2",
+     "satisfying_units": [
+      "eu_ai_act:art_43"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_97#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_97"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 53,
+   "fetched_units": [
+    "eu_ai_act:anx_VI",
+    "eu_ai_act:art_11",
+    "eu_ai_act:art_47",
+    "eu_ai_act:art_51",
+    "eu_ai_act:art_52",
+    "eu_ai_act:art_31",
+    "eu_ai_act:art_41",
+    "eu_ai_act:anx_I",
+    "eu_ai_act:anx_IV",
+    "eu_ai_act:anx_III",
+    "eu_ai_act:anx_VII",
+    "eu_ai_act:art_56",
+    "eu_ai_act:art_78",
+    "eu_ai_act:anx_XI",
+    "eu_ai_act:art_5",
+    "eu_ai_act:art_50",
+    "eu_ai_act:art_99",
+    "eu_ai_act:art_96",
+    "eu_ai_act:art_98"
+   ],
+   "fetched_chunk_count": 43,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:anx_VI",
+      "eu_ai_act:art_11",
+      "eu_ai_act:art_47",
+      "eu_ai_act:art_51",
+      "eu_ai_act:art_52",
+      "eu_ai_act:art_31",
+      "eu_ai_act:art_41",
+      "eu_ai_act:anx_I",
+      "eu_ai_act:anx_IV",
+      "eu_ai_act:anx_III",
+      "eu_ai_act:anx_VII",
+      "eu_ai_act:art_56",
+      "eu_ai_act:art_78",
+      "eu_ai_act:anx_XI",
+      "eu_ai_act:art_5",
+      "eu_ai_act:art_50",
+      "eu_ai_act:art_99",
+      "eu_ai_act:art_96",
+      "eu_ai_act:art_98"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:anx_VI"
+     ]
+    },
+    "non_resolution": {
+     "fired": true,
+     "surfaces": [
+      "Article 290"
+     ]
+    }
+   },
+   "reference_counts": {
+    "surfaces": 73,
+    "resolved_units": 26,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_10",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_60#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_60"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "first_pass_recall_at_10": 0.5,
+   "context_set_size": 33,
+   "fetched_units": [
+    "eu_ai_act:art_5",
+    "eu_ai_act:art_98",
+    "eu_ai_act:anx_III",
+    "eu_ai_act:anx_I",
+    "eu_ai_act:art_71",
+    "eu_ai_act:art_49",
+    "eu_ai_act:art_13",
+    "eu_ai_act:art_4",
+    "eu_ai_act:art_57"
+   ],
+   "fetched_chunk_count": 23,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:art_5",
+      "eu_ai_act:art_98",
+      "eu_ai_act:anx_III",
+      "eu_ai_act:anx_I",
+      "eu_ai_act:art_71",
+      "eu_ai_act:art_49",
+      "eu_ai_act:art_13",
+      "eu_ai_act:art_4",
+      "eu_ai_act:art_57"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 25,
+    "resolved_units": 13,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [
+    "eu_ai_act:art_49"
+   ],
+   "metrics_note": null
+  },
+  {
+   "id": "test_11",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 4,
+     "first_satisfying_chunk": "eu_ai_act:art_78#p2",
+     "satisfying_units": [
+      "eu_ai_act:art_78"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 7,
+     "first_satisfying_chunk": "eu_ai_act:anx_IV#p1",
+     "satisfying_units": [
+      "eu_ai_act:anx_IV"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 44,
+   "fetched_units": [
+    "eu_ai_act:anx_III",
+    "eu_ai_act:art_97",
+    "eu_ai_act:anx_I",
+    "eu_ai_act:art_6",
+    "eu_ai_act:art_99",
+    "eu_ai_act:art_79",
+    "eu_ai_act:art_74",
+    "eu_ai_act:art_40",
+    "eu_ai_act:art_41",
+    "eu_ai_act:anx_VI",
+    "eu_ai_act:art_17",
+    "eu_ai_act:art_47",
+    "eu_ai_act:art_98",
+    "eu_ai_act:art_12",
+    "eu_ai_act:art_49",
+    "eu_ai_act:anx_VIII"
+   ],
+   "fetched_chunk_count": 34,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:anx_III",
+      "eu_ai_act:art_97",
+      "eu_ai_act:anx_I",
+      "eu_ai_act:art_6",
+      "eu_ai_act:art_99",
+      "eu_ai_act:art_79",
+      "eu_ai_act:art_74",
+      "eu_ai_act:art_40",
+      "eu_ai_act:art_41",
+      "eu_ai_act:anx_VI",
+      "eu_ai_act:art_17",
+      "eu_ai_act:art_47",
+      "eu_ai_act:art_98",
+      "eu_ai_act:art_12",
+      "eu_ai_act:art_49",
+      "eu_ai_act:anx_VIII"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:anx_III"
+     ]
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 62,
+    "resolved_units": 26,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_12",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 5,
+     "first_satisfying_chunk": "eu_ai_act:anx_VIII#p1",
+     "satisfying_units": [
+      "eu_ai_act:anx_VIII"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 7,
+     "first_satisfying_chunk": "eu_ai_act:anx_III#p4",
+     "satisfying_units": [
+      "eu_ai_act:anx_III"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 36,
+   "fetched_units": [
+    "eu_ai_act:art_71",
+    "eu_ai_act:art_13",
+    "eu_ai_act:anx_IX",
+    "eu_ai_act:art_6",
+    "eu_ai_act:art_74",
+    "eu_ai_act:art_47",
+    "eu_ai_act:art_40",
+    "eu_ai_act:art_41",
+    "eu_ai_act:anx_VI",
+    "eu_ai_act:anx_VII",
+    "eu_ai_act:anx_I",
+    "eu_ai_act:anx_IV"
+   ],
+   "fetched_chunk_count": 26,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:art_71",
+      "eu_ai_act:art_13",
+      "eu_ai_act:anx_IX",
+      "eu_ai_act:art_6",
+      "eu_ai_act:art_74",
+      "eu_ai_act:art_47",
+      "eu_ai_act:art_40",
+      "eu_ai_act:art_41",
+      "eu_ai_act:anx_VI",
+      "eu_ai_act:anx_VII",
+      "eu_ai_act:anx_I",
+      "eu_ai_act:anx_IV"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 58,
+    "resolved_units": 19,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_13",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 2,
+     "first_satisfying_chunk": "eu_ai_act:art_78#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_78"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 0.5,
+   "context_set_size": 17,
+   "fetched_units": [
+    "eu_ai_act:anx_III",
+    "eu_ai_act:anx_IV"
+   ],
+   "fetched_chunk_count": 7,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:anx_III",
+      "eu_ai_act:anx_IV"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 14,
+    "resolved_units": 6,
+    "dropped_external": 3
+   },
+   "recovered_passage_recall": 0.5,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_14",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_36#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_36"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 4,
+     "first_satisfying_chunk": "eu_ai_act:art_29",
+     "satisfying_units": [
+      "eu_ai_act:art_29"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 19,
+   "fetched_units": [
+    "eu_ai_act:art_78",
+    "eu_ai_act:art_98",
+    "eu_ai_act:anx_IV",
+    "eu_ai_act:art_43",
+    "eu_ai_act:art_28"
+   ],
+   "fetched_chunk_count": 9,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:art_78",
+      "eu_ai_act:art_98",
+      "eu_ai_act:anx_IV",
+      "eu_ai_act:art_43",
+      "eu_ai_act:art_28"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 37,
+    "resolved_units": 13,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_15",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_74#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_74"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 6,
+     "first_satisfying_chunk": "eu_ai_act:art_2#p2",
+     "satisfying_units": [
+      "eu_ai_act:art_2"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 30,
+   "fetched_units": [
+    "eu_ai_act:art_79",
+    "eu_ai_act:art_14",
+    "eu_ai_act:anx_I",
+    "eu_ai_act:art_10",
+    "eu_ai_act:art_59",
+    "eu_ai_act:art_5",
+    "eu_ai_act:art_78"
+   ],
+   "fetched_chunk_count": 20,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:art_79",
+      "eu_ai_act:art_14",
+      "eu_ai_act:anx_I",
+      "eu_ai_act:art_10",
+      "eu_ai_act:art_59",
+      "eu_ai_act:art_5",
+      "eu_ai_act:art_78"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 16,
+    "resolved_units": 10,
+    "dropped_external": 5
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_16",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 4,
+     "first_satisfying_chunk": "eu_ai_act:art_91",
+     "satisfying_units": [
+      "eu_ai_act:art_91"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 0.5,
+   "context_set_size": 26,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MAP_1.6",
+    "nist_playbook:sub_MAP_1.6",
+    "eu_ai_act:art_53",
+    "eu_ai_act:art_68",
+    "eu_ai_act:art_101",
+    "nist_ai_100_1:sub_MEASURE_2.9",
+    "nist_ai_600_1:sub_MEASURE_2.9",
+    "nist_playbook:sub_MEASURE_2.9",
+    "nist_ai_100_1:sub_MEASURE_1.3",
+    "nist_ai_600_1:sub_MEASURE_1.3",
+    "nist_playbook:sub_MEASURE_1.3",
+    "nist_ai_100_1:sub_GOVERN_3.2",
+    "nist_ai_600_1:sub_GOVERN_3.2",
+    "nist_playbook:sub_GOVERN_3.2"
+   ],
+   "fetched_chunk_count": 16,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MAP_1.6",
+      "nist_playbook:sub_MAP_1.6",
+      "eu_ai_act:art_53",
+      "eu_ai_act:art_68",
+      "eu_ai_act:art_101",
+      "nist_ai_100_1:sub_MEASURE_2.9",
+      "nist_ai_600_1:sub_MEASURE_2.9",
+      "nist_playbook:sub_MEASURE_2.9",
+      "nist_ai_100_1:sub_MEASURE_1.3",
+      "nist_ai_600_1:sub_MEASURE_1.3",
+      "nist_playbook:sub_MEASURE_1.3",
+      "nist_ai_100_1:sub_GOVERN_3.2",
+      "nist_ai_600_1:sub_GOVERN_3.2",
+      "nist_playbook:sub_GOVERN_3.2"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 11,
+    "resolved_units": 15,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 0.5,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_17",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 4,
+     "first_satisfying_chunk": "eu_ai_act:art_99#p2",
+     "satisfying_units": [
+      "eu_ai_act:art_99"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 2,
+     "first_satisfying_chunk": "eu_ai_act:art_22#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_22"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 44,
+   "fetched_units": [
+    "eu_ai_act:art_17",
+    "eu_ai_act:art_47",
+    "eu_ai_act:art_74",
+    "eu_ai_act:art_12",
+    "eu_ai_act:art_49",
+    "eu_ai_act:anx_VIII",
+    "eu_ai_act:art_53",
+    "eu_ai_act:art_55",
+    "eu_ai_act:anx_XI",
+    "eu_ai_act:art_5",
+    "eu_ai_act:art_78",
+    "eu_ai_act:art_68",
+    "eu_ai_act:art_101",
+    "eu_ai_act:art_97",
+    "eu_ai_act:anx_IV",
+    "eu_ai_act:anx_I"
+   ],
+   "fetched_chunk_count": 34,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:art_17",
+      "eu_ai_act:art_47",
+      "eu_ai_act:art_74",
+      "eu_ai_act:art_12",
+      "eu_ai_act:art_49",
+      "eu_ai_act:anx_VIII",
+      "eu_ai_act:art_53",
+      "eu_ai_act:art_55",
+      "eu_ai_act:anx_XI",
+      "eu_ai_act:art_5",
+      "eu_ai_act:art_78",
+      "eu_ai_act:art_68",
+      "eu_ai_act:art_101",
+      "eu_ai_act:art_97",
+      "eu_ai_act:anx_IV",
+      "eu_ai_act:anx_I"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 41,
+    "resolved_units": 24,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_18",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_14#p2",
+     "satisfying_units": [
+      "eu_ai_act:art_14"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 0.5,
+   "context_set_size": 20,
+   "fetched_units": [
+    "eu_ai_act:anx_III",
+    "eu_ai_act:art_50",
+    "eu_ai_act:art_16",
+    "eu_ai_act:art_27",
+    "eu_ai_act:art_49"
+   ],
+   "fetched_chunk_count": 10,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:anx_III",
+      "eu_ai_act:art_50",
+      "eu_ai_act:art_16",
+      "eu_ai_act:art_27",
+      "eu_ai_act:art_49"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 10,
+    "resolved_units": 9,
+    "dropped_external": 10
+   },
+   "recovered_passage_recall": 0.5,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_19",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 2,
+     "first_satisfying_chunk": "eu_ai_act:art_25#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_25"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "first_pass_recall_at_10": 0.5,
+   "context_set_size": 26,
+   "fetched_units": [
+    "eu_ai_act:art_16",
+    "eu_ai_act:anx_I",
+    "eu_ai_act:art_47",
+    "eu_ai_act:art_23",
+    "eu_ai_act:art_79",
+    "eu_ai_act:art_49",
+    "eu_ai_act:anx_III"
+   ],
+   "fetched_chunk_count": 16,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:art_16",
+      "eu_ai_act:anx_I",
+      "eu_ai_act:art_47",
+      "eu_ai_act:art_23",
+      "eu_ai_act:art_79",
+      "eu_ai_act:art_49",
+      "eu_ai_act:anx_III"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 27,
+    "resolved_units": 11,
+    "dropped_external": 1
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [
+    "eu_ai_act:art_16"
+   ],
+   "metrics_note": null
+  },
+  {
+   "id": "test_20",
+   "type": "multi_hop",
+   "subtype": "eu_internal_xref",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 5,
+     "first_satisfying_chunk": "eu_ai_act:art_83",
+     "satisfying_units": [
+      "eu_ai_act:art_83"
+     ]
+    },
+    {
+     "slot_index": 1,
+     "satisfied": true,
+     "first_satisfying_rank": 2,
+     "first_satisfying_chunk": "eu_ai_act:art_48",
+     "satisfying_units": [
+      "eu_ai_act:art_48"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 32,
+   "fetched_units": [
+    "eu_ai_act:art_43",
+    "eu_ai_act:art_6",
+    "eu_ai_act:art_99",
+    "eu_ai_act:art_79",
+    "eu_ai_act:anx_III",
+    "eu_ai_act:art_47",
+    "eu_ai_act:art_71",
+    "eu_ai_act:art_78",
+    "eu_ai_act:art_77",
+    "eu_ai_act:art_16",
+    "eu_ai_act:art_23"
+   ],
+   "fetched_chunk_count": 22,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:art_43",
+      "eu_ai_act:art_6",
+      "eu_ai_act:art_99",
+      "eu_ai_act:art_79",
+      "eu_ai_act:anx_III",
+      "eu_ai_act:art_47",
+      "eu_ai_act:art_71",
+      "eu_ai_act:art_78",
+      "eu_ai_act:art_77",
+      "eu_ai_act:art_16",
+      "eu_ai_act:art_23"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 33,
+    "resolved_units": 18,
+    "dropped_external": 2
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_21",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:anx_II",
+     "satisfying_units": [
+      "eu_ai_act:anx_II"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 34,
+   "fetched_units": [
+    "eu_ai_act:art_5",
+    "eu_ai_act:art_2",
+    "eu_ai_act:art_26",
+    "eu_ai_act:art_16",
+    "eu_ai_act:anx_IV",
+    "eu_ai_act:art_74",
+    "eu_ai_act:art_97",
+    "eu_ai_act:art_50",
+    "eu_ai_act:art_99"
+   ],
+   "fetched_chunk_count": 24,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:art_5",
+      "eu_ai_act:art_2",
+      "eu_ai_act:art_26",
+      "eu_ai_act:art_16",
+      "eu_ai_act:anx_IV",
+      "eu_ai_act:art_74",
+      "eu_ai_act:art_97",
+      "eu_ai_act:art_50",
+      "eu_ai_act:art_99"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 38,
+    "resolved_units": 15,
+    "dropped_external": 2
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_22",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:rct_179",
+     "satisfying_units": [
+      "eu_ai_act:rct_179",
+      "eu_ai_act:art_113"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 50,
+   "fetched_units": [
+    "eu_ai_act:anx_I",
+    "eu_ai_act:art_10",
+    "eu_ai_act:art_59",
+    "eu_ai_act:art_5",
+    "eu_ai_act:art_79",
+    "eu_ai_act:art_14",
+    "eu_ai_act:art_78",
+    "eu_ai_act:art_101",
+    "eu_ai_act:art_6",
+    "eu_ai_act:art_17",
+    "eu_ai_act:art_19",
+    "eu_ai_act:art_43",
+    "eu_ai_act:art_47",
+    "eu_ai_act:art_102",
+    "eu_ai_act:art_112",
+    "eu_ai_act:art_57",
+    "eu_ai_act:anx_X"
+   ],
+   "fetched_chunk_count": 40,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:anx_I",
+      "eu_ai_act:art_10",
+      "eu_ai_act:art_59",
+      "eu_ai_act:art_5",
+      "eu_ai_act:art_79",
+      "eu_ai_act:art_14",
+      "eu_ai_act:art_78",
+      "eu_ai_act:art_101",
+      "eu_ai_act:art_6",
+      "eu_ai_act:art_17",
+      "eu_ai_act:art_19",
+      "eu_ai_act:art_43",
+      "eu_ai_act:art_47",
+      "eu_ai_act:art_102",
+      "eu_ai_act:art_112",
+      "eu_ai_act:art_57",
+      "eu_ai_act:anx_X"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 44,
+    "resolved_units": 24,
+    "dropped_external": 3
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_23",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_37",
+     "satisfying_units": [
+      "eu_ai_act:art_37"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 25,
+   "fetched_units": [
+    "eu_ai_act:art_31",
+    "eu_ai_act:art_78",
+    "eu_ai_act:art_98",
+    "eu_ai_act:art_29",
+    "eu_ai_act:art_51",
+    "eu_ai_act:art_90",
+    "eu_ai_act:art_97",
+    "eu_ai_act:anx_XIII",
+    "eu_ai_act:anx_I"
+   ],
+   "fetched_chunk_count": 15,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:art_31",
+      "eu_ai_act:art_78",
+      "eu_ai_act:art_98",
+      "eu_ai_act:art_29",
+      "eu_ai_act:art_51",
+      "eu_ai_act:art_90",
+      "eu_ai_act:art_97",
+      "eu_ai_act:anx_XIII",
+      "eu_ai_act:anx_I"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 37,
+    "resolved_units": 17,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_24",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_61",
+     "satisfying_units": [
+      "eu_ai_act:art_61"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 41,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MEASURE_2.2",
+    "nist_ai_600_1:sub_MEASURE_2.2",
+    "nist_playbook:sub_MEASURE_2.2",
+    "nist_ai_100_1:sub_GOVERN_5.2",
+    "nist_playbook:sub_GOVERN_5.2",
+    "nist_ai_100_1:sub_MAP_2.3",
+    "nist_ai_600_1:sub_MAP_2.3",
+    "nist_playbook:sub_MAP_2.3",
+    "nist_ai_100_1:sub_MEASURE_3.2",
+    "nist_ai_600_1:sub_MEASURE_3.2",
+    "nist_playbook:sub_MEASURE_3.2",
+    "nist_ai_100_1:sub_GOVERN_1.7",
+    "nist_ai_600_1:sub_GOVERN_1.7",
+    "nist_playbook:sub_GOVERN_1.7",
+    "nist_ai_100_1:sub_GOVERN_1.6",
+    "nist_ai_600_1:sub_GOVERN_1.6",
+    "nist_playbook:sub_GOVERN_1.6",
+    "nist_ai_100_1:sub_MANAGE_1.4",
+    "nist_playbook:sub_MANAGE_1.4",
+    "eu_ai_act:art_75",
+    "eu_ai_act:art_73",
+    "eu_ai_act:art_97",
+    "eu_ai_act:anx_IV",
+    "eu_ai_act:anx_I"
+   ],
+   "fetched_chunk_count": 31,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MEASURE_2.2",
+      "nist_ai_600_1:sub_MEASURE_2.2",
+      "nist_playbook:sub_MEASURE_2.2",
+      "nist_ai_100_1:sub_GOVERN_5.2",
+      "nist_playbook:sub_GOVERN_5.2",
+      "nist_ai_100_1:sub_MAP_2.3",
+      "nist_ai_600_1:sub_MAP_2.3",
+      "nist_playbook:sub_MAP_2.3",
+      "nist_ai_100_1:sub_MEASURE_3.2",
+      "nist_ai_600_1:sub_MEASURE_3.2",
+      "nist_playbook:sub_MEASURE_3.2",
+      "nist_ai_100_1:sub_GOVERN_1.7",
+      "nist_ai_600_1:sub_GOVERN_1.7",
+      "nist_playbook:sub_GOVERN_1.7",
+      "nist_ai_100_1:sub_GOVERN_1.6",
+      "nist_ai_600_1:sub_GOVERN_1.6",
+      "nist_playbook:sub_GOVERN_1.6",
+      "nist_ai_100_1:sub_MANAGE_1.4",
+      "nist_playbook:sub_MANAGE_1.4",
+      "eu_ai_act:art_75",
+      "eu_ai_act:art_73",
+      "eu_ai_act:art_97",
+      "eu_ai_act:anx_IV",
+      "eu_ai_act:anx_I"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 23,
+    "resolved_units": 27,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_25",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:rct_111#p1",
+     "satisfying_units": [
+      "eu_ai_act:rct_111"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 12,
+   "fetched_units": [
+    "eu_ai_act:art_97"
+   ],
+   "fetched_chunk_count": 2,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:art_97"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 6,
+    "resolved_units": 3,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_26",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:rct_161",
+     "satisfying_units": [
+      "eu_ai_act:rct_161"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 15,
+   "fetched_units": [
+    "eu_ai_act:art_78",
+    "eu_ai_act:art_97",
+    "eu_ai_act:anx_XIII"
+   ],
+   "fetched_chunk_count": 5,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:art_78",
+      "eu_ai_act:art_97",
+      "eu_ai_act:anx_XIII"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 9,
+    "resolved_units": 6,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_27",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_100#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_100"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 23,
+   "fetched_units": [
+    "eu_ai_act:art_5",
+    "eu_ai_act:art_91",
+    "eu_ai_act:art_93",
+    "eu_ai_act:art_92",
+    "eu_ai_act:art_56",
+    "eu_ai_act:art_98",
+    "eu_ai_act:art_2"
+   ],
+   "fetched_chunk_count": 13,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:art_5",
+      "eu_ai_act:art_91",
+      "eu_ai_act:art_93",
+      "eu_ai_act:art_92",
+      "eu_ai_act:art_56",
+      "eu_ai_act:art_98",
+      "eu_ai_act:art_2"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 17,
+    "resolved_units": 12,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_28",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 2,
+     "first_satisfying_chunk": "eu_ai_act:art_23#p1",
+     "satisfying_units": [
+      "eu_ai_act:art_23"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 37,
+   "fetched_units": [
+    "eu_ai_act:art_43",
+    "eu_ai_act:art_11",
+    "eu_ai_act:art_47",
+    "eu_ai_act:art_22",
+    "eu_ai_act:art_79",
+    "eu_ai_act:anx_IV",
+    "eu_ai_act:art_16",
+    "eu_ai_act:anx_I",
+    "eu_ai_act:art_49",
+    "eu_ai_act:anx_III",
+    "eu_ai_act:art_27",
+    "eu_ai_act:art_26"
+   ],
+   "fetched_chunk_count": 27,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:art_43",
+      "eu_ai_act:art_11",
+      "eu_ai_act:art_47",
+      "eu_ai_act:art_22",
+      "eu_ai_act:art_79",
+      "eu_ai_act:anx_IV",
+      "eu_ai_act:art_16",
+      "eu_ai_act:anx_I",
+      "eu_ai_act:art_49",
+      "eu_ai_act:anx_III",
+      "eu_ai_act:art_27",
+      "eu_ai_act:art_26"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 46,
+    "resolved_units": 16,
+    "dropped_external": 3
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_29",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_49",
+     "satisfying_units": [
+      "eu_ai_act:art_49"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 46,
+   "fetched_units": [
+    "eu_ai_act:anx_III",
+    "eu_ai_act:art_6",
+    "eu_ai_act:art_74",
+    "eu_ai_act:anx_VIII",
+    "eu_ai_act:anx_IX",
+    "eu_ai_act:art_5",
+    "eu_ai_act:art_113",
+    "eu_ai_act:anx_X",
+    "eu_ai_act:art_13",
+    "eu_ai_act:art_46",
+    "eu_ai_act:art_97",
+    "eu_ai_act:art_60",
+    "eu_ai_act:art_99",
+    "eu_ai_act:art_79"
+   ],
+   "fetched_chunk_count": 36,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:anx_III",
+      "eu_ai_act:art_6",
+      "eu_ai_act:art_74",
+      "eu_ai_act:anx_VIII",
+      "eu_ai_act:anx_IX",
+      "eu_ai_act:art_5",
+      "eu_ai_act:art_113",
+      "eu_ai_act:anx_X",
+      "eu_ai_act:art_13",
+      "eu_ai_act:art_46",
+      "eu_ai_act:art_97",
+      "eu_ai_act:art_60",
+      "eu_ai_act:art_99",
+      "eu_ai_act:art_79"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:anx_III"
+     ]
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 64,
+    "resolved_units": 20,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_30",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "eu_ai_act:art_74#p3",
+     "satisfying_units": [
+      "eu_ai_act:art_74"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 17,
+   "fetched_units": [
+    "eu_ai_act:anx_III",
+    "eu_ai_act:anx_IV"
+   ],
+   "fetched_chunk_count": 7,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:anx_III",
+      "eu_ai_act:anx_IV"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 15,
+    "resolved_units": 7,
+    "dropped_external": 2
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_31",
+   "type": "single_hop",
+   "subtype": "eu_ai_act",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 3,
+     "first_satisfying_chunk": "eu_ai_act:art_99#p2",
+     "satisfying_units": [
+      "eu_ai_act:art_99"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 27,
+   "fetched_units": [
+    "eu_ai_act:art_91",
+    "eu_ai_act:art_93",
+    "eu_ai_act:art_92",
+    "eu_ai_act:art_56",
+    "eu_ai_act:art_98",
+    "eu_ai_act:art_43",
+    "eu_ai_act:art_97",
+    "eu_ai_act:anx_IV",
+    "eu_ai_act:anx_I"
+   ],
+   "fetched_chunk_count": 17,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "eu_ai_act:art_91",
+      "eu_ai_act:art_93",
+      "eu_ai_act:art_92",
+      "eu_ai_act:art_56",
+      "eu_ai_act:art_98",
+      "eu_ai_act:art_43",
+      "eu_ai_act:art_97",
+      "eu_ai_act:anx_IV",
+      "eu_ai_act:anx_I"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 26,
+    "resolved_units": 16,
+    "dropped_external": 1
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_32",
+   "type": "single_hop",
+   "subtype": "nist_ai_100_1",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "nist_ai_100_1:app_B#p2",
+     "satisfying_units": [
+      "nist_ai_100_1:app_B"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 15,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MANAGE_1.1",
+    "nist_playbook:sub_MANAGE_1.1",
+    "nist_ai_100_1:sub_MEASURE_2.7",
+    "nist_ai_600_1:sub_MEASURE_2.7",
+    "nist_playbook:sub_MEASURE_2.7"
+   ],
+   "fetched_chunk_count": 5,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MANAGE_1.1",
+      "nist_playbook:sub_MANAGE_1.1",
+      "nist_ai_100_1:sub_MEASURE_2.7",
+      "nist_ai_600_1:sub_MEASURE_2.7",
+      "nist_playbook:sub_MEASURE_2.7"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": true,
+     "surfaces": [
+      "Article 119"
+     ]
+    }
+   },
+   "reference_counts": {
+    "surfaces": 3,
+    "resolved_units": 5,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_33",
+   "type": "single_hop",
+   "subtype": "nist_ai_100_1",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 2,
+     "first_satisfying_chunk": "nist_ai_100_1:sub_MANAGE_3.1",
+     "satisfying_units": [
+      "nist_ai_100_1:sub_MANAGE_3.1",
+      "nist_ai_600_1:sub_MANAGE_3.1",
+      "nist_playbook:sub_MANAGE_3.1"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 15,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MAP_4.2",
+    "nist_playbook:sub_MAP_4.2",
+    "nist_ai_100_1:sub_GOVERN_6.1",
+    "nist_ai_600_1:sub_GOVERN_6.1",
+    "nist_playbook:sub_GOVERN_6.1"
+   ],
+   "fetched_chunk_count": 5,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MAP_4.2",
+      "nist_playbook:sub_MAP_4.2",
+      "nist_ai_100_1:sub_GOVERN_6.1",
+      "nist_ai_600_1:sub_GOVERN_6.1",
+      "nist_playbook:sub_GOVERN_6.1"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 10,
+    "resolved_units": 8,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_34",
+   "type": "single_hop",
+   "subtype": "nist_ai_100_1",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "nist_ai_100_1:sub_MEASURE_1.1",
+     "satisfying_units": [
+      "nist_ai_100_1:sub_MEASURE_1.1",
+      "nist_ai_600_1:sub_MEASURE_1.1",
+      "nist_playbook:sub_MEASURE_1.1"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 10,
+   "fetched_units": [],
+   "fetched_chunk_count": 0,
+   "signals": {
+    "context_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 14,
+    "resolved_units": 6,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_35",
+   "type": "single_hop",
+   "subtype": "nist_ai_100_1",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 2,
+     "first_satisfying_chunk": "nist_ai_100_1:sec_3.5",
+     "satisfying_units": [
+      "nist_ai_100_1:sec_3.5"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 31,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MEASURE_2.9",
+    "nist_ai_600_1:sub_MEASURE_2.9",
+    "nist_playbook:sub_MEASURE_2.9",
+    "nist_ai_100_1:sub_MEASURE_4.2",
+    "nist_ai_600_1:sub_MEASURE_4.2",
+    "nist_playbook:sub_MEASURE_4.2",
+    "nist_ai_100_1:sub_GOVERN_6.1",
+    "nist_ai_600_1:sub_GOVERN_6.1",
+    "nist_playbook:sub_GOVERN_6.1",
+    "nist_ai_100_1:sub_MEASURE_2.7",
+    "nist_ai_600_1:sub_MEASURE_2.7",
+    "nist_playbook:sub_MEASURE_2.7",
+    "nist_ai_100_1:sub_MANAGE_3.1",
+    "nist_ai_600_1:sub_MANAGE_3.1",
+    "nist_playbook:sub_MANAGE_3.1",
+    "nist_ai_100_1:sub_MEASURE_2.8",
+    "nist_ai_600_1:sub_MEASURE_2.8",
+    "nist_playbook:sub_MEASURE_2.8",
+    "nist_ai_100_1:sub_MAP_5.1",
+    "nist_ai_600_1:sub_MAP_5.1",
+    "nist_playbook:sub_MAP_5.1"
+   ],
+   "fetched_chunk_count": 21,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MEASURE_2.9",
+      "nist_ai_600_1:sub_MEASURE_2.9",
+      "nist_playbook:sub_MEASURE_2.9",
+      "nist_ai_100_1:sub_MEASURE_4.2",
+      "nist_ai_600_1:sub_MEASURE_4.2",
+      "nist_playbook:sub_MEASURE_4.2",
+      "nist_ai_100_1:sub_GOVERN_6.1",
+      "nist_ai_600_1:sub_GOVERN_6.1",
+      "nist_playbook:sub_GOVERN_6.1",
+      "nist_ai_100_1:sub_MEASURE_2.7",
+      "nist_ai_600_1:sub_MEASURE_2.7",
+      "nist_playbook:sub_MEASURE_2.7",
+      "nist_ai_100_1:sub_MANAGE_3.1",
+      "nist_ai_600_1:sub_MANAGE_3.1",
+      "nist_playbook:sub_MANAGE_3.1",
+      "nist_ai_100_1:sub_MEASURE_2.8",
+      "nist_ai_600_1:sub_MEASURE_2.8",
+      "nist_playbook:sub_MEASURE_2.8",
+      "nist_ai_100_1:sub_MAP_5.1",
+      "nist_ai_600_1:sub_MAP_5.1",
+      "nist_playbook:sub_MAP_5.1"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 9,
+    "resolved_units": 21,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_36",
+   "type": "single_hop",
+   "subtype": "nist_ai_100_1",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "nist_ai_100_1:sub_GOVERN_4.3",
+     "satisfying_units": [
+      "nist_ai_100_1:sub_GOVERN_4.3",
+      "nist_ai_600_1:sub_GOVERN_4.3",
+      "nist_playbook:sub_GOVERN_4.3"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 12,
+   "fetched_units": [
+    "nist_ai_600_1:sub_GOVERN_1.3",
+    "nist_playbook:sub_GOVERN_1.3"
+   ],
+   "fetched_chunk_count": 2,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_600_1:sub_GOVERN_1.3",
+      "nist_playbook:sub_GOVERN_1.3"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 20,
+    "resolved_units": 12,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_37",
+   "type": "single_hop",
+   "subtype": "nist_ai_600_1",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 1,
+     "first_satisfying_chunk": "nist_ai_600_1:sec_2.1",
+     "satisfying_units": [
+      "nist_ai_600_1:sec_2.1"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 15,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MEASURE_2.3",
+    "nist_ai_600_1:sub_MEASURE_2.3",
+    "nist_playbook:sub_MEASURE_2.3",
+    "nist_ai_100_1:sub_MEASURE_2.4",
+    "nist_playbook:sub_MEASURE_2.4"
+   ],
+   "fetched_chunk_count": 5,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MEASURE_2.3",
+      "nist_ai_600_1:sub_MEASURE_2.3",
+      "nist_playbook:sub_MEASURE_2.3",
+      "nist_ai_100_1:sub_MEASURE_2.4",
+      "nist_playbook:sub_MEASURE_2.4"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 3,
+    "resolved_units": 5,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_38",
+   "type": "single_hop",
+   "subtype": "nist_ai_600_1",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 2,
+     "first_satisfying_chunk": "nist_ai_600_1:sec_2.4",
+     "satisfying_units": [
+      "nist_ai_600_1:sec_2.4"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 13,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MEASURE_2.10",
+    "nist_ai_600_1:sub_MEASURE_2.10",
+    "nist_playbook:sub_MEASURE_2.10"
+   ],
+   "fetched_chunk_count": 3,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MEASURE_2.10",
+      "nist_ai_600_1:sub_MEASURE_2.10",
+      "nist_playbook:sub_MEASURE_2.10"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 3,
+    "resolved_units": 4,
+    "dropped_external": 1
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_39",
+   "type": "multi_hop",
+   "subtype": "action_subcategory",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "first_pass_recall_at_10": 0.0,
+   "context_set_size": 10,
+   "fetched_units": [],
+   "fetched_chunk_count": 0,
+   "signals": {
+    "context_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 14,
+    "resolved_units": 7,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 0.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_40",
+   "type": "multi_hop",
+   "subtype": "action_subcategory",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "first_pass_recall_at_10": 0.0,
+   "context_set_size": 21,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MEASURE_1.1",
+    "nist_ai_600_1:sub_MEASURE_1.1",
+    "nist_playbook:sub_MEASURE_1.1",
+    "nist_ai_100_1:sub_MEASURE_2.13",
+    "nist_ai_600_1:sub_MEASURE_2.13",
+    "nist_playbook:sub_MEASURE_2.13",
+    "nist_ai_100_1:sub_MEASURE_2.2",
+    "nist_ai_600_1:sub_MEASURE_2.2",
+    "nist_playbook:sub_MEASURE_2.2",
+    "nist_ai_100_1:sub_MEASURE_1.2",
+    "nist_playbook:sub_MEASURE_1.2"
+   ],
+   "fetched_chunk_count": 11,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MEASURE_1.1",
+      "nist_ai_600_1:sub_MEASURE_1.1",
+      "nist_playbook:sub_MEASURE_1.1",
+      "nist_ai_100_1:sub_MEASURE_2.13",
+      "nist_ai_600_1:sub_MEASURE_2.13",
+      "nist_playbook:sub_MEASURE_2.13",
+      "nist_ai_100_1:sub_MEASURE_2.2",
+      "nist_ai_600_1:sub_MEASURE_2.2",
+      "nist_playbook:sub_MEASURE_2.2",
+      "nist_ai_100_1:sub_MEASURE_1.2",
+      "nist_playbook:sub_MEASURE_1.2"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 13,
+    "resolved_units": 15,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 0.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_41",
+   "type": "multi_hop",
+   "subtype": "action_subcategory",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "first_pass_recall_at_10": 0.0,
+   "context_set_size": 13,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MEASURE_2.2",
+    "nist_ai_600_1:sub_MEASURE_2.2",
+    "nist_playbook:sub_MEASURE_2.2"
+   ],
+   "fetched_chunk_count": 3,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MEASURE_2.2",
+      "nist_ai_600_1:sub_MEASURE_2.2",
+      "nist_playbook:sub_MEASURE_2.2"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 7,
+    "resolved_units": 5,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [
+    "nist_ai_100_1:sub_MEASURE_2.2",
+    "nist_ai_600_1:sub_MEASURE_2.2",
+    "nist_playbook:sub_MEASURE_2.2"
+   ],
+   "metrics_note": null
+  },
+  {
+   "id": "test_42",
+   "type": "multi_hop",
+   "subtype": "action_subcategory",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "first_pass_recall_at_10": 0.0,
+   "context_set_size": 27,
+   "fetched_units": [
+    "nist_ai_100_1:sub_GOVERN_5.1",
+    "nist_ai_600_1:sub_GOVERN_5.1",
+    "nist_playbook:sub_GOVERN_5.1",
+    "nist_ai_100_1:sub_GOVERN_1.5",
+    "nist_ai_600_1:sub_GOVERN_1.5",
+    "nist_playbook:sub_GOVERN_1.5",
+    "nist_ai_100_1:sub_GOVERN_6.1",
+    "nist_ai_600_1:sub_GOVERN_6.1",
+    "nist_playbook:sub_GOVERN_6.1",
+    "nist_ai_100_1:sub_MEASURE_3.3",
+    "nist_ai_600_1:sub_MEASURE_3.3",
+    "nist_playbook:sub_MEASURE_3.3",
+    "nist_ai_100_1:sub_MEASURE_4.1",
+    "nist_playbook:sub_MEASURE_4.1",
+    "nist_ai_100_1:sub_GOVERN_1.3",
+    "nist_ai_600_1:sub_GOVERN_1.3",
+    "nist_playbook:sub_GOVERN_1.3"
+   ],
+   "fetched_chunk_count": 17,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_GOVERN_5.1",
+      "nist_ai_600_1:sub_GOVERN_5.1",
+      "nist_playbook:sub_GOVERN_5.1",
+      "nist_ai_100_1:sub_GOVERN_1.5",
+      "nist_ai_600_1:sub_GOVERN_1.5",
+      "nist_playbook:sub_GOVERN_1.5",
+      "nist_ai_100_1:sub_GOVERN_6.1",
+      "nist_ai_600_1:sub_GOVERN_6.1",
+      "nist_playbook:sub_GOVERN_6.1",
+      "nist_ai_100_1:sub_MEASURE_3.3",
+      "nist_ai_600_1:sub_MEASURE_3.3",
+      "nist_playbook:sub_MEASURE_3.3",
+      "nist_ai_100_1:sub_MEASURE_4.1",
+      "nist_playbook:sub_MEASURE_4.1",
+      "nist_ai_100_1:sub_GOVERN_1.3",
+      "nist_ai_600_1:sub_GOVERN_1.3",
+      "nist_playbook:sub_GOVERN_1.3"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": false,
+     "absent_units": []
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 15,
+    "resolved_units": 21,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 0.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_43",
+   "type": "near_miss",
+   "subtype": "block_clusters",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "first_pass_recall_at_10": 0.0,
+   "context_set_size": 37,
+   "fetched_units": [
+    "nist_ai_100_1:sub_GOVERN_2.3",
+    "nist_playbook:sub_GOVERN_2.3",
+    "nist_playbook:sub_GOVERN_2.3.ai_transparency_resources",
+    "nist_ai_100_1:sub_MAP_3.3",
+    "nist_playbook:sub_MAP_3.3",
+    "nist_ai_100_1:sub_MAP_3.1",
+    "nist_playbook:sub_MAP_3.1",
+    "nist_ai_100_1:sub_MAP_3.2",
+    "nist_playbook:sub_MAP_3.2",
+    "nist_ai_100_1:sub_MAP_5.1",
+    "nist_ai_600_1:sub_MAP_5.1",
+    "nist_playbook:sub_MAP_5.1",
+    "nist_ai_100_1:sub_MAP_4.2",
+    "nist_playbook:sub_MAP_4.2",
+    "nist_ai_100_1:sub_MAP_5.2",
+    "nist_ai_600_1:sub_MAP_5.2",
+    "nist_playbook:sub_MAP_5.2",
+    "nist_ai_100_1:sub_GOVERN_1.1",
+    "nist_ai_600_1:sub_GOVERN_1.1",
+    "nist_playbook:sub_GOVERN_1.1",
+    "nist_ai_100_1:sub_GOVERN_3.1",
+    "nist_playbook:sub_GOVERN_3.1",
+    "nist_ai_100_1:sub_GOVERN_1.2",
+    "nist_ai_600_1:sub_GOVERN_1.2",
+    "nist_playbook:sub_GOVERN_1.2",
+    "nist_ai_100_1:sub_MAP_1.3",
+    "nist_playbook:sub_MAP_1.3"
+   ],
+   "fetched_chunk_count": 27,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_GOVERN_2.3",
+      "nist_playbook:sub_GOVERN_2.3",
+      "nist_playbook:sub_GOVERN_2.3.ai_transparency_resources",
+      "nist_ai_100_1:sub_MAP_3.3",
+      "nist_playbook:sub_MAP_3.3",
+      "nist_ai_100_1:sub_MAP_3.1",
+      "nist_playbook:sub_MAP_3.1",
+      "nist_ai_100_1:sub_MAP_3.2",
+      "nist_playbook:sub_MAP_3.2",
+      "nist_ai_100_1:sub_MAP_5.1",
+      "nist_ai_600_1:sub_MAP_5.1",
+      "nist_playbook:sub_MAP_5.1",
+      "nist_ai_100_1:sub_MAP_4.2",
+      "nist_playbook:sub_MAP_4.2",
+      "nist_ai_100_1:sub_MAP_5.2",
+      "nist_ai_600_1:sub_MAP_5.2",
+      "nist_playbook:sub_MAP_5.2",
+      "nist_ai_100_1:sub_GOVERN_1.1",
+      "nist_ai_600_1:sub_GOVERN_1.1",
+      "nist_playbook:sub_GOVERN_1.1",
+      "nist_ai_100_1:sub_GOVERN_3.1",
+      "nist_playbook:sub_GOVERN_3.1",
+      "nist_ai_100_1:sub_GOVERN_1.2",
+      "nist_ai_600_1:sub_GOVERN_1.2",
+      "nist_playbook:sub_GOVERN_1.2",
+      "nist_ai_100_1:sub_MAP_1.3",
+      "nist_playbook:sub_MAP_1.3"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_GOVERN_2.3",
+      "nist_playbook:sub_GOVERN_2.3",
+      "nist_playbook:sub_GOVERN_2.3.ai_transparency_resources"
+     ]
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 12,
+    "resolved_units": 27,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [
+    "nist_playbook:sub_GOVERN_2.3.ai_transparency_resources"
+   ],
+   "metrics_note": null
+  },
+  {
+   "id": "test_44",
+   "type": "near_miss",
+   "subtype": "block_clusters",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "first_pass_recall_at_10": 0.0,
+   "context_set_size": 32,
+   "fetched_units": [
+    "nist_ai_600_1:sub_MANAGE_3.1",
+    "nist_playbook:sub_MANAGE_3.1",
+    "nist_playbook:sub_MANAGE_3.1.ai_transparency_resources",
+    "nist_ai_100_1:sub_MAP_3.3",
+    "nist_playbook:sub_MAP_3.3",
+    "nist_ai_100_1:sub_MAP_3.1",
+    "nist_playbook:sub_MAP_3.1",
+    "nist_ai_100_1:sub_MAP_3.2",
+    "nist_playbook:sub_MAP_3.2",
+    "nist_ai_100_1:sub_GOVERN_3.2",
+    "nist_ai_600_1:sub_GOVERN_3.2",
+    "nist_playbook:sub_GOVERN_3.2",
+    "nist_ai_100_1:sub_GOVERN_1.1",
+    "nist_ai_600_1:sub_GOVERN_1.1",
+    "nist_playbook:sub_GOVERN_1.1",
+    "nist_ai_100_1:sub_GOVERN_1.2",
+    "nist_ai_600_1:sub_GOVERN_1.2",
+    "nist_playbook:sub_GOVERN_1.2",
+    "nist_ai_100_1:sub_GOVERN_3.1",
+    "nist_playbook:sub_GOVERN_3.1",
+    "nist_ai_100_1:sub_MAP_4.2",
+    "nist_playbook:sub_MAP_4.2"
+   ],
+   "fetched_chunk_count": 22,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_600_1:sub_MANAGE_3.1",
+      "nist_playbook:sub_MANAGE_3.1",
+      "nist_playbook:sub_MANAGE_3.1.ai_transparency_resources",
+      "nist_ai_100_1:sub_MAP_3.3",
+      "nist_playbook:sub_MAP_3.3",
+      "nist_ai_100_1:sub_MAP_3.1",
+      "nist_playbook:sub_MAP_3.1",
+      "nist_ai_100_1:sub_MAP_3.2",
+      "nist_playbook:sub_MAP_3.2",
+      "nist_ai_100_1:sub_GOVERN_3.2",
+      "nist_ai_600_1:sub_GOVERN_3.2",
+      "nist_playbook:sub_GOVERN_3.2",
+      "nist_ai_100_1:sub_GOVERN_1.1",
+      "nist_ai_600_1:sub_GOVERN_1.1",
+      "nist_playbook:sub_GOVERN_1.1",
+      "nist_ai_100_1:sub_GOVERN_1.2",
+      "nist_ai_600_1:sub_GOVERN_1.2",
+      "nist_playbook:sub_GOVERN_1.2",
+      "nist_ai_100_1:sub_GOVERN_3.1",
+      "nist_playbook:sub_GOVERN_3.1",
+      "nist_ai_100_1:sub_MAP_4.2",
+      "nist_playbook:sub_MAP_4.2"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_600_1:sub_MANAGE_3.1",
+      "nist_playbook:sub_MANAGE_3.1",
+      "nist_playbook:sub_MANAGE_3.1.ai_transparency_resources"
+     ]
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 14,
+    "resolved_units": 24,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [
+    "nist_playbook:sub_MANAGE_3.1.ai_transparency_resources"
+   ],
+   "metrics_note": null
+  },
+  {
+   "id": "test_45",
+   "type": "near_miss",
+   "subtype": "block_clusters",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": true,
+     "first_satisfying_rank": 7,
+     "first_satisfying_chunk": "nist_playbook:sub_MAP_5.1.ai_transparency_resources",
+     "satisfying_units": [
+      "nist_playbook:sub_MAP_5.1.ai_transparency_resources"
+     ]
+    }
+   ],
+   "first_pass_recall_at_10": 1.0,
+   "context_set_size": 31,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MAP_5.1",
+    "nist_ai_600_1:sub_MAP_5.1",
+    "nist_playbook:sub_MAP_5.1",
+    "nist_ai_100_1:sub_MAP_3.3",
+    "nist_playbook:sub_MAP_3.3",
+    "nist_ai_100_1:sub_MAP_3.1",
+    "nist_playbook:sub_MAP_3.1",
+    "nist_ai_100_1:sub_MAP_3.2",
+    "nist_playbook:sub_MAP_3.2",
+    "nist_ai_100_1:sub_MAP_4.2",
+    "nist_playbook:sub_MAP_4.2",
+    "nist_ai_100_1:sub_MAP_1.3",
+    "nist_playbook:sub_MAP_1.3",
+    "nist_ai_100_1:sub_MAP_5.2",
+    "nist_ai_600_1:sub_MAP_5.2",
+    "nist_playbook:sub_MAP_5.2",
+    "nist_ai_100_1:sub_GOVERN_3.1",
+    "nist_playbook:sub_GOVERN_3.1",
+    "nist_ai_100_1:sub_GOVERN_1.1",
+    "nist_ai_600_1:sub_GOVERN_1.1",
+    "nist_playbook:sub_GOVERN_1.1"
+   ],
+   "fetched_chunk_count": 21,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MAP_5.1",
+      "nist_ai_600_1:sub_MAP_5.1",
+      "nist_playbook:sub_MAP_5.1",
+      "nist_ai_100_1:sub_MAP_3.3",
+      "nist_playbook:sub_MAP_3.3",
+      "nist_ai_100_1:sub_MAP_3.1",
+      "nist_playbook:sub_MAP_3.1",
+      "nist_ai_100_1:sub_MAP_3.2",
+      "nist_playbook:sub_MAP_3.2",
+      "nist_ai_100_1:sub_MAP_4.2",
+      "nist_playbook:sub_MAP_4.2",
+      "nist_ai_100_1:sub_MAP_1.3",
+      "nist_playbook:sub_MAP_1.3",
+      "nist_ai_100_1:sub_MAP_5.2",
+      "nist_ai_600_1:sub_MAP_5.2",
+      "nist_playbook:sub_MAP_5.2",
+      "nist_ai_100_1:sub_GOVERN_3.1",
+      "nist_playbook:sub_GOVERN_3.1",
+      "nist_ai_100_1:sub_GOVERN_1.1",
+      "nist_ai_600_1:sub_GOVERN_1.1",
+      "nist_playbook:sub_GOVERN_1.1"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MAP_5.1",
+      "nist_ai_600_1:sub_MAP_5.1",
+      "nist_playbook:sub_MAP_5.1"
+     ]
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 12,
+    "resolved_units": 22,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [],
+   "metrics_note": null
+  },
+  {
+   "id": "test_46",
+   "type": "near_miss",
+   "subtype": "near_duplicate",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "first_pass_recall_at_10": 0.0,
+   "context_set_size": 35,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MAP_3.4",
+    "nist_ai_600_1:sub_MAP_3.4",
+    "nist_playbook:sub_MAP_3.4",
+    "nist_playbook:sub_MAP_3.4.ai_transparency_resources",
+    "nist_ai_100_1:sub_MAP_3.3",
+    "nist_playbook:sub_MAP_3.3",
+    "nist_ai_100_1:sub_MAP_3.1",
+    "nist_playbook:sub_MAP_3.1",
+    "nist_ai_100_1:sub_MAP_3.2",
+    "nist_playbook:sub_MAP_3.2",
+    "nist_ai_100_1:sub_MAP_4.2",
+    "nist_playbook:sub_MAP_4.2",
+    "nist_ai_100_1:sub_MAP_1.3",
+    "nist_playbook:sub_MAP_1.3",
+    "nist_ai_100_1:sub_MAP_5.1",
+    "nist_ai_600_1:sub_MAP_5.1",
+    "nist_playbook:sub_MAP_5.1",
+    "nist_ai_100_1:sub_MAP_5.2",
+    "nist_ai_600_1:sub_MAP_5.2",
+    "nist_playbook:sub_MAP_5.2",
+    "nist_ai_100_1:sub_GOVERN_3.1",
+    "nist_playbook:sub_GOVERN_3.1",
+    "nist_ai_100_1:sub_GOVERN_1.1",
+    "nist_ai_600_1:sub_GOVERN_1.1",
+    "nist_playbook:sub_GOVERN_1.1"
+   ],
+   "fetched_chunk_count": 25,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MAP_3.4",
+      "nist_ai_600_1:sub_MAP_3.4",
+      "nist_playbook:sub_MAP_3.4",
+      "nist_playbook:sub_MAP_3.4.ai_transparency_resources",
+      "nist_ai_100_1:sub_MAP_3.3",
+      "nist_playbook:sub_MAP_3.3",
+      "nist_ai_100_1:sub_MAP_3.1",
+      "nist_playbook:sub_MAP_3.1",
+      "nist_ai_100_1:sub_MAP_3.2",
+      "nist_playbook:sub_MAP_3.2",
+      "nist_ai_100_1:sub_MAP_4.2",
+      "nist_playbook:sub_MAP_4.2",
+      "nist_ai_100_1:sub_MAP_1.3",
+      "nist_playbook:sub_MAP_1.3",
+      "nist_ai_100_1:sub_MAP_5.1",
+      "nist_ai_600_1:sub_MAP_5.1",
+      "nist_playbook:sub_MAP_5.1",
+      "nist_ai_100_1:sub_MAP_5.2",
+      "nist_ai_600_1:sub_MAP_5.2",
+      "nist_playbook:sub_MAP_5.2",
+      "nist_ai_100_1:sub_GOVERN_3.1",
+      "nist_playbook:sub_GOVERN_3.1",
+      "nist_ai_100_1:sub_GOVERN_1.1",
+      "nist_ai_600_1:sub_GOVERN_1.1",
+      "nist_playbook:sub_GOVERN_1.1"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MAP_3.4",
+      "nist_ai_600_1:sub_MAP_3.4",
+      "nist_playbook:sub_MAP_3.4",
+      "nist_playbook:sub_MAP_3.4.ai_transparency_resources"
+     ]
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 11,
+    "resolved_units": 25,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [
+    "nist_playbook:sub_MAP_3.4.ai_transparency_resources"
+   ],
+   "metrics_note": null
+  },
+  {
+   "id": "test_47",
+   "type": "near_miss",
+   "subtype": "near_duplicate",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "first_pass_recall_at_10": 0.0,
+   "context_set_size": 39,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MEASURE_2.5",
+    "nist_ai_600_1:sub_MEASURE_2.5",
+    "nist_playbook:sub_MEASURE_2.5",
+    "nist_playbook:sub_MEASURE_2.5.ai_transparency_resources",
+    "nist_ai_100_1:sub_MAP_3.3",
+    "nist_playbook:sub_MAP_3.3",
+    "nist_ai_100_1:sub_MAP_3.1",
+    "nist_playbook:sub_MAP_3.1",
+    "nist_ai_100_1:sub_MAP_3.2",
+    "nist_playbook:sub_MAP_3.2",
+    "nist_ai_100_1:sub_MAP_4.2",
+    "nist_playbook:sub_MAP_4.2",
+    "nist_ai_100_1:sub_MAP_5.1",
+    "nist_ai_600_1:sub_MAP_5.1",
+    "nist_playbook:sub_MAP_5.1",
+    "nist_ai_100_1:sub_GOVERN_1.1",
+    "nist_ai_600_1:sub_GOVERN_1.1",
+    "nist_playbook:sub_GOVERN_1.1",
+    "nist_ai_100_1:sub_MAP_1.3",
+    "nist_playbook:sub_MAP_1.3",
+    "nist_ai_100_1:sub_MAP_5.2",
+    "nist_ai_600_1:sub_MAP_5.2",
+    "nist_playbook:sub_MAP_5.2",
+    "nist_ai_100_1:sub_GOVERN_1.2",
+    "nist_ai_600_1:sub_GOVERN_1.2",
+    "nist_playbook:sub_GOVERN_1.2",
+    "nist_ai_100_1:sub_MEASURE_4.2",
+    "nist_ai_600_1:sub_MEASURE_4.2",
+    "nist_playbook:sub_MEASURE_4.2"
+   ],
+   "fetched_chunk_count": 29,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MEASURE_2.5",
+      "nist_ai_600_1:sub_MEASURE_2.5",
+      "nist_playbook:sub_MEASURE_2.5",
+      "nist_playbook:sub_MEASURE_2.5.ai_transparency_resources",
+      "nist_ai_100_1:sub_MAP_3.3",
+      "nist_playbook:sub_MAP_3.3",
+      "nist_ai_100_1:sub_MAP_3.1",
+      "nist_playbook:sub_MAP_3.1",
+      "nist_ai_100_1:sub_MAP_3.2",
+      "nist_playbook:sub_MAP_3.2",
+      "nist_ai_100_1:sub_MAP_4.2",
+      "nist_playbook:sub_MAP_4.2",
+      "nist_ai_100_1:sub_MAP_5.1",
+      "nist_ai_600_1:sub_MAP_5.1",
+      "nist_playbook:sub_MAP_5.1",
+      "nist_ai_100_1:sub_GOVERN_1.1",
+      "nist_ai_600_1:sub_GOVERN_1.1",
+      "nist_playbook:sub_GOVERN_1.1",
+      "nist_ai_100_1:sub_MAP_1.3",
+      "nist_playbook:sub_MAP_1.3",
+      "nist_ai_100_1:sub_MAP_5.2",
+      "nist_ai_600_1:sub_MAP_5.2",
+      "nist_playbook:sub_MAP_5.2",
+      "nist_ai_100_1:sub_GOVERN_1.2",
+      "nist_ai_600_1:sub_GOVERN_1.2",
+      "nist_playbook:sub_GOVERN_1.2",
+      "nist_ai_100_1:sub_MEASURE_4.2",
+      "nist_ai_600_1:sub_MEASURE_4.2",
+      "nist_playbook:sub_MEASURE_4.2"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MEASURE_2.5",
+      "nist_ai_600_1:sub_MEASURE_2.5",
+      "nist_playbook:sub_MEASURE_2.5",
+      "nist_playbook:sub_MEASURE_2.5.ai_transparency_resources"
+     ]
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 12,
+    "resolved_units": 29,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [
+    "nist_playbook:sub_MEASURE_2.5.ai_transparency_resources"
+   ],
+   "metrics_note": null
+  },
+  {
+   "id": "test_48",
+   "type": "near_miss",
+   "subtype": "near_duplicate",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "first_pass_recall_at_10": 0.0,
+   "context_set_size": 38,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MANAGE_4.2",
+    "nist_ai_600_1:sub_MANAGE_4.2",
+    "nist_playbook:sub_MANAGE_4.2",
+    "nist_playbook:sub_MANAGE_4.2.ai_transparency_resources",
+    "nist_ai_100_1:sub_MAP_3.3",
+    "nist_playbook:sub_MAP_3.3",
+    "nist_ai_100_1:sub_MAP_3.1",
+    "nist_playbook:sub_MAP_3.1",
+    "nist_ai_100_1:sub_MAP_3.2",
+    "nist_playbook:sub_MAP_3.2",
+    "nist_ai_100_1:sub_MAP_1.3",
+    "nist_playbook:sub_MAP_1.3",
+    "nist_ai_100_1:sub_MAP_4.2",
+    "nist_playbook:sub_MAP_4.2",
+    "nist_ai_100_1:sub_GOVERN_3.1",
+    "nist_playbook:sub_GOVERN_3.1",
+    "nist_ai_100_1:sub_GOVERN_1.1",
+    "nist_ai_600_1:sub_GOVERN_1.1",
+    "nist_playbook:sub_GOVERN_1.1",
+    "nist_ai_100_1:sub_GOVERN_3.2",
+    "nist_ai_600_1:sub_GOVERN_3.2",
+    "nist_playbook:sub_GOVERN_3.2",
+    "nist_ai_100_1:sub_GOVERN_1.2",
+    "nist_ai_600_1:sub_GOVERN_1.2",
+    "nist_playbook:sub_GOVERN_1.2",
+    "nist_ai_100_1:sub_MAP_3.4",
+    "nist_ai_600_1:sub_MAP_3.4",
+    "nist_playbook:sub_MAP_3.4"
+   ],
+   "fetched_chunk_count": 28,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MANAGE_4.2",
+      "nist_ai_600_1:sub_MANAGE_4.2",
+      "nist_playbook:sub_MANAGE_4.2",
+      "nist_playbook:sub_MANAGE_4.2.ai_transparency_resources",
+      "nist_ai_100_1:sub_MAP_3.3",
+      "nist_playbook:sub_MAP_3.3",
+      "nist_ai_100_1:sub_MAP_3.1",
+      "nist_playbook:sub_MAP_3.1",
+      "nist_ai_100_1:sub_MAP_3.2",
+      "nist_playbook:sub_MAP_3.2",
+      "nist_ai_100_1:sub_MAP_1.3",
+      "nist_playbook:sub_MAP_1.3",
+      "nist_ai_100_1:sub_MAP_4.2",
+      "nist_playbook:sub_MAP_4.2",
+      "nist_ai_100_1:sub_GOVERN_3.1",
+      "nist_playbook:sub_GOVERN_3.1",
+      "nist_ai_100_1:sub_GOVERN_1.1",
+      "nist_ai_600_1:sub_GOVERN_1.1",
+      "nist_playbook:sub_GOVERN_1.1",
+      "nist_ai_100_1:sub_GOVERN_3.2",
+      "nist_ai_600_1:sub_GOVERN_3.2",
+      "nist_playbook:sub_GOVERN_3.2",
+      "nist_ai_100_1:sub_GOVERN_1.2",
+      "nist_ai_600_1:sub_GOVERN_1.2",
+      "nist_playbook:sub_GOVERN_1.2",
+      "nist_ai_100_1:sub_MAP_3.4",
+      "nist_ai_600_1:sub_MAP_3.4",
+      "nist_playbook:sub_MAP_3.4"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MANAGE_4.2",
+      "nist_ai_600_1:sub_MANAGE_4.2",
+      "nist_playbook:sub_MANAGE_4.2",
+      "nist_playbook:sub_MANAGE_4.2.ai_transparency_resources"
+     ]
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 12,
+    "resolved_units": 28,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [
+    "nist_playbook:sub_MANAGE_4.2.ai_transparency_resources"
+   ],
+   "metrics_note": null
+  },
+  {
+   "id": "test_49",
+   "type": "near_miss",
+   "subtype": "near_duplicate",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "first_pass_recall_at_10": 0.0,
+   "context_set_size": 38,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MANAGE_1.3",
+    "nist_ai_600_1:sub_MANAGE_1.3",
+    "nist_playbook:sub_MANAGE_1.3",
+    "nist_playbook:sub_MANAGE_1.3.ai_transparency_resources",
+    "nist_ai_100_1:sub_MAP_3.3",
+    "nist_playbook:sub_MAP_3.3",
+    "nist_ai_100_1:sub_MAP_3.1",
+    "nist_playbook:sub_MAP_3.1",
+    "nist_ai_100_1:sub_MAP_3.2",
+    "nist_playbook:sub_MAP_3.2",
+    "nist_ai_100_1:sub_MAP_4.2",
+    "nist_playbook:sub_MAP_4.2",
+    "nist_ai_100_1:sub_GOVERN_3.1",
+    "nist_playbook:sub_GOVERN_3.1",
+    "nist_ai_100_1:sub_MAP_1.3",
+    "nist_playbook:sub_MAP_1.3",
+    "nist_ai_100_1:sub_GOVERN_1.1",
+    "nist_ai_600_1:sub_GOVERN_1.1",
+    "nist_playbook:sub_GOVERN_1.1",
+    "nist_ai_100_1:sub_GOVERN_1.2",
+    "nist_ai_600_1:sub_GOVERN_1.2",
+    "nist_playbook:sub_GOVERN_1.2",
+    "nist_ai_100_1:sub_GOVERN_3.2",
+    "nist_ai_600_1:sub_GOVERN_3.2",
+    "nist_playbook:sub_GOVERN_3.2",
+    "nist_ai_100_1:sub_MAP_3.4",
+    "nist_ai_600_1:sub_MAP_3.4",
+    "nist_playbook:sub_MAP_3.4"
+   ],
+   "fetched_chunk_count": 28,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MANAGE_1.3",
+      "nist_ai_600_1:sub_MANAGE_1.3",
+      "nist_playbook:sub_MANAGE_1.3",
+      "nist_playbook:sub_MANAGE_1.3.ai_transparency_resources",
+      "nist_ai_100_1:sub_MAP_3.3",
+      "nist_playbook:sub_MAP_3.3",
+      "nist_ai_100_1:sub_MAP_3.1",
+      "nist_playbook:sub_MAP_3.1",
+      "nist_ai_100_1:sub_MAP_3.2",
+      "nist_playbook:sub_MAP_3.2",
+      "nist_ai_100_1:sub_MAP_4.2",
+      "nist_playbook:sub_MAP_4.2",
+      "nist_ai_100_1:sub_GOVERN_3.1",
+      "nist_playbook:sub_GOVERN_3.1",
+      "nist_ai_100_1:sub_MAP_1.3",
+      "nist_playbook:sub_MAP_1.3",
+      "nist_ai_100_1:sub_GOVERN_1.1",
+      "nist_ai_600_1:sub_GOVERN_1.1",
+      "nist_playbook:sub_GOVERN_1.1",
+      "nist_ai_100_1:sub_GOVERN_1.2",
+      "nist_ai_600_1:sub_GOVERN_1.2",
+      "nist_playbook:sub_GOVERN_1.2",
+      "nist_ai_100_1:sub_GOVERN_3.2",
+      "nist_ai_600_1:sub_GOVERN_3.2",
+      "nist_playbook:sub_GOVERN_3.2",
+      "nist_ai_100_1:sub_MAP_3.4",
+      "nist_ai_600_1:sub_MAP_3.4",
+      "nist_playbook:sub_MAP_3.4"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MANAGE_1.3",
+      "nist_ai_600_1:sub_MANAGE_1.3",
+      "nist_playbook:sub_MANAGE_1.3",
+      "nist_playbook:sub_MANAGE_1.3.ai_transparency_resources"
+     ]
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 12,
+    "resolved_units": 28,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [
+    "nist_playbook:sub_MANAGE_1.3.ai_transparency_resources"
+   ],
+   "metrics_note": null
+  },
+  {
+   "id": "test_50",
+   "type": "near_miss",
+   "subtype": "near_duplicate",
+   "first_pass_slot_satisfaction": [
+    {
+     "slot_index": 0,
+     "satisfied": false,
+     "first_satisfying_rank": null,
+     "first_satisfying_chunk": null,
+     "satisfying_units": []
+    }
+   ],
+   "first_pass_recall_at_10": 0.0,
+   "context_set_size": 38,
+   "fetched_units": [
+    "nist_ai_100_1:sub_MANAGE_4.3",
+    "nist_ai_600_1:sub_MANAGE_4.3",
+    "nist_playbook:sub_MANAGE_4.3",
+    "nist_playbook:sub_MANAGE_4.3.ai_transparency_resources",
+    "nist_ai_100_1:sub_MAP_3.3",
+    "nist_playbook:sub_MAP_3.3",
+    "nist_ai_100_1:sub_MAP_3.1",
+    "nist_playbook:sub_MAP_3.1",
+    "nist_ai_100_1:sub_MAP_3.2",
+    "nist_playbook:sub_MAP_3.2",
+    "nist_ai_100_1:sub_MAP_4.2",
+    "nist_playbook:sub_MAP_4.2",
+    "nist_ai_100_1:sub_GOVERN_3.1",
+    "nist_playbook:sub_GOVERN_3.1",
+    "nist_ai_100_1:sub_GOVERN_1.1",
+    "nist_ai_600_1:sub_GOVERN_1.1",
+    "nist_playbook:sub_GOVERN_1.1",
+    "nist_ai_100_1:sub_MAP_1.3",
+    "nist_playbook:sub_MAP_1.3",
+    "nist_ai_100_1:sub_GOVERN_1.2",
+    "nist_ai_600_1:sub_GOVERN_1.2",
+    "nist_playbook:sub_GOVERN_1.2",
+    "nist_ai_100_1:sub_GOVERN_3.2",
+    "nist_ai_600_1:sub_GOVERN_3.2",
+    "nist_playbook:sub_GOVERN_3.2",
+    "nist_ai_100_1:sub_MAP_3.4",
+    "nist_ai_600_1:sub_MAP_3.4",
+    "nist_playbook:sub_MAP_3.4"
+   ],
+   "fetched_chunk_count": 28,
+   "signals": {
+    "context_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MANAGE_4.3",
+      "nist_ai_600_1:sub_MANAGE_4.3",
+      "nist_playbook:sub_MANAGE_4.3",
+      "nist_playbook:sub_MANAGE_4.3.ai_transparency_resources",
+      "nist_ai_100_1:sub_MAP_3.3",
+      "nist_playbook:sub_MAP_3.3",
+      "nist_ai_100_1:sub_MAP_3.1",
+      "nist_playbook:sub_MAP_3.1",
+      "nist_ai_100_1:sub_MAP_3.2",
+      "nist_playbook:sub_MAP_3.2",
+      "nist_ai_100_1:sub_MAP_4.2",
+      "nist_playbook:sub_MAP_4.2",
+      "nist_ai_100_1:sub_GOVERN_3.1",
+      "nist_playbook:sub_GOVERN_3.1",
+      "nist_ai_100_1:sub_GOVERN_1.1",
+      "nist_ai_600_1:sub_GOVERN_1.1",
+      "nist_playbook:sub_GOVERN_1.1",
+      "nist_ai_100_1:sub_MAP_1.3",
+      "nist_playbook:sub_MAP_1.3",
+      "nist_ai_100_1:sub_GOVERN_1.2",
+      "nist_ai_600_1:sub_GOVERN_1.2",
+      "nist_playbook:sub_GOVERN_1.2",
+      "nist_ai_100_1:sub_GOVERN_3.2",
+      "nist_ai_600_1:sub_GOVERN_3.2",
+      "nist_playbook:sub_GOVERN_3.2",
+      "nist_ai_100_1:sub_MAP_3.4",
+      "nist_ai_600_1:sub_MAP_3.4",
+      "nist_playbook:sub_MAP_3.4"
+     ]
+    },
+    "query_reference_absence": {
+     "fired": true,
+     "absent_units": [
+      "nist_ai_100_1:sub_MANAGE_4.3",
+      "nist_ai_600_1:sub_MANAGE_4.3",
+      "nist_playbook:sub_MANAGE_4.3",
+      "nist_playbook:sub_MANAGE_4.3.ai_transparency_resources"
+     ]
+    },
+    "non_resolution": {
+     "fired": false,
+     "surfaces": []
+    }
+   },
+   "reference_counts": {
+    "surfaces": 12,
+    "resolved_units": 28,
+    "dropped_external": 0
+   },
+   "recovered_passage_recall": 1.0,
+   "recovered_units": [
+    "nist_playbook:sub_MANAGE_4.3.ai_transparency_resources"
+   ],
+   "metrics_note": null
+  }
+ ],
+ "aggregates": {
+  "overall": {
+   "n_queries": 42,
+   "n_rows_including_gold_empty": 50,
+   "context_set_size_min": 10,
+   "context_set_size_median": 29,
+   "context_set_size_max": 57,
+   "context_set_size_mean": 28.6,
+   "recall_at_10_first_pass": 0.6785714285714286,
+   "recovered_passage_recall_layer": 0.8928571428571429,
+   "delta": 0.2142857142857143
+  },
+  "by_stratum": {
+   "adversarial/iso": {
+    "n_queries": 0,
+    "n_rows_including_gold_empty": 3,
+    "context_set_size_min": 21,
+    "context_set_size_median": 29,
+    "context_set_size_max": 37,
+    "context_set_size_mean": 29.0
+   },
+   "adversarial/nonexistent_identifier": {
+    "n_queries": 0,
+    "n_rows_including_gold_empty": 4,
+    "context_set_size_min": 16,
+    "context_set_size_median": 53,
+    "context_set_size_max": 57,
+    "context_set_size_mean": 35.75
+   },
+   "adversarial/out_of_domain": {
+    "n_queries": 0,
+    "n_rows_including_gold_empty": 1,
+    "context_set_size_min": 23,
+    "context_set_size_median": 23,
+    "context_set_size_max": 23,
+    "context_set_size_mean": 23.0
+   },
+   "multi_hop/action_subcategory": {
+    "n_queries": 4,
+    "n_rows_including_gold_empty": 4,
+    "context_set_size_min": 10,
+    "context_set_size_median": 21,
+    "context_set_size_max": 27,
+    "context_set_size_mean": 17.75,
+    "recall_at_10_first_pass": 0.0,
+    "recovered_passage_recall_layer": 0.25,
+    "delta": 0.25
+   },
+   "multi_hop/eu_internal_xref": {
+    "n_queries": 12,
+    "n_rows_including_gold_empty": 12,
+    "context_set_size_min": 17,
+    "context_set_size_median": 32,
+    "context_set_size_max": 53,
+    "context_set_size_mean": 31.666666666666668,
+    "recall_at_10_first_pass": 0.7916666666666666,
+    "recovered_passage_recall_layer": 0.875,
+    "delta": 0.08333333333333337
+   },
+   "near_miss/block_clusters": {
+    "n_queries": 3,
+    "n_rows_including_gold_empty": 3,
+    "context_set_size_min": 31,
+    "context_set_size_median": 32,
+    "context_set_size_max": 37,
+    "context_set_size_mean": 33.333333333333336,
+    "recall_at_10_first_pass": 0.3333333333333333,
+    "recovered_passage_recall_layer": 1.0,
+    "delta": 0.6666666666666667
+   },
+   "near_miss/near_duplicate": {
+    "n_queries": 5,
+    "n_rows_including_gold_empty": 5,
+    "context_set_size_min": 35,
+    "context_set_size_median": 38,
+    "context_set_size_max": 39,
+    "context_set_size_mean": 37.6,
+    "recall_at_10_first_pass": 0.0,
+    "recovered_passage_recall_layer": 1.0,
+    "delta": 1.0
+   },
+   "single_hop/eu_ai_act": {
+    "n_queries": 11,
+    "n_rows_including_gold_empty": 11,
+    "context_set_size_min": 12,
+    "context_set_size_median": 27,
+    "context_set_size_max": 50,
+    "context_set_size_mean": 29.727272727272727,
+    "recall_at_10_first_pass": 1.0,
+    "recovered_passage_recall_layer": 1.0,
+    "delta": 0.0
+   },
+   "single_hop/nist_ai_100_1": {
+    "n_queries": 5,
+    "n_rows_including_gold_empty": 5,
+    "context_set_size_min": 10,
+    "context_set_size_median": 15,
+    "context_set_size_max": 31,
+    "context_set_size_mean": 16.6,
+    "recall_at_10_first_pass": 1.0,
+    "recovered_passage_recall_layer": 1.0,
+    "delta": 0.0
+   },
+   "single_hop/nist_ai_600_1": {
+    "n_queries": 2,
+    "n_rows_including_gold_empty": 2,
+    "context_set_size_min": 13,
+    "context_set_size_median": 15,
+    "context_set_size_max": 15,
+    "context_set_size_mean": 14.0,
+    "recall_at_10_first_pass": 1.0,
+    "recovered_passage_recall_layer": 1.0,
+    "delta": 0.0
+   }
+  }
+ },
+ "predictions_scored": [
+  {
+   "section": "6.1",
+   "prediction": "Clean multi-hop recovers exactly test_10 and test_19; zero on test_13, test_16 and test_18; stratum 0.7917 to 0.8750.",
+   "verdict": "held",
+   "observed": {
+    "test_10": [
+     "eu_ai_act:art_49"
+    ],
+    "test_19": [
+     "eu_ai_act:art_16"
+    ],
+    "test_13": [],
+    "test_16": [],
+    "test_18": [],
+    "stratum_first_pass": 0.7917,
+    "stratum_layer": 0.875
+   },
+   "note": "The three zero rows are a permanent limit of the design rather than a tuning shortfall. No pointer to the missing unit exists anywhere in their retrieved context, and the only route that could reach it is the inverse citation walk the firewall bars. It ships as a what-still-fails entry."
+  },
+  {
+   "section": "6.2",
+   "prediction": "Action-to-parent recovers nothing on test_39, test_40 and test_42, and recovers all three carriers on test_41; stratum 0.0000 to 0.2500.",
+   "verdict": "held",
+   "observed": {
+    "test_41": [
+     "nist_ai_100_1:sub_MEASURE_2.2",
+     "nist_ai_600_1:sub_MEASURE_2.2",
+     "nist_playbook:sub_MEASURE_2.2"
+    ],
+    "stratum_first_pass": 0.0,
+    "stratum_layer": 0.25
+   },
+   "required_reporting_form": "Zero of four by any parent-derivation route, one of four by sibling-label resolution. The mechanism on test_41: the first pass returned three Playbook sibling blocks of the gold subcategory at ranks 2, 3 and 5, whose unit_label values begin MEASURE 2.2; R_SUB extracts that printed citation from the label and composes three candidates, all of which resolve and all of which are the slot's acceptable units. No action identifier is read and no legend is applied. The bare sentence that the layer recovers an action-to-parent row is false about the route that matters and is not used."
+  },
+  {
+   "section": "6.3",
+   "prediction": "The context-absence flag fires on exactly seven near-miss rows and does not fire on test_45.",
+   "verdict": "contradicted",
+   "observed": {
+    "flag_fired_on": [
+     "test_43",
+     "test_44",
+     "test_45",
+     "test_46",
+     "test_47",
+     "test_48",
+     "test_49",
+     "test_50"
+    ],
+    "recovered_on": [
+     "test_43",
+     "test_44",
+     "test_46",
+     "test_47",
+     "test_48",
+     "test_49",
+     "test_50"
+    ],
+    "block_clusters_first_pass": 0.3333,
+    "block_clusters_layer": 1.0,
+    "near_duplicate_first_pass": 0.0,
+    "near_duplicate_layer": 1.0
+   },
+   "contradiction": "The flag fires on all eight. The prediction was written from the gold's point of view, anchor retrieved therefore nothing missing; from the layer's side test_45's query names four real units and three of them are genuinely absent from its context set. Three candidate predicates were measured over all fifty rows before any test was written, any resolved unit absent, only units the query named, and only the most specific query referent, and all three fire on all eight. No predicate confined to the readable surface separates test_45 without knowing which of the four units is the answer, which is the gold. eval/layer_predictions.md is left uncorrected: a contradicted prediction is recorded as contradicted.",
+   "required_reporting_form": "Not detection at seven of seven with no false positives. The flag fires on all eight rows and does not discriminate the crowded-out rows from the satisfied one, because carriers the query names are genuinely absent even where gold is satisfied. What the layer delivers on this stratum is recovery, seven of seven on the missed rows, and that recovery is a property of how the queries were written: each names the document, the block type and the subcategory identifier, so composing the three yields the row's gold unit id. The retrieval-path finding stands unchanged: on the seven missed rows neither the anchor nor its designated competitor is in the top 10, so the stratum measured crowding by other subcategories' blocks under the same generic heading rather than the pairwise displacement its rows predicted, and a recovery figure of seven of seven does not retire that finding."
+  },
+  {
+   "section": "6.4",
+   "prediction": "Single-hop completeness delta is exactly zero on 18 of 18 under augmentation only.",
+   "verdict": "held",
+   "observed": {
+    "n_rows": 18,
+    "distinct_deltas": [
+     0.0
+    ]
+   },
+   "note": "Exact rather than approximate, and the invariant is what makes it so: every row is already at recall 1, and no committed gold chunk can leave a context set under augmentation only. Any non-zero value would be a defect in the corrective pass rather than a result."
+  },
+  {
+   "section": "6.5",
+   "prediction": "All four fabricated identifiers resolve to nothing; the three ISO rows and the one out-of-domain row carry no citation-formed reference at all.",
+   "verdict": "held",
+   "observed": {
+    "test_04": [
+     "Article 114"
+    ],
+    "test_05": [
+     "Article 181"
+    ],
+    "test_06": [
+     "GOVERN 1.8"
+    ],
+    "test_07": [
+     "GOVERN 7.1"
+    ],
+    "test_01": [],
+    "test_02": [],
+    "test_03": [],
+    "test_08": []
+   },
+   "note": "A deterministic abstention signal reached from the query text and the committed unit index alone, available on the fabricated-provision half of the stratum and contributing nothing to the other half. That asymmetry is a stated limit, predicted rather than discovered."
+  },
+  {
+   "section": "6.6",
+   "prediction": "Overall 0.6786 first pass to 0.8929 layer condition over the 42 gold-bearing rows.",
+   "verdict": "held",
+   "observed": {
+    "n_queries": 42,
+    "recall_at_10_first_pass": 0.6786,
+    "recovered_passage_recall_layer": 0.8929
+   },
+   "attribution": "The delta is dominated by the near-miss stratum, which contributes seven of the ten recovered rows and whose recovery is a query-construction property. Reported without that attribution the figure would overstate what the layer does. The clean multi-hop delta on two rows recovered from printed forward citations is the figure that reflects the completeness surface as docs/METHODOLOGY.md describes it."
+  }
+ ],
+ "external_filter_funnel": {
+  "predicate": "An Article surface is dropped where the text immediately following it, within 40 characters and allowing one parenthesised subdivision, names a Directive, Regulation, Treaty, Charter, Decision or Convention.",
+  "drop_events": 44,
+  "rows_with_at_least_one_drop": 13,
+  "key_note": "drop_events is a count of events and needs no deduplication key. Any deduplicated figure ships with its key stated as artifact, field and accepted values: deduplicating on the row, the surface and the matched qualifier gives 36, and on the row, the surface and a 39-character trailing context gives 42.",
+  "source_note": "The filter is the layer's own over text it reads. It does not consult data/chunks/eu_ai_act.xrefs.jsonl, which is a gold source for the clean multi-hop stratum and is barred."
+ },
+ "adversarial_augmentation": {
+  "policy": "uniform, per augmentation_policy above",
+  "n_rows": 8,
+  "absent_units_min": 6,
+  "absent_units_max": 27,
+  "absent_units_mean": 15.375,
+  "fetched_chunks_min": 6,
+  "fetched_chunks_max": 47,
+  "fetched_chunks_mean": 21.625,
+  "two_quantities_note": "absent_units is the figure eval/layer_predictions.md section 4 tabulates. fetched_chunks is what reaches the model and is larger wherever a fetched unit is split into several chunks. Neither is reported under the other's name.",
+  "consequence": "Abstention on this stratum will be evaluated against augmented context, mean 15.375 absent units resolving to mean 21.625 fetched chunks. The layer has no permitted way to decline, since conditioning on stratum would require reading a barred field. This pushes the stratum in the harder direction, because more plausible in-corpus text is a stronger invitation to answer than less, so whatever abstention survives is a stronger result. The generation predictions belong to the generation scope and none is made here."
+ }
+}
