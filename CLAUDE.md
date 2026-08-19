@@ -141,13 +141,33 @@ Heading dates are derived, not authored. A heading date is the committer date, i
 
 ## Layer-gold firewall
 
-This constrains the operational layer, which has not been built.
+This constrains the operational layer.
 
 The layer may not use any relation that defines the gold for the query it is answering. Corrective re-retrieval on an action-to-parent query may not traverse `action_subcategory`, because that relation is the gold. A layer that reads its own answer key recovers everything and measures nothing. Zero recovery under this constraint is a publishable finding. Total recovery by graph traversal is not a finding at all.
 
+The layer's readable surface is an allowlist, and it is the same allowlist for every query including those with empty gold. By artifact and field:
+
+- The `query` field of `eval/test_queries.jsonl`, and no other field of that file. The file's rows carry the keys `expected_units`, `gold_slots`, `id`, `note`, `query`, `split`, `subtype` and `type`, and every one of them other than `query` is barred.
+- The retrieved context, defined below.
+- The committed chunk-store text, meaning `data/chunks/*.chunks.jsonl` and `data/chunks/*.normalized.txt` and nothing else filed under `data/chunks/`. A derived relation artifact is not corpus text however it is filed, and several sit in that same directory.
+- The committed unit index `eval/corpus_unit_index.json`, which is the set of unit ids and the chunks belonging to each, derived by grouping chunks on `parent_id`. It records which chunks compose a unit and never which unit relates to another.
+- The committed retriever under `src/retrieve/`, which the layer may call with query strings it derives.
+
+Everything else in the evaluation apparatus is barred. The barred set includes, as examples of the property and not as its boundary, `data/chunks/*.relations.jsonl`, `data/chunks/*.xrefs.jsonl`, `data/chunks/nist_ai_100_1.duplication_map.json`, `data/retrieval/verbatim_groups.json`, `data/retrieval/near_duplicate_exceptions.json`, `eval/test_query_verification.jsonl`, `eval/test_frame.json`, `eval/pass_one_designations.jsonl` and `eval/test_retrieval_results.json`.
+
+Retrieved context is, per retrieved chunk, three values from `data/chunks/*.chunks.jsonl` and no others: the chunk's `text`, its `chunk_id`, and its `unit_label`. Every committed chunk carries one schema, whose fields are fixed by the frozen `Chunk` dataclass in `src/ingest/chunk_schema.py`, and every field of it other than those three is outside retrieved context. `structural_path` and `parent_id` are named because they carry unit structure directly: on an action chunk `structural_path` holds its parent subcategory's printed label. Retrieved context is per chunk and never per unit, so a sibling chunk of a retrieved chunk is not retrieved context unless it was itself in the fused top 10. Chunk ids and labels are the documents' own structural identifiers and are what any deployed retriever returns with a hit; they are not gold-defining relations.
+
 The layer may use signals present in the query text itself. That is what makes a deterministic identifier comparison legitimate: the query names a subcategory, the retrieved blocks carry other identifiers, and the mismatch is detectable without touching any gold-defining relation.
 
-Where a query's gold set is empty, as it is for every adversarial query, no gold-defining relation exists and the clause above does not bite. The firewall applies in this form instead: the layer receives the query text and the retrieved context and nothing else. It may not read the query set's own annotations, its stratum label, its row identifier, or any per-query note. Abstention is reached from the retrieved context or it is not reached.
+The layer may not apply the function a gold-defining relation was derived by, in either direction. Re-deriving an edge is traversing it; the artifact read is not what makes the traversal legitimate. Relation traversal is mapping one unit's identifier to the identity of a different unit that a relation asserts is related to it, and that is what is barred; identity resolution, composing a printed name into the unit id of the unit bearing that name, is not traversal and is permitted. Two instances of the bar are named below, and the property governs rather than the naming.
+
+The first is the action-identifier derivation. On every row whose gold is defined by `action_subcategory` in `data/chunks/nist_ai_600_1.relations.jsonl`, the layer may not derive a parent subcategory identifier from an action identifier taken from query text, chunk text, chunk id or unit_label, by suffix strip, by the legend printed at `nist_ai_600_1:sec_3#p1`, or by any equivalent map. The sealed query set records why, on every row of that stratum in `eval/test_query_verification.jsonl`: "The identifier is dropped because it is the gold-defining relation in string form, the 212 edges being derived from printed identifiers, and a layer parsing it out of the query recovers the parent without traversing the relation the firewall bars." Action-to-parent reports zero recovery through any parent-derivation route.
+
+The second is the inverse citation walk. Following a citation printed in retrieved context forward, from a citing source to the unit it names, is legitimate. Walking backward from a retrieved target to an unretrieved unit that cites it is a corpus-wide cited-by lookup, which re-derives the clean multi-hop gold relation in reverse and is barred. No inverse citation index is built, from a committed relation artifact or by re-parsing corpus text.
+
+Within those bars, references printed in query text and in retrieved context may be resolved and fetched, uniformly across every stratum, because the reference arrives printed rather than derived. A reference is a citation-formed surface under a grammar fixed before anything executes; resolution is composing the surface into a unit id and testing membership against the committed unit index; fetching returns that unit's committed chunks. Nothing is inserted by oracle: a surface that resolves to no unit is not fetched, and a surface absent from the query text and from the fused top 10 is never constructed.
+
+Where a query's gold set is empty, as it is for every adversarial query, no gold-defining relation exists and the relation bar above does not bite. The allowlist is the whole constraint, unchanged and not relaxed: the layer sees the `query` field and the retrieved context, and abstention is reached from those or it is not reached.
 
 ## Receiving an instruction
 
