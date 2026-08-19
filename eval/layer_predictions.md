@@ -193,13 +193,26 @@ This is the layer's own filter over text it reads. It does not consult
 `data/chunks/eu_ai_act.xrefs.jsonl`, which is a gold source for the clean multi-hop stratum and is
 barred.
 
-Measured over the fifty rows, the filter drops 42 distinct surfaces on 13 rows, including the exact
-case that would otherwise produce a false recovery signal on test_18:
+Measured over the fifty rows, the filter drops 44 surfaces on 13 rows, including the exact case
+that would otherwise produce a false recovery signal on test_18:
 
     Article 13   "of Directive (EU) 2016/680 shall apply."
 
 That case is the filter's V20 demonstration. It is shown red on the one occurrence it exists to
 catch before it is trusted anywhere.
+
+44 is a count of drop events and needs no deduplication key. Any deduplicated figure quoted
+anywhere ships with its key stated as artifact, field and accepted values, because the same
+population yields different counts under different keys: deduplicating on the row, the surface and
+the matched qualifier gives 36, and on the row, the surface and a 39-character trailing context
+gives 42. The row count of 13 is stable across all three.
+
+SUPERSEDED. This paragraph read "the filter drops 42 distinct surfaces on 13 rows". Replaced by 44
+drop events on 13 rows. The defect is not the number 42, which is correct under one key; it is that
+the sentence described a filter by a property in prose, "distinct", with no key stated, which is
+the failure the Receiving an instruction section of CLAUDE.md describes and which landed here in
+this repository's own file. The corrected figure is the key-free one, chosen before the shipped
+module's own key was known to differ and not equal to it.
 
 ### 2.5 Resolution and fetch
 
@@ -264,15 +277,42 @@ Measured volume, absent resolved units per row:
     multi_hop/action_subcategory          4   0    11      17    7.8
     near_miss/block_clusters              3   21   22      27    23.3
     near_miss/near_duplicate              5   25   28      29    27.6
-    adversarial, three subtypes           8   6    19      27    15.9
-    all fifty                            50   0    11      29    12.7
+    adversarial/iso                       3   11   19      27    19.0
+    adversarial/nonexistent_identifier    4   6    20      21    13.5
+    adversarial/out_of_domain             1   12   12      12    12.0
+    adversarial, three subtypes           8   6    19      27    15.375
+    all fifty                            50   0    11      29    12.66
+
+The adversarial mean is 123 over 8. The three subtype rows are carried beside the combined row so
+that arithmetic is checkable from the table rather than taken on trust, which is what the combined
+row alone did not allow.
+
+SUPERSEDED, two figures in this table, both under section 2.3's grammar rather than the variant the
+table was first computed under.
+
+The `adversarial/out_of_domain` row read 13 for its single row, test_08, and reads 12. Cause: the
+table was computed with block composition allowed on retrieved text, the unrestricted variant that
+section 2.3 of this file rejects. test_08 is the only row of the fifty whose absent count differs
+between the two variants, and no recovery on any row differs, which is the measurement recorded
+under Epistemic status.
+
+The `adversarial, three subtypes` mean read 15.9 and reads 15.375. Cause: arithmetic error. 15.9
+matches neither grammar variant; the unrestricted variant gives 15.5 and the committed grammar
+gives 15.375. The figure was never derived, and the combined row carried it without the component
+rows that would have exposed it. The `all fifty` mean moves from 12.7 to 12.66 as a consequence of
+the test_08 correction; both round to 12.7 at one decimal place, so the displayed change is
+precision rather than a superseded value.
+
+Neither supersession touches a prediction. Every recovery, every per-row single-hop count, every
+stratum recall figure and the overall figure in section 6 are unchanged and were reproduced exactly
+by the shipped component.
 
 The adversarial consequence is stated here rather than discovered at the generation scope.
-Abstention on that stratum will be evaluated against augmented context, mean 15.9 added units, and
-the layer has no permitted way to decline. This pushes the stratum in the harder direction, since
-more plausible in-corpus text is a stronger invitation to answer than less, so whatever abstention
-survives is a stronger result than the same figure on the first pass alone. The generation
-predictions themselves belong to the generation scope and none is made here.
+Abstention on that stratum will be evaluated against augmented context, mean 15.375 added units,
+and the layer has no permitted way to decline. This pushes the stratum in the harder direction,
+since more plausible in-corpus text is a stronger invitation to answer than less, so whatever
+abstention survives is a stronger result than the same figure on the first pass alone. The
+generation predictions themselves belong to the generation scope and none is made here.
 
 ## 5. The absence of a bound, as a named condition
 
