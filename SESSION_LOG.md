@@ -4,6 +4,321 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-19, the verification layer's completeness surface, and a prediction it contradicted
+
+The layer exists and its retrieval-completeness surface is measured. Three deterministic modules
+under `src/complete/` read a query and its fused top 10, resolve the citation-formed references
+printed in them, and fetch the units the first pass named and did not return. Over the 42
+gold-bearing rows the layer condition reaches recovered-passage recall 0.8929 against a first-pass
+Recall@10 of 0.6786. No model, no key and no optional dependency executes anywhere in that path.
+
+The predictions were committed before any component existed and are scored inside the results
+artifact rather than asserted in prose. Five held. One is contradicted, and it stands uncorrected.
+
+### Two conditions, two rulers, never one label
+
+The first pass keeps Recall@10, Precision@10, MRR and NDCG@10 against the fused top 10, exactly as
+`PREREGISTRATION.md` defines them and exactly as frozen at `356f23d`. The layer condition reports
+recovered-passage recall over the final context set, with that set's size beside it, and reports no
+rank-based figure at all.
+
+The reason is that under augmentation the context set is not ten chunks. It runs from 10 to 57,
+median 29, mean 28.6. A precision computed over that denominator and printed beside a precision
+computed over ten would fall for arithmetic reasons and read as a regression, and the fetched units
+carry no rank order comparable to a fused ranking, so MRR and NDCG have nothing to rank. Reporting
+both conditions under one metric name was rejected for that reason, and the alternative of capping
+augmentation at ten to preserve comparability was rejected because it contradicts the
+augmentation-only policy and would drop gold.
+
+`recovered-passage recall` is not a coined term. It is the phrase `PREREGISTRATION.md` uses in its
+pre-registered null interpretation, written before any result existed, and the layer condition is
+reported under the name the pre-registration already gave it.
+
+### The result
+
+Macro-averaged over queries. The eight adversarial rows have empty gold, carry no retrieval figure
+by the specification's own exclusion, and are marked rather than dropped, so the denominator is 42.
+
+| stratum | n | Recall@10 first pass | recovered-passage recall | context size mean |
+| --- | --- | --- | --- | --- |
+| single_hop/eu_ai_act | 11 | 1.0000 | 1.0000 | 29.7 |
+| single_hop/nist_ai_100_1 | 5 | 1.0000 | 1.0000 | 16.6 |
+| single_hop/nist_ai_600_1 | 2 | 1.0000 | 1.0000 | 14.0 |
+| multi_hop/eu_internal_xref | 12 | 0.7917 | 0.8750 | 31.7 |
+| multi_hop/action_subcategory | 4 | 0.0000 | 0.2500 | 17.8 |
+| near_miss/block_clusters | 3 | 0.3333 | 1.0000 | 33.3 |
+| near_miss/near_duplicate | 5 | 0.0000 | 1.0000 | 37.6 |
+| adversarial, three subtypes | 8 | not computed, gold is empty | | 31.6 |
+| **overall** | **42** | **0.6786** | **0.8929** | **28.6** |
+
+Ten rows recover a gold unit the first pass missed: `test_10` recovers `eu_ai_act:art_49`,
+`test_19` recovers `eu_ai_act:art_16`, `test_41` recovers all three carriers of its slot, and seven
+near-miss rows recover their own `ai_transparency_resources` block. No other row recovers anything.
+
+The single-hop delta is exactly zero on 18 of 18, and it is exact rather than approximate because
+of one invariant: the first-pass ten are never removed, never reordered and never truncated. Every
+single-hop row is already at recall 1, and a satisfied unit is in the context set, so it is never
+absent, so it is never fetched. Any non-zero value there would be a defect in the corrective pass
+rather than a result.
+
+### The contradicted prediction
+
+`eval/layer_predictions.md` section 6.3 predicts that the context-absence flag fires on exactly
+seven near-miss rows and does not fire on `test_45`, and names the flag firing on `test_45` as a
+condition that would contradict it. The flag fires on all eight.
+
+The prediction was written from the gold's point of view: `test_45`'s anchor block was retrieved at
+rank 7, so from the gold side nothing is missing. From the layer's side the same query names four
+real units and three of them are absent from its context set, the AI 100-1, AI 600-1 and Playbook
+`MAP 5.1` subcategory statements. Three candidate predicates were measured over all fifty rows
+before any test was written: any resolved unit absent, only units the query itself named, and only
+the most specific query referent. All three fire on all eight. No predicate confined to the
+readable surface separates `test_45` without knowing which of the four units is the answer, which
+is the gold.
+
+The predictions file is not edited. A contradicted prediction that gets edited is not a prediction,
+so the file stands and the contradiction is recorded in the results artifact, in the test that
+asserts the measured behaviour, and here.
+
+The honest form of the near-miss result follows from this and ships wherever the stratum is
+discussed. It is not detection at seven of seven with no false positives. The flag fires on all
+eight rows and does not discriminate the crowded-out rows from the satisfied one, because carriers
+the query names are genuinely absent even where gold is satisfied. What the layer delivers on this
+stratum is recovery, seven of seven on the missed rows, and that recovery is a property of how the
+queries were written: each names the document, the block type and the subcategory identifier, so
+composing the three yields the row's own gold unit id. The retrieval-path finding recorded at
+`e3801f3` stands unchanged: on the seven missed rows neither the anchor nor its designated
+competitor is in the top 10, so the stratum measured crowding by other subcategories' blocks under
+the same generic heading rather than the pairwise displacement its rows predicted. A recovery
+figure of seven of seven does not retire that finding and does not convert it into a discrimination
+result.
+
+### Action-to-parent, and why zero is the honest headline
+
+The stratum figure is 0.0000 to 0.2500 and it is never quoted without its split: zero of four by
+any parent-derivation route, one of four by sibling-label resolution.
+
+The bar is in `CLAUDE.md`. The layer may not apply the function a gold-defining relation was
+derived by, in either direction, and on these four rows the gold is `action_subcategory` in
+`data/chunks/nist_ai_600_1.relations.jsonl`, whose 212 edges each record their own basis as the
+action identifier encoding its own subcategory. Deriving `MANAGE 2.2` from `MG-2.2-003` does not
+approximate that relation, it recomputes it exactly, so a layer doing it reads its own answer key.
+The sealed query set had already dropped the identifier from the query text for that reason, on
+every row of the stratum, and the bar extends the same reasoning to the retrieved context, where
+the identifier sits at fused rank 1 on all four rows.
+
+`test_41` recovers by a different route and the route is named on the row. Its first pass returned
+three Playbook sibling blocks of the gold subcategory at ranks 2, 3 and 5, whose `unit_label`
+values begin `MEASURE 2.2`. That printed subcategory citation is extracted from the label and
+composed into three candidate unit ids, all of which resolve and all of which are the slot's
+acceptable units. No action identifier is read and no legend is applied. Measured across the
+stratum, the derived parent label occurs in retrieved chunk text 0 times out of 10 on every row and
+in `unit_label` 0, 0, 3 and 0 times, so `test_41` recovers because the first pass happened to
+surface the parent's own neighbourhood and the other three do not because it did not.
+
+### What the layer does not fix
+
+Three of the five clean multi-hop misses are unrecoverable by this design, and the reason is
+structural rather than a tuning shortfall. On `test_10` and `test_19` the retrieved unit is the
+citing source and a forward pointer to the missing unit is printed in retrieved context. On
+`test_13`, `test_16` and `test_18` the retrieved unit is the cited target, and no pointer exists in
+retrieved context in any form: on the first two the missing article number does not occur in any of
+the ten chunks, and on the third the only occurrence is `Article 13 of Directive (EU) 2016/680`,
+which resolves outside the corpus. The unit behind that retrieved chunk does carry a genuine
+internal citation to the missing unit, in `eu_ai_act:art_26#p2`, which the first pass did not
+return. Reading it would require treating a unit as retrieved when only one of its chunks was,
+which is why retrieved context is defined per chunk and never per unit.
+
+Reaching the citing source from the cited target would require a corpus-wide cited-by index. That
+re-derives the clean multi-hop gold relation in reverse and is barred, so it is not built, from a
+committed relation artifact or by re-parsing corpus text. Zero recovery on those three rows is the
+measured consequence of the constraint rather than a gap to close later.
+
+### The firewall, as a property rather than an enumeration
+
+`CLAUDE.md`'s layer-gold firewall section was replaced before any component existed. The readable
+surface is now an allowlist stated by artifact and field, with the files named as examples of a
+property rather than as its boundary, which closes the reading the previous enumeration invited on
+two separate surfaces. Retrieved context is defined as three values per retrieved chunk, the text,
+the chunk id and the `unit_label`, per chunk and never per unit. The remaining fields of the frozen
+`Chunk` dataclass are outside it, and `structural_path` and `parent_id` are named because they
+carry unit structure directly: on an action chunk `structural_path` holds its parent subcategory's
+printed label, which would skip the derivation entirely.
+
+The derivation bar distinguishes two things that a strict reading would collapse. Relation
+traversal, mapping one unit's identifier to the identity of a different unit that a relation
+asserts is related to it, is barred. Identity resolution, composing a printed name into the unit id
+of the unit bearing that name, is permitted, and without that distinction every citation resolver
+in the layer would be barred along with the route the bar exists to close.
+
+The modules hold the boundary by type rather than by discipline. Retrieved context enters as a
+three-field value, so `structural_path` and `parent_id` are unreachable rather than declined, and
+the query enters as a string, so no query-file field can arrive. Membership in the context set is
+decided lexically on the chunk id rather than by reading `parent_id`; measured, the two agree on
+all 1294 committed chunks and produce identical absent sets on all fifty rows. Tests assert the
+absence of an action-prefix to function-name map by reading module source, and assert that no
+barred artifact is opened by patching `open`, each with a companion shown capable of failing.
+
+### Reproducibility
+
+The layer condition re-derives from committed files alone. The first pass is read from
+`eval/test_retrieval_results.json` rather than recomputed, and the corrective pass is deterministic
+resolution against `eval/corpus_unit_index.json` followed by direct fetch from
+`data/chunks/*.chunks.jsonl`. Nothing re-embeds and nothing re-ranks, which is also why an
+identifier-keyed lexical re-retrieval was rejected as the corrective mechanism: the retrieval
+manifest records one corpus identifier, `GV-4.3-001`, whose correct printed form ranks its own unit
+at 568 of 1294 under BM25 and 28 under fusion, while resolution against the unit index returns it
+directly.
+
+The claim is asserted over the reads rather than over what a machine happens to lack: building the
+artifact opens no embedding array, no query-embedding array and nothing under `vendor/`, checked by
+a guard with a companion showing the guard capable of firing. Verified in a default environment
+with the build-only `embed` group absent, `onnxruntime`, `transformers` and `torch` all
+unimportable: the runner exits 0, two independent runs are byte-identical, and a third run inside
+the suite reproduces the committed bytes exactly.
+
+The artifact is pinned by digest in its own file rather than beside the first-pass results. Both
+are results, but they are results of different conditions, and a single pin over both would let a
+change in one be absorbed by a re-pin nominally about the other.
+
+### Two figures corrected in the predictions file, and a third caught before it shipped
+
+Both corrections landed before the first component, so the file was correct at the moment code
+existed to measure against it. Neither touches a prediction.
+
+The external-filter count read 42 distinct surfaces on 13 rows and reads 44 drop events on 13 rows.
+The defect is not the number 42, which is correct under one deduplication key; it is that the
+sentence described a filter by a property in prose, `distinct`, naming no key, which is the failure
+the Receiving an instruction section of `CLAUDE.md` describes, in this repository's own file. The
+same population yields 44 events with no key, 36 deduplicating on the row, surface and matched
+qualifier, and 42 deduplicating on the row, surface and a 39-character trailing context. The
+corrected figure is the key-free one, and it is not the shipped module's key, which gives 36.
+
+The adversarial augmentation table read a mean of 15.9 and reads 15.375, from 123 over 8. The
+figure was never derived; 15.9 matches neither grammar variant, and the combined row carried it
+without the three subtype rows that would have exposed it. Those rows are now carried beside it.
+The `out_of_domain` row read 13 absent units for `test_08` and reads 12, because the table had been
+computed with block composition allowed on retrieved text, the variant the same file's grammar
+section rejects. `test_08` is the only row of the fifty whose absent count differs between the two
+variants, and no recovery on any row differs.
+
+A third figure of the same shape was caught by its own test before the results artifact was
+committed. A draft of the artifact reported a mean of 21.625 under a field named `units_added`.
+That is the fetched chunk count; the absent-unit count is 15.375, and a field carrying a quantity
+its name does not claim would have contradicted the predictions file while appearing to agree with
+it. Both quantities now ship under their own names with the difference stated.
+
+### Divergences recorded rather than repaired
+
+Two figures on record disagree with what the repository now measures. Both are recorded here rather
+than by editing the place they stand, for different reasons.
+
+The commit message at `bf37a9f` states the adversarial augmentation mean as 15.9. Rule 10 makes a
+commit message forward-uneditable and both exceptions are spent, so the message cannot be repaired
+and the divergence from the corrected 15.375 is recorded, on the precedent of the figure `9cde4fc`
+carries.
+
+The suite condition in the 2026-08-18 entry is under-specified. That entry is forward-editable and
+was corrected once already at `ca9d4b0`, so this is a choice rather than a constraint: the
+divergence is recorded here so it reads as a correction with its cause, rather than being absorbed
+into the earlier entry where a reader would find figures that had quietly changed. That entry names one condition, the
+presence of the untracked segment embedding cache, and reports 451 passed and 0 skipped with it and
+444 passed and 7 skipped without. Three conditions govern those counts, not one: the segment
+embedding cache, the pinned ONNX model weight being cached, and the build-only `embed` group being
+installed. Measured at `ca9d4b0` in a default environment, where the `embed` group is absent by the
+project's own configuration, the same tree reports 443 passed and 8 skipped with the cache present
+and 440 passed and 11 skipped without it, at 451 collected in both. The eleven decompose as three
+requiring the segment cache, four requiring the ONNX weight and four requiring `onnxruntime`. The
+fresh-clone reproducible baseline is therefore 440 passed and 11 skipped, and the entry's figures
+require an environment it does not name. Every suite figure in the present entry is reported in
+both forms with its conditions stated.
+
+### Boundaries
+
+The abstention threshold's development window is shut. `PREREGISTRATION.md` fixes any abstention
+threshold on the twelve development generations, and `dev_12` is the only development query with an
+empty gold set, its own note recording that the only correct behaviour is abstention. The threshold
+for the stratum the pre-registration calls the sharpest edge of the faithfulness story therefore
+rests on a sample of one. Adding a development abstention case now would fit a threshold to a
+sealed set that already exists, so the sample size is disclosed rather than repaired.
+
+No bound on augmentation volume is applied, and its absence is a named condition rather than an
+omission. The ranks carrying each recovery were known when the predictions file was written, so a
+bound chosen after them would have been fitted to the observations it would be judged against. A
+future bound is a cost decision, set from the cost budget, shipping with the recoveries it removes
+reported by row.
+
+Augmentation is uniform across all fifty rows, including the adversarial stratum, because the layer
+cannot condition on stratum without reading a barred field. The adversarial rows are augmented by 6
+to 27 absent units, mean 15.375, resolving to 6 to 47 fetched chunks, mean 21.625. Abstention will
+therefore be evaluated against augmented context when generation runs. That pushes the stratum in
+the harder direction, since more plausible in-corpus text is a stronger invitation to answer than
+less, so whatever abstention survives is a stronger result than the same figure on the first pass
+alone.
+
+The firewall tests check what a module reads, not what a function exists for, and that gap is a
+stated limit of the mechanization rather than a defect found. A draft of the corrective pass
+carried a helper returning every committed unit some chunk of a context set belongs to. It opens
+nothing barred and reads no gold, so it passes every mechanical check in the package, and its only
+use is scoring which gold slots an augmented context satisfies, which Rule 9 keeps in a separate
+invocation. It was removed before the module was committed and the scoring lives in the test file.
+No rule was added for this; the case is recorded so the limit is known.
+
+### What this scope got wrong
+
+Four defects, recorded at the weight of the results above.
+
+A prediction written from the wrong side. The near-miss flag prediction described what the gold
+knows rather than what the layer can see, and no firewall-clean predicate reproduces it. It is
+recorded as contradicted above.
+
+Two descriptive statistics in the predictions file, one an undefined deduplication key and one an
+arithmetic error that was never derived, both corrected in the open at `e87ef39`.
+
+Two docstrings in `src/complete/absence.py` claimed the query-reference predicate separates
+`test_45` from the other seven. Both were written before the three-predicate measurement and were
+never true. They were corrected before the module was committed, and the failure mode is the same
+one the contradicted prediction has: writing the expected result down before running the check that
+would contradict it.
+
+Two detectors returned false empties while searching for the printed identifier legend in NIST AI
+600-1. A co-occurrence window around each two-letter function code matched only layout adjacency,
+and a line-scoped scan for two codes and two function words returned zero on all four documents.
+Both missed because the legend prints `Govern` in title case where the subcategory headings print
+`GOVERN`, and the second additionally because the legend spans a line break. The exhaustive funnel
+found it: after removing action-identifier heads the survivors were 1 of 60, 1 of 40, 1 of 73 and 1
+of 44, all four the same sentence at `nist_ai_600_1:sec_3#p1`. The consequence is written into the
+components: any identifier detector the layer ships is case-normalised and is not line-scoped.
+
+### Suite
+
+Measured at `135b912` in the default environment. With the untracked segment embedding cache
+present, 629 passed and 8 skipped at 637 collected. Without it, 626 passed and 11 skipped at 637
+collected. The skips are environment-conditional in both forms: four require the pinned ONNX model
+weight to be cached, four require `onnxruntime` from the build-only `embed` group, and three more
+require the segment embedding cache. `ruff check` passes over `src` and `tests`.
+
+Every suite run in this scope was preceded by a collect-only measurement against the working tree
+with its arithmetic derivation stated beside it, and every component's first green run was preceded
+by a named mutation shown red. The mutation on the corrective pass, dropping the first-pass chunks
+from the assembled context, turned the single-hop delta red on all eighteen rows; the mutation on
+the completeness predicate, inverting context absence, turned the near-miss assertion red on all
+eight in both directions.
+
+### Commits
+
+- ab65cca docs(governance): state the layer-gold firewall as an allowlist and bar relation re-derivation
+- bf37a9f feat(eval): the layer predictions, the reference grammar and the measurement convention
+- e87ef39 fix(eval): correct two descriptive statistics in the layer predictions, both in the open
+- ba48f2e feat(complete): C1, the reference grammar and resolver, with the firewall held at the module boundary
+- b5d2845 feat(complete): C2, the completeness predicate, and a contradicted prediction recorded as contradicted
+- 9a20496 feat(complete): C3, the corrective pass under an augmentation-only invariant
+- 3be93d2 feat(score): the layer retrieval measurement and its results artifact
+- 135b912 test(eval): pin the layer results artifact under its own regime
+
+The commit placing this entry touches only `SESSION_LOG.md` and is exempt from naming under Rule
+11, as is any later correction to the entry itself.
+
 ## 2026-08-18, retrieval on the sealed fifty, and the ordering spent
 
 The first result exists. Retrieval ran once on the fifty through the committed retriever, its
