@@ -578,9 +578,52 @@ Nothing outside that list is a `<ref>`. The earlier open-ended form, a bare quot
 instrument name, is removed: it is not a set a test can enumerate, and it would match any
 capitalised noun phrase a model happened to emit.
 
-`<corpus phrase>` is any of: the provided context, the retrieved context, the context, the
-documents, the corpus, the EU AI Act, the NIST AI Risk Management Framework, or a document title
-present in `eval/corpus_unit_index.json`.
+`<corpus phrase>` is any of the seven literals below, or the `doc_title` value of any of the four
+files under `data/chunks/` matching `*.manifest.json`, matched as a normalised substring after the
+section 3 normalisation and case folding.
+
+    the seven literals:
+      the provided context
+      the retrieved context
+      the context
+      the documents
+      the corpus
+      the EU AI Act
+      the NIST AI Risk Management Framework
+
+    the four doc_title values, quoted verbatim from the artifacts that carry them:
+      data/chunks/eu_ai_act.manifest.json
+        Regulation (EU) 2024/1689 of the European Parliament and of the Council of 13 June 2024
+        laying down harmonised rules on artificial intelligence (Artificial Intelligence Act)
+      data/chunks/nist_ai_100_1.manifest.json
+        Artificial Intelligence Risk Management Framework (AI RMF 1.0), NIST AI 100-1
+      data/chunks/nist_ai_600_1.manifest.json
+        Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence
+        Profile, NIST AI 600-1
+      data/chunks/nist_playbook.manifest.json
+        NIST AI RMF Playbook
+
+THE SET IS DEFINED BY THE ARTIFACT AND NOT BY WHAT A MODEL IS EXPECTED TO EMIT. The first title
+is 173 characters of regulation citation and no model will write it in an answer, so that member
+is inert in practice. It stays in the set, because a set trimmed to what someone expects a model
+to produce is a set that can be trimmed again later, and the artifact is the only definition that
+cannot be.
+
+SUPERSEDED. This paragraph read "or a document title present in `eval/corpus_unit_index.json`".
+That was a false claim about a committed file. Measured over that artifact, exhaustively rather
+than by sample, since its population of 1150 unit records is enumerable: the union of every key on
+every record is `chunks`, `doc`, `unit_id` and `unit_type`; its `by_document` keys are the four
+document slugs `eu_ai_act`, `nist_ai_100_1`, `nist_ai_600_1` and `nist_playbook`; no key anywhere
+contains the substring "title"; and a positive control for the shape a title would have, any
+string in the file carrying both a space and a capital letter, returns exactly one hit, which is
+the file's own `description` field. The set the clause named was therefore empty, and a clause
+naming an empty set would have made E2 and E3 silent on document titles while appearing to cover
+them. The titles do exist, in the four `*.manifest.json` files named above and in the `doc_title`
+field of the frozen `Chunk` dataclass, so the defect was a misnamed artifact and not a wrong idea.
+Corrected in the open on the precedent of `e87ef39`, which corrected two descriptive statements in
+`eval/layer_predictions.md` with the supersession marked rather than the text replaced silently.
+This file's rule against editing it to fit the code binds its PREDICTIONS; a false statement about
+which artifact carries a field is not a prediction and is corrected.
 
 THE DEVELOPMENT SAMPLE FOR THIS GRAMMAR IS ZERO, AND THAT IS DISCLOSED RATHER THAN REPAIRED.
 `eval/dev_queries.jsonl` carries no row of type `adversarial`; its twelve rows are four
@@ -1022,14 +1065,24 @@ reported figure is a number and the failing case names the rows.
 
 ## 13. Modules this file names that are not committed yet
 
-Three modules are named above and none exists at the commit that places this file. They are
-listed here rather than left to be discovered, because a file that names a module as though it
-exists is the same defect as an artifact naming a producer that does not run, and this
+Four modules are named by this file's own requirements and none exists at the commit that places
+it. They are listed here rather than left to be discovered, because a file that names a module as
+though it exists is the same defect as an artifact naming a producer that does not run, and this
 repository has already paid for that one.
 
     src/score/claims.py        the claim-unit segmenter of section 4
     src/score/grounding.py     the grounding predicate of section 5
     src/score/adversarial.py   the existence-denial grammar of section 7.3
+    src/complete/flagging.py   the operational flagging pass of section 5.3, the SECOND
+                               implementation of the grounding predicate
+
+SUPERSEDED. This list read "Three modules are named above" and named the first three only.
+`src/complete/flagging.py` was omitted. Section 5.3 requires the grounding rule to be implemented
+twice, one operational and one the grader of record, and requires that neither import the other;
+the operational one is a module and had to be named here with the rest. It sits under
+`src/complete/` rather than under `src/score/` because its output is the flagged-statement list
+the second-call prompt carries, which is layer machinery and not measurement. The omission was a
+count, not a decision: nothing about section 5.3 changed.
 
 THE ORDERING THAT BINDS THEM, IN TWO COMMITS.
 
