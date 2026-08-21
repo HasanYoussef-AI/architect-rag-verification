@@ -4,6 +4,184 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-21, two generation parameters corrected under Rule 4, and the request assembler
+
+Two parameters `PREREGISTRATION.md` fixed before generation could not execute as written. Both
+were corrected under Rule 4 on Hasan's direction as owner, issued in session on 2026-08-20, and
+both were made with results already committed, so neither is a free revision under the revision
+note's opening paragraph. Each bullet states that condition in its own text and the paragraph
+stands unchanged.
+
+The harness that assembles generation requests exists and reproduces from committed files. No
+API call has run, keyed or free, and no Console balance has been stated.
+
+### The decoding parameter
+
+The sealed setting was temperature 0. Anthropic's model deprecations page lists `temperature`,
+`top_p` and `top_k` as deprecated for Claude Opus 4.7 and later and states that setting one
+"Returns a 400 error when set to a non-default value on Claude 4.7 and later models". The
+migration guide states the same with a narrower subject: "Setting `temperature`, `top_p`, or
+`top_k` to any non-default value on Claude Opus 4.7 or later models, including Claude Opus 5,
+returns a 400 error." Temperature 0 is a non-default value, so the sealed setting is unreachable
+on the Opus 4.8 tier and, on the deprecations page's wording, on the Sonnet 5 tier.
+
+The correction is a procedure rather than a value: temperature 0 where the API accepts it, the
+parameter omitted where it rejects it, the per-tier setting recorded in the committed run
+manifest. The two pages disagree on whether Sonnet 5 falls inside the bar, so which tiers reject
+it is settled by measurement before the development run rather than by reading.
+
+Rule 3 is unaffected. Each tier carries one setting on both sides of its own raw-versus-layer
+comparison, so every headline delta is taken under identical decoding. What the correction
+introduces is a cross-tier asymmetry, and the asymmetry is recorded rather than smoothed.
+
+### The run accounting
+
+The sealed count was nine reported conditions from six runs, three first-pass and three
+no-context. That count has no room for the second model call the Layer condition authorises and
+the layer's mechanism requires. The layer acts by a second call on augmented context; the
+completeness trigger fires on 48 of the 50 sealed rows, `test_34` and `test_39` the two it does
+not fire on, derived from `eval/test_layer_results.json`; and the second call's input carries
+the first answer, so it cannot share a batch with the first pass. The count is nine: three
+first-pass runs each still serving both raw and layer, three layer second-call runs, three
+no-context runs.
+
+The alternative reading, that six runs is exhaustive and the layer is post-hoc with no second
+call, was rejected. It contradicts the Layer condition, contradicts `docs/METHODOLOGY.md` where
+completeness can trigger corrective re-retrieval and a redraft, and would leave the layer
+context sets measured at `3be93d2` never shown to a model.
+
+### Why neither correction is a free revision
+
+The revision note's opening paragraph records that no generation had run and no result existed
+when the earlier corrections were made. That condition no longer holds:
+`eval/test_retrieval_results.json` was committed at `356f23d` and `eval/test_layer_results.json`
+at `3be93d2`. Both new bullets therefore carry their own condition rather than inheriting the
+paragraph's, and each records that it is a Hasan-directed correction under Rule 4 with its date.
+
+### The no-context prompt departs from Rule 1, by direction and with its reason
+
+Rule 1 requires the model's prompt to forbid drawing on training memory. The no-context prompt
+does not carry that instruction. `PREREGISTRATION.md` states the condition measures "how much of
+the raw score is carried by parametric knowledge of a public corpus rather than by retrieval",
+and under the closed-book instruction with an empty context the only compliant output is
+abstention on every row, so the condition would measure nothing. The departure is scoped to that
+condition, which is a contamination probe rather than part of the operational pipeline, and it
+is recorded in the run manifest and asserted by a test rather than described in a comment. The
+raw and second-call prompts carry the instruction unchanged.
+
+The condition's answers are graded by the same predicate against the raw condition's committed
+first-pass context for the same query, and it reports two figures under their own names, an
+abstention rate and a parametric coincidence rate. Neither is placed beside an unsupported-claim
+rate as though comparable.
+
+### Abstention is whole-response equality, never containment
+
+Abstention is the whole response equalling the fixed marker after normalisation. A response
+carrying the marker followed by substantive content is not an abstention; its content is claim
+units and is graded. Containment would score a marker-plus-parametric answer as a clean
+abstention on exactly the adversarial rows the pre-registration calls the sharpest edge of the
+faithfulness story.
+
+The adversarial per-row verdict is a separate predicate from the abstention metric, and the
+sealed pre-declaration recorded on 2026-07-30 governs it: the failure is asserting substantive
+content as the answer, and every other response is not a failure, "including reporting that the
+retrieved context does not support an answer, and including stating that a named provision does
+not exist". A detector keyed on the marker alone contradicts that sentence in both directions,
+scoring a marker-less existence denial as a failure and a marker-plus-content answer as a pass.
+The marker is an input to the verdict and never the verdict.
+
+Both defects that sentence constructs are pinned as tests. A third class covers a response
+equalling the marker only after case folding or after dropping a trailing period; it is counted
+and listed rather than silently bucketed, and it is treated as answered wherever a binary is
+needed, which lowers the abstention rate rather than raising it.
+
+### Three tiers, three reasoning regimes, not one ladder
+
+The pre-registration fixes reasoning effort low on the Opus tier and is silent on the other two,
+so those run at the API default. The documented defaults are not uniform and do not order the
+way the tiers do. Anthropic's per-model configuration table records Claude Opus 4.8 as adaptive
+only with thinking off by default, Claude Sonnet 5 as adaptive only with thinking on by default,
+and Claude Haiku 4.5 as extended only, off by default, rejecting `thinking.type` adaptive with a
+400. Effort is not settable on an extended-thinking-only tier other than Claude Opus 4.5.
+
+So the middle tier reasons the most, at the default effort of high; the top tier reasons at
+effort low by pre-registration; and the bottom tier does not reason and cannot be made to reason
+adaptively. Forcing uniformity by disabling thinking on Sonnet 5 was rejected on a specific
+ground: weaker raw answers on that tier would enlarge the layer's measured delta there, which
+improves a number without improving the system. Leaving the defaults alone pushes the other way,
+giving the layer less room on the tier that reasons most.
+
+Two consequences ship rather than being noted once. The ladder is described as three deployment
+configurations and not as three points on a capability scale, and every cross-tier sentence
+carries the reasoning regime beside the tier name. The question `docs/METHODOLOGY.md` asks, about
+whether the layer helps more where the base model is weaker, spans three regimes rather than
+one, and that is a limitation of the instrument rather than a caveat.
+
+### A bounded limitation, stated rather than discovered
+
+No citation is requested in any prompt. The pre-registration commits no citation metric and the
+grounding predicate aligns a claim against the whole committed context rather than against a
+cited chunk, so requesting citations would add text that is not a claim and create a surface no
+pre-registered figure scores. The consequence is that the citation-faithfulness failure mode
+`docs/METHODOLOGY.md` names, citing a real chunk that does not actually say the thing, cannot
+occur here and is not scored. The study therefore measures a subset of the surface its own
+methodology describes, and no other route in the design covers it.
+
+### What the assembler fixes and what it deliberately leaves open
+
+The three conditions assemble from committed files with no network, no key, no clock and no
+randomness. Retrieved context enters as the three-field type `src/complete/` already uses, so the
+remaining fourteen `Chunk` fields are unreachable rather than declined, and loaded rows carry
+only an id, a query and the fused top 10. The layer's second call obtains its context by calling
+the committed corrective pass rather than reassembling the augmentation order.
+
+The second-call prompt does not instruct the model to differ from the first answer. On most of
+the 48 triggered rows nothing is flagged, so the dominant path is a redraft where the first
+answer was adequate and the added context changes nothing; an instruction to differ there is
+variance that can only add claims the context does not support. The narrower rule that matters
+is already present: a statement listed as unsupported must be supported from the context or left
+out, and must not be repeated unchanged.
+
+Content digests over the rendered request text are pinned for all six query-set and condition
+pairs. They do not vary by tier, because the assembled text is a function of the corpus, the
+committed retrieval and the prompt literals rather than of the model. Body digests over full
+request bodies are deliberately unpinned, and `build_body` raises on any parameter still marked
+as unmeasured, so no request can be built before the gate that measures it.
+
+`max_tokens` is one constant across all three tiers at 16000 rather than a per-tier field, so it
+cannot become a fourth cross-tier difference. It is not derived from token counting, which
+counts input tokens and cannot set an output ceiling. Its oracle is after the run: the count of
+responses stopping on `max_tokens` must be empty, and a non-empty count raises the parameter and
+re-runs rather than standing as a finding.
+
+### Suite
+
+Two mutations were shown red before any green from this scope was trusted, each applied at
+exactly one site with the site count asserted. Abstention by containment rather than equality
+turned the marker-plus-content case red alone, 1 failed and 40 passed. One trailing space on the
+second-call literal turned the prompt pin, both second-call content pins and the manifest digest
+check red, 4 failed and 37 passed. Both reverts were verified byte-identical by digest.
+
+Collect-only measured 678 immediately before the run, derived as 637 at `135b912` plus 41 in the
+new test file. Predicted and measured agreed.
+
+Measured in one environment with its condition named: the build-only `embed` group installed,
+the pinned ONNX weight cached, and the untracked segment embedding cache absent. 671 passed and
+7 skipped at 678 collected. All seven skips sit at four sites in `tests/test_attributability.py`
+and every one names the absent segment cache; none names the ONNX weight or `onnxruntime`. The
+other environment forms were not measured in this scope and are not asserted. `ruff check` passes
+over `src` and `tests`.
+
+### Commits
+
+- 87e5377 docs(governance): correct the decoding parameter and the run accounting under Rule 4
+- f07d837 feat(generate): request assembly, the prompt literals and the run manifest
+
+This entry is interim rather than a scope close, placed now because Rule 4 requires each
+correction in the session log and the scope-close entry is several commits away. It names the
+two commits above; the commit placing it touches only `SESSION_LOG.md` and is exempt under Rule
+11. The scope-close entry will name the commits that follow and this entry's placing commit.
+
 ## 2026-08-19, the verification layer's completeness surface, and a prediction it contradicted
 
 The layer exists and its retrieval-completeness surface is measured. Three deterministic modules
