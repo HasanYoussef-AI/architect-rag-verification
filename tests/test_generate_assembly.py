@@ -38,6 +38,9 @@ from src.generate.batch import collect, max_tokens_stops, write_records
 from src.generate.manifest import (
     MAX_TOKENS,
     PENDING,
+    RUN_MANIFEST_PATH,
+    RUN_MANIFEST_RELATIVE,
+    TEMPERATURE_PROBES,
     TIERS,
     RunManifest,
     TierConfig,
@@ -63,7 +66,7 @@ FIXTURE_FLAGGED = ("FIXTURE FLAGGED CLAIM ONE.", "FIXTURE FLAGGED CLAIM TWO.")
 # failing test here rather than a silent drift between the file and the assembler.
 PROMPT_DIGESTS = {
     "raw": "dcbafba1f627dca881b3f7d5ab35aefb259ad25eba11524cb0b4bf71cb46bb5f",
-    "second_call": "2ac8fbe17f041d79d86549c6cc676dad916af46965b619c6302bd0a2765f636b",
+    "second_call": "e60ad2ae1fea8e2be4f99d17c2df0b0f79238b567372434f0216bd8de8c3c975",
     "no_context": "8b4e2a278c9219602018d09a073b20373791234de41e45730325e92e0f068777",
 }
 
@@ -72,10 +75,10 @@ PROMPT_DIGESTS = {
 # the committed retrieval and the prompt literals, and not of the model.
 CONTENT_DIGESTS = {
     ("test", "raw"): "3215884024ff1cb87ebe5af9e9da4b490876ffdb2103d9eaaf1b4a8f386b6587",
-    ("test", "second_call"): "edbba1ac18359ae217ebbed31b866d477ec392783e0f524d57bddbc88cefb972",
+    ("test", "second_call"): "5ea4cf19883e5ae76e53015ad3ba3e794fe8452fb45f8beffe8e852fa77e617f",
     ("test", "no_context"): "bd3483e8f19109002f79b212838f30ddbb50a3e9ecde1a98f3b5fbb08c64d66a",
     ("dev", "raw"): "38912a19b232563ab1082460326a47474d3e12eb230b3ab8de021a3ca895aabd",
-    ("dev", "second_call"): "5b13869055ac18730af630fadc8b73e02e63c1375f8c8fa04d74b15838437266",
+    ("dev", "second_call"): "a5c4b7951f54b790816f537379c63dec30f4d1cf13410441eff5624f94c082a2",
     ("dev", "no_context"): "3d3c82bec8201662d11a975e42eb6c9686fcf6dc6663f7f182e42957e915e513",
 }
 
@@ -126,6 +129,26 @@ def test_the_second_call_prompt_does_not_instruct_the_model_to_differ():
     did not need."""
     assert "Do not copy the first answer" not in PROMPTS["second_call"]
     assert "Do not repeat one unchanged." in PROMPTS["second_call"]
+
+
+def test_the_second_call_prompt_instructs_the_model_to_write_what_the_context_supports():
+    """The positive instruction, pinned as its own bullet.
+
+    The two sentences above and this one shared a bullet once. Dropping the first took the
+    second with it, and with it the prompt's only instruction to produce the answer from the
+    context: the survivors named the question without naming the context, or named the
+    context while scoped to the flagged statements, or bounded the source without directing
+    an answer. Pinned separately from the removal above so neither decision can be reversed
+    by an edit that looks like the other one.
+    """
+    second_call = PROMPTS["second_call"]
+    assert "- Write the answer the provided context supports.\n" in second_call, (
+        "the positive instruction is not present as its own bullet"
+    )
+    lines = second_call.split("\n")
+    assert lines.index("- Write the answer the provided context supports.") == 7, (
+        "the bullet is not where the removed bullet stood"
+    )
 
 
 # --------------------------------------------------------------------------------------
@@ -416,10 +439,23 @@ def test_read_guard_companion_is_capable_of_firing(monkeypatch):
 
 
 def test_build_body_refuses_a_tier_with_unmeasured_parameters():
+    """Stays. Its subject changed because every pre-registered tier is now measured.
+
+    Before gate 1a this pointed at TIERS["opus48"], which carried the sentinel. It now
+    constructs a pending tier explicitly, so the guard is still exercised on the shape a
+    pending tier has rather than on whichever tier happens to be unmeasured.
+    """
     store = load_chunk_store()
     request = build_raw("test", load_rows("test")[0], store)
+    unmeasured = TierConfig(
+        key="opus48", model="claude-opus-4-8", temperature=PENDING,
+        thinking={"type": "adaptive"}, effort="low",
+    )
     with pytest.raises(ValueError, match="gate 1a"):
-        build_body(request, TIERS["opus48"])
+        build_body(request, unmeasured)
+
+    for key, tier in TIERS.items():
+        build_body(request, tier)  # every measured tier builds rather than raising
 
 
 def test_build_body_emits_the_documented_parameter_shape():
@@ -448,10 +484,93 @@ def test_build_body_emits_the_documented_parameter_shape():
     assert body2["params"]["max_tokens"] == MAX_TOKENS
 
 
-def test_every_pre_registered_tier_starts_pending_on_temperature_only():
+def test_every_tier_carries_a_measured_setting_backed_by_its_probe_record():
+    """Replaces the pending-state test, which gate 1a was designed to make fail.
+
+    The predecessor asserted every tier carried the sentinel. Passing the gate is exactly
+    what breaks that, so it is replaced rather than deleted: the property that matters after
+    the gate is that no setting is asserted without the probe pair it rests on. A setting of
+    0 must come from a 200 on the temperature request, a setting of None from a 400, and in
+    both cases the control must be 200 or the pairing was never a measurement at all.
+    """
     assert set(TIERS) == {"haiku45", "sonnet5", "opus48"}
-    for tier in TIERS.values():
-        assert tier.temperature == PENDING
+    records = {r["probe"]: r for r in TEMPERATURE_PROBES["records"]}
+    assert len(records) == 6, "two probe records per tier, one of them the control"
+
+    for key, tier in TIERS.items():
+        assert tier.temperature != PENDING, f"tier {key} still carries the gate sentinel"
+        assert tier.temperature in (0, None), f"tier {key} has a setting the rule does not admit"
+        assert tier.temperature_probe == f"{key}:temperature_0", (
+            f"tier {key} does not name its own probe record"
+        )
+
+        probe = records[tier.temperature_probe]
+        control = records[f"{key}:control_no_temperature"]
+        assert probe["tier"] == key and probe["carries_temperature"] is True
+        assert control["tier"] == key and control["carries_temperature"] is False
+        assert control["http_status"] == 200, (
+            f"tier {key}: the control did not return 200, so no 400 is attributable to the "
+            "parameter and the setting is not a measurement"
+        )
+        expected_status = 200 if tier.temperature == 0 else 400
+        assert probe["http_status"] == expected_status, (
+            f"tier {key}: setting {tier.temperature!r} does not match probe outcome "
+            f"{probe['http_status']}"
+        )
+        # The recorded body is the sent body, so the parameter's presence is checkable.
+        sent = json.loads(probe["request_body_sent"])
+        assert "temperature" in sent and sent["temperature"] == 0
+        assert "temperature" not in json.loads(control["request_body_sent"])
+
+
+def test_the_manifest_names_a_producer_that_exists_and_a_path_that_ships():
+    """The 6.1 defect, pinned. produced_by named a command that did nothing.
+
+    Asserting the string alone would pass on a module with no entry point, which is how the
+    claim went untrue in the first place, so the artifact's existence and its agreement with
+    a fresh render are asserted beside it.
+    """
+    payload = json.loads(RunManifest().to_json())
+    assert payload["produced_by"] == "python -m src.generate.manifest"
+    assert payload["written_to"] == RUN_MANIFEST_RELATIVE
+    assert RUN_MANIFEST_PATH.exists(), "the manifest names a path that does not ship"
+    assert RUN_MANIFEST_PATH.relative_to(REPO_ROOT).as_posix() == RUN_MANIFEST_RELATIVE
+
+
+def test_committed_run_manifest_is_byte_identical_to_a_fresh_render():
+    """Determinism asserted on shape first, then on equality.
+
+    V20's first form: two absent sides compare equal. Both sides are asserted non-empty and
+    well formed before they are compared, and the render is taken twice so a per-call
+    nondeterminism cannot hide inside a single comparison.
+    """
+    committed = RUN_MANIFEST_PATH.read_text(encoding="utf-8")
+    first = RunManifest().to_json()
+    second = RunManifest().to_json()
+    for side, name in ((committed, "committed"), (first, "render")):
+        assert len(side) > 1000, f"{name} side is too small to be the manifest"
+        assert json.loads(side)["produced_by"], f"{name} side is not the manifest"
+    assert first == second, "two renders in one process disagree"
+    assert committed == first, (
+        "data/runs/run_manifest.json is stale; re-run python -m src.generate.manifest"
+    )
+
+
+def test_the_manifest_carries_every_probe_verbatim():
+    payload = json.loads(RunManifest().to_json())
+    probes = payload["temperature_probes"]
+    assert probes["endpoint"] == "POST /v1/messages"
+    assert probes["run_window"]["started_utc"] and probes["run_window"]["ended_utc"]
+    assert len(probes["records"]) == 6
+    for record in probes["records"]:
+        assert record["request_body_sent"], "a probe record carries no request body"
+        assert record["response_body"], "a probe record carries no response body"
+        assert record["http_status"] in (200, 400)
+        if record["http_status"] == 400:
+            assert record["error_message"], "a 400 record carries no error message"
+        else:
+            assert record["error_message"] is None
+    assert payload["probe_records"] == probes["records"]
 
 
 def test_max_tokens_is_one_constant_and_is_not_a_per_tier_field():

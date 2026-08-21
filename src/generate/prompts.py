@@ -104,6 +104,7 @@ The context provided below may have been expanded since the first answer was wri
 Rules:
 - Use only the provided context. Do not use anything you know from training. If the context does not contain the answer, do not supply it from memory.
 - Statements listed as unsupported were not supported by the context. Either support each one from the context provided below or leave it out. Do not repeat one unchanged.
+- Write the answer the provided context supports.
 - If the provided context does not support an answer, reply with exactly this sentence and nothing else: I do not have enough information to answer this question.
 - Be brief. Answer the question and stop."""
 

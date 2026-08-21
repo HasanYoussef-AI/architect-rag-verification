@@ -32,6 +32,18 @@ both are disclosed here and beside every cross-tier sentence.
   whether the layer helps more where the base model is weaker, is asked across three
   reasoning regimes rather than one.
 
+WHAT THIS MODULE PRODUCES, AND WHERE. `python -m src.generate.manifest` writes
+data/runs/run_manifest.json. That is the whole entry point and the whole output. The file is
+a pure function of this module and the prompt literals: no clock is read, no environment is
+read, no network is touched, and the gate 1a measurement it carries is stored here as
+TEMPERATURE_PROBES rather than fetched. Running the producer twice therefore writes byte
+identical files, which a test asserts against the committed artifact rather than trusting.
+
+The measurement is stored in this module rather than in a companion data file on purpose. A
+committed artifact whose producer does not exist is the defect this change fixes; a second
+committed artifact with no producer of its own would reintroduce it one directory over. One
+producer, one artifact, and the measurement carried as data inside the producer.
+
 MAX_TOKENS IS NOT DERIVED FROM count_tokens. That endpoint counts input tokens and says
 nothing about how many output tokens an answer needs. max_tokens is a pre-registered
 constant chosen for headroom, and the check that it was large enough is a measurement after
@@ -46,7 +58,17 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
+
+from src.ingest.corpus_integrity import REPO_ROOT
+
+# The one committed output path. data/ already ships this repository's derived artifacts,
+# under data/chunks/, data/retrieval/ and data/hyphenation/, and data/runs/ was created for
+# this one. A run manifest is a derived artifact and belongs beside them rather than under
+# eval/, which holds the query sets, the frames and the scored results.
+RUN_MANIFEST_PATH = REPO_ROOT / "data" / "runs" / "run_manifest.json"
+RUN_MANIFEST_RELATIVE = "data/runs/run_manifest.json"
 
 # Sentinel for a value that gate 1a fixes by measurement. Distinct from None, which is a
 # real setting meaning "omit this parameter".
@@ -104,6 +126,190 @@ THINKING_DOCUMENTATION = {
     ),
 }
 
+
+# The gate 1a temperature measurement, stored verbatim as the runner recorded it. Carried as
+# a JSON literal rather than retyped as a Python dict so the request bodies, response bodies
+# and error messages in it are the captured bytes and not a transcription of them.
+_TEMPERATURE_PROBES_JSON = r"""
+{
+ "endpoint": "POST /v1/messages",
+ "transport": "synchronous Messages endpoint, through the anthropic Python SDK",
+ "why_not_batch": "A parameter validation error returns immediately and attributably on the synchronous endpoint. On the Batch endpoint a rejected parameter surfaces inside a result record after polling, and a submission-level rejection would not separate the parameter from the body. The development first-pass batch carrying the measured setting is the confirmation on the run transport.",
+ "control_design": "Two requests per tier. The control is identical in every parameter except that temperature is absent, so a 400 is attributable to the parameter and not to the body. Outcomes admitted: 200 on both means accepted and sent on that tier; 400 with temperature and 200 without means rejected and the parameter omitted on that tier. Any other pairing is not a measurement.",
+ "prompt": "A fixed probe prompt carrying no query text and no chunk text. system: 'You are a parameter probe. Reply with the single word ok.' user: 'Reply with the single word ok.'",
+ "run_window": {
+  "started_utc": "2026-08-21T20:10:35Z",
+  "ended_utc": "2026-08-21T20:10:47Z",
+  "note": "The window was stamped by `date -u` immediately before and after the runner, recorded in the run log. The runner did not stamp each record individually, so per-record wall-clock times do not exist. The six requests were issued sequentially inside this window in the order the records appear. Each record carries the API's own request_id inside its response body, which identifies the call at the provider independently of any clock here."
+ },
+ "records": [
+  {
+   "probe": "haiku45:temperature_0",
+   "tier": "haiku45",
+   "model": "claude-haiku-4-5-20251001",
+   "carries_temperature": true,
+   "endpoint": "POST /v1/messages",
+   "sdk_params": {
+    "model": "claude-haiku-4-5-20251001",
+    "max_tokens": 16000,
+    "system": "You are a parameter probe. Reply with the single word ok.",
+    "messages": [
+     {
+      "role": "user",
+      "content": "Reply with the single word ok."
+     }
+    ],
+    "temperature": 0
+   },
+   "http_status": 200,
+   "response_body": "{\"model\":\"claude-haiku-4-5-20251001\",\"id\":\"msg_011CeGW3CXvfUwBkZJQtV122\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"ok\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"stop_details\":null,\"usage\":{\"input_tokens\":27,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":4,\"service_tier\":\"standard\",\"inference_geo\":\"not_available\"}}",
+   "error_message": null,
+   "request_body_sent": "{\"max_tokens\":16000,\"messages\":[{\"role\":\"user\",\"content\":\"Reply with the single word ok.\"}],\"model\":\"claude-haiku-4-5-20251001\",\"system\":\"You are a parameter probe. Reply with the single word ok.\",\"temperature\":0}"
+  },
+  {
+   "probe": "haiku45:control_no_temperature",
+   "tier": "haiku45",
+   "model": "claude-haiku-4-5-20251001",
+   "carries_temperature": false,
+   "endpoint": "POST /v1/messages",
+   "sdk_params": {
+    "model": "claude-haiku-4-5-20251001",
+    "max_tokens": 16000,
+    "system": "You are a parameter probe. Reply with the single word ok.",
+    "messages": [
+     {
+      "role": "user",
+      "content": "Reply with the single word ok."
+     }
+    ]
+   },
+   "http_status": 200,
+   "response_body": "{\"model\":\"claude-haiku-4-5-20251001\",\"id\":\"msg_011CeGW3HmSsWBdXLDb9PMkP\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"ok\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"stop_details\":null,\"usage\":{\"input_tokens\":27,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":4,\"service_tier\":\"standard\",\"inference_geo\":\"not_available\"}}",
+   "error_message": null,
+   "request_body_sent": "{\"max_tokens\":16000,\"messages\":[{\"role\":\"user\",\"content\":\"Reply with the single word ok.\"}],\"model\":\"claude-haiku-4-5-20251001\",\"system\":\"You are a parameter probe. Reply with the single word ok.\"}"
+  },
+  {
+   "probe": "sonnet5:temperature_0",
+   "tier": "sonnet5",
+   "model": "claude-sonnet-5",
+   "carries_temperature": true,
+   "endpoint": "POST /v1/messages",
+   "sdk_params": {
+    "model": "claude-sonnet-5",
+    "max_tokens": 16000,
+    "system": "You are a parameter probe. Reply with the single word ok.",
+    "messages": [
+     {
+      "role": "user",
+      "content": "Reply with the single word ok."
+     }
+    ],
+    "temperature": 0
+   },
+   "http_status": 400,
+   "response_body": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"request_id\":\"req_011CeGW3LqVY89AQho4K95Ts\"}",
+   "error_message": "Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': '`temperature` is deprecated for this model.'}, 'request_id': 'req_011CeGW3LqVY89AQho4K95Ts'}",
+   "request_body_sent": "{\"max_tokens\":16000,\"messages\":[{\"role\":\"user\",\"content\":\"Reply with the single word ok.\"}],\"model\":\"claude-sonnet-5\",\"system\":\"You are a parameter probe. Reply with the single word ok.\",\"temperature\":0}"
+  },
+  {
+   "probe": "sonnet5:control_no_temperature",
+   "tier": "sonnet5",
+   "model": "claude-sonnet-5",
+   "carries_temperature": false,
+   "endpoint": "POST /v1/messages",
+   "sdk_params": {
+    "model": "claude-sonnet-5",
+    "max_tokens": 16000,
+    "system": "You are a parameter probe. Reply with the single word ok.",
+    "messages": [
+     {
+      "role": "user",
+      "content": "Reply with the single word ok."
+     }
+    ]
+   },
+   "http_status": 200,
+   "response_body": "{\"model\":\"claude-sonnet-5\",\"id\":\"msg_011CeGW3VkGxriAzwHcgb9QT\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"ok\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"stop_details\":null,\"usage\":{\"input_tokens\":36,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":4,\"output_tokens_details\":{\"thinking_tokens\":0},\"service_tier\":\"standard\",\"inference_geo\":\"global\"}}",
+   "error_message": null,
+   "request_body_sent": "{\"max_tokens\":16000,\"messages\":[{\"role\":\"user\",\"content\":\"Reply with the single word ok.\"}],\"model\":\"claude-sonnet-5\",\"system\":\"You are a parameter probe. Reply with the single word ok.\"}"
+  },
+  {
+   "probe": "opus48:temperature_0",
+   "tier": "opus48",
+   "model": "claude-opus-4-8",
+   "carries_temperature": true,
+   "endpoint": "POST /v1/messages",
+   "sdk_params": {
+    "model": "claude-opus-4-8",
+    "max_tokens": 16000,
+    "system": "You are a parameter probe. Reply with the single word ok.",
+    "messages": [
+     {
+      "role": "user",
+      "content": "Reply with the single word ok."
+     }
+    ],
+    "temperature": 0,
+    "thinking": {
+     "type": "adaptive"
+    },
+    "output_config": {
+     "effort": "low"
+    }
+   },
+   "http_status": 400,
+   "response_body": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` may only be set to 1 when thinking is enabled or in adaptive mode. Please consult our documentation at https://platform.claude.com/docs/en/build-with-claude/extended-thinking\"},\"request_id\":\"req_011CeGW3dHhfESHqMhHXtABt\"}",
+   "error_message": "Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': '`temperature` may only be set to 1 when thinking is enabled or in adaptive mode. Please consult our documentation at https://platform.claude.com/docs/en/build-with-claude/extended-thinking'}, 'request_id': 'req_011CeGW3dHhfESHqMhHXtABt'}",
+   "request_body_sent": "{\"max_tokens\":16000,\"messages\":[{\"role\":\"user\",\"content\":\"Reply with the single word ok.\"}],\"model\":\"claude-opus-4-8\",\"output_config\":{\"effort\":\"low\"},\"system\":\"You are a parameter probe. Reply with the single word ok.\",\"temperature\":0,\"thinking\":{\"type\":\"adaptive\"}}"
+  },
+  {
+   "probe": "opus48:control_no_temperature",
+   "tier": "opus48",
+   "model": "claude-opus-4-8",
+   "carries_temperature": false,
+   "endpoint": "POST /v1/messages",
+   "sdk_params": {
+    "model": "claude-opus-4-8",
+    "max_tokens": 16000,
+    "system": "You are a parameter probe. Reply with the single word ok.",
+    "messages": [
+     {
+      "role": "user",
+      "content": "Reply with the single word ok."
+     }
+    ],
+    "thinking": {
+     "type": "adaptive"
+    },
+    "output_config": {
+     "effort": "low"
+    }
+   },
+   "http_status": 200,
+   "response_body": "{\"model\":\"claude-opus-4-8\",\"id\":\"msg_011CeGW3gXfnX5Z4cwDnRNBc\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"ok\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"stop_details\":null,\"usage\":{\"input_tokens\":36,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":4,\"output_tokens_details\":{\"thinking_tokens\":0},\"service_tier\":\"standard\",\"inference_geo\":\"global\"}}",
+   "error_message": null,
+   "request_body_sent": "{\"max_tokens\":16000,\"messages\":[{\"role\":\"user\",\"content\":\"Reply with the single word ok.\"}],\"model\":\"claude-opus-4-8\",\"output_config\":{\"effort\":\"low\"},\"system\":\"You are a parameter probe. Reply with the single word ok.\",\"thinking\":{\"type\":\"adaptive\"}}"
+  }
+ ],
+ "resolution": {
+  "haiku45": {
+   "setting": 0,
+   "basis": "200 on both: accepted, sent on every run for this tier"
+  },
+  "sonnet5": {
+   "setting": null,
+   "basis": "400 with temperature and 200 without: rejected, parameter omitted on this tier"
+  },
+  "opus48": {
+   "setting": null,
+   "basis": "400 with temperature and 200 without: rejected, parameter omitted on this tier"
+  }
+ }
+}
+"""
+
+TEMPERATURE_PROBES = json.loads(_TEMPERATURE_PROBES_JSON)
+
 TEMPERATURE_DOCUMENTATION = {
     "deprecations_page": (
         "https://platform.claude.com/docs/en/about-claude/model-deprecations"
@@ -122,6 +328,19 @@ TEMPERATURE_DOCUMENTATION = {
         "The deprecations page says Claude 4.7 and later; the migration guide says Claude "
         "Opus 4.7 or later. The two differ on whether Claude Sonnet 5 is inside the bar, "
         "so the question is settled by measurement at gate 1a and not by reading."
+    ),
+    "measured_at_gate_1a": (
+        "Settled, and it settled the two sentences differently than either alone would "
+        "read. Claude Sonnet 5 rejected temperature 0 with `temperature` is deprecated for "
+        "this model., which is the deprecations page's wider scope and not the migration "
+        "guide's Opus-only one. Claude Opus 4.8 also rejected temperature 0, but on a "
+        "different ground: `temperature` may only be set to 1 when thinking is enabled or "
+        "in adaptive mode. That is the thinking interaction rather than the deprecation "
+        "bar, and this tier runs with thinking adaptive by pre-registration, so the probe "
+        "does not establish whether Claude Opus 4.8 is inside the deprecation bar. It "
+        "establishes what the run needs, which is that the parameter is omitted on that "
+        "tier under that tier's own run configuration. Claude Haiku 4.5 accepted it. The "
+        "verbatim requests, responses and error messages are in temperature_probes."
     ),
 }
 
@@ -155,6 +374,7 @@ class TierConfig:
     effort: str | None = None
     thinking_rationale: str = ""
     effort_rationale: str = ""
+    temperature_probe: str = ""
 
     def assert_resolved(self) -> None:
         if self.temperature == PENDING:
@@ -173,6 +393,12 @@ class TierConfig:
                     "PENDING_GATE_1A: not yet measured. null: parameter omitted because "
                     "the tier rejects a non-default value. 0: accepted and sent."
                 ),
+                "probe": self.temperature_probe,
+                "probe_meaning": (
+                    "The gate 1a probe record this setting rests on, by its `probe` key in "
+                    "temperature_probes.records. Its control is the record keyed "
+                    "<tier>:control_no_temperature."
+                ),
             },
             "thinking": {"setting": self.thinking, "rationale": self.thinking_rationale},
             "effort": {"setting": self.effort, "rationale": self.effort_rationale},
@@ -185,6 +411,8 @@ TIERS: dict[str, TierConfig] = {
     "haiku45": TierConfig(
         key="haiku45",
         model="claude-haiku-4-5-20251001",
+        temperature=0,
+        temperature_probe="haiku45:temperature_0",
         thinking=None,
         effort=None,
         thinking_rationale=(
@@ -201,6 +429,8 @@ TIERS: dict[str, TierConfig] = {
     "sonnet5": TierConfig(
         key="sonnet5",
         model="claude-sonnet-5",
+        temperature=None,
+        temperature_probe="sonnet5:temperature_0",
         thinking=None,
         effort=None,
         thinking_rationale=(
@@ -217,6 +447,8 @@ TIERS: dict[str, TierConfig] = {
     "opus48": TierConfig(
         key="opus48",
         model="claude-opus-4-8",
+        temperature=None,
+        temperature_probe="opus48:temperature_0",
         thinking={"type": "adaptive"},
         effort="low",
         thinking_rationale=(
@@ -240,7 +472,9 @@ class RunManifest:
     """The committed record of how a generation run was parameterised."""
 
     tiers: dict[str, TierConfig] = field(default_factory=lambda: dict(TIERS))
-    probe_records: list[dict] = field(default_factory=list)
+    probe_records: list[dict] = field(
+        default_factory=lambda: list(TEMPERATURE_PROBES["records"])
+    )
     content_digests: dict[str, str] = field(default_factory=dict)
     body_digests: dict[str, str] = field(default_factory=dict)
 
@@ -254,6 +488,7 @@ class RunManifest:
                 "carries PENDING_GATE_1A and names the gate that fixes it."
             ),
             "produced_by": "python -m src.generate.manifest",
+            "written_to": RUN_MANIFEST_RELATIVE,
             "transport": "Batch API",
             "run_accounting": {
                 "reported_conditions": 9,
@@ -312,6 +547,7 @@ class RunManifest:
                 ),
             },
             "tiers": {k: v.to_record() for k, v in self.tiers.items()},
+            "temperature_probes": TEMPERATURE_PROBES,
             "probe_records": self.probe_records,
             "content_digests": self.content_digests,
             "body_digests": self.body_digests,
@@ -319,3 +555,21 @@ class RunManifest:
 
     def to_json(self) -> str:
         return json.dumps(self.to_dict(), ensure_ascii=False, indent=1, sort_keys=False) + "\n"
+
+
+def write(path: Path | None = None) -> Path:
+    """Write the run manifest and return where it went.
+
+    The only side effect in this module. Deterministic by construction: `to_dict` reads this
+    module's constants and the prompt literals and nothing else, so two runs write the same
+    bytes and a test compares the committed artifact against a fresh render rather than
+    trusting that they agree.
+    """
+    target = RUN_MANIFEST_PATH if path is None else path
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(RunManifest().to_json(), encoding="utf-8")
+    return target
+
+
+if __name__ == "__main__":
+    print(f"wrote {write()}")
