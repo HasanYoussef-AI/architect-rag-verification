@@ -1,0 +1,42 @@
+{
+ "description": "Batch record for the Haiku development first pass: the batch's own identifiers, timings and per-status counts, and the measured token totals read from the committed result records beside it. The answers themselves are in dev.raw.haiku45.jsonl, one JSON object per line keyed and sorted by custom_id, each carrying the response whole. This file carries no figure that is not derivable from that one plus the API's own batch object.",
+ "produced_by": "src.generate.batch.submit and src.generate.batch.collect",
+ "query_set": "dev",
+ "condition": "raw",
+ "tier": "haiku45",
+ "model_requested": "claude-haiku-4-5-20251001",
+ "model_reported": [
+  "claude-haiku-4-5-20251001"
+ ],
+ "batch_id": "msgbatch_01Qha5JRaSyLJmVMRX8mDomH",
+ "transport": "Batch API",
+ "submitted_utc": "2026-08-22T10:59:07Z",
+ "created_at_utc": "2026-08-22T10:59:10Z",
+ "ended_at_utc": "2026-08-22T11:00:30Z",
+ "collected_utc": "2026-08-22T11:01:18Z",
+ "processing_status": "ended",
+ "request_count": 12,
+ "request_counts": {
+  "canceled": 0,
+  "errored": 0,
+  "expired": 0,
+  "processing": 0,
+  "succeeded": 12
+ },
+ "decoding": {
+  "temperature": 0,
+  "thinking": null,
+  "effort": null,
+  "max_tokens": 16000,
+  "source": "data/runs/run_manifest.json, tiers.haiku45, as committed at 50bd34a"
+ },
+ "usage_totals": {
+  "input_tokens": 33703,
+  "output_tokens": 1686,
+  "note": "Summed from the usage block of every record in dev.raw.haiku45.jsonl. The input total equals the count_tokens figure of record for this tier and set, 33703, exactly."
+ },
+ "max_tokens_stops": [],
+ "stop_reasons": [
+  "end_turn"
+ ]
+}
