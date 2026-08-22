@@ -5,13 +5,33 @@ stops. Collection reads a batch id and writes results. A collection can therefor
 against a batch the API already holds without re-submitting and without spending again, which
 is what makes a failed write or an interrupted download recoverable rather than expensive.
 
-THE KEY IS NEVER READ HERE. Neither function constructs a client. The caller passes one in,
-and the shell entry point is the Rule 8 subshell pattern
+THE KEY IS NEVER READ HERE. Neither function constructs a client. The caller passes one in, and
+the caller is what runs inside the Rule 8 subshell,
 
-    (set -a; source .env; set +a; python -m src.generate.batch submit ...)
+    (set -a; source .env; set +a; <the caller>)
 
 so the key exists only inside that subshell, is never exported into the session, and is never
 committed. Tests pass a fake client and run with no network.
+
+THIS MODULE HAS NO COMMAND-LINE ENTRY POINT, AND IT IS CALLED AS A LIBRARY. The three committed
+development first passes, at f027fe3, 08bb610 and 92a4294, each ran the same four steps from a
+caller inside that subshell: build the bodies with src/generate/assemble.py, pass
+`client.messages.batches` and those bodies to `submit` and keep the batch id it returns, poll
+`retrieve` on the same client until the batch ends, then pass the id to `collect` and its records
+to `write_records`. Nothing else in this module was called and no command was run.
+
+CORRECTED, AND THE CORRECTION IS THE POINT OF THIS PARAGRAPH. This docstring previously gave the
+subshell line as
+
+    (set -a; source .env; set +a; python -m src.generate.batch submit ...)
+
+which named a command that does not exist: this module has no `__main__` block, so that invocation
+imports the module, does nothing, and exits 0. A reader could not tell that from reading it and
+could not tell it from running it either. It is the same defect class fixed forward at 50bd34a,
+where src/generate/manifest.py recorded a producer command it did not implement.
+tests/test_module_entry_points.py now asserts mechanically that every `python -m` invocation named
+anywhere under src/ resolves to a module that carries an entry point, so the defect cannot return
+here or appear anywhere else silently.
 
 RESULTS ARE KEYED BY custom_id AND NEVER BY POSITION. Anthropic's Message Batches
 documentation states that results arrive in any order. Writing them in arrival order would
