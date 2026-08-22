@@ -9,23 +9,23 @@ condition from the committed assembler, the committed retrieval results and the 
 store, with no key and no network. A row whose answer was matched to the wrong body fails here.
 
 ONE FILE OVER EVERY TIER, NOT ONE FILE PER TIER. The provenance check is the same check on
-every tier and duplicating it per tier would put two copies in the tree that can drift. What
-differs between tiers is data, so it is a table: the decoding the manifest fixes, the token
-figures, the thinking signature, the stop reasons. A tier is added by adding a row.
+every tier and duplicating it per tier would put copies in the tree that can drift. What differs
+between tiers is data, so it is a table: the decoding the manifest fixes, the token figures, the
+thinking signature, the stop reasons, the batch rates. A tier is added by adding a row.
 
-WHAT IS PINNED IS WHAT HAPPENED, INCLUDING WHAT WAS NOT PREDICTED. The Sonnet no-context run
-carries one refused response and one input-token divergence, and both are asserted here rather
-than tolerated by a loosened predicate. Reversing either requires deleting a failing test.
+WHAT IS PINNED IS WHAT HAPPENED, INCLUDING WHAT WAS NOT PREDICTED. Two no-context runs carry a
+refused response on the same row, one of them with an input-token divergence and one without,
+and the Sonnet batch records carry a rates string that names another tier's rates. All three are
+asserted here rather than smoothed away by a loosened predicate.
 
 NOTHING HERE GRADES. No claim unit is segmented and no rate is computed. Rule 9 puts scoring in
 a separate invocation over committed files, and the grading of record happens at its own commit.
-What is asserted is each run's own integrity: shape, provenance, and the stop conditions the
-generation predictions declared before any call.
 """
 
 from __future__ import annotations
 
 import json
+from decimal import Decimal
 
 import pytest
 
@@ -45,7 +45,7 @@ from src.ingest.corpus_integrity import REPO_ROOT
 RUNS = REPO_ROOT / "data" / "runs"
 QUERY_SET = "test"
 CONDITIONS = ("raw", "no_context")
-TIERS_UNDER_TEST = ("haiku45", "sonnet5")
+TIERS_UNDER_TEST = ("haiku45", "sonnet5", "opus48")
 CASES = [(tier, condition) for tier in TIERS_UNDER_TEST for condition in CONDITIONS]
 EXPECTED_ROWS = 50
 
@@ -56,15 +56,19 @@ COUNT_TOKENS_FIGURE = {
     ("haiku45", "no_context"): 4559,
     ("sonnet5", "raw"): 202612,
     ("sonnet5", "no_context"): 6468,
+    ("opus48", "raw"): 202612,
+    ("opus48", "no_context"): 6468,
 }
 
 # usage.input_tokens as the API reported it. A different measurement from the one above, and on
-# one run the two differ: see EXPECTED_DIVERGENCE.
+# one run of the six the two differ: see EXPECTED_DIVERGENCE.
 EXPECTED_USAGE_INPUT = {
     ("haiku45", "raw"): 140787,
     ("haiku45", "no_context"): 4559,
     ("sonnet5", "raw"): 202612,
     ("sonnet5", "no_context"): 6515,
+    ("opus48", "raw"): 202612,
+    ("opus48", "no_context"): 6468,
 }
 
 # Rows where usage.input_tokens exceeds the count_tokens measurement over the same body, with
@@ -75,6 +79,8 @@ EXPECTED_DIVERGENCE = {
     ("haiku45", "no_context"): {},
     ("sonnet5", "raw"): {},
     ("sonnet5", "no_context"): {"test_37": 47},
+    ("opus48", "raw"): {},
+    ("opus48", "no_context"): {},
 }
 
 # The decoding each tier runs under, from data/runs/run_manifest.json as committed at 50bd34a.
@@ -82,16 +88,19 @@ EXPECTED_DIVERGENCE = {
 EXPECTED_DECODING = {
     "haiku45": {"temperature": 0, "thinking": None, "effort": None},
     "sonnet5": {"temperature": None, "thinking": None, "effort": None},
+    "opus48": {"temperature": None, "thinking": {"type": "adaptive"}, "effort": "low"},
 }
 
-# The output_tokens_details signature per run, as three counts rather than as a word. Haiku
-# carries the key with a null value on every record; Sonnet carries a populated object on every
-# record, and on five of its hundred rows the thinking figure is above zero.
+# The output_tokens_details signature per run, as counts rather than as a word. Haiku carries the
+# key with a null value on every record. Sonnet and Opus carry a populated object on every
+# record, and the reasoning each spends is measured rather than assumed from its configuration.
 EXPECTED_THINKING = {
     ("haiku45", "raw"): {"present": 50, "non_null": 0, "rows_above_zero": 0, "total": 0},
     ("haiku45", "no_context"): {"present": 50, "non_null": 0, "rows_above_zero": 0, "total": 0},
     ("sonnet5", "raw"): {"present": 50, "non_null": 50, "rows_above_zero": 1, "total": 122},
     ("sonnet5", "no_context"): {"present": 50, "non_null": 50, "rows_above_zero": 4, "total": 485},
+    ("opus48", "raw"): {"present": 50, "non_null": 50, "rows_above_zero": 14, "total": 901},
+    ("opus48", "no_context"): {"present": 50, "non_null": 50, "rows_above_zero": 20, "total": 2461},
 }
 
 EXPECTED_STOP_REASONS = {
@@ -99,14 +108,27 @@ EXPECTED_STOP_REASONS = {
     ("haiku45", "no_context"): ["end_turn"],
     ("sonnet5", "raw"): ["end_turn"],
     ("sonnet5", "no_context"): ["end_turn", "refusal"],
+    ("opus48", "raw"): ["end_turn"],
+    ("opus48", "no_context"): ["end_turn", "refusal"],
 }
 
-# Batch records written before the Sonnet run carry a smaller field set. The Haiku records
-# landed at f9a4599, before that run surfaced a refusal and an input-token divergence and the
-# runner grew fields for them. They are not rewritten: they are committed and no figure in them
-# is affected. Every fact those fields carry is re-derived from the result records instead, for
+# Batch rates quoted in eval/generation_predictions.md section 11, dollars per million tokens.
+TRUE_RATES = {"haiku45": (0.50, 2.50), "sonnet5": (1.00, 5.00), "opus48": (2.50, 12.50)}
+
+# The rates STRING on these records names another tier's rates. The recorded cost NUMBERS are
+# correct and re-derive from the tier's own rates, asserted below; only the prose is wrong. It
+# reached data/runs/test.raw.sonnet5.batch.json and its no-context sibling at 5994c51, from a
+# hardcoded literal in the untracked runner that the per-tier rate table did not reach. The
+# records are committed and correcting them is an owner decision, so the defect is pinned here
+# instead: when the records are corrected these entries must be removed or this test fails.
+RATES_STRING_KNOWN_WRONG = {("sonnet5", "raw"), ("sonnet5", "no_context")}
+
+# Batch records written before the Sonnet run carry a smaller field set. The Haiku records landed
+# at f9a4599, before that run surfaced a refusal and an input-token divergence and the runner
+# grew fields for them. They are not rewritten: they are committed and no figure in them is
+# affected. Every fact those fields carry is re-derived from the result records instead, for
 # every tier, and the extended fields are asserted where they exist.
-TIERS_WITH_EXTENDED_BATCH_FIELDS = ("sonnet5",)
+TIERS_WITH_EXTENDED_BATCH_FIELDS = ("sonnet5", "opus48")
 EXTENDED_FIELDS = (
     "input_token_divergence",
     "rows_with_thinking_above_zero",
@@ -114,13 +136,13 @@ EXTENDED_FIELDS = (
     "rows_by_stop_reason",
 )
 
-# The one refused response in the committed runs, and what it contains.
-REFUSAL = {
-    "custom_id": "test__no_context__sonnet5__test_37",
-    "category": "bio",
-    "content_blocks": 0,
-    "output_tokens": 0,
+# Every refused response in the committed runs, with what it contains. The same row refused on
+# two tiers, and only one of the two carried an input divergence.
+REFUSALS = {
+    ("sonnet5", "no_context"): {"row": "test_37", "category": "bio", "divergence": 47},
+    ("opus48", "no_context"): {"row": "test_37", "category": "bio", "divergence": 0},
 }
+REFUSED_ROW = "test_37"
 
 
 def _records(tier: str, condition: str) -> list[dict]:
@@ -194,18 +216,20 @@ def test_the_provenance_check_is_capable_of_failing(tier, condition):
 
 
 @pytest.mark.parametrize("tier,condition", CASES)
-def test_the_bodies_differ_by_tier_and_the_rendered_content_does_not(tier, condition):
-    """The assembler's claim, checked rather than described.
+def test_the_bodies_differ_by_every_other_tier_and_the_rendered_content_does_not(tier, condition):
+    """The assembler's claim, checked against every other tier rather than one of them.
 
-    Rendered content does not depend on the model, so two tiers hash the same content and
-    different bodies. A body digest that stopped varying by tier would mean the model string or
-    the decoding stopped reaching the request.
+    Rendered content does not depend on the model, so all tiers hash the same content and
+    pairwise different bodies. Comparing against a single other tier would silently narrow as
+    tiers are added, leaving a pair unchecked.
     """
-    other = [t for t in TIERS_UNDER_TEST if t != tier][0]
     mine = _batch_record(tier, condition)["request_body_digest"]
-    theirs = _batch_record(other, condition)["request_body_digest"]
-    assert mine["content"] == theirs["content"]
-    assert mine["set"] != theirs["set"]
+    others = [t for t in TIERS_UNDER_TEST if t != tier]
+    assert len(others) == len(TIERS_UNDER_TEST) - 1
+    for other in others:
+        theirs = _batch_record(other, condition)["request_body_digest"]
+        assert mine["content"] == theirs["content"], other
+        assert mine["set"] != theirs["set"], other
 
 
 @pytest.mark.parametrize("tier,condition", CASES)
@@ -267,13 +291,14 @@ def test_the_extended_batch_fields_are_present_exactly_where_expected(tier, cond
         assert (field in batch) is carried, (tier, condition, field)
 
 
-@pytest.mark.parametrize("condition", CONDITIONS)
-def test_the_per_row_divergence_is_named_with_its_excess_where_the_record_carries_it(condition):
-    """An aggregate difference with no row list cannot be told apart from a systematic offset.
-
-    The two have different causes, so the run that diverged names the row and the excess.
-    """
-    tier = "sonnet5"
+@pytest.mark.parametrize(
+    "tier,condition",
+    [(t, c) for t in TIERS_WITH_EXTENDED_BATCH_FIELDS for c in CONDITIONS],
+)
+def test_the_per_row_divergence_is_named_with_its_excess_where_the_record_carries_it(
+    tier, condition
+):
+    """An aggregate difference with no row list cannot be told apart from a systematic offset."""
     recorded = _batch_record(tier, condition)["input_token_divergence"]
     expected = EXPECTED_DIVERGENCE[(tier, condition)]
     assert set(recorded["rows"]) == set(expected)
@@ -298,7 +323,7 @@ def test_the_decoding_block_is_the_committed_manifest_setting(tier, condition):
 
 @pytest.mark.parametrize("tier,condition", CASES)
 def test_the_thinking_detail_field_is_recorded_as_measured(tier, condition):
-    """Counted rather than described, because the two tiers differ in the field's shape.
+    """Counted rather than described, because the three tiers differ in the field's shape.
 
     A committed development note beside these runs calls this field absent on the Haiku tier.
     It is not absent there; it is present and null. Counts leave no room for that reading.
@@ -324,47 +349,106 @@ def test_the_thinking_detail_field_is_recorded_as_measured(tier, condition):
         assert batch["thinking_tokens_total"] == expected["total"]
 
 
-def test_the_one_refused_response_is_recorded_whole_and_is_not_an_abstention():
-    """The Sonnet no-context refusal, pinned with the consequence it carries.
+@pytest.mark.parametrize("tier,condition", CASES)
+def test_the_recorded_cost_re_derives_from_the_tiers_true_rates(tier, condition):
+    """Exact decimal, not float, so the check cannot pass or fail on representation.
 
-    The model returned no content on this row. `classify_response` compares a whole response
-    against the marker, so an empty response classifies as answered, which is a substantive
-    misclassification of a row that produced no answer at all. It is pinned here rather than
-    repaired: the predicate is committed, the grading of record happens at its own commit, and
-    a silent fix would change a sealed predicate on the strength of one row. What this test
-    guarantees is that the row cannot be lost and the misclassification cannot be inherited
-    unnoticed.
+    The recorded figures are rounded to six places from a float product, so the assertion is
+    that the recorded value is the six-place rounding of the exact decimal product.
     """
-    records = {r["custom_id"]: r for r in _records("sonnet5", "no_context")}
-    record = records[REFUSAL["custom_id"]]
+    rate_in, rate_out = TRUE_RATES[tier]
+    batch = _batch_record(tier, condition)
+    usage, cost = batch["usage_totals"], batch["cost_usd"]
+    for name, tokens, rate in (
+        ("input", usage["input_tokens"], rate_in),
+        ("output", usage["output_tokens"], rate_out),
+    ):
+        exact = Decimal(tokens) * Decimal(str(rate)) / Decimal(1_000_000)
+        assert abs(Decimal(str(cost[name])) - exact) <= Decimal("0.0000005"), name
+    assert abs(Decimal(str(cost["total"])) - Decimal(str(cost["input"]))
+               - Decimal(str(cost["output"]))) <= Decimal("0.000001")
+
+
+@pytest.mark.parametrize("tier,condition", CASES)
+def test_the_rates_string_names_the_tiers_true_rates(tier, condition):
+    """The prose beside the numbers, checked against the numbers' own source.
+
+    Two committed records name another tier's rates. They are listed rather than excused, and
+    correcting them removes their entry from the list.
+    """
+    rate_in, rate_out = TRUE_RATES[tier]
+    text = _batch_record(tier, condition)["cost_usd"]["rates"]
+    names_them = f"${rate_in:.2f} / MTok" in text and f"${rate_out:.2f} / MTok" in text
+    if (tier, condition) in RATES_STRING_KNOWN_WRONG:
+        assert not names_them, "this record was corrected; remove its RATES_STRING_KNOWN_WRONG entry"
+    else:
+        assert names_them, text
+
+
+@pytest.mark.parametrize("tier,condition", sorted(REFUSALS))
+def test_refusals_are_recorded_whole_and_are_not_abstentions(tier, condition):
+    """Every refused response, pinned with the consequence it carries.
+
+    `classify_response` compares a whole response against the marker, so an empty response
+    classifies as answered, which is a substantive misclassification of a row that produced no
+    answer at all. It is pinned rather than repaired: the predicate is committed, the grading of
+    record happens at its own commit, and a silent fix would change a sealed predicate on the
+    strength of these rows. What this guarantees is that they cannot be lost and the
+    misclassification cannot be inherited unnoticed.
+    """
+    expected = REFUSALS[(tier, condition)]
+    records = {r["custom_id"]: r for r in _records(tier, condition)}
+    custom_id = f"{QUERY_SET}__{condition}__{tier}__{expected['row']}"
+    record = records[custom_id]
     message = record["response"]["message"]
     assert record["result_type"] == "succeeded"
     assert message["stop_reason"] == "refusal"
     assert message["stop_details"]["type"] == "refusal"
-    assert message["stop_details"]["category"] == REFUSAL["category"]
-    assert len(message["content"]) == REFUSAL["content_blocks"]
-    assert message["usage"]["output_tokens"] == REFUSAL["output_tokens"]
+    assert message["stop_details"]["category"] == expected["category"]
+    assert message["content"] == []
+    assert message["usage"]["output_tokens"] == 0
     assert _answer_text(record) == ""
     assert classify_response(_answer_text(record)) == ANSWERED
 
-    others = [r for cid, r in records.items() if cid != REFUSAL["custom_id"]]
+    others = [cid for cid in records if cid != custom_id]
     assert len(others) == EXPECTED_ROWS - 1
-    assert all(r["response"]["message"]["stop_reason"] == "end_turn" for r in others)
-    assert _batch_record("sonnet5", "no_context")["rows_by_stop_reason"]["refusal"] == ["test_37"]
+    assert all(records[c]["response"]["message"]["stop_reason"] == "end_turn" for c in others)
+    assert _batch_record(tier, condition)["rows_by_stop_reason"]["refusal"] == [expected["row"]]
 
 
-def test_the_same_row_was_answered_on_every_other_committed_run():
-    """The refusal is a property of that row without context, not of the row.
+def test_the_refused_row_was_answered_wherever_it_was_not_refused():
+    """The refusal is a property of that question asked with no context, not of the question.
 
-    Its raw-condition counterpart on the same tier and its no-context counterpart on the other
-    tier both returned an end_turn answer, so the refusal cannot be attributed to the query
-    alone. Recorded because the honest reading of one refusal depends on what the same question
+    The same row answered with an end_turn on both first passes that carry it and on the one
+    no-context run that did not refuse it, so the refusal cannot be attributed to the query text
+    alone. Recorded because the honest reading of a refusal depends on what the same question
     did elsewhere.
     """
-    row = "test_37"
+    answered_somewhere = 0
     for tier, condition in CASES:
-        if (tier, condition) == ("sonnet5", "no_context"):
+        if (tier, condition) in REFUSALS:
             continue
-        record = next(r for r in _records(tier, condition) if r["custom_id"].endswith(f"__{row}"))
+        record = next(
+            r for r in _records(tier, condition) if r["custom_id"].endswith(f"__{REFUSED_ROW}")
+        )
         assert record["response"]["message"]["stop_reason"] == "end_turn", (tier, condition)
         assert _answer_text(record) != "", (tier, condition)
+        answered_somewhere += 1
+    assert answered_somewhere == len(CASES) - len(REFUSALS)
+
+
+def test_a_refusal_does_not_explain_an_input_token_divergence():
+    """Two refusals on the same row, one with an excess and one without.
+
+    The Sonnet refusal carried 47 tokens of excess input and the Opus refusal carried none, so
+    the excess is not a consequence of refusing. Pinned because a single observation of the two
+    together would otherwise read as a mechanism.
+    """
+    excesses = {}
+    for (tier, condition), spec in REFUSALS.items():
+        row = spec["row"]
+        excesses[tier] = EXPECTED_DIVERGENCE[(tier, condition)].get(row, 0)
+        assert excesses[tier] == spec["divergence"]
+    assert len(excesses) == 2
+    assert len(set(excesses.values())) == 2, "both refusals now agree; the contrast is gone"
+    assert min(excesses.values()) == 0

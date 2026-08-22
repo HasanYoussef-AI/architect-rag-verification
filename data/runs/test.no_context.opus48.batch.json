@@ -1,0 +1,404 @@
+{
+ "description": "Batch record for the sealed Opus no-context run: the batch's own identifiers, timings and per-status counts, and the measured token totals read from the committed result records beside it. The answers themselves are in test.no_context.opus48.jsonl, one JSON object per line keyed and sorted by custom_id, each carrying the response whole and the sha256 of the request body that produced it. This file carries no figure that is not derivable from that one plus the API's own batch object, except the pre-submission count_tokens total, which is a measurement this run took and records.",
+ "produced_by": "src.generate.batch.submit and src.generate.batch.collect",
+ "query_set": "test",
+ "condition": "no_context",
+ "tier": "opus48",
+ "model_requested": "claude-opus-4-8",
+ "model_reported": [
+  "claude-opus-4-8"
+ ],
+ "batch_id": "msgbatch_0194o8qWiwtbVt3RaxY1hpvc",
+ "transport": "Batch API",
+ "submitted_utc": "2026-08-22T23:41:55Z",
+ "created_at_utc": "2026-08-22T23:41:56Z",
+ "ended_at_utc": "2026-08-22T23:42:59Z",
+ "collected_utc": "2026-08-22T23:47:47Z",
+ "processing_status": "ended",
+ "request_count": 50,
+ "request_counts": {
+  "canceled": 0,
+  "errored": 0,
+  "expired": 0,
+  "processing": 0,
+  "succeeded": 50
+ },
+ "decoding": {
+  "temperature": null,
+  "thinking": {
+   "type": "adaptive"
+  },
+  "effort": "low",
+  "max_tokens": 16000,
+  "source": "data/runs/run_manifest.json, tiers.haiku45, as committed at 50bd34a"
+ },
+ "request_body_digest": {
+  "set": "728d38b9ac7acff26c6b74fea68a5e34e767df9130b09a868a5d0d2ef54f72db",
+  "content": "bd3483e8f19109002f79b212838f30ddbb50a3e9ecde1a98f3b5fbb08c64d66a",
+  "per_body_field": "body_sha256",
+  "expression": "src.generate.assemble.request_body_digest, sha256 over json.dumps(body, ensure_ascii=False, sort_keys=True, separators=(\",\",\":\"))"
+ },
+ "count_tokens_total": {
+  "measured": 6468,
+  "committed_figure": 6468,
+  "source_of_committed_figure": "eval/generation_predictions.md section 11.1",
+  "measured_utc": "2026-08-22T23:39:21Z"
+ },
+ "usage_totals": {
+  "input_tokens": 6468,
+  "output_tokens": 4317,
+  "note": "Summed from the usage block of every record in test.no_context.opus48.jsonl. The input total is 6468 against the pre-submission count_tokens measurement of 6468 over the same bodies, a difference of 0."
+ },
+ "usage_per_row": {
+  "test_01": {
+   "input_tokens": 126,
+   "output_tokens": 279,
+   "thinking_tokens": 164
+  },
+  "test_02": {
+   "input_tokens": 129,
+   "output_tokens": 262,
+   "thinking_tokens": 107
+  },
+  "test_03": {
+   "input_tokens": 122,
+   "output_tokens": 273,
+   "thinking_tokens": 30
+  },
+  "test_04": {
+   "input_tokens": 115,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_05": {
+   "input_tokens": 115,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_06": {
+   "input_tokens": 110,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_07": {
+   "input_tokens": 110,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_08": {
+   "input_tokens": 122,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_09": {
+   "input_tokens": 127,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_10": {
+   "input_tokens": 149,
+   "output_tokens": 415,
+   "thinking_tokens": 400
+  },
+  "test_11": {
+   "input_tokens": 175,
+   "output_tokens": 338,
+   "thinking_tokens": 262
+  },
+  "test_12": {
+   "input_tokens": 156,
+   "output_tokens": 301,
+   "thinking_tokens": 284
+  },
+  "test_13": {
+   "input_tokens": 135,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_14": {
+   "input_tokens": 121,
+   "output_tokens": 156,
+   "thinking_tokens": 141
+  },
+  "test_15": {
+   "input_tokens": 135,
+   "output_tokens": 226,
+   "thinking_tokens": 163
+  },
+  "test_16": {
+   "input_tokens": 147,
+   "output_tokens": 125,
+   "thinking_tokens": 56
+  },
+  "test_17": {
+   "input_tokens": 143,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_18": {
+   "input_tokens": 136,
+   "output_tokens": 96,
+   "thinking_tokens": 46
+  },
+  "test_19": {
+   "input_tokens": 136,
+   "output_tokens": 88,
+   "thinking_tokens": 56
+  },
+  "test_20": {
+   "input_tokens": 154,
+   "output_tokens": 235,
+   "thinking_tokens": 158
+  },
+  "test_21": {
+   "input_tokens": 113,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_22": {
+   "input_tokens": 110,
+   "output_tokens": 119,
+   "thinking_tokens": 47
+  },
+  "test_23": {
+   "input_tokens": 121,
+   "output_tokens": 66,
+   "thinking_tokens": 51
+  },
+  "test_24": {
+   "input_tokens": 113,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_25": {
+   "input_tokens": 119,
+   "output_tokens": 186,
+   "thinking_tokens": 104
+  },
+  "test_26": {
+   "input_tokens": 119,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_27": {
+   "input_tokens": 128,
+   "output_tokens": 106,
+   "thinking_tokens": 52
+  },
+  "test_28": {
+   "input_tokens": 116,
+   "output_tokens": 118,
+   "thinking_tokens": 60
+  },
+  "test_29": {
+   "input_tokens": 119,
+   "output_tokens": 139,
+   "thinking_tokens": 74
+  },
+  "test_30": {
+   "input_tokens": 113,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_31": {
+   "input_tokens": 108,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_32": {
+   "input_tokens": 128,
+   "output_tokens": 117,
+   "thinking_tokens": 54
+  },
+  "test_33": {
+   "input_tokens": 122,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_34": {
+   "input_tokens": 131,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_35": {
+   "input_tokens": 122,
+   "output_tokens": 237,
+   "thinking_tokens": 152
+  },
+  "test_36": {
+   "input_tokens": 114,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_37": {
+   "input_tokens": 123,
+   "output_tokens": 0,
+   "thinking_tokens": 0
+  },
+  "test_38": {
+   "input_tokens": 126,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_39": {
+   "input_tokens": 174,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_40": {
+   "input_tokens": 203,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_41": {
+   "input_tokens": 150,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_42": {
+   "input_tokens": 153,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_43": {
+   "input_tokens": 123,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_44": {
+   "input_tokens": 123,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_45": {
+   "input_tokens": 121,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_46": {
+   "input_tokens": 121,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_47": {
+   "input_tokens": 123,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_48": {
+   "input_tokens": 123,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_49": {
+   "input_tokens": 123,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_50": {
+   "input_tokens": 123,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  }
+ },
+ "output_tokens_details": {
+  "records_carrying_the_key": 50,
+  "records_whose_value_is_not_null": 50,
+  "of": 50
+ },
+ "rows_with_thinking_above_zero": {
+  "test_01": 164,
+  "test_02": 107,
+  "test_03": 30,
+  "test_10": 400,
+  "test_11": 262,
+  "test_12": 284,
+  "test_14": 141,
+  "test_15": 163,
+  "test_16": 56,
+  "test_18": 46,
+  "test_19": 56,
+  "test_20": 158,
+  "test_22": 47,
+  "test_23": 51,
+  "test_25": 104,
+  "test_27": 52,
+  "test_28": 60,
+  "test_29": 74,
+  "test_32": 54,
+  "test_35": 152
+ },
+ "thinking_tokens_total": 2461,
+ "rows_by_stop_reason": {
+  "end_turn": [
+   "test_01",
+   "test_02",
+   "test_03",
+   "test_04",
+   "test_05",
+   "test_06",
+   "test_07",
+   "test_08",
+   "test_09",
+   "test_10",
+   "test_11",
+   "test_12",
+   "test_13",
+   "test_14",
+   "test_15",
+   "test_16",
+   "test_17",
+   "test_18",
+   "test_19",
+   "test_20",
+   "test_21",
+   "test_22",
+   "test_23",
+   "test_24",
+   "test_25",
+   "test_26",
+   "test_27",
+   "test_28",
+   "test_29",
+   "test_30",
+   "test_31",
+   "test_32",
+   "test_33",
+   "test_34",
+   "test_35",
+   "test_36",
+   "test_38",
+   "test_39",
+   "test_40",
+   "test_41",
+   "test_42",
+   "test_43",
+   "test_44",
+   "test_45",
+   "test_46",
+   "test_47",
+   "test_48",
+   "test_49",
+   "test_50"
+  ],
+  "refusal": [
+   "test_37"
+  ]
+ },
+ "input_token_divergence": {
+  "rows": {},
+  "total": 0,
+  "note": "usage.input_tokens against the pre-submission count_tokens measurement over the same body, per row. The token-counting documentation permits counts that include tokens added automatically for system optimizations and are not billed, which is a divergence in one direction only."
+ },
+ "cost_usd": {
+  "input": 0.01617,
+  "output": 0.053963,
+  "total": 0.070133,
+  "rates": "batch input $2.50 / MTok, batch output $12.50 / MTok"
+ },
+ "max_tokens_stops": [],
+ "stop_reasons": [
+  "end_turn",
+  "refusal"
+ ]
+}
