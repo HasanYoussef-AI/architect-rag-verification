@@ -303,9 +303,19 @@ sentence.
 
 ### 5.1 The property
 
-A CLAIM UNIT IS GROUNDED WHEN IT ALIGNS TO A SPAN OF THE EXACT COMMITTED CONTEXT OF THE
-REQUEST THAT PRODUCED THE ANSWER, BY NORMALISED-TOKEN OVERLAP AT OR ABOVE A FIXED THRESHOLD.
-Otherwise it is unsupported.
+A CLAIM UNIT IS GROUNDED WHEN, FOR SOME CHUNK OF THE COMMITTED CONTEXT OF THE REQUEST THAT
+PRODUCED THE ANSWER, THAT CHUNK'S RENDERED BLOCK CONTAINS EVERY REFERENCE SURFACE THE UNIT
+CARRIES UNDER THE COMMITTED GRAMMAR, AND SOME n-TOKEN WINDOW OF THAT BLOCK SCORES AT OR ABOVE
+THE THRESHOLD BY NORMALISED-TOKEN OVERLAP. Otherwise it is unsupported. A unit carrying no
+reference surface is graded by the overlap term alone.
+
+SUPERSEDED. This sentence read "A CLAIM UNIT IS GROUNDED WHEN IT ALIGNS TO A SPAN OF THE EXACT
+COMMITTED CONTEXT OF THE REQUEST THAT PRODUCED THE ANSWER, BY NORMALISED-TOKEN OVERLAP AT OR
+ABOVE A FIXED THRESHOLD. Otherwise it is unsupported." The overlap term is unchanged and the
+threshold is unchanged. What is added is the reference condition below, and what is corrected is
+the surface both terms read. No number in this study changes, because no answer exists: the
+correction lands before any generation and the thresholds stay candidates, frozen at the freeze
+commit against the development first pass.
 
 Every term in that sentence is fixed:
 
@@ -315,6 +325,25 @@ Every term in that sentence is fixed:
   fetched chunks, which is a larger set. A layer answer is never graded against the
   first-pass ten, and a raw answer is never graded against the augmented set. Grading an
   answer against context its model never saw would measure the grader, not the model.
+
+  AND THE UNIT OF THAT CONTEXT IS THE RENDERED BLOCK, NOT THE CHUNK TEXT. What the request
+  carries per chunk is the string `src/generate/prompts.py` renders at its line 133:
+
+      return "\n\n".join(
+          f"[{c.chunk_id}] {c.unit_label}\n{c.text}" for c in chunks
+      )
+
+  so the model receives, per chunk and in this order, an open bracket, the `chunk_id`, a close
+  bracket, a space, the `unit_label`, a newline, then the `text`. THAT WHOLE STRING IS THE BLOCK,
+  and it is what both terms of the predicate read, the overlap term and the reference term alike.
+  Each chunk's block is one token sequence; blocks are never concatenated with each other.
+
+  THE REASON IS THE SENTENCE ABOVE, APPLIED. Grading against a narrower surface than the model
+  saw measures the grader. It is not a theoretical gap: measured over the committed chunk store,
+  390 of 1294 chunks carry a reference surface in `unit_label` and not in `text`, which is 30.1
+  percent of the corpus, and on the near-miss stratum it is eight of eight gold chunks. Reading
+  `text` alone would mean the identifier of every Playbook block is invisible to the grader while
+  it sat in front of the model.
 
   NORMALISATION is `src.ingest.normalize.normalise_for_comparison`, applied identically to
   both sides. It folds curly quotes and the typographic apostrophe to ASCII, en dash and em
@@ -329,20 +358,90 @@ Every term in that sentence is fixed:
   `GV-1.1-001` is one token and not four. A grounding check that shredded identifiers would
   score a claim naming the wrong clause as well as one naming the right clause.
 
+  ADDED, AND WHAT THE SENTENCE ABOVE DOES AND DOES NOT BUY. Keeping the identifier whole makes a
+  wrong one cost a whole token rather than part of one. It does not, on the overlap term alone,
+  make a wrong one fail. At the 0.75 threshold a unit of n tokens differing from its best window
+  in k tokens is grounded exactly when (n - k) / n is at or above 0.75, so when k is at or below
+  n / 4, and a wrong identifier is one token. Measured: the four-token unit
+  "GOVERN 1.4 requires documentation" against a block reading "GOVERN 1.3 requires documentation
+  of the process" scores exactly 0.75 and passes the overlap term. Only a unit below the
+  short-unit length, held at 1.0, is caught by the identifier alone. THE REFERENCE CONDITION
+  BELOW IS WHAT CATCHES IT AT LENGTH; the tokeniser sentence above is the necessary condition for
+  that condition to be able to see the identifier at all, and is not by itself sufficient.
+
   ALIGNMENT is windowed containment. For a claim unit of n tokens, the score is the maximum
   over every n-token window of the normalised context, sliding by one token, of the size of
   the multiset intersection of the window and the unit divided by n. Windowed rather than
   whole-context, because whole-context bag overlap scores a claim assembled from words
   scattered across ten unrelated chunks as grounded.
 
-  THE WINDOW SLIDES WITHIN ONE CHUNK AND NEVER ACROSS A CHUNK BOUNDARY. A span of the context
-  is a span of one chunk. Each retrieved chunk is tokenised separately and the maximum is taken
-  over the windows of each chunk, never over a concatenation of them. A window straddling two
-  chunks would score a claim assembled from the end of one chunk and the start of the next as
+  THE WINDOW SLIDES WITHIN ONE BLOCK AND NEVER ACROSS A BLOCK BOUNDARY. A span of the context
+  is a span of one chunk's rendered block. Each block is tokenised separately and the maximum is
+  taken over the windows of each block, never over a concatenation of them. A window straddling
+  two blocks would score a claim assembled from the end of one and the start of the next as
   grounded, which is the whole-context defect the windowed form exists to remove, reintroduced
   at a smaller scale. It follows that a claim genuinely supported only by two chunks read
   together is not grounded under this predicate, and that is the intended direction: it costs
   the study a true positive rather than admitting a false one.
+
+  SUPERSEDED. This paragraph read "THE WINDOW SLIDES WITHIN ONE CHUNK AND NEVER ACROSS A CHUNK
+  BOUNDARY. A span of the context is a span of one chunk. Each retrieved chunk is tokenised
+  separately", and the rest unchanged. Only the unit is corrected, from the chunk's text to the
+  chunk's rendered block, per the correction above. The invariant is the same one.
+
+  THE REFERENCE CONDITION, AND IT IS SCOPED TO THE BLOCK AND NOT TO THE WINDOW. A unit's
+  reference surfaces are what the four committed patterns in `src/complete/references.py` extract
+  from it, compared by their captured groups. A unit carrying at least one surface is grounded
+  only against a chunk whose rendered block contains every one of them; a unit carrying none is
+  graded by the overlap term alone. The two conditions fold into one maximum: a block failing the
+  reference test is not a candidate, so the question of which window is the aligning one never
+  arises.
+
+  EXTRACTION IS SYMMETRIC BY CONSTRUCTION. The same compiled patterns and the same case handling
+  apply on the unit side and on the block side. An asymmetry is barred rather than merely avoided:
+  it would let one side see a surface the other cannot, and the condition would then turn on which
+  side a surface happened to be legible from.
+
+  AND THE STRING THE PATTERNS RUN ON IS THE RAW ONE ON BOTH SIDES: the rendered block exactly as
+  the request carries it, and the claim unit exactly as the segmenter emitted it. Neither is
+  normalised and neither is lowercased before extraction. That is what case sensitivity rests on,
+  so it is stated as a fact about the code rather than left to be inferred. Read from
+  `src/ingest/normalize.py`, `normalise_for_comparison` folds typographic characters to ASCII and
+  collapses whitespace and DOES NOT fold case. Read from `src/retrieve/tokenize.py`,
+  `primary_tokens` applies `normalise_for_comparison` and then `.lower()`, so it is the tokeniser
+  and not the normaliser that folds case. The overlap term runs on `primary_tokens` output and is
+  therefore case-insensitive; the reference term never reaches that function and is therefore case
+  sensitive. The two terms differ in case handling because they read different strings, and each
+  is symmetric across the unit side and the block side, which is what this paragraph requires.
+
+  THE CASE HANDLING IS THE COMMITTED PATTERNS UNCHANGED, WHICH IS TO SAY CASE-SENSITIVE. The four
+  objects in `src/complete/references.py` are used as compiled, with no IGNORECASE flag, on both
+  sides. The reason is one of the alternation members: `MAP` lowercased is an ordinary English
+  word, and a case-insensitive R_SUB would extract a reference surface from a sentence reading
+  "the map 3.3 revision", requiring a block to contain a provision the unit never named and
+  scoring a correct sentence unsupported. Against that, the cost of case sensitivity is silence on
+  an identifier a model writes in lower case, which falls in the safe direction: the unit is then
+  graded by the overlap term alone.
+
+  This differs deliberately from `src/score/adversarial.py`, which recompiles the same four
+  patterns with IGNORECASE because section 7.3 prescribes case folding before matching. Two
+  readings of the same grammar for two different jobs is a difference worth naming: the
+  adversarial verdict asks whether a sentence denies existence, where a lowercase identifier is
+  still a denial, and the grounding condition asks whether a unit and a block name the same
+  provision, where a false surface manufactured from prose is the costlier error.
+
+  WHY THE BLOCK AND NOT THE WINDOW, WITH THE MEASUREMENT THAT DECIDED IT. Window scope fails
+  correct claims by construction on long chunks. Measured over the 148 EU AI Act article chunks
+  whose text carries an Article surface, the median chunk is 307 tokens and the median position of
+  the first Article token is 0. A sentence-sized window aligning to material in the middle of such
+  a chunk cannot contain token 0, so a correct claim about a later paragraph that names its own
+  article would be unsupported. Block scope does not have that behaviour.
+
+  THE RESIDUAL BLOCK SCOPE ADMITS, DISCLOSED WITH ITS NUMBER RATHER THAN ENGINEERED AROUND. On 35
+  of those 148 chunks the first Article surface in the text is a reference to a DIFFERENT article,
+  so a block can satisfy the reference test for a surface it merely cites rather than one it is.
+  That is 35 chunks out of 1294 in the corpus. The narrower window-scoped form would remove this
+  residual and would cost the correct claims measured above, which is the worse trade.
 
 ### 5.2 Candidate thresholds
 
@@ -400,7 +499,7 @@ state with generation, per Rule 9.
 
 IT IS BUILT AT ONE COMMIT AND FROZEN AT ANOTHER, and the two are different acts.
 
-  THE MODULE COMMIT builds it. The three modules of section 13 commit there, carrying the
+  THE MODULE COMMIT builds it. The four modules of section 13 commit there, carrying the
   section 5.2 candidates as constants. It precedes the development first-pass run, so the grader
   exists before any generation it will judge exists.
 
@@ -413,6 +512,17 @@ answers in all. `PREREGISTRATION.md` states this as being frozen against "the tw
 generations before the sealed fifty run, so it cannot be shaped by the real outputs", and the
 per-tier multiplicity is stated here because thirty-six answers and twelve are different
 denominators.
+
+THE REFERENCE CONDITION'S DEVELOPMENT SAMPLE IS THE SURFACE-CARRYING DEVELOPMENT UNITS, AND THE
+FREEZE COMMIT REPORTS THE COUNT IT TURNED. The condition is silent on any unit carrying no
+reference surface, so its sample is not the thirty-six development answers but whichever of their
+units name one. That population cannot be known before the answers exist. What is known now
+bounds it from the query side: 4 of the 12 development queries carry a surface under the committed
+grammar, all of them on the identifier and near-miss rows, so a unit restating the query's own
+identifier can arise on those 4 rows and elsewhere only where a model volunteers a surface
+unprompted. The freeze commit reports the count of units the condition turned from grounded to
+unsupported, and reports it whether it is zero or not; a sample of zero is a disclosed condition
+on the instrument and not a reason to widen anything.
 
 The development SECOND-CALL answers are graded after the freeze, and only to show the path
 executes end to end. No threshold moves on what they show. If they reveal a defect in the
@@ -429,16 +539,62 @@ for citations. `docs/METHODOLOGY.md` names, as part of generation faithfulness, 
 that failure has no surface here. It is not that the layer catches it or fails to catch it:
 it cannot occur, and no pre-registered figure scores it.
 
-WHOLE-CONTEXT ALIGNMENT CANNOT SEE MISATTRIBUTION. The predicate asks whether a claim aligns
-to SOME span of the context, not to the RIGHT span. A claim that is supported by one chunk
-while the answer implies it comes from another scores as grounded. An answer that attributes a
-real EU AI Act obligation to a NIST subcategory, with both in the context, is grounded under
-this predicate and wrong to a reader.
+MISATTRIBUTION IS SEEN ONLY WHERE THE UNIT NAMES A SURFACE THE COMMITTED GRAMMAR RECOGNISES.
+The reference condition of section 5.1 closes part of this blindness and the rest of it stays
+open, so the boundary is stated with its numbers rather than left as a word.
 
-THE CONSEQUENCE, STATED PLAINLY: THIS STUDY MEASURES A SUBSET OF THE SURFACE ITS OWN
-METHODOLOGY DESCRIBES. The unsupported-claim rate is a rate over presence in context, not over
-correct attribution. No other route in the design covers the gap, and no figure in this file
-or in the README may be read as covering it.
+WHAT IS NOW SEEN. A unit naming a reference surface is grounded only against a block containing
+that same surface, so a claim that restates the queried identifier and aligns to a sibling block
+carrying a different one is unsupported. On the near-miss stratum, where all eight gold blocks
+carry their subcategory identifier in the rendered label and never in the text, this is the whole
+point of the condition and it is why the grader reads the rendered block.
+
+WHAT REMAINS UNSEEN, EACH CASE SILENT AND NEVER WRONG-DIRECTIONAL. Every gap below makes the
+condition abstain and fall back to the overlap term. NONE OF THEM CAN TURN AN UNSUPPORTED UNIT
+INTO A GROUNDED ONE; they can only fail to catch a misattribution. That direction is the whole of
+what makes the gaps tolerable, and it is stated first because it is the property that matters.
+
+  NO SURFACE AT ALL. A unit that misattributes without naming a provision is graded by overlap
+  alone. "The Playbook lists A, B and C", answered from the wrong block, is grounded. This is
+  PREREGISTRATION.md's own faithful-but-wrong case and is intended.
+
+  RECITALS, SECTIONS AND CHAPTERS. The grammar has no pattern for them. Measured: "Recital 27",
+  "Section 3.2" and "Chapter III" each extract no surface. The corpus holds 193 recital chunks in
+  the EU AI Act, and every claim naming one is outside the condition.
+
+  THE SECOND MEMBER OF A COORDINATED CITATION, AND THE PARTIAL-CAPTURE ASYMMETRY. Measured,
+  "Articles 9 and 10" extracts only 9 and "Annexes IV and V" extracts only IV. This gap is NOT
+  simply silent, and the difference is worth stating: a unit citing both is tested against the
+  first alone, so a block holding Article 9 and content drawn from Article 10 satisfies the
+  condition. Partial capture under-enforces where total absence merely abstains.
+
+  THE BLOCK-SCOPE RESIDUAL. On 35 of the 148 EU AI Act article chunks whose text carries an
+  Article surface, the first such surface names a DIFFERENT article, so a block can satisfy the
+  condition for a surface it cites rather than one it is.
+
+  THE SURFACE IS NOT TIED TO THE CLAIM. The condition requires the block to contain the unit's
+  surfaces. It does not require the aligning span to be the one the surface governs.
+
+AND ONE COST IN THE OTHER DIRECTION, WHICH IS NOT A BLINDNESS BUT A FALSE UNSUPPORTED. A unit
+naming two provisions in one sentence carries two surfaces, and no single block contains both, so
+it is unsupported by construction however correct it is. This falls hardest on the clean multi-hop
+stratum, whose queries span two units by construction and whose answers therefore have the most
+reason to name two things in one sentence.
+
+THE CONSEQUENCE, STATED PLAINLY AND UNCHANGED IN ITS FORCE: THIS STUDY MEASURES A SUBSET OF THE
+SURFACE ITS OWN METHODOLOGY DESCRIBES. The unsupported-claim rate is a rate over presence in
+context plus reference agreement, not over correct attribution. The subset is larger than it was
+before the condition and it is still a subset, and no figure in this file or in the README may be
+read as covering the rest.
+
+SUPERSEDED. This section carried one paragraph reading "WHOLE-CONTEXT ALIGNMENT CANNOT SEE
+MISATTRIBUTION. The predicate asks whether a claim aligns to SOME span of the context, not to the
+RIGHT span. A claim that is supported by one chunk while the answer implies it comes from another
+scores as grounded. An answer that attributes a real EU AI Act obligation to a NIST subcategory,
+with both in the context, is grounded under this predicate and wrong to a reader." That was true
+of the predicate as it then stood and is superseded by the boundary above, not deleted. The
+example it gives, an EU obligation attributed to a NIST subcategory, is now caught when the unit
+names either provision and remains uncaught when it names neither.
 
 ## 6. Reporting
 
@@ -784,6 +940,14 @@ test_18 and test_19.
       CONTRADICTED BY: any tier where layer exceeds raw, or a reduction that does not
       concentrate on those two rows.
 
+      A CONDITION ON BOTH P10 AND P11, FROM SECTION 5.1. An answer naming two provisions in one
+      sentence carries two reference surfaces, no single block contains both, and the unit is
+      therefore unsupported by construction however correct it is. This stratum's queries span two
+      units by construction, so its answers have the most reason to write such a sentence and it
+      falls hardest here. The predicted direction of P10 and P11 is unchanged: the effect raises
+      both the raw and the layer rate on this stratum and does not move the sign of the delta
+      between them.
+
  P12. Abstention is 0 raw and 0 layer on every tier, in all three regimes.
       CONTRADICTED BY: any abstention in either condition on any tier.
 
@@ -828,20 +992,45 @@ contradicted that committed measurement; the sentence is corrected here rather t
 
 ### 10.5 Near-miss, eight rows
 
- P17. RAW rate is within 0.05 of the single-hop raw rate on every tier, in all three regimes.
-      The reason is the separation the pre-registration states: an answer faithful to the
-      sibling block reads clean under a grounding predicate, because the sibling block IS in
-      the context. Near-miss failure is a retrieval and gold-discrimination property, not a
-      faithfulness one, and the unsupported-claim rate is close to blind to it.
-      CONTRADICTED BY: a gap above 0.05 on any tier, which would mean the predicate is seeing
-      something on this stratum it was not designed to see.
+ P17. RAW unsupported-claim rate over answered near-miss rows is at least 0.05 above the
+      single-hop raw rate on every tier, in all three regimes. Mechanism: a unit restating the
+      queried subcategory identifier aligns to a sibling block whose rendered label carries a
+      different identifier, and the reference condition scores it unsupported.
+      CONTRADICTED BY: a gap below 0.05 on any tier, which would mean answered rows do not
+      restate the identifier they were asked about.
+
+      SUPERSEDED, AND REVERSED IN DIRECTION. P17 read: "RAW rate is within 0.05 of the single-hop
+      raw rate on every tier, in all three regimes. The reason is the separation the
+      pre-registration states: an answer faithful to the sibling block reads clean under a
+      grounding predicate, because the sibling block IS in the context. Near-miss failure is a
+      retrieval and gold-discrimination property, not a faithfulness one, and the
+      unsupported-claim rate is close to blind to it. CONTRADICTED BY: a gap above 0.05 on any
+      tier, which would mean the predicate is seeing something on this stratum it was not designed
+      to see." That prediction was correct about the predicate as it then stood, whose blindness on
+      this stratum was the whole of its reasoning. The reference condition removes that blindness,
+      so the prediction reverses: what the old P17 named as the contradicting observation is what
+      the new one predicts. The reversal is recorded here rather than absorbed, because a
+      prediction that reverses when the instrument changes is evidence about the instrument.
 
  P18. RAW abstention. Claude Opus 4.8, adaptive at effort low, abstains on at least 3 of 8.
       Claude Haiku 4.5, no thinking, on at most 2 of 8.
       CONTRADICTED BY: Opus below 3, or Haiku above 2.
 
- P19. LAYER. Abstention is at most 1 of 8 on every tier and the rate is at or below raw.
-      CONTRADICTED BY: two or more abstentions on any tier, or a layer rate above raw.
+ P19. LAYER rate is at least 0.05 below raw on every tier over answered rows, and abstention is
+      at most 1 of 8. The reduction is read as the layer working only if it concentrates on units
+      carrying the queried surface, since the corrective pass recovers the target block on all
+      eight rows as `eval/test_layer_results.json` records; a reduction that does not concentrate
+      there is read as grader conformance, the model rewriting flagged sentences toward source
+      wording, and is reported as such.
+      CONTRADICTED BY: a reduction below 0.05 on any tier, two or more abstentions, or a reduction
+      that does not concentrate on surface-carrying units.
+
+      SUPERSEDED. P19 read: "LAYER. Abstention is at most 1 of 8 on every tier and the rate is at
+      or below raw. CONTRADICTED BY: two or more abstentions on any tier, or a layer rate above
+      raw." The abstention half is carried forward unchanged. The rate half is strengthened from
+      at or below raw to at least 0.05 below it, and the reading rule is added, both because the
+      reference condition gives the layer something to reduce on this stratum where before it had
+      almost nothing.
 
 ### 10.6 No-context, all 42 gold-bearing rows
 
@@ -1076,7 +1265,12 @@ repository has already paid for that one.
     src/complete/flagging.py   the operational flagging pass of section 5.3, the SECOND
                                implementation of the grounding predicate
 
-SUPERSEDED. This list read "Three modules are named above" and named the first three only.
+SUPERSEDED, IN FOUR PLACES AND NOT ONE. This list read "Three modules are named above" and named
+the first three only. Three further sentences carried the same wrong count and are corrected with
+it: section 5.4's "The three modules of section 13 commit there", this section's "All three
+modules commit BEFORE THE DEVELOPMENT FIRST-PASS RUN", and this section's "the falsifiable claim
+this file makes about the three modules". A count repeated in four places was wrong in four
+places, and correcting the list alone would have left three sentences contradicting it.
 `src/complete/flagging.py` was omitted. Section 5.3 requires the grounding rule to be implemented
 twice, one operational and one the grader of record, and requires that neither import the other;
 the operational one is a module and had to be named here with the rest. It sits under
@@ -1086,7 +1280,7 @@ count, not a decision: nothing about section 5.3 changed.
 
 THE ORDERING THAT BINDS THEM, IN TWO COMMITS.
 
-  THE MODULE COMMIT. All three modules commit BEFORE THE DEVELOPMENT FIRST-PASS RUN, carrying
+  THE MODULE COMMIT. All four modules commit BEFORE THE DEVELOPMENT FIRST-PASS RUN, carrying
   the section 5.2 thresholds as constants. The grader therefore predates every generation it
   will ever judge, including the development generations it is frozen against. A grader written
   after the answers it scores is a grader that could have been shaped by them, whatever its
@@ -1100,7 +1294,7 @@ THE ORDERING THAT BINDS THEM, IN TWO COMMITS.
 
 Nothing in `src/` grades an answer at this commit: the repository holds the retrieval scorer, the
 gold model and the layer's completeness surface, and no answer grader at all. The falsifiable
-claim this file makes about the three modules is that they implement the properties in sections
+claim this file makes about the four modules is that they implement the properties in sections
 4, 5 and 7 as those sections state them, and that where a shipped module and this file disagree
 the disagreement stops the scope and is resolved by finding which is wrong, never by editing this
 file to match the code.
