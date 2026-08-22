@@ -1,0 +1,1761 @@
+{
+ "description": "The development first-pass grading, the freeze commit's basis. The committed grader run over the three committed development first-pass answer files and the committed context of each request. Reproducibility level 1: no model, no key, no network, no clock. Produced by python -m src.score.run_dev_grading.",
+ "produced_by": "python -m src.score.run_dev_grading",
+ "written_to": "eval/dev_first_pass_grading.json",
+ "thresholds": {
+  "overlap_threshold": 0.75,
+  "short_unit_length": 4,
+  "frozen": "Frozen at this commit against the development first-pass generations. Neither moved. eval/generation_predictions.md section 5.2 allows at most one move, at this commit, on these generations alone, and only with its cause recorded."
+ },
+ "inputs": [
+  "data/runs/dev.raw.haiku45.jsonl",
+  "data/runs/dev.raw.sonnet5.jsonl",
+  "data/runs/dev.raw.opus48.jsonl",
+  "eval/dev_retrieval_results.json",
+  "data/chunks/*.chunks.jsonl"
+ ],
+ "pooled": {
+  "rows": 36,
+  "abstained": 6,
+  "marker_variant": 0,
+  "answered_rows": 30,
+  "answered_rows_with_zero_units": 0,
+  "claim_units": 148,
+  "ungrounded_units": 59,
+  "unsupported_claim_rate": 0.398649,
+  "short_units": 12,
+  "surface_carrying_units": 26,
+  "units_turned_by_the_reference_condition": 0,
+  "cross_implementation_disagreements": 0
+ },
+ "per_tier": {
+  "haiku45": {
+   "rows": 12,
+   "abstained": 2,
+   "marker_variant": 0,
+   "answered_rows": 10,
+   "answered_rows_with_zero_units": 0,
+   "claim_units": 79,
+   "ungrounded_units": 36,
+   "unsupported_claim_rate": 0.455696,
+   "short_units": 10,
+   "surface_carrying_units": 9,
+   "units_turned_by_the_reference_condition": 0,
+   "cross_implementation_disagreements": 0
+  },
+  "sonnet5": {
+   "rows": 12,
+   "abstained": 2,
+   "marker_variant": 0,
+   "answered_rows": 10,
+   "answered_rows_with_zero_units": 0,
+   "claim_units": 36,
+   "ungrounded_units": 12,
+   "unsupported_claim_rate": 0.333333,
+   "short_units": 1,
+   "surface_carrying_units": 8,
+   "units_turned_by_the_reference_condition": 0,
+   "cross_implementation_disagreements": 0
+  },
+  "opus48": {
+   "rows": 12,
+   "abstained": 2,
+   "marker_variant": 0,
+   "answered_rows": 10,
+   "answered_rows_with_zero_units": 0,
+   "claim_units": 33,
+   "ungrounded_units": 11,
+   "unsupported_claim_rate": 0.333333,
+   "short_units": 1,
+   "surface_carrying_units": 9,
+   "units_turned_by_the_reference_condition": 0,
+   "cross_implementation_disagreements": 0
+  }
+ },
+ "rows": {
+  "dev__raw__haiku45__dev_01": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "According to Article 10 of the EU AI Act, training, validation and testing data sets for high-risk AI systems must meet the following quality criteria:",
+     "n_tokens": 25,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.56,
+     "score": 0.56,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "**Relevance, representativeness, and accuracy**: Data sets shall be relevant, sufficiently representative, and to the best extent possible free of errors and complete in view of the intended purpose.",
+     "n_tokens": 28,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8928571428571429,
+     "score": 0.8928571428571429,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "**Statistical properties**: They shall have appropriate statistical properties, including characteristics regarding the persons or groups of persons for whom the system is intended to be used.",
+     "n_tokens": 26,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.6923076923076923,
+     "score": 0.6923076923076923,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "**Geographical and contextual specificity**: Data sets shall account for characteristics particular to the specific geographical, contextual, behavioural, or functional setting where the system will be used.",
+     "n_tokens": 26,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.5769230769230769,
+     "score": 0.5769230769230769,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "**Appropriate data governance and management practices** concerning:",
+     "n_tokens": 7,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8571428571428571,
+     "score": 0.8571428571428571,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Design choices",
+     "n_tokens": 2,
+     "threshold": 1.0,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Data collection processes and origin",
+     "n_tokens": 5,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8,
+     "score": 0.8,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Data preparation operations (annotation, labelling, cleaning, updating, enrichment, aggregation)",
+     "n_tokens": 9,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.6666666666666666,
+     "score": 0.6666666666666666,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Assumptions about what the data measures",
+     "n_tokens": 6,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.5,
+     "score": 0.5,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Assessment of data availability, quantity, and suitability",
+     "n_tokens": 7,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8571428571428571,
+     "score": 0.8571428571428571,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Examination for possible biases affecting health, safety, fundamental rights, or leading to discrimination",
+     "n_tokens": 13,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.46153846153846156,
+     "score": 0.46153846153846156,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Measures to detect, prevent, and mitigate identified biases",
+     "n_tokens": 8,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.875,
+     "score": 0.875,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Identification of data gaps and shortcomings",
+     "n_tokens": 6,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.6666666666666666,
+     "score": 0.6666666666666666,
+     "grounded": false,
+     "flagger_supported": false
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__haiku45__dev_02": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "According to the NIST generative AI profile, the suggested exercises to identify anomalous or unforeseen failure modes include:",
+     "n_tokens": 18,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.4444444444444444,
+     "score": 0.4444444444444444,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "**Adversarial role-playing exercises**",
+     "n_tokens": 3,
+     "threshold": 1.0,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "**GAI red-teaming**",
+     "n_tokens": 2,
+     "threshold": 1.0,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "**Chaos testing**",
+     "n_tokens": 2,
+     "threshold": 1.0,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "These exercises are designed to test the system under adversarial or stress conditions and measure system response to identify failure modes.",
+     "n_tokens": 21,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7142857142857143,
+     "score": 0.7142857142857143,
+     "grounded": false,
+     "flagger_supported": false
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__haiku45__dev_03": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "According to the provided context, the EU AI Act treats AI systems used in migration, asylum and border control management as especially sensitive because:",
+     "n_tokens": 24,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.5,
+     "score": 0.5,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "**Vulnerable populations**: These systems affect persons who are often in particularly vulnerable positions and who are dependent on the outcome of actions by competent public authorities.",
+     "n_tokens": 26,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7692307692307693,
+     "score": 0.7692307692307693,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "**Fundamental rights at stake**: The accuracy, non-discriminatory nature, and transparency of these AI systems are particularly important to guarantee respect for fundamental rights, including:",
+     "n_tokens": 24,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.75,
+     "score": 0.75,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Rights to free movement",
+     "n_tokens": 4,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Non-discrimination",
+     "n_tokens": 1,
+     "threshold": 1.0,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Protection of private life and personal data",
+     "n_tokens": 7,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "International protection",
+     "n_tokens": 2,
+     "threshold": 1.0,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Good administration",
+     "n_tokens": 2,
+     "threshold": 1.0,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "**International obligations**: The systems must not be used to circumvent international obligations under the UN Convention relating to the Status of Refugees, infringe on the principle of non-refoulement, or deny safe and effective legal avenues into the Union, including the right to international protection.",
+     "n_tokens": 44,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.6590909090909091,
+     "score": 0.6590909090909091,
+     "grounded": false,
+     "flagger_supported": false
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__haiku45__dev_04": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "According to NIST, the two primary information security risks that GAI-based systems present are:",
+     "n_tokens": 14,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.5714285714285714,
+     "score": 0.5714285714285714,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "**GAI could potentially discover or enable new cybersecurity risks** by lowering the barriers for or easing automated exercise of offensive capabilities (such as hacking, malware, and phishing).",
+     "n_tokens": 27,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7777777777777778,
+     "score": 0.7777777777777778,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "**GAI itself is vulnerable to attacks** like prompt injection or data poisoning, which expands the available attack surface.",
+     "n_tokens": 18,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.9444444444444444,
+     "score": 0.9444444444444444,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__haiku45__dev_05": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "Based on the provided context:",
+     "n_tokens": 5,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.2,
+     "score": 0.2,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "**Contingency Processes for High-Risk Third-Party AI System Failures:**",
+     "n_tokens": 8,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.5,
+     "score": 0.5,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "GOVERN 6.2 requires that contingency processes be in place to handle failures or incidents in third-party data or AI systems deemed to be high-risk.",
+     "n_tokens": 24,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.875,
+     "score": 0.875,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "The suggested actions include:",
+     "n_tokens": 4,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.5,
+     "score": 0.5,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Establish policies for handling third-party system failures, including consideration of redundancy mechanisms for vital third-party AI systems",
+     "n_tokens": 17,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8823529411764706,
+     "score": 0.8823529411764706,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Verify that incident response plans address third-party AI systems",
+     "n_tokens": 9,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "**Documentation of Value-Chain Risks:**",
+     "n_tokens": 4,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.25,
+     "score": 0.25,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "The suggested action **GV-6.2-001** documents GAI risks associated with the system value chain to identify over-reliance on third-party data and to identify fallbacks.",
+     "n_tokens": 23,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.782608695652174,
+     "score": 0.782608695652174,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__haiku45__dev_06": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "# AI RMF Evaluation of TEVV Metrics and Fairness Assessments",
+     "n_tokens": 9,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.4444444444444444,
+     "score": 0.4444444444444444,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "## Evaluating TEVV Metrics Effectiveness",
+     "n_tokens": 4,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.5,
+     "score": 0.5,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "According to MEASURE 2.13, the AI RMF evaluates effectiveness by ensuring that \"the employed TEVV metrics and processes in the MEASURE function are evaluated and documented.\"",
+     "n_tokens": 26,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.34615384615384615,
+     "score": 0.34615384615384615,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Suggested actions include:",
+     "n_tokens": 3,
+     "threshold": 1.0,
+     "n_surfaces": 0,
+     "overlap_max": 0.6666666666666666,
+     "score": 0.6666666666666666,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Reviewing selected system metrics and associated TEVV processes to determine if they sustain system improvements and identify/remove errors",
+     "n_tokens": 19,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7368421052631579,
+     "score": 0.7368421052631579,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Regularly evaluating system metrics for utility, considering descriptive approaches over overly complex methods",
+     "n_tokens": 13,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.6153846153846154,
+     "score": 0.6153846153846154,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Reviewing metrics for acceptability within end users and impacted communities",
+     "n_tokens": 10,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7,
+     "score": 0.7,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Assessing effectiveness of metrics for identifying and measuring risks",
+     "n_tokens": 9,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8888888888888888,
+     "score": 0.8888888888888888,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "## Fairness Assessment Steps",
+     "n_tokens": 3,
+     "threshold": 1.0,
+     "n_surfaces": 0,
+     "overlap_max": 0.3333333333333333,
+     "score": 0.3333333333333333,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "MEASURE 2.11 suggests conducting fairness assessments through these steps:",
+     "n_tokens": 9,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.4444444444444444,
+     "score": 0.4444444444444444,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "**Identify harms** (allocational, representational, quality of service, stereotyping, erasure)",
+     "n_tokens": 9,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8888888888888888,
+     "score": 0.8888888888888888,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "**Identify affected groups** across, within, and intersecting groups",
+     "n_tokens": 8,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.75,
+     "score": 0.75,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "**Quantify harms** using general fairness metrics (demographic parity, equalized odds, equal opportunity) and custom, context-specific metrics developed with affected communities",
+     "n_tokens": 20,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7,
+     "score": 0.7,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "**Analyze quantified harms** for contextually significant differences",
+     "n_tokens": 7,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "**Refine identification** of within-group and intersectional disparities",
+     "n_tokens": 7,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8571428571428571,
+     "score": 0.8571428571428571,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "**Evaluate data distributions** and employ sensitivity analysis",
+     "n_tokens": 7,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8571428571428571,
+     "score": 0.8571428571428571,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "**Evaluate quality metrics** including false positive and false negative rates",
+     "n_tokens": 10,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "**Consider biases affecting small groups** and individuals",
+     "n_tokens": 7,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7142857142857143,
+     "score": 0.7142857142857143,
+     "grounded": false,
+     "flagger_supported": false
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__haiku45__dev_07": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "# Purpose of the GOVERN Function",
+     "n_tokens": 5,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.6,
+     "score": 0.6,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "The GOVERN function:",
+     "n_tokens": 3,
+     "threshold": 1.0,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Cultivates and implements a culture of risk management within organizations designing, developing, deploying, evaluating, or acquiring AI systems",
+     "n_tokens": 18,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Outlines processes, documents, and organizational schemes to anticipate, identify, and manage AI system risks",
+     "n_tokens": 14,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7857142857142857,
+     "score": 0.7857142857142857,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Provides a structure by which AI risk management functions align with organizational principles, policies, and strategic priorities",
+     "n_tokens": 17,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.9411764705882353,
+     "score": 0.9411764705882353,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Connects technical aspects of AI system design to organizational values and enables competencies for individuals involved in AI systems",
+     "n_tokens": 19,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.631578947368421,
+     "score": 0.631578947368421,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Addresses full product lifecycle and associated processes",
+     "n_tokens": 7,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "GOVERN is a cross-cutting function infused throughout AI risk management that enables the other functions (MAP, MEASURE, and MANAGE).",
+     "n_tokens": 19,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8421052631578947,
+     "score": 0.8421052631578947,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "# GOVERN 5 Category Requirement",
+     "n_tokens": 4,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.5,
+     "score": 0.5,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "**GOVERN 5** requires that **processes are in place for robust engagement with relevant AI actors**.",
+     "n_tokens": 15,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8666666666666667,
+     "score": 0.8666666666666667,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "The framework emphasizes that risk management should be carried out in a way that reflects diverse and multidisciplinary perspectives, potentially including views of AI actors outside the organization.",
+     "n_tokens": 28,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8214285714285714,
+     "score": 0.8214285714285714,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Having a diverse team contributes to more open sharing of ideas and assumptions about the technology being designed, developed, deployed, or evaluated, which helps surface problems and identify existing and emergent risks.",
+     "n_tokens": 32,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.78125,
+     "score": 0.78125,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__haiku45__dev_08": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "GOVERN 2.2 requires that the organization's personnel and partners receive AI risk management training to enable them to perform their duties and responsibilities consistent with related policies, procedures, and agreements.",
+     "n_tokens": 31,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.9354838709677419,
+     "score": 0.9354838709677419,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__haiku45__dev_09": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "According to the provided context, action GV-1.3-007 recommends: **Devise a plan to halt development or deployment of a GAI system that poses unacceptable negative risk.**",
+     "n_tokens": 25,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.72,
+     "score": 0.72,
+     "grounded": false,
+     "flagger_supported": false
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__haiku45__dev_10": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "According to MAP 3.4, processes for operator and practitioner proficiency with AI system performance and trustworthiness – and relevant technical standards and certifications – should be **defined, assessed, and documented**.",
+     "n_tokens": 28,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.8571428571428571,
+     "score": 0.8571428571428571,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "The suggested actions for MAP 3.4 include:",
+     "n_tokens": 7,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.5714285714285714,
+     "score": 0.5714285714285714,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Identifying skills and proficiency requirements for operators and practitioners",
+     "n_tokens": 9,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8888888888888888,
+     "score": 0.8888888888888888,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Developing AI system operational documentation including known risks and trustworthy characteristics",
+     "n_tokens": 11,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.5454545454545454,
+     "score": 0.5454545454545454,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Creating training materials about AI system use and limitations",
+     "n_tokens": 9,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.6666666666666666,
+     "score": 0.6666666666666666,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Defining certification procedures for operating AI systems within defined contexts of use",
+     "n_tokens": 12,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.9166666666666666,
+     "score": 0.9166666666666666,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Including operators and practitioners in prototyping and testing activities",
+     "n_tokens": 9,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.5555555555555556,
+     "score": 0.5555555555555556,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Ensuring AI system output is interpretable and unambiguous for decision-making",
+     "n_tokens": 10,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8,
+     "score": 0.8,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Tracking human-AI configuration outcomes for continual improvement",
+     "n_tokens": 7,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.5714285714285714,
+     "score": 0.5714285714285714,
+     "grounded": false,
+     "flagger_supported": false
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__haiku45__dev_11": {
+   "response_class": "abstained",
+   "units": []
+  },
+  "dev__raw__haiku45__dev_12": {
+   "response_class": "abstained",
+   "units": []
+  },
+  "dev__raw__opus48__dev_01": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "Under Article 10(3), the training, validation and testing data sets must be:",
+     "n_tokens": 13,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.6153846153846154,
+     "score": 0.6153846153846154,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Relevant, sufficiently representative, and to the best extent possible free of errors and complete in view of the intended purpose.",
+     "n_tokens": 20,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Have appropriate statistical properties, including, where applicable, regarding the persons or groups of persons in relation to whom the system is intended to be used.",
+     "n_tokens": 25,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.84,
+     "score": 0.84,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "These characteristics may be met at the level of individual data sets or a combination thereof.",
+     "n_tokens": 16,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.75,
+     "score": 0.75,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Additionally, the data sets must take into account (to the extent required by the intended purpose) the characteristics or elements particular to the specific geographical, contextual, behavioural or functional setting in which the system is intended to be used (Article 10(4)).",
+     "n_tokens": 42,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.8571428571428571,
+     "score": 0.8571428571428571,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__opus48__dev_02": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "Adversarial role-playing exercises, GAI red-teaming, or chaos testing.",
+     "n_tokens": 8,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__opus48__dev_03": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "Because these systems affect persons who are often in a particularly vulnerable position and who depend on the outcome of the actions of competent public authorities.",
+     "n_tokens": 26,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8076923076923077,
+     "score": 0.8076923076923077,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Therefore the accuracy, non-discriminatory nature and transparency of such systems are especially important to guarantee respect for fundamental rights—in particular the rights to free movement, non-discrimination, protection of private life and personal data, international protection, and good administration.",
+     "n_tokens": 38,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7631578947368421,
+     "score": 0.7631578947368421,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__opus48__dev_04": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "According to NIST, the two primary information security risks are: (1) GAI could potentially discover or enable new cybersecurity risks by lowering the barriers for or easing automated exercise of offensive capabilities; and (2) it expands the available attack surface, as GAI itself is vulnerable to attacks like prompt injection or data poisoning.",
+     "n_tokens": 53,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8679245283018868,
+     "score": 0.8679245283018868,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__opus48__dev_05": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "Per GOVERN 6.2 suggested actions, NIST recommends:",
+     "n_tokens": 7,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.5714285714285714,
+     "score": 0.5714285714285714,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Establishing policies for handling third-party system failures, including consideration of redundancy mechanisms for vital third-party AI systems.",
+     "n_tokens": 17,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8823529411764706,
+     "score": 0.8823529411764706,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Verifying that incident response plans address third-party AI systems.",
+     "n_tokens": 9,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8888888888888888,
+     "score": 0.8888888888888888,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "The suggested action documenting value-chain risks to identify over-reliance on third-party data (and to identify fallbacks) is GV-6.2-001.",
+     "n_tokens": 18,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.6111111111111112,
+     "score": 0.6111111111111112,
+     "grounded": false,
+     "flagger_supported": false
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__opus48__dev_06": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "**Evaluating TEVV metric effectiveness (MEASURE 2.13):** The effectiveness of the employed TEVV metrics and processes in the MEASURE function are evaluated and documented.",
+     "n_tokens": 23,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.34782608695652173,
+     "score": 0.34782608695652173,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Suggested steps include:",
+     "n_tokens": 3,
+     "threshold": 1.0,
+     "n_surfaces": 0,
+     "overlap_max": 0.3333333333333333,
+     "score": 0.3333333333333333,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Review selected system metrics and associated TEVV processes to determine if they can sustain system improvements, including identifying and removing errors.",
+     "n_tokens": 21,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7619047619047619,
+     "score": 0.7619047619047619,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Regularly evaluate system metrics for utility, considering descriptive approaches over overly complex methods.",
+     "n_tokens": 13,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.6153846153846154,
+     "score": 0.6153846153846154,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Review metrics for acceptability within the end user and impacted community of interest.",
+     "n_tokens": 13,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.9230769230769231,
+     "score": 0.9230769230769231,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Assess effectiveness of metrics for identifying and measuring risks.",
+     "n_tokens": 9,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "**Conducting fairness assessments (MEASURE 2.11):** To manage computational and statistical bias:",
+     "n_tokens": 11,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.7272727272727273,
+     "score": 0.7272727272727273,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Identify types of harms (allocational, representational, quality of service, stereotyping, or erasure).",
+     "n_tokens": 12,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.9166666666666666,
+     "score": 0.9166666666666666,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Identify across, within, and intersecting groups that might be harmed.",
+     "n_tokens": 10,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Quantify harms using both a general fairness metric (e.g., demographic parity, equalized odds, equal opportunity, statistical hypothesis tests) and custom, context-specific metrics developed with affected communities.",
+     "n_tokens": 26,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8846153846153846,
+     "score": 0.8846153846153846,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Analyze quantified harms for contextually significant differences across, within, and among intersecting groups.",
+     "n_tokens": 13,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.9230769230769231,
+     "score": 0.9230769230769231,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Refine identification of within-group and intersectional disparities, evaluate underlying data distributions, employ sensitivity analysis, and evaluate quality metrics such as false positive and false negative rates.",
+     "n_tokens": 26,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7307692307692307,
+     "score": 0.7307692307692307,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Consider biases affecting small groups, within-group or intersectional communities, or single individuals.",
+     "n_tokens": 12,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__opus48__dev_07": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "The GOVERN function's purpose is to cultivate and implement a culture of risk management within organizations that design, develop, deploy, evaluate, or acquire AI systems.",
+     "n_tokens": 26,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.5384615384615384,
+     "score": 0.5384615384615384,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "It outlines processes, documents, and organizational schemes to anticipate, identify, and manage risks a system can pose (including to users and society); incorporates processes to assess potential impacts; aligns AI risk management with organizational principles, policies, and strategic priorities; connects technical aspects of AI design to organizational values; and addresses the full product lifecycle, including legal and third-party software/hardware and data issues.",
+     "n_tokens": 63,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7301587301587301,
+     "score": 0.7301587301587301,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "It is a cross-cutting function infused throughout and enabling the other functions (MAP, MEASURE, MANAGE).",
+     "n_tokens": 15,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.6666666666666666,
+     "score": 0.6666666666666666,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Regarding GOVERN 5, it requires that processes are in place for robust engagement with relevant AI actors.",
+     "n_tokens": 17,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7647058823529411,
+     "score": 0.7647058823529411,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__opus48__dev_08": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "GOVERN 2.2 requires that the organization's personnel and partners receive AI risk management training to enable them to perform their duties and responsibilities consistent with related policies, procedures, and agreements.",
+     "n_tokens": 31,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.9354838709677419,
+     "score": 0.9354838709677419,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__opus48__dev_09": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "Action GV-1.3-007 recommends devising a plan to halt development or deployment of a GAI system that poses unacceptable negative risk.",
+     "n_tokens": 20,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.85,
+     "score": 0.85,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__opus48__dev_10": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "MAP 3.4 states that processes for operator and practitioner proficiency with AI system performance and trustworthiness—and relevant technical standards and certifications—are defined, assessed, and documented.",
+     "n_tokens": 25,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.84,
+     "score": 0.84,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__opus48__dev_11": {
+   "response_class": "abstained",
+   "units": []
+  },
+  "dev__raw__opus48__dev_12": {
+   "response_class": "abstained",
+   "units": []
+  },
+  "dev__raw__sonnet5__dev_01": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "Under Article 10(3), training, validation and testing data sets shall be relevant, sufficiently representative, and to the best extent possible, free of errors and complete in view of the intended purpose.",
+     "n_tokens": 32,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.90625,
+     "score": 0.90625,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "They shall have the appropriate statistical properties, including, where applicable, as regards the persons or groups of persons in relation to whom the high-risk AI system is intended to be used.",
+     "n_tokens": 31,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "These characteristics may be met at the level of individual data sets or at the level of a combination thereof.",
+     "n_tokens": 20,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.9,
+     "score": 0.9,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__sonnet5__dev_02": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "Adversarial role-playing exercises, GAI red-teaming, or chaos testing.",
+     "n_tokens": 8,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__sonnet5__dev_03": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "Because these AI systems affect persons who are often in a particularly vulnerable position and dependent on the outcome of actions by competent public authorities.",
+     "n_tokens": 25,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.76,
+     "score": 0.76,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Their accuracy, non-discriminatory nature and transparency are therefore particularly important to guarantee respect for the affected persons' fundamental rights, including rights to free movement, non-discrimination, protection of private life and personal data, international protection and good administration (eu_ai_act:rct_60).",
+     "n_tokens": 39,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7948717948717948,
+     "score": 0.7948717948717948,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__sonnet5__dev_04": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "According to NIST, GAI-based systems present two primary information security risks: (1) GAI could potentially discover or enable new cybersecurity risks by lowering the barriers for or easing automated exercise of offensive capabilities, and (2) it expands the available attack surface, as GAI itself is vulnerable to attacks like prompt injection or data poisoning.",
+     "n_tokens": 54,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.9074074074074074,
+     "score": 0.9074074074074074,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__sonnet5__dev_05": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "**Contingency processes (GOVERN 6.2):** Contingency processes must be in place to handle failures or incidents in third-party data or AI systems deemed to be high-risk.",
+     "n_tokens": 25,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.84,
+     "score": 0.84,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Suggested actions include establishing policies for handling third-party system failures, including redundancy mechanisms for vital third-party AI systems, and verifying that incident response plans address third-party AI systems.",
+     "n_tokens": 28,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8214285714285714,
+     "score": 0.8214285714285714,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "**Value-chain risk documentation:** GV-6.2-001 — \"Document GAI risks associated with system value chain to identify over-reliance on third-party data and to identify fallbacks.\"",
+     "n_tokens": 22,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.8636363636363636,
+     "score": 0.8636363636363636,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__sonnet5__dev_06": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "**Evaluating TEVV metrics effectiveness (MEASURE 2.13):** The effectiveness of the employed TEVV metrics and processes in the MEASURE function is evaluated and documented.",
+     "n_tokens": 23,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.30434782608695654,
+     "score": 0.30434782608695654,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Suggested actions include:",
+     "n_tokens": 3,
+     "threshold": 1.0,
+     "n_surfaces": 0,
+     "overlap_max": 0.6666666666666666,
+     "score": 0.6666666666666666,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Reviewing selected system metrics and associated TEVV processes to determine if they can sustain system improvements, including identification and removal of errors.",
+     "n_tokens": 22,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8181818181818182,
+     "score": 0.8181818181818182,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Regularly evaluating system metrics for utility, considering descriptive approaches instead of overly complex methods.",
+     "n_tokens": 14,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7142857142857143,
+     "score": 0.7142857142857143,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Reviewing selected system metrics for acceptability within the end user and impacted community of interest.",
+     "n_tokens": 15,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.9333333333333333,
+     "score": 0.9333333333333333,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Assessing effectiveness of metrics for identifying and measuring risks.",
+     "n_tokens": 9,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8888888888888888,
+     "score": 0.8888888888888888,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "**Conducting fairness assessments (MEASURE 2.11):** Steps include:",
+     "n_tokens": 7,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.2857142857142857,
+     "score": 0.2857142857142857,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Identifying types of harms (allocational, representational, quality of service, stereotyping, or erasure).",
+     "n_tokens": 12,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.9166666666666666,
+     "score": 0.9166666666666666,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Identifying groups (across, within, and intersecting) that might be harmed.",
+     "n_tokens": 10,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.9,
+     "score": 0.9,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Quantifying harms using general fairness metrics (e.g., demographic parity, equalized odds, equal opportunity, statistical hypothesis tests) and custom, context-specific metrics developed with affected communities.",
+     "n_tokens": 24,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7916666666666666,
+     "score": 0.7916666666666666,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Analyzing quantified harms for contextually significant differences across, within, and among intersecting groups.",
+     "n_tokens": 13,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.9230769230769231,
+     "score": 0.9230769230769231,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Refining identification of within-group and intersectional disparities, evaluating underlying data distributions, and using sensitivity analysis.",
+     "n_tokens": 15,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.8,
+     "score": 0.8,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Evaluating quality metrics like false positive/negative rates, and considering biases affecting small or intersectional groups/individuals.",
+     "n_tokens": 17,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7058823529411765,
+     "score": 0.7058823529411765,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Understanding sources of bias in training and TEVV data (distribution differences, data completeness/representativeness/balance, proxy features for demographic membership, systemic bias in unstructured data).",
+     "n_tokens": 25,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.56,
+     "score": 0.56,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Leveraging impact assessments to classify system impacts/harms with input from potentially impacted communities.",
+     "n_tokens": 14,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.5714285714285714,
+     "score": 0.5714285714285714,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Identifying impacted classes of individuals, groups, or ecosystems through direct community engagement.",
+     "n_tokens": 12,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.6666666666666666,
+     "score": 0.6666666666666666,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Evaluating disability inclusion, including disability status in bias testing and screening out discriminatory design/deployment decisions.",
+     "n_tokens": 16,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.6875,
+     "score": 0.6875,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Developing objective functions that account for systemic biases and in-group/out-group dynamics.",
+     "n_tokens": 12,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.5833333333333334,
+     "score": 0.5833333333333334,
+     "grounded": false,
+     "flagger_supported": false
+    },
+    {
+     "text": "Using and customizing context-specific fairness metrics (e.g., statistical parity, error-rate equality, equal opportunity difference, average absolute odds difference, standardized mean difference, percentage point differences) to examine performance variation across, within, and intersecting groups.",
+     "n_tokens": 33,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.696969696969697,
+     "score": 0.696969696969697,
+     "grounded": false,
+     "flagger_supported": false
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__sonnet5__dev_07": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "The GOVERN function cultivates and implements a culture of risk management within organizations designing, developing, deploying, evaluating, or acquiring AI systems.",
+     "n_tokens": 21,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 1.0,
+     "score": 1.0,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "It outlines processes, documents, and organizational schemes that anticipate, identify, and manage risks a system can pose—including to users and society—incorporates processes to assess potential impacts, provides a structure aligning AI risk management with organizational principles, policies, and strategic priorities, connects technical aspects of AI system design and development to organizational values, and addresses the full product lifecycle, including legal issues concerning third-party software, hardware, and data.",
+     "n_tokens": 67,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7761194029850746,
+     "score": 0.7761194029850746,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "It is a cross-cutting function infused throughout AI risk management that enables the other functions (MAP, MEASURE, MANAGE).",
+     "n_tokens": 18,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7777777777777778,
+     "score": 0.7777777777777778,
+     "grounded": true,
+     "flagger_supported": true
+    },
+    {
+     "text": "Its GOVERN 5 category requires that processes be in place for robust engagement with relevant AI actors.",
+     "n_tokens": 17,
+     "threshold": 0.75,
+     "n_surfaces": 0,
+     "overlap_max": 0.7058823529411765,
+     "score": 0.7058823529411765,
+     "grounded": false,
+     "flagger_supported": false
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__sonnet5__dev_08": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "GOVERN 2.2 requires that the organization’s personnel and partners receive AI risk management training to enable them to perform their duties and responsibilities consistent with related policies, procedures, and agreements.",
+     "n_tokens": 31,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.9354838709677419,
+     "score": 0.9354838709677419,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__sonnet5__dev_09": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "Action GV-1.3-007 recommends devising a plan to halt development or deployment of a GAI system that poses unacceptable negative risk.",
+     "n_tokens": 20,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.85,
+     "score": 0.85,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__sonnet5__dev_10": {
+   "response_class": "answered",
+   "units": [
+    {
+     "text": "MAP 3.4 states: \"Processes for operator and practitioner proficiency with AI system performance and trustworthiness – and relevant technical standards and certifications – are defined, assessed, and documented.\"",
+     "n_tokens": 26,
+     "threshold": 0.75,
+     "n_surfaces": 1,
+     "overlap_max": 0.9615384615384616,
+     "score": 0.9615384615384616,
+     "grounded": true,
+     "flagger_supported": true
+    }
+   ],
+   "adversarial_verdict": "failure"
+  },
+  "dev__raw__sonnet5__dev_11": {
+   "response_class": "abstained",
+   "units": []
+  },
+  "dev__raw__sonnet5__dev_12": {
+   "response_class": "abstained",
+   "units": []
+  }
+ }
+}
