@@ -37,6 +37,12 @@ TWO DIGESTS, AND THEY ARE DIFFERENT CLAIMS.
   and until count_tokens sets max_tokens, so a body digest computed before then would pin
   placeholder values. `build_body` raises on an unresolved parameter rather than emitting
   one, so no request can be built ahead of the gate that fixes it.
+
+  The per-body digest, `request_body_digest`, covers one body rather than a set. A result
+  record carries it so a reviewer holding only committed files can re-derive the body that
+  produced that answer and compare, which the set digest cannot do: a set digest says the
+  hundred bodies together were what was sent and says nothing about which row got which.
+  Same serialisation as the set digest, applied to one body.
 """
 
 from __future__ import annotations
@@ -289,6 +295,18 @@ def content_digest(requests: Sequence[AssembledRequest]) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
+def request_body_digest(body: dict) -> str:
+    """sha256 over one full request body, in the repository's canonical JSON form.
+
+    Per body rather than per set, so a committed result record can name the exact request
+    that produced it and a reviewer can re-derive that request from committed files with
+    no key. The serialisation matches `body_digest` and `write_records`: no ASCII escaping,
+    sorted keys, no separator whitespace.
+    """
+    payload = json.dumps(body, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
 def body_digest(bodies: Sequence[dict]) -> str:
     """sha256 over full request bodies, in custom_id order."""
     payload = json.dumps(
@@ -314,4 +332,5 @@ __all__ = [
     "layer_context",
     "load_chunk_store",
     "load_rows",
+    "request_body_digest",
 ]
