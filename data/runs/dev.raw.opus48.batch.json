@@ -1,0 +1,53 @@
+{
+ "description": "Batch record for the Opus development first pass: the batch's own identifiers, timings and per-status counts, and the measured token totals read from the committed result records beside it. The answers themselves are in dev.raw.opus48.jsonl, one JSON object per line keyed and sorted by custom_id, each carrying the response whole.",
+ "produced_by": "src.generate.batch.submit and src.generate.batch.collect",
+ "query_set": "dev",
+ "condition": "raw",
+ "tier": "opus48",
+ "model_requested": "claude-opus-4-8",
+ "model_reported": [
+  "claude-opus-4-8"
+ ],
+ "batch_id": "msgbatch_01LJJx7sTmtuB8JQC6ekjbmA",
+ "transport": "Batch API",
+ "submitted_utc": "2026-08-22T12:08:34Z",
+ "created_at_utc": "2026-08-22T12:08:37Z",
+ "ended_at_utc": "2026-08-22T12:10:22Z",
+ "collected_utc": "2026-08-22T12:11:16Z",
+ "processing_status": "ended",
+ "request_count": 12,
+ "request_counts": {
+  "canceled": 0,
+  "errored": 0,
+  "expired": 0,
+  "processing": 0,
+  "succeeded": 12
+ },
+ "decoding": {
+  "temperature": null,
+  "thinking": {
+   "type": "adaptive"
+  },
+  "effort": "low",
+  "max_tokens": 16000,
+  "meaning": "temperature null means the parameter is omitted, because the tier rejects a non-default value as gate 1a measured. thinking and effort are set explicitly: PREREGISTRATION.md fixes reasoning effort low on the Opus tier, and this tier's documented default is thinking off, so effort alone would have produced a run with no reasoning at all.",
+  "source": "data/runs/run_manifest.json, tiers.opus48, as committed at 50bd34a"
+ },
+ "usage_totals": {
+  "input_tokens": 48773,
+  "output_tokens": 1751,
+  "thinking_tokens": 155,
+  "rows_with_thinking_tokens": [
+   "dev_01",
+   "dev_05",
+   "dev_06",
+   "dev_07"
+  ],
+  "rows_with_a_thinking_content_block": 4,
+  "note": "Summed from the usage block of every record. The input total equals the count_tokens figure of record for this tier and set, 48773, exactly. THIS TIER DID THINK: 155 thinking tokens over 4 of the 12 rows, dev_01, dev_05, dev_06 and dev_07, and zero on the other eight. The two independent signals agree row for row: a thinking content block is present on exactly the 4 rows whose thinking_tokens is non-zero and on none of the 8 whose count is zero. thinking_tokens is reported inside output_tokens_details, that is as a detail OF output_tokens, so the cost below is computed on output_tokens and thinking is not added to it; that reading is taken from the field's placement and name and not from a measured decomposition."
+ },
+ "max_tokens_stops": [],
+ "stop_reasons": [
+  "end_turn"
+ ]
+}
