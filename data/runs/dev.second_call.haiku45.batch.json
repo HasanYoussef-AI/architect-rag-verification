@@ -1,0 +1,53 @@
+{
+ "description": "Batch record for the Haiku development second calls, D1b-h. Eleven rows, the rows the committed corrective pass fires on. The answers are in dev.second_call.haiku45.jsonl, one JSON object per line keyed and sorted by custom_id, each carrying the response whole.",
+ "produced_by": "src.generate.batch.submit and src.generate.batch.collect",
+ "query_set": "dev",
+ "condition": "second_call",
+ "tier": "haiku45",
+ "model_requested": "claude-haiku-4-5-20251001",
+ "model_reported": [
+  "claude-haiku-4-5-20251001"
+ ],
+ "batch_id": "msgbatch_01WrwqHwrqRNuXEEXRuXwkQz",
+ "transport": "Batch API",
+ "submitted_utc": "2026-08-22T14:48:33Z",
+ "created_at_utc": "2026-08-22T14:48:36Z",
+ "ended_at_utc": "2026-08-22T14:49:38Z",
+ "collected_utc": "2026-08-22T14:50:40Z",
+ "processing_status": "ended",
+ "request_count": 11,
+ "request_counts": {
+  "canceled": 0,
+  "errored": 0,
+  "expired": 0,
+  "processing": 0,
+  "succeeded": 11
+ },
+ "population": {
+  "rows": 11,
+  "source": "the rows src.complete.augment.augment fires on, 11 of 12",
+  "excluded": "dev_07, on which the reference grammar extracts nothing so nothing can be absent"
+ },
+ "decoding": {
+  "temperature": 0,
+  "thinking": null,
+  "effort": null,
+  "max_tokens": 16000,
+  "source": "data/runs/run_manifest.json, tiers.haiku45, as committed at 50bd34a"
+ },
+ "usage_totals": {
+  "input_tokens": 49767,
+  "output_tokens": 1630,
+  "note": "Summed from the usage block of every record. The input total equals the count_tokens figure measured over the same eleven bodies before submission, 49767, exactly."
+ },
+ "cost_usd": {
+  "input": 0.024883,
+  "output": 0.004075,
+  "total": 0.028958,
+  "rates": "batch input $0.50 / MTok, batch output $2.50 / MTok, eval/generation_predictions.md line 1085"
+ },
+ "max_tokens_stops": [],
+ "stop_reasons": [
+  "end_turn"
+ ]
+}
