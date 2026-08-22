@@ -1,0 +1,44 @@
+{
+ "description": "Batch record for the Sonnet development first pass: the batch's own identifiers, timings and per-status counts, and the measured token totals read from the committed result records beside it. The answers themselves are in dev.raw.sonnet5.jsonl, one JSON object per line keyed and sorted by custom_id, each carrying the response whole. This file carries no figure that is not derivable from that one plus the API's own batch object.",
+ "produced_by": "src.generate.batch.submit and src.generate.batch.collect",
+ "query_set": "dev",
+ "condition": "raw",
+ "tier": "sonnet5",
+ "model_requested": "claude-sonnet-5",
+ "model_reported": [
+  "claude-sonnet-5"
+ ],
+ "batch_id": "msgbatch_01G1hNqX5qHJReNkbgoXwzWp",
+ "transport": "Batch API",
+ "submitted_utc": "2026-08-22T11:10:24Z",
+ "created_at_utc": "2026-08-22T11:10:27Z",
+ "ended_at_utc": "2026-08-22T11:45:08Z",
+ "collected_utc": "2026-08-22T11:46:10Z",
+ "processing_status": "ended",
+ "request_count": 12,
+ "request_counts": {
+  "canceled": 0,
+  "errored": 0,
+  "expired": 0,
+  "processing": 0,
+  "succeeded": 12
+ },
+ "decoding": {
+  "temperature": null,
+  "thinking": null,
+  "effort": null,
+  "max_tokens": 16000,
+  "meaning": "temperature null means the parameter is omitted, because the tier rejects a non-default value as gate 1a measured. thinking null and effort null mean those parameters are omitted too, so the tier runs at the API default.",
+  "source": "data/runs/run_manifest.json, tiers.sonnet5, as committed at 50bd34a"
+ },
+ "usage_totals": {
+  "input_tokens": 48773,
+  "output_tokens": 1891,
+  "thinking_tokens": 0,
+  "note": "Summed from the usage block of every record in dev.raw.sonnet5.jsonl. The input total equals the count_tokens figure of record for this tier and set, 48773, exactly. THINKING TOKENS ARE ZERO ON ALL TWELVE ROWS, and that is a reported zero rather than an absent field: output_tokens_details is present on all twelve records with the value {\"thinking_tokens\": 0}, and no thinking content block was returned. This tier runs with the thinking parameter omitted, so adaptive thinking is available to it by API default; on these twelve development prompts the model spent none of it. Recorded as an observation over twelve development rows, not as a finding about the tier."
+ },
+ "max_tokens_stops": [],
+ "stop_reasons": [
+  "end_turn"
+ ]
+}
