@@ -4,7 +4,8 @@
  "written_to": "eval/dev_second_call_grading.json",
  "tiers": [
   "haiku45",
-  "sonnet5"
+  "sonnet5",
+  "opus48"
  ],
  "grader_frozen_at": "15e31d5",
  "thresholds": {
@@ -17,6 +18,7 @@
   "haiku45": {
    "rows": 11,
    "layer_abstaining_rows": 3,
+   "layer_abstention_rate": 0.272727,
    "answered_rows": 8,
    "claim_units": 65,
    "ungrounded_units": 19,
@@ -26,11 +28,13 @@
    "flagged_units_repeated_unchanged": 14,
    "flagged_units_repeated_now_grounded": 0,
    "flagged_units_not_returned": 19,
-   "first_pass_abstentions_with_a_substantive_second_answer": 1
+   "first_pass_abstentions_with_a_substantive_second_answer": 1,
+   "rows_fully_grounded_at_first_pass_then_layer_abstains": 0
   },
   "sonnet5": {
    "rows": 11,
    "layer_abstaining_rows": 3,
+   "layer_abstention_rate": 0.272727,
    "answered_rows": 8,
    "claim_units": 44,
    "ungrounded_units": 7,
@@ -40,13 +44,33 @@
    "flagged_units_repeated_unchanged": 1,
    "flagged_units_repeated_now_grounded": 0,
    "flagged_units_not_returned": 10,
-   "first_pass_abstentions_with_a_substantive_second_answer": 1
+   "first_pass_abstentions_with_a_substantive_second_answer": 1,
+   "rows_fully_grounded_at_first_pass_then_layer_abstains": 1
+  },
+  "opus48": {
+   "rows": 11,
+   "layer_abstaining_rows": 2,
+   "layer_abstention_rate": 0.181818,
+   "answered_rows": 9,
+   "claim_units": 31,
+   "ungrounded_units": 8,
+   "unsupported_claim_rate": 0.258065,
+   "rows_repeating_a_flagged_unit_unchanged": 2,
+   "flagged_units_in": 8,
+   "flagged_units_repeated_unchanged": 3,
+   "flagged_units_repeated_now_grounded": 0,
+   "flagged_units_not_returned": 5,
+   "first_pass_abstentions_with_a_substantive_second_answer": 1,
+   "rows_fully_grounded_at_first_pass_then_layer_abstains": 0
   }
  },
  "rows": {
   "dev__second_call__haiku45__dev_01": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 13,
+   "first_pass_ungrounded": 7,
+   "fully_grounded_at_first_pass": false,
    "context_set_size": 19,
    "n_flagged_in": 7,
    "units": [
@@ -150,6 +174,9 @@
   "dev__second_call__haiku45__dev_02": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 5,
+   "first_pass_ungrounded": 2,
+   "fully_grounded_at_first_pass": false,
    "context_set_size": 25,
    "n_flagged_in": 2,
    "units": [
@@ -193,6 +220,9 @@
   "dev__second_call__haiku45__dev_03": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 9,
+   "first_pass_ungrounded": 2,
+   "fully_grounded_at_first_pass": false,
    "context_set_size": 16,
    "n_flagged_in": 2,
    "units": [
@@ -266,6 +296,9 @@
   "dev__second_call__haiku45__dev_04": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 3,
+   "first_pass_ungrounded": 1,
+   "fully_grounded_at_first_pass": false,
    "context_set_size": 13,
    "n_flagged_in": 1,
    "units": [
@@ -302,6 +335,9 @@
   "dev__second_call__haiku45__dev_05": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 8,
+   "first_pass_ungrounded": 4,
+   "fully_grounded_at_first_pass": false,
    "context_set_size": 19,
    "n_flagged_in": 4,
    "units": [
@@ -371,6 +407,9 @@
   "dev__second_call__haiku45__dev_06": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 18,
+   "first_pass_ungrounded": 11,
+   "fully_grounded_at_first_pass": false,
    "context_set_size": 22,
    "n_flagged_in": 11,
    "units": [
@@ -508,6 +547,9 @@
   "dev__second_call__haiku45__dev_08": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 1,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": true,
    "context_set_size": 14,
    "n_flagged_in": 0,
    "units": [
@@ -530,6 +572,9 @@
   "dev__second_call__haiku45__dev_09": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 1,
+   "first_pass_ungrounded": 1,
+   "fully_grounded_at_first_pass": false,
    "context_set_size": 25,
    "n_flagged_in": 1,
    "units": [
@@ -554,6 +599,9 @@
   "dev__second_call__haiku45__dev_10": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 9,
+   "first_pass_ungrounded": 5,
+   "fully_grounded_at_first_pass": false,
    "context_set_size": 18,
    "n_flagged_in": 5,
    "units": [
@@ -631,6 +679,9 @@
   "dev__second_call__haiku45__dev_11": {
    "first_pass_class": "abstained",
    "second_call_class": "answered",
+   "first_pass_units": 0,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": false,
    "context_set_size": 38,
    "n_flagged_in": 0,
    "units": [
@@ -659,6 +710,9 @@
   "dev__second_call__haiku45__dev_12": {
    "first_pass_class": "abstained",
    "second_call_class": "abstained",
+   "first_pass_units": 0,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": false,
    "context_set_size": 21,
    "n_flagged_in": 0,
    "units": [],
@@ -674,6 +728,9 @@
   "dev__second_call__sonnet5__dev_01": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 3,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": true,
    "context_set_size": 19,
    "n_flagged_in": 0,
    "units": [
@@ -714,6 +771,9 @@
   "dev__second_call__sonnet5__dev_02": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 1,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": true,
    "context_set_size": 25,
    "n_flagged_in": 0,
    "units": [
@@ -736,6 +796,9 @@
   "dev__second_call__sonnet5__dev_03": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 2,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": true,
    "context_set_size": 16,
    "n_flagged_in": 0,
    "units": [
@@ -770,6 +833,9 @@
   "dev__second_call__sonnet5__dev_04": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 1,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": true,
    "context_set_size": 13,
    "n_flagged_in": 0,
    "units": [
@@ -792,6 +858,9 @@
   "dev__second_call__sonnet5__dev_05": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 3,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": true,
    "context_set_size": 19,
    "n_flagged_in": 0,
    "units": [
@@ -826,6 +895,9 @@
   "dev__second_call__sonnet5__dev_06": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 19,
+   "first_pass_ungrounded": 11,
+   "fully_grounded_at_first_pass": false,
    "context_set_size": 22,
    "n_flagged_in": 11,
    "units": [
@@ -993,6 +1065,9 @@
   "dev__second_call__sonnet5__dev_08": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 1,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": true,
    "context_set_size": 14,
    "n_flagged_in": 0,
    "units": [
@@ -1015,6 +1090,9 @@
   "dev__second_call__sonnet5__dev_09": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 1,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": true,
    "context_set_size": 25,
    "n_flagged_in": 0,
    "units": [
@@ -1037,6 +1115,9 @@
   "dev__second_call__sonnet5__dev_10": {
    "first_pass_class": "answered",
    "second_call_class": "answered",
+   "first_pass_units": 1,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": true,
    "context_set_size": 18,
    "n_flagged_in": 0,
    "units": [
@@ -1101,6 +1182,9 @@
   "dev__second_call__sonnet5__dev_11": {
    "first_pass_class": "abstained",
    "second_call_class": "answered",
+   "first_pass_units": 0,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": false,
    "context_set_size": 38,
    "n_flagged_in": 0,
    "units": [
@@ -1159,6 +1243,458 @@
   "dev__second_call__sonnet5__dev_12": {
    "first_pass_class": "abstained",
    "second_call_class": "abstained",
+   "first_pass_units": 0,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": false,
+   "context_set_size": 21,
+   "n_flagged_in": 0,
+   "units": [],
+   "n_units": 0,
+   "n_grounded": 0,
+   "n_ungrounded": 0,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": true,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__opus48__dev_01": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "first_pass_units": 5,
+   "first_pass_ungrounded": 1,
+   "fully_grounded_at_first_pass": false,
+   "context_set_size": 19,
+   "n_flagged_in": 1,
+   "units": [
+    {
+     "text": "Under Article 10, the training, validation and testing data sets must meet the following quality criteria:",
+     "score": 0.6875,
+     "grounded": false,
+     "was_flagged": false
+    },
+    {
+     "text": "They must be relevant, sufficiently representative, and to the best extent possible free of errors and complete in view of the intended purpose (Article 10(3)).",
+     "score": 0.8461538461538461,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "They must have the appropriate statistical properties, including, where applicable, as regards the persons or groups of persons in relation to whom the high-risk AI system is intended to be used (Article 10(3)).",
+     "score": 0.8823529411764706,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "These characteristics may be met at the level of individual data sets or at the level of a combination thereof.",
+     "score": 0.9,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Additionally, the data sets must take into account, to the extent required by the intended purpose, the characteristics or elements particular to the specific geographical, contextual, behavioural or functional setting within which the system is intended to be used (Article 10(4)).",
+     "score": 0.8809523809523809,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "The data sets must also be subject to appropriate data governance and management practices (Article 10(2)), including examination for and mitigation of possible biases.",
+     "score": 0.64,
+     "grounded": false,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 6,
+   "n_grounded": 4,
+   "n_ungrounded": 2,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [
+    "Under Article 10(3), the training, validation and testing data sets must be:"
+   ],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__opus48__dev_02": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "first_pass_units": 1,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": true,
+   "context_set_size": 25,
+   "n_flagged_in": 0,
+   "units": [
+    {
+     "text": "Adversarial role-playing exercises, GAI red-teaming, or chaos testing.",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 1,
+   "n_grounded": 1,
+   "n_ungrounded": 0,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__opus48__dev_03": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "first_pass_units": 2,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": true,
+   "context_set_size": 16,
+   "n_flagged_in": 0,
+   "units": [
+    {
+     "text": "The EU AI Act treats these systems as especially sensitive because they affect persons who are often in a particularly vulnerable position and who depend on the outcome of the actions of competent public authorities.",
+     "score": 0.6857142857142857,
+     "grounded": false,
+     "was_flagged": false
+    },
+    {
+     "text": "Therefore the accuracy, non-discriminatory nature and transparency of such systems are especially important to guarantee respect for fundamental rights—in particular the rights to free movement, non-discrimination, protection of private life and personal data, international protection, and good administration.",
+     "score": 0.7631578947368421,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Additionally, such systems should in no circumstances be used to circumvent international obligations under the UN Convention relating to the Status of Refugees, to infringe on the principle of non-refoulement, or to deny safe and effective legal avenues into the Union, including the right to international protection.",
+     "score": 0.6595744680851063,
+     "grounded": false,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 3,
+   "n_grounded": 1,
+   "n_ungrounded": 2,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__opus48__dev_04": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "first_pass_units": 1,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": true,
+   "context_set_size": 13,
+   "n_flagged_in": 0,
+   "units": [
+    {
+     "text": "According to NIST, the two primary information security risks are: (1) GAI could potentially discover or enable new cybersecurity risks by lowering the barriers for or easing automated exercise of offensive capabilities; and (2) it expands the available attack surface, as GAI itself is vulnerable to attacks like prompt injection or data poisoning.",
+     "score": 0.8679245283018868,
+     "grounded": true,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 1,
+   "n_grounded": 1,
+   "n_ungrounded": 0,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__opus48__dev_05": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "first_pass_units": 4,
+   "first_pass_ungrounded": 2,
+   "fully_grounded_at_first_pass": false,
+   "context_set_size": 19,
+   "n_flagged_in": 2,
+   "units": [
+    {
+     "text": "Under GOVERN 6.2, NIST recommends the following contingency processes for failures in high-risk third-party AI systems:",
+     "score": 0.4375,
+     "grounded": false,
+     "was_flagged": false
+    },
+    {
+     "text": "Establishing policies for handling third-party system failures, including consideration of redundancy mechanisms for vital third-party AI systems.",
+     "score": 0.8823529411764706,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Verifying that incident response plans address third-party AI systems.",
+     "score": 0.8888888888888888,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "The suggested action documenting value-chain risks to identify over-reliance on third-party data (and to identify fallbacks) is GV-6.2-001.",
+     "score": 0.6111111111111112,
+     "grounded": false,
+     "was_flagged": true
+    }
+   ],
+   "n_units": 4,
+   "n_grounded": 2,
+   "n_ungrounded": 2,
+   "repeated_flagged_unchanged": [
+    "The suggested action documenting value-chain risks to identify over-reliance on third-party data (and to identify fallbacks) is GV-6.2-001."
+   ],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [
+    "Per GOVERN 6.2 suggested actions, NIST recommends:"
+   ],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__opus48__dev_06": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "first_pass_units": 13,
+   "first_pass_ungrounded": 5,
+   "fully_grounded_at_first_pass": false,
+   "context_set_size": 22,
+   "n_flagged_in": 5,
+   "units": [
+    {
+     "text": "**Evaluating TEVV metric effectiveness (MEASURE 2.13):** The effectiveness of the employed TEVV metrics and processes in the MEASURE function are evaluated and documented.",
+     "score": 0.34782608695652173,
+     "grounded": false,
+     "was_flagged": true
+    },
+    {
+     "text": "Suggested steps include:",
+     "score": 0.3333333333333333,
+     "grounded": false,
+     "was_flagged": true
+    },
+    {
+     "text": "Review selected system metrics and associated TEVV processes to determine if they can sustain system improvements, including the identification and removal of errors.",
+     "score": 0.8695652173913043,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Regularly evaluate system metrics for utility, and consider descriptive approaches in place of overly complex methods.",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Review selected system metrics for acceptability within the end user and impacted community of interest.",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Assess effectiveness of metrics for identifying and measuring risks.",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "**Conducting fairness assessments (MEASURE 2.11):** To manage computational and statistical forms of bias:",
+     "score": 0.7692307692307693,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Identify types of harms (allocational, representational, quality of service, stereotyping, or erasure).",
+     "score": 0.9166666666666666,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Identify across, within, and intersecting groups that might be harmed.",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Quantify harms using both a general fairness metric (e.g., demographic parity, equalized odds, equal opportunity, statistical hypothesis tests) and custom, context-specific metrics developed in collaboration with affected communities.",
+     "score": 0.9285714285714286,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Analyze quantified harms for contextually significant differences across, within, and among intersecting groups.",
+     "score": 0.9230769230769231,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Refine identification of within-group and intersectional group disparities; evaluate underlying data distributions and employ sensitivity analysis; and evaluate quality metrics including false positive and false negative rates.",
+     "score": 0.8148148148148148,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Consider biases affecting small groups, within-group or intersectional communities, or single individuals.",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 13,
+   "n_grounded": 11,
+   "n_ungrounded": 2,
+   "repeated_flagged_unchanged": [
+    "**Evaluating TEVV metric effectiveness (MEASURE 2.13):** The effectiveness of the employed TEVV metrics and processes in the MEASURE function are evaluated and documented.",
+    "Suggested steps include:"
+   ],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [
+    "Regularly evaluate system metrics for utility, considering descriptive approaches over overly complex methods.",
+    "**Conducting fairness assessments (MEASURE 2.11):** To manage computational and statistical bias:",
+    "Refine identification of within-group and intersectional disparities, evaluate underlying data distributions, employ sensitivity analysis, and evaluate quality metrics such as false positive and false negative rates."
+   ],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__opus48__dev_08": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "first_pass_units": 1,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": true,
+   "context_set_size": 14,
+   "n_flagged_in": 0,
+   "units": [
+    {
+     "text": "GOVERN 2.2 requires that the organization's personnel and partners receive AI risk management training to enable them to perform their duties and responsibilities consistent with related policies, procedures, and agreements.",
+     "score": 0.9354838709677419,
+     "grounded": true,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 1,
+   "n_grounded": 1,
+   "n_ungrounded": 0,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__opus48__dev_09": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "first_pass_units": 1,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": true,
+   "context_set_size": 25,
+   "n_flagged_in": 0,
+   "units": [
+    {
+     "text": "Action GV-1.3-007 recommends devising a plan to halt development or deployment of a GAI system that poses unacceptable negative risk.",
+     "score": 0.85,
+     "grounded": true,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 1,
+   "n_grounded": 1,
+   "n_ungrounded": 0,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__opus48__dev_10": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "first_pass_units": 1,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": true,
+   "context_set_size": 18,
+   "n_flagged_in": 0,
+   "units": [
+    {
+     "text": "MAP 3.4 states that processes for operator and practitioner proficiency with AI system performance and trustworthiness—and relevant technical standards and certifications—are defined, assessed, and documented.",
+     "score": 0.84,
+     "grounded": true,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 1,
+   "n_grounded": 1,
+   "n_ungrounded": 0,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__opus48__dev_11": {
+   "first_pass_class": "abstained",
+   "second_call_class": "answered",
+   "first_pass_units": 0,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": false,
+   "context_set_size": 38,
+   "n_flagged_in": 0,
+   "units": [
+    {
+     "text": "Under GOVERN 6.1, the Playbook lists these AI Transparency Resources:",
+     "score": 0.5,
+     "grounded": false,
+     "was_flagged": false
+    },
+    {
+     "text": "GAO-21-519SP: AI Accountability Framework for Federal Agencies & Other Entities",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Intel.gov: AI Ethics Framework for Intelligence Community - 2020",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "WEF Model AI Governance Framework Assessment 2020",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "WEF Companion to the Model AI Governance Framework - 2020",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "AI policies and initiatives, in Artificial Intelligence in Society, OECD, 2019",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Assessment List for Trustworthy AI (ALTAI) - The High-Level Expert Group on AI - 2019",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 7,
+   "n_grounded": 6,
+   "n_ungrounded": 1,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": true,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__opus48__dev_12": {
+   "first_pass_class": "abstained",
+   "second_call_class": "abstained",
+   "first_pass_units": 0,
+   "first_pass_ungrounded": 0,
+   "fully_grounded_at_first_pass": false,
    "context_set_size": 21,
    "n_flagged_in": 0,
    "units": [],

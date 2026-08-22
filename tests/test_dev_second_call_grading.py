@@ -24,10 +24,10 @@ from src.score.run_dev_second_call_grading import (
     build,
 )
 
-FLAGGED_SHA256 = "4f05a9449dee281dc6c77e44ec06779c6803a847f7af4a82d75e90f36c433b73"
-FLAGGED_BYTES = 8313
-GRADING_SHA256 = "cf5e5977c80616d4a9832f48ef8e3572dc43f5ec56a8499fee4e57f79a4f1cee"
-GRADING_BYTES = 45621
+FLAGGED_SHA256 = "a59509e16077bf7768da074b804dfea9422a4809f36dea5ebd7ac50bc0f18e75"
+FLAGGED_BYTES = 10625
+GRADING_SHA256 = "7c76a9ee657e75a6f7cdbe0beba43f3260b9a10a2f28ad8c85e8d4dfbc56eebd"
+GRADING_BYTES = 64974
 
 PER_TIER = {
     "haiku45": {
@@ -37,12 +37,14 @@ PER_TIER = {
         "claim_units": 65,
         "ungrounded_units": 19,
         "unsupported_claim_rate": 0.292308,
+        "layer_abstention_rate": 0.272727,
         "rows_repeating_a_flagged_unit_unchanged": 7,
         "flagged_units_in": 33,
         "flagged_units_repeated_unchanged": 14,
         "flagged_units_repeated_now_grounded": 0,
         "flagged_units_not_returned": 19,
         "first_pass_abstentions_with_a_substantive_second_answer": 1,
+        "rows_fully_grounded_at_first_pass_then_layer_abstains": 0,
     },
     "sonnet5": {
         "rows": 11,
@@ -51,12 +53,30 @@ PER_TIER = {
         "claim_units": 44,
         "ungrounded_units": 7,
         "unsupported_claim_rate": 0.159091,
+        "layer_abstention_rate": 0.272727,
         "rows_repeating_a_flagged_unit_unchanged": 1,
         "flagged_units_in": 11,
         "flagged_units_repeated_unchanged": 1,
         "flagged_units_repeated_now_grounded": 0,
         "flagged_units_not_returned": 10,
         "first_pass_abstentions_with_a_substantive_second_answer": 1,
+        "rows_fully_grounded_at_first_pass_then_layer_abstains": 1,
+    },
+    "opus48": {
+        "rows": 11,
+        "layer_abstaining_rows": 2,
+        "layer_abstention_rate": 0.181818,
+        "answered_rows": 9,
+        "claim_units": 31,
+        "ungrounded_units": 8,
+        "unsupported_claim_rate": 0.258065,
+        "rows_repeating_a_flagged_unit_unchanged": 2,
+        "flagged_units_in": 8,
+        "flagged_units_repeated_unchanged": 3,
+        "flagged_units_repeated_now_grounded": 0,
+        "flagged_units_not_returned": 5,
+        "first_pass_abstentions_with_a_substantive_second_answer": 1,
+        "rows_fully_grounded_at_first_pass_then_layer_abstains": 0,
     },
 }
 
@@ -91,8 +111,8 @@ def test_the_committed_artifacts_equal_a_fresh_render():
 
 def test_the_population_is_the_eleven_the_corrective_pass_fires_on_per_tier():
     grading = _grading()
-    assert grading["tiers"] == ["haiku45", "sonnet5"]
-    assert len(grading["rows"]) == 22
+    assert grading["tiers"] == ["haiku45", "sonnet5", "opus48"]
+    assert len(grading["rows"]) == 33
     assert not any(k.endswith("dev_07") for k in grading["rows"]), (
         "dev_07 is the row the corrective pass is silent on and carries no second call"
     )
@@ -186,9 +206,54 @@ def test_a_first_pass_abstention_is_not_recovered_by_a_substantive_second_answer
     assert row["abstained_marker_either_pass"] is True
 
 
+def test_the_zero_grounded_half_does_not_fire_on_opus48():
+    """P-o8 predicted it would fire on one of the nine comparable rows. It fired on none.
+
+    The prediction is recorded as contradicted and pinned here so the reading cannot be reversed
+    without deleting a failing test. Every opus48 abstention is by the marker half, and both of
+    them are rows that abstained at the FIRST pass; no row answered at the first pass was turned
+    into an abstention by the second call on this tier. The same predicate did fire on the other
+    two tiers, on haiku45's dev_09 and sonnet5's dev_02, so the zero here is a property of the
+    tier's answers and not of a predicate that never fires.
+    """
+    rows = _grading()["rows"]
+    opus = {k: r for k, r in rows.items() if "__opus48__" in k}
+    assert len(opus) == 11
+    by_zero = [k for k, r in opus.items() if r["abstained_zero_grounded_after_second_call"]]
+    assert by_zero == [], f"the zero-grounded half fired on {by_zero}"
+    by_marker = sorted(k.split("__")[-1] for k, r in opus.items() if r["abstained_marker_either_pass"])
+    assert by_marker == ["dev_11", "dev_12"]
+    elsewhere = [
+        k for k, r in rows.items()
+        if r["abstained_zero_grounded_after_second_call"] and "__opus48__" not in k
+    ]
+    assert sorted(elsewhere) == [
+        "dev__second_call__haiku45__dev_09",
+        "dev__second_call__sonnet5__dev_02",
+    ], "the predicate must be shown able to fire, or the empty above proves nothing"
+
+
+def test_the_two_first_pass_implementations_agree_on_every_row():
+    """V4 on all 33 rows.
+
+    `first_pass_ungrounded` is src/score/grounding.py, the grader of record, over the first answer
+    against the first-pass context. `n_flagged_in` is src/complete/flagging.py, the operational
+    implementation, over the same answer and the same context. They are separate implementations
+    and the artifact carries both, so a disagreement is visible rather than assumed away.
+    """
+    rows = _grading()["rows"]
+    assert len(rows) == 33
+    for key, row in rows.items():
+        assert row["first_pass_ungrounded"] == row["n_flagged_in"], key
+    assert sum(r["n_flagged_in"] for r in rows.values()) == 52, (
+        "if every row carried zero the agreement above would be vacuous"
+    )
+
+
 def test_the_figures_are_capable_of_failing():
     """V20. An assertion set that could only pass would certify nothing."""
     per_tier = _grading()["per_tier"]
     assert per_tier["haiku45"]["claim_units"] != 64
     assert per_tier["sonnet5"]["claim_units"] != 43
+    assert per_tier["opus48"]["claim_units"] != 30
     assert PER_TIER["sonnet5"]["claim_units"] == per_tier["sonnet5"]["claim_units"]

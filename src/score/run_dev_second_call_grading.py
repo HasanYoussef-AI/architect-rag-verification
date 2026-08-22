@@ -42,7 +42,7 @@ from src.score.grounding import OVERLAP_THRESHOLD, SHORT_UNIT_LENGTH, is_grounde
 
 # Every tier whose second calls have run. Extended as each lands, so there is one runner and one
 # pair of artifacts rather than a parallel set per tier.
-TIERS = ("haiku45", "sonnet5")
+TIERS = ("haiku45", "sonnet5", "opus48")
 RUNS_DIR = REPO_ROOT / "data" / "runs"
 FLAGGED_PATH = REPO_ROOT / "eval" / "dev_second_call_flagged.json"
 GRADING_PATH = REPO_ROOT / "eval" / "dev_second_call_grading.json"
@@ -91,6 +91,14 @@ def build() -> tuple[dict, dict]:
                 "first_pass_class": classify_response(first[query_id]),
             }
 
+            # The first answer under the GRADER OF RECORD, against the FIRST-PASS context. This
+            # is the other implementation from `flagged`, which src/complete/flagging.py produced,
+            # and the two ungrounded counts are asserted equal in the tests rather than assumed.
+            first_units = list(claim_units(first[query_id]))
+            first_ungrounded = sum(
+                1 for u in first_units if not is_grounded(u, tuple(first_pass))
+            )
+
             answer = second[query_id]
             response_class = classify_response(answer)
             units = []
@@ -107,6 +115,13 @@ def build() -> tuple[dict, dict]:
             graded[key] = {
                 "first_pass_class": classify_response(first[query_id]),
                 "second_call_class": response_class,
+                "first_pass_units": len(first_units),
+                "first_pass_ungrounded": first_ungrounded,
+                "fully_grounded_at_first_pass": (
+                    classify_response(first[query_id]) != ABSTAINED
+                    and len(first_units) > 0
+                    and first_ungrounded == 0
+                ),
                 "context_set_size": result.size,
                 "n_flagged_in": len(flagged),
                 "units": units,
@@ -133,6 +148,9 @@ def build() -> tuple[dict, dict]:
         return {
             "rows": len(selected),
             "layer_abstaining_rows": len(selected) - len(answered),
+            "layer_abstention_rate": (
+                round((len(selected) - len(answered)) / len(selected), 6) if selected else None
+            ),
             "answered_rows": len(answered),
             "claim_units": len(units_all),
             "ungrounded_units": len(ungrounded),
@@ -160,6 +178,17 @@ def build() -> tuple[dict, dict]:
                 if r["first_pass_class"] == ABSTAINED
                 and r["second_call_class"] != ABSTAINED
                 and r["n_units"] > 0
+            ),
+            # The converse traffic, reported BESIDE layer_abstention_rate and never folded into
+            # it. A row answered at the first pass with every claim unit grounded, which the
+            # layer nonetheless abstains on once the second call has run. The second call is not
+            # only a repair path: it can also lose a row that was already sound. Recorded for
+            # every tier so the direction is visible across all three rather than on the one
+            # where it was first observed.
+            "rows_fully_grounded_at_first_pass_then_layer_abstains": sum(
+                1
+                for r in selected
+                if r["fully_grounded_at_first_pass"] and _layer_abstains(r)
             ),
         }
 

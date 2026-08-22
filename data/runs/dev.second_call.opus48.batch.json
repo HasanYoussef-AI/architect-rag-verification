@@ -1,0 +1,120 @@
+{
+ "description": "Batch record for the Opus development second calls, D1b-o. Eleven rows, the rows the committed corrective pass fires on. The answers are in dev.second_call.opus48.jsonl, one JSON object per line keyed and sorted by custom_id, each carrying the response whole.",
+ "produced_by": "src.generate.batch.submit and src.generate.batch.collect",
+ "query_set": "dev",
+ "condition": "second_call",
+ "tier": "opus48",
+ "model_requested": "claude-opus-4-8",
+ "model_reported": [
+  "claude-opus-4-8"
+ ],
+ "batch_id": "msgbatch_01GBu1SvPPNhu3DxvDQUQzZD",
+ "transport": "Batch API",
+ "submitted_utc": "2026-08-22T20:30:24Z",
+ "created_at_utc": "2026-08-22T20:30:30Z",
+ "ended_at_utc": "2026-08-22T20:31:43Z",
+ "collected_utc": "2026-08-22T20:32:09Z",
+ "processing_status": "ended",
+ "request_count": 11,
+ "request_counts": {
+  "canceled": 0,
+  "errored": 0,
+  "expired": 0,
+  "processing": 0,
+  "succeeded": 11
+ },
+ "population": {
+  "rows": 11,
+  "source": "the rows src.complete.augment.augment fires on, 11 of 12",
+  "excluded": "dev_07, on which the reference grammar extracts nothing so nothing can be absent"
+ },
+ "decoding": {
+  "temperature": null,
+  "thinking": {
+   "type": "adaptive"
+  },
+  "effort": "low",
+  "max_tokens": 16000,
+  "meaning": "temperature null means the parameter is omitted, because the tier rejects a non-default value as gate 1a measured. thinking is set to adaptive and effort to low, both explicitly, because the pre-registration fixes reasoning effort low on this tier and the tier's default thinking is off, so effort alone would describe nothing.",
+  "source": "data/runs/run_manifest.json, tiers.opus48, as committed at 50bd34a"
+ },
+ "usage_totals": {
+  "input_tokens": 69906,
+  "output_tokens": 2086,
+  "thinking_tokens": 335,
+  "note": "Summed from the usage block of every record. The input total equals the count_tokens figure re-derived over the same eleven bodies before submission, 69906, exactly. Thinking is reported above zero on this tier: output_tokens_details is present and not null on all eleven records, and 4 of them carry a thinking_tokens above zero, summing to 335. The per-row figures are in usage_per_row below. The other two tiers differ from this one and from each other on the same condition: on sonnet5 the field is present and not null on all eleven with a thinking_tokens of 0, and on haiku45 output_tokens_details is absent on all eleven, so that tier reports no thinking figure at all rather than a zero."
+ },
+ "usage_per_row": {
+  "dev_01": {
+   "input_tokens": 11174,
+   "output_tokens": 383,
+   "thinking_tokens": 85
+  },
+  "dev_02": {
+   "input_tokens": 6650,
+   "output_tokens": 31,
+   "thinking_tokens": 0
+  },
+  "dev_03": {
+   "input_tokens": 9197,
+   "output_tokens": 234,
+   "thinking_tokens": 0
+  },
+  "dev_04": {
+   "input_tokens": 6967,
+   "output_tokens": 111,
+   "thinking_tokens": 0
+  },
+  "dev_05": {
+   "input_tokens": 3835,
+   "output_tokens": 218,
+   "thinking_tokens": 62
+  },
+  "dev_06": {
+   "input_tokens": 5605,
+   "output_tokens": 689,
+   "thinking_tokens": 179
+  },
+  "dev_08": {
+   "input_tokens": 1777,
+   "output_tokens": 66,
+   "thinking_tokens": 0
+  },
+  "dev_09": {
+   "input_tokens": 7577,
+   "output_tokens": 48,
+   "thinking_tokens": 0
+  },
+  "dev_10": {
+   "input_tokens": 4112,
+   "output_tokens": 65,
+   "thinking_tokens": 0
+  },
+  "dev_11": {
+   "input_tokens": 4602,
+   "output_tokens": 226,
+   "thinking_tokens": 9
+  },
+  "dev_12": {
+   "input_tokens": 8410,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  }
+ },
+ "rows_with_thinking_above_zero": [
+  "dev_01",
+  "dev_05",
+  "dev_06",
+  "dev_11"
+ ],
+ "cost_usd": {
+  "input": 0.174765,
+  "output": 0.026075,
+  "total": 0.20084,
+  "rates": "batch input $2.50 / MTok, batch output $12.50 / MTok, eval/generation_predictions.md line 1087"
+ },
+ "max_tokens_stops": [],
+ "stop_reasons": [
+  "end_turn"
+ ]
+}

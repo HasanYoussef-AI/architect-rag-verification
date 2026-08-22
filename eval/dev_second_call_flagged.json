@@ -4,7 +4,8 @@
  "written_to": "eval/dev_second_call_flagged.json",
  "tiers": [
   "haiku45",
-  "sonnet5"
+  "sonnet5",
+  "opus48"
  ],
  "rows": {
   "dev__second_call__haiku45__dev_01": {
@@ -166,6 +167,72 @@
    "first_pass_class": "abstained"
   },
   "dev__second_call__sonnet5__dev_12": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained"
+  },
+  "dev__second_call__opus48__dev_01": {
+   "flagged_units": [
+    "Under Article 10(3), the training, validation and testing data sets must be:"
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__opus48__dev_02": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__opus48__dev_03": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__opus48__dev_04": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__opus48__dev_05": {
+   "flagged_units": [
+    "Per GOVERN 6.2 suggested actions, NIST recommends:",
+    "The suggested action documenting value-chain risks to identify over-reliance on third-party data (and to identify fallbacks) is GV-6.2-001."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__opus48__dev_06": {
+   "flagged_units": [
+    "**Evaluating TEVV metric effectiveness (MEASURE 2.13):** The effectiveness of the employed TEVV metrics and processes in the MEASURE function are evaluated and documented.",
+    "Suggested steps include:",
+    "Regularly evaluate system metrics for utility, considering descriptive approaches over overly complex methods.",
+    "**Conducting fairness assessments (MEASURE 2.11):** To manage computational and statistical bias:",
+    "Refine identification of within-group and intersectional disparities, evaluate underlying data distributions, employ sensitivity analysis, and evaluate quality metrics such as false positive and false negative rates."
+   ],
+   "n_flagged": 5,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__opus48__dev_08": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__opus48__dev_09": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__opus48__dev_10": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__opus48__dev_11": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained"
+  },
+  "dev__second_call__opus48__dev_12": {
    "flagged_units": [],
    "n_flagged": 0,
    "first_pass_class": "abstained"
