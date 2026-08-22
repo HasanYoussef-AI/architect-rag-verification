@@ -2,7 +2,10 @@
  "description": "The flagged lists the development second-call bodies carried, per row. Each is the first answer's ungrounded units under src/complete/flagging.py, the frozen operational implementation, computed against the FIRST-PASS context.",
  "produced_by": "python -m src.score.run_dev_second_call_grading",
  "written_to": "eval/dev_second_call_flagged.json",
- "tier": "haiku45",
+ "tiers": [
+  "haiku45",
+  "sonnet5"
+ ],
  "rows": {
   "dev__second_call__haiku45__dev_01": {
    "flagged_units": [
@@ -96,6 +99,73 @@
    "first_pass_class": "abstained"
   },
   "dev__second_call__haiku45__dev_12": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained"
+  },
+  "dev__second_call__sonnet5__dev_01": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__sonnet5__dev_02": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__sonnet5__dev_03": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__sonnet5__dev_04": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__sonnet5__dev_05": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__sonnet5__dev_06": {
+   "flagged_units": [
+    "**Evaluating TEVV metrics effectiveness (MEASURE 2.13):** The effectiveness of the employed TEVV metrics and processes in the MEASURE function is evaluated and documented.",
+    "Suggested actions include:",
+    "Regularly evaluating system metrics for utility, considering descriptive approaches instead of overly complex methods.",
+    "**Conducting fairness assessments (MEASURE 2.11):** Steps include:",
+    "Evaluating quality metrics like false positive/negative rates, and considering biases affecting small or intersectional groups/individuals.",
+    "Understanding sources of bias in training and TEVV data (distribution differences, data completeness/representativeness/balance, proxy features for demographic membership, systemic bias in unstructured data).",
+    "Leveraging impact assessments to classify system impacts/harms with input from potentially impacted communities.",
+    "Identifying impacted classes of individuals, groups, or ecosystems through direct community engagement.",
+    "Evaluating disability inclusion, including disability status in bias testing and screening out discriminatory design/deployment decisions.",
+    "Developing objective functions that account for systemic biases and in-group/out-group dynamics.",
+    "Using and customizing context-specific fairness metrics (e.g., statistical parity, error-rate equality, equal opportunity difference, average absolute odds difference, standardized mean difference, percentage point differences) to examine performance variation across, within, and intersecting groups."
+   ],
+   "n_flagged": 11,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__sonnet5__dev_08": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__sonnet5__dev_09": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__sonnet5__dev_10": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered"
+  },
+  "dev__second_call__sonnet5__dev_11": {
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained"
+  },
+  "dev__second_call__sonnet5__dev_12": {
    "flagged_units": [],
    "n_flagged": 0,
    "first_pass_class": "abstained"

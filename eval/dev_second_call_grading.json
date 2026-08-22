@@ -1,8 +1,11 @@
 {
- "description": "The development second-call grading for the Haiku tier. The frozen grader over the committed second answers, each against the corrective pass's own output. Reproducibility level 1. Produced by python -m src.score.run_dev_second_call_grading.",
+ "description": "The development second-call grading, per tier. The frozen grader over the committed second answers, each against the corrective pass's own output. Reproducibility level 1. Produced by python -m src.score.run_dev_second_call_grading.",
  "produced_by": "python -m src.score.run_dev_second_call_grading",
  "written_to": "eval/dev_second_call_grading.json",
- "tier": "haiku45",
+ "tiers": [
+  "haiku45",
+  "sonnet5"
+ ],
  "grader_frozen_at": "15e31d5",
  "thresholds": {
   "overlap_threshold": 0.75,
@@ -10,15 +13,35 @@
   "note": "Read from the frozen grader. Section 5.4 forbids a move on what these show."
  },
  "abstention_rule": "Section 6.1, layer condition, two predicates: the marker on either pass, or zero grounded claim units after the second call.",
- "pooled": {
-  "rows": 11,
-  "layer_abstaining_rows": 3,
-  "answered_rows": 8,
-  "claim_units": 65,
-  "ungrounded_units": 19,
-  "unsupported_claim_rate": 0.292308,
-  "rows_repeating_a_flagged_unit_unchanged": 7,
-  "flagged_units_repeated_unchanged": 14
+ "per_tier": {
+  "haiku45": {
+   "rows": 11,
+   "layer_abstaining_rows": 3,
+   "answered_rows": 8,
+   "claim_units": 65,
+   "ungrounded_units": 19,
+   "unsupported_claim_rate": 0.292308,
+   "rows_repeating_a_flagged_unit_unchanged": 7,
+   "flagged_units_in": 33,
+   "flagged_units_repeated_unchanged": 14,
+   "flagged_units_repeated_now_grounded": 0,
+   "flagged_units_not_returned": 19,
+   "first_pass_abstentions_with_a_substantive_second_answer": 1
+  },
+  "sonnet5": {
+   "rows": 11,
+   "layer_abstaining_rows": 3,
+   "answered_rows": 8,
+   "claim_units": 44,
+   "ungrounded_units": 7,
+   "unsupported_claim_rate": 0.159091,
+   "rows_repeating_a_flagged_unit_unchanged": 1,
+   "flagged_units_in": 11,
+   "flagged_units_repeated_unchanged": 1,
+   "flagged_units_repeated_now_grounded": 0,
+   "flagged_units_not_returned": 10,
+   "first_pass_abstentions_with_a_substantive_second_answer": 1
+  }
  },
  "rows": {
   "dev__second_call__haiku45__dev_01": {
@@ -112,6 +135,15 @@
    "repeated_flagged_unchanged": [
     "According to Article 10 of the EU AI Act, training, validation and testing data sets for high-risk AI systems must meet the following quality criteria:"
    ],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [
+    "**Statistical properties**: They shall have appropriate statistical properties, including characteristics regarding the persons or groups of persons for whom the system is intended to be used.",
+    "**Geographical and contextual specificity**: Data sets shall account for characteristics particular to the specific geographical, contextual, behavioural, or functional setting where the system will be used.",
+    "Data preparation operations (annotation, labelling, cleaning, updating, enrichment, aggregation)",
+    "Assumptions about what the data measures",
+    "Examination for possible biases affecting health, safety, fundamental rights, or leading to discrimination",
+    "Identification of data gaps and shortcomings"
+   ],
    "abstained_marker_either_pass": false,
    "abstained_zero_grounded_after_second_call": false
   },
@@ -150,6 +182,11 @@
    "n_grounded": 3,
    "n_ungrounded": 1,
    "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [
+    "According to the NIST generative AI profile, the suggested exercises to identify anomalous or unforeseen failure modes include:",
+    "These exercises are designed to test the system under adversarial or stress conditions and measure system response to identify failure modes."
+   ],
    "abstained_marker_either_pass": false,
    "abstained_zero_grounded_after_second_call": false
   },
@@ -221,6 +258,8 @@
     "According to the provided context, the EU AI Act treats AI systems used in migration, asylum and border control management as especially sensitive because:",
     "**International obligations**: The systems must not be used to circumvent international obligations under the UN Convention relating to the Status of Refugees, infringe on the principle of non-refoulement, or deny safe and effective legal avenues into the Union, including the right to international protection."
    ],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
    "abstained_marker_either_pass": false,
    "abstained_zero_grounded_after_second_call": false
   },
@@ -255,6 +294,8 @@
    "repeated_flagged_unchanged": [
     "According to NIST, the two primary information security risks that GAI-based systems present are:"
    ],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
    "abstained_marker_either_pass": false,
    "abstained_zero_grounded_after_second_call": false
   },
@@ -322,6 +363,8 @@
     "The suggested actions include:",
     "**Documentation of Value-Chain Risks:**"
    ],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
    "abstained_marker_either_pass": false,
    "abstained_zero_grounded_after_second_call": false
   },
@@ -449,6 +492,16 @@
     "Suggested actions include:",
     "## Fairness Assessment Steps"
    ],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [
+    "According to MEASURE 2.13, the AI RMF evaluates effectiveness by ensuring that \"the employed TEVV metrics and processes in the MEASURE function are evaluated and documented.\"",
+    "Reviewing selected system metrics and associated TEVV processes to determine if they sustain system improvements and identify/remove errors",
+    "Regularly evaluating system metrics for utility, considering descriptive approaches over overly complex methods",
+    "Reviewing metrics for acceptability within end users and impacted communities",
+    "MEASURE 2.11 suggests conducting fairness assessments through these steps:",
+    "**Quantify harms** using general fairness metrics (demographic parity, equalized odds, equal opportunity) and custom, context-specific metrics developed with affected communities",
+    "**Consider biases affecting small groups** and individuals"
+   ],
    "abstained_marker_either_pass": false,
    "abstained_zero_grounded_after_second_call": false
   },
@@ -469,6 +522,8 @@
    "n_grounded": 1,
    "n_ungrounded": 0,
    "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
    "abstained_marker_either_pass": false,
    "abstained_zero_grounded_after_second_call": false
   },
@@ -491,6 +546,8 @@
    "repeated_flagged_unchanged": [
     "According to the provided context, action GV-1.3-007 recommends: **Devise a plan to halt development or deployment of a GAI system that poses unacceptable negative risk.**"
    ],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
    "abstained_marker_either_pass": false,
    "abstained_zero_grounded_after_second_call": true
   },
@@ -561,6 +618,13 @@
    "repeated_flagged_unchanged": [
     "The suggested actions for MAP 3.4 include:"
    ],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [
+    "Developing AI system operational documentation including known risks and trustworthy characteristics",
+    "Creating training materials about AI system use and limitations",
+    "Including operators and practitioners in prototyping and testing activities",
+    "Tracking human-AI configuration outcomes for continual improvement"
+   ],
    "abstained_marker_either_pass": false,
    "abstained_zero_grounded_after_second_call": false
   },
@@ -587,6 +651,8 @@
    "n_grounded": 1,
    "n_ungrounded": 1,
    "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
    "abstained_marker_either_pass": true,
    "abstained_zero_grounded_after_second_call": false
   },
@@ -600,6 +666,508 @@
    "n_grounded": 0,
    "n_ungrounded": 0,
    "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": true,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__sonnet5__dev_01": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "context_set_size": 19,
+   "n_flagged_in": 0,
+   "units": [
+    {
+     "text": "Under Article 10(3), training, validation and testing data sets shall be relevant, sufficiently representative, and to the best extent possible, free of errors and complete in view of the intended purpose.",
+     "score": 0.90625,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "They shall have the appropriate statistical properties, including, where applicable, as regards the persons or groups of persons in relation to whom the high-risk AI system is intended to be used.",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "These characteristics may be met at the level of individual data sets or at the level of a combination thereof.",
+     "score": 0.9,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Additionally, under Article 10(4), the data sets shall take into account, to the extent required by the intended purpose, the characteristics or elements particular to the specific geographical, contextual, behavioural or functional setting within which the high-risk AI system is intended to be used.",
+     "score": 0.8888888888888888,
+     "grounded": true,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 4,
+   "n_grounded": 4,
+   "n_ungrounded": 0,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__sonnet5__dev_02": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "context_set_size": 25,
+   "n_flagged_in": 0,
+   "units": [
+    {
+     "text": "The NIST generative AI profile suggests conducting adversarial role-playing exercises, GAI red-teaming, or chaos testing to identify anomalous or unforeseen failure modes.",
+     "score": 0.6818181818181818,
+     "grounded": false,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 1,
+   "n_grounded": 0,
+   "n_ungrounded": 1,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": true
+  },
+  "dev__second_call__sonnet5__dev_03": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "context_set_size": 16,
+   "n_flagged_in": 0,
+   "units": [
+    {
+     "text": "Because these AI systems affect persons who are often in a particularly vulnerable position and dependent on the outcome of actions by competent public authorities.",
+     "score": 0.76,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Their accuracy, non-discriminatory nature and transparency are therefore particularly important to guarantee respect for the affected persons' fundamental rights, including rights to free movement, non-discrimination, protection of private life and personal data, international protection and good administration (eu_ai_act:rct_60).",
+     "score": 0.7948717948717948,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Additionally, such use must never serve as a means for Member States or Union institutions, bodies, offices or agencies to circumvent their international obligations under the 1951 UN Refugee Convention (as amended by the 1967 Protocol), infringe the principle of non-refoulement, or deny safe and effective legal avenues into the Union, including the right to international protection (eu_ai_act:rct_60).",
+     "score": 0.6101694915254238,
+     "grounded": false,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 3,
+   "n_grounded": 2,
+   "n_ungrounded": 1,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__sonnet5__dev_04": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "context_set_size": 13,
+   "n_flagged_in": 0,
+   "units": [
+    {
+     "text": "According to NIST, GAI-based systems present two primary information security risks: (1) GAI could potentially discover or enable new cybersecurity risks by lowering the barriers for or easing automated exercise of offensive capabilities, and (2) it expands the available attack surface, as GAI itself is vulnerable to attacks like prompt injection or data poisoning.",
+     "score": 0.9074074074074074,
+     "grounded": true,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 1,
+   "n_grounded": 1,
+   "n_ungrounded": 0,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__sonnet5__dev_05": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "context_set_size": 19,
+   "n_flagged_in": 0,
+   "units": [
+    {
+     "text": "**Contingency processes (GOVERN 6.2):** Contingency processes must be in place to handle failures or incidents in third-party data or AI systems deemed to be high-risk.",
+     "score": 0.84,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Suggested actions include establishing policies for handling third-party system failures, including redundancy mechanisms for vital third-party AI systems, and verifying that incident response plans address third-party AI systems.",
+     "score": 0.8214285714285714,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "**Value-chain risk documentation:** GV-6.2-001 — \"Document GAI risks associated with system value chain to identify over-reliance on third-party data and to identify fallbacks.\"",
+     "score": 0.8636363636363636,
+     "grounded": true,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 3,
+   "n_grounded": 3,
+   "n_ungrounded": 0,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__sonnet5__dev_06": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "context_set_size": 22,
+   "n_flagged_in": 11,
+   "units": [
+    {
+     "text": "**Evaluating TEVV metrics effectiveness (MEASURE 2.13):** Effectiveness of the employed TEVV metrics and processes in the MEASURE function are evaluated and documented.",
+     "score": 0.8181818181818182,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Suggested actions include:",
+     "score": 0.6666666666666666,
+     "grounded": false,
+     "was_flagged": true
+    },
+    {
+     "text": "Reviewing selected system metrics and associated TEVV processes to determine if they are able to sustain system improvements, including the identification and removal of errors.",
+     "score": 0.96,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Regularly evaluating system metrics for utility, and considering descriptive approaches in place of overly complex methods.",
+     "score": 0.875,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Reviewing selected system metrics for acceptability within the end user and impacted community of interest.",
+     "score": 0.9333333333333333,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Assessing effectiveness of metrics for identifying and measuring risks.",
+     "score": 0.8888888888888888,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "**Conducting fairness assessments (MEASURE 2.11):** Fairness and bias, as identified in the MAP function, are evaluated and results are documented.",
+     "score": 0.85,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Suggested steps for fairness assessments to manage computational and statistical forms of bias include:",
+     "score": 0.7857142857142857,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Identifying types of harms, including allocational, representational, quality of service, stereotyping, or erasure.",
+     "score": 0.9230769230769231,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Identifying groups—across, within, and intersecting—that might be harmed.",
+     "score": 0.625,
+     "grounded": false,
+     "was_flagged": false
+    },
+    {
+     "text": "Quantifying harms using both a general fairness metric, if appropriate (e.g., demographic parity, equalized odds, equal opportunity, statistical hypothesis tests), and custom, context-specific metrics developed in collaboration with affected communities.",
+     "score": 0.9666666666666667,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Analyzing quantified harms for contextually significant differences across groups, within groups, and among intersecting groups.",
+     "score": 0.9333333333333333,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Refining identification of within-group and intersectional group disparities.",
+     "score": 0.875,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Evaluating underlying data distributions and employing sensitivity analysis during the analysis of quantified harms.",
+     "score": 0.8571428571428571,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Evaluating quality metrics including false positive rates and false negative rates.",
+     "score": 0.9090909090909091,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Considering biases affecting small groups, within-group or intersectional communities, or single individuals.",
+     "score": 0.9166666666666666,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Understanding and considering sources of bias in training and TEVV data, including differences in distributions of outcomes across and within groups; completeness, representativeness, and balance of data sources; input data features that may serve as proxies for demographic group membership (e.g., credit score, ZIP code) or otherwise give rise to emergent bias; and forms of systemic bias in images, text (or word embeddings), audio, or other complex or unstructured data.",
+     "score": 0.9,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Leveraging impact assessments to identify and classify system impacts and harms to end users, other individuals, and groups, with input from potentially impacted communities.",
+     "score": 0.9583333333333334,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Identifying the classes of individuals, groups, or environmental ecosystems that might be impacted through direct engagement with potentially impacted communities.",
+     "score": 0.9,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Evaluating systems with regard to disability inclusion, including consideration of disability status in bias testing, and discriminatory screen-out processes that may arise from non-inclusive design or deployment decisions.",
+     "score": 0.8571428571428571,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Developing objective functions in consideration of systemic biases and in-group/out-group dynamics.",
+     "score": 0.8333333333333334,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Using context-specific fairness metrics to examine how system performance varies across, within, and/or for intersecting groups—metrics may include statistical parity, error-rate equality, statistical parity difference, equal opportunity difference, average absolute odds difference, standardized mean difference, and percentage point differences.",
+     "score": 0.9,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Customizing fairness metrics to the specific context of use to examine how system performance and potential harms vary within contextual norms.",
+     "score": 0.9047619047619048,
+     "grounded": true,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 23,
+   "n_grounded": 21,
+   "n_ungrounded": 2,
+   "repeated_flagged_unchanged": [
+    "Suggested actions include:"
+   ],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [
+    "**Evaluating TEVV metrics effectiveness (MEASURE 2.13):** The effectiveness of the employed TEVV metrics and processes in the MEASURE function is evaluated and documented.",
+    "Regularly evaluating system metrics for utility, considering descriptive approaches instead of overly complex methods.",
+    "**Conducting fairness assessments (MEASURE 2.11):** Steps include:",
+    "Evaluating quality metrics like false positive/negative rates, and considering biases affecting small or intersectional groups/individuals.",
+    "Understanding sources of bias in training and TEVV data (distribution differences, data completeness/representativeness/balance, proxy features for demographic membership, systemic bias in unstructured data).",
+    "Leveraging impact assessments to classify system impacts/harms with input from potentially impacted communities.",
+    "Identifying impacted classes of individuals, groups, or ecosystems through direct community engagement.",
+    "Evaluating disability inclusion, including disability status in bias testing and screening out discriminatory design/deployment decisions.",
+    "Developing objective functions that account for systemic biases and in-group/out-group dynamics.",
+    "Using and customizing context-specific fairness metrics (e.g., statistical parity, error-rate equality, equal opportunity difference, average absolute odds difference, standardized mean difference, percentage point differences) to examine performance variation across, within, and intersecting groups."
+   ],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__sonnet5__dev_08": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "context_set_size": 14,
+   "n_flagged_in": 0,
+   "units": [
+    {
+     "text": "GOVERN 2.2 requires that the organization’s personnel and partners receive AI risk management training to enable them to perform their duties and responsibilities consistent with related policies, procedures, and agreements.",
+     "score": 0.9354838709677419,
+     "grounded": true,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 1,
+   "n_grounded": 1,
+   "n_ungrounded": 0,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__sonnet5__dev_09": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "context_set_size": 25,
+   "n_flagged_in": 0,
+   "units": [
+    {
+     "text": "Action GV-1.3-007 recommends devising a plan to halt development or deployment of a GAI system that poses unacceptable negative risk.",
+     "score": 0.85,
+     "grounded": true,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 1,
+   "n_grounded": 1,
+   "n_ungrounded": 0,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__sonnet5__dev_10": {
+   "first_pass_class": "answered",
+   "second_call_class": "answered",
+   "context_set_size": 18,
+   "n_flagged_in": 0,
+   "units": [
+    {
+     "text": "MAP 3.4 states: \"Processes for operator and practitioner proficiency with AI system performance and trustworthiness – and relevant technical standards and certifications – are defined, assessed, and documented.\"",
+     "score": 0.9615384615384616,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "The accompanying \"About\" section explains that human-AI configurations can range from fully autonomous to fully manual, and that AI systems may make decisions autonomously, defer to a human expert, or serve as an additional opinion for a human decision-maker.",
+     "score": 0.717948717948718,
+     "grounded": false,
+     "was_flagged": false
+    },
+    {
+     "text": "Domain experts (e.g., physicians) who use AI systems often lack familiarity with machine learning or data science, and typically don't need it—the challenge is leveraging their domain expertise rather than educating them on AI internals.",
+     "score": 0.3611111111111111,
+     "grounded": false,
+     "was_flagged": false
+    },
+    {
+     "text": "Risk management is enhanced when organizations:",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Are aware of these knowledge limitations and work to identify risks in human-AI interactions and configurations, along with potential resulting impacts,",
+     "score": 0.7142857142857143,
+     "grounded": false,
+     "was_flagged": false
+    },
+    {
+     "text": "Define and differentiate the various human roles and responsibilities when using or interacting with AI systems, and",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Determine proficiency standards for AI system operation in the proposed context of use.",
+     "score": 0.9230769230769231,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Suggested actions for implementing MAP 3.4 include identifying AI system features that may affect downstream decision-making, identifying skill and proficiency requirements for operators and practitioners, developing operational documentation and training materials, defining certification procedures, involving operators/practitioners in prototyping and testing, verifying that outputs are interpretable and appropriately matched to context complexity, and tracking human-AI configuration outcomes for continual improvement.",
+     "score": 0.4666666666666667,
+     "grounded": false,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 8,
+   "n_grounded": 4,
+   "n_ungrounded": 4,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": false,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__sonnet5__dev_11": {
+   "first_pass_class": "abstained",
+   "second_call_class": "answered",
+   "context_set_size": 38,
+   "n_flagged_in": 0,
+   "units": [
+    {
+     "text": "Under GOVERN 6.1, the NIST Playbook lists these AI Transparency Resources:",
+     "score": 0.45454545454545453,
+     "grounded": false,
+     "was_flagged": false
+    },
+    {
+     "text": "GAO-21-519SP: AI Accountability Framework for Federal Agencies & Other Entities",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Intel.gov: AI Ethics Framework for Intelligence Community - 2020",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "WEF Model AI Governance Framework Assessment 2020",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "WEF Companion to the Model AI Governance Framework - 2020",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "AI policies and initiatives, in Artificial Intelligence in Society, OECD, 2019",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    },
+    {
+     "text": "Assessment List for Trustworthy AI (ALTAI) - The High-Level Expert Group on AI - 2019",
+     "score": 1.0,
+     "grounded": true,
+     "was_flagged": false
+    }
+   ],
+   "n_units": 7,
+   "n_grounded": 6,
+   "n_ungrounded": 1,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
+   "abstained_marker_either_pass": true,
+   "abstained_zero_grounded_after_second_call": false
+  },
+  "dev__second_call__sonnet5__dev_12": {
+   "first_pass_class": "abstained",
+   "second_call_class": "abstained",
+   "context_set_size": 21,
+   "n_flagged_in": 0,
+   "units": [],
+   "n_units": 0,
+   "n_grounded": 0,
+   "n_ungrounded": 0,
+   "repeated_flagged_unchanged": [],
+   "repeated_flagged_now_grounded": [],
+   "flagged_not_returned": [],
    "abstained_marker_either_pass": true,
    "abstained_zero_grounded_after_second_call": false
   }

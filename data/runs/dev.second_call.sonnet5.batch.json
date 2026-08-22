@@ -1,0 +1,55 @@
+{
+ "description": "Batch record for the Sonnet development second calls, D1b-s. Eleven rows, the rows the committed corrective pass fires on. The answers are in dev.second_call.sonnet5.jsonl, one JSON object per line keyed and sorted by custom_id, each carrying the response whole.",
+ "produced_by": "src.generate.batch.submit and src.generate.batch.collect",
+ "query_set": "dev",
+ "condition": "second_call",
+ "tier": "sonnet5",
+ "model_requested": "claude-sonnet-5",
+ "model_reported": [
+  "claude-sonnet-5"
+ ],
+ "batch_id": "msgbatch_01MPB61kM62PCRC8F9DrjLCM",
+ "transport": "Batch API",
+ "submitted_utc": "2026-08-22T15:13:56Z",
+ "created_at_utc": "2026-08-22T15:13:59Z",
+ "ended_at_utc": "2026-08-22T15:16:08Z",
+ "collected_utc": "2026-08-22T15:17:07Z",
+ "processing_status": "ended",
+ "request_count": 11,
+ "request_counts": {
+  "canceled": 0,
+  "errored": 0,
+  "expired": 0,
+  "processing": 0,
+  "succeeded": 11
+ },
+ "population": {
+  "rows": 11,
+  "source": "the rows src.complete.augment.augment fires on, 11 of 12",
+  "excluded": "dev_07, on which the reference grammar extracts nothing so nothing can be absent"
+ },
+ "decoding": {
+  "temperature": null,
+  "thinking": null,
+  "effort": null,
+  "max_tokens": 16000,
+  "meaning": "temperature null means the parameter is omitted, because the tier rejects a non-default value as gate 1a measured. thinking and effort omitted, so the tier runs at the API default.",
+  "source": "data/runs/run_manifest.json, tiers.sonnet5, as committed at 50bd34a"
+ },
+ "usage_totals": {
+  "input_tokens": 70361,
+  "output_tokens": 2772,
+  "thinking_tokens": 0,
+  "note": "Summed from the usage block of every record. The input total equals the count_tokens figure re-derived over the same eleven bodies before submission, 70361, exactly. THINKING TOKENS ARE A REPORTED ZERO ON ALL ELEVEN: output_tokens_details is present and not null on every record carrying {\"thinking_tokens\": 0}, and no thinking content block was returned, the same as on this tier's first pass at 08bb610."
+ },
+ "cost_usd": {
+  "input": 0.070361,
+  "output": 0.01386,
+  "total": 0.084221,
+  "rates": "batch input $1.00 / MTok, batch output $5.00 / MTok, eval/generation_predictions.md line 1086"
+ },
+ "max_tokens_stops": [],
+ "stop_reasons": [
+  "end_turn"
+ ]
+}
