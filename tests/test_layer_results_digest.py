@@ -93,14 +93,27 @@ def test_the_layer_results_digest_pin_can_fail():
     assert real != fabricated
 
 
-def test_the_two_result_pins_are_over_different_artifacts():
-    """A pin copied from the first-pass file would guard the wrong bytes while passing every check
-    above. The two digests and the two paths are asserted distinct."""
+def test_the_three_result_pins_are_over_different_artifacts():
+    """A pin copied from another result file would guard the wrong bytes while passing every check
+    above.
+
+    COMPARED AGAINST EVERY OTHER RESULT PIN AND NOT AGAINST ONE. This read as a two-way comparison
+    against the first-pass pin alone, which was complete while two result pins existed and stopped
+    being complete when the grading pin landed: a check against a single other pin leaves a pair
+    unexamined and narrows further as pins are added. tests/test_grading_results_digest.py carried
+    the widened form from its first landing and this file is aligned onto it, so each pin file
+    states the whole invariant rather than a weaker relative of it, and deleting any one file does
+    not silently narrow what the others assert.
+    """
+    from tests.test_grading_results_digest import GRADING_RESULTS, GRADING_RESULTS_SHA256
     from tests.test_results_digest import RESULTS, RESULTS_SHA256
 
-    assert LAYER_RESULTS != RESULTS
-    assert LAYER_RESULTS_SHA256 != RESULTS_SHA256
-    assert hashlib.sha256(RESULTS.read_bytes()).hexdigest() == RESULTS_SHA256
+    paths = [LAYER_RESULTS, GRADING_RESULTS, RESULTS]
+    digests = [LAYER_RESULTS_SHA256, GRADING_RESULTS_SHA256, RESULTS_SHA256]
+    assert len(set(paths)) == 3, paths
+    assert len(set(digests)) == 3, digests
+    for path, pinned in zip(paths, digests):
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == pinned, path
 
 
 def test_the_pinned_artifact_is_the_one_the_layer_figures_are_read_from():
