@@ -3823,6 +3823,23 @@ Commit: f98a03bd7b7afbb2aac2b921f8ff0ab201a267c1
   (chore: bootstrap repo scaffolding, tooling, and governance)
   Note: the two bootstrap commits were deliberately rebuilt before any push to remove the Claude co-author trailer, a one-time authorized override of CLAUDE.md Rule 10 valid only in this pre-push window because nothing is pushed and no README or pre-registration cites these hashes; the hash above is the rebuilt bootstrap hash.
 
+MARKED CORRECTION, added under the publication documentation pass on Hasan's explicit direction.
+The clause "no README or pre-registration cites these hashes" is superseded in one of its two
+halves, and the sentence is left standing rather than edited, on the precedent this file already
+sets for log corrections. It was true when this entry was written: the bootstrap
+`PREREGISTRATION.md` placed by the commit above carries no commit-shaped string anywhere, measured
+against a control that finds two in the current revision of the same file. It went false at
+`18603e9` on 2026-07-25, the commit that extended the pre-registration, whose revision note cites
+the bootstrap commit by the identifier that commit carried before the history rebuild. `dbe8b33`
+later re-anchored that citation to the hash printed above, which moved the pointer rather than the
+fact; the superseded identifier is not reproduced here, because it does not resolve in the current
+history and S10 bars a citation that does not. The other half of the clause still holds, and so
+does the rest of it, both measured: `README.md` carries no commit-shaped string at all, and
+`d574a88b`, the second of the two bootstrap commits, is cited by neither file. What the note exists
+to record is unchanged. The override was authorised in a window in which nothing had been pushed
+and no remote existed, and that is what made it safe; the citation observation was a supporting
+detail, and it is the detail that went stale.
+
 Current state:
 - Local git repository on branch `main`, no remote configured, nothing pushed.
 - Tooling verified: `uv sync` builds the environment, `ruff check .` passes, and
