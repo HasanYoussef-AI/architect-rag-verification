@@ -1,0 +1,380 @@
+{
+ "description": "Batch record for the sealed Sonnet second calls, the layer's corrective pass. One request per row the committed corrective pass fires on, carrying the augmented context, the first answer from the committed first pass, and the flagged claim units in eval/test_second_call_flagged.sonnet5.json. The answers are in test.second_call.sonnet5.jsonl, one JSON object per line keyed and sorted by custom_id, each carrying the response whole and the sha256 of the request body that produced it. Nothing here is graded.",
+ "produced_by": "src.generate.batch.submit and src.generate.batch.collect",
+ "query_set": "test",
+ "condition": "second_call",
+ "tier": "sonnet5",
+ "model_requested": "claude-sonnet-5",
+ "model_reported": [
+  "claude-sonnet-5"
+ ],
+ "batch_id": "msgbatch_018cWkKhU9GFU3SrmPdwU1QY",
+ "transport": "Batch API",
+ "submitted_utc": "2026-08-23T00:52:38Z",
+ "created_at_utc": "2026-08-23T00:53:21Z",
+ "ended_at_utc": "2026-08-23T00:54:34Z",
+ "collected_utc": "2026-08-23T00:55:00Z",
+ "processing_status": "ended",
+ "request_count": 48,
+ "request_counts": {
+  "canceled": 0,
+  "errored": 0,
+  "expired": 0,
+  "processing": 0,
+  "succeeded": 48
+ },
+ "population": {
+  "rows": 48,
+  "source": "the rows src.complete.augment.augment fires on, 48 of 50",
+  "not_fired": [
+   "test_34",
+   "test_39"
+  ],
+  "flagged_list": "eval/test_second_call_flagged.sonnet5.json"
+ },
+ "decoding": {
+  "temperature": null,
+  "thinking": null,
+  "effort": null,
+  "max_tokens": 16000,
+  "source": "data/runs/run_manifest.json, tiers.sonnet5, as committed at 50bd34a"
+ },
+ "request_body_digest": {
+  "set": "41e4081689cd536a9c62650b81fb4ba77a4cd1edfc50b318aefee307cc48a545",
+  "content": "1a5ed435399a3aca0e81777390bc48c24c135bc4f414fb89ea881921edfa33ea",
+  "per_body_field": "body_sha256",
+  "expression": "src.generate.assemble.request_body_digest, sha256 over json.dumps(body, ensure_ascii=False, sort_keys=True, separators=(\",\",\":\"))"
+ },
+ "count_tokens_total": {
+  "measured": 554370,
+  "bound_of_record": 2087295,
+  "at_or_below_bound": true,
+  "measured_empty_slot_figure": 551295,
+  "fill_delta": 3075,
+  "source_of_bound": "eval/generation_predictions.md section 11.2",
+  "measured_utc": "2026-08-23T00:51:33Z"
+ },
+ "usage_totals": {
+  "input_tokens": 554370,
+  "output_tokens": 4928,
+  "note": "Summed from the usage block of every record in test.second_call.sonnet5.jsonl. The input total is 554370 against the pre-submission count_tokens measurement of 554370 over the same bodies, a difference of 0."
+ },
+ "usage_per_row": {
+  "test_01": {
+   "input_tokens": 5165,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_02": {
+   "input_tokens": 5100,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_03": {
+   "input_tokens": 5805,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_04": {
+   "input_tokens": 33631,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_05": {
+   "input_tokens": 31701,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_06": {
+   "input_tokens": 2305,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_07": {
+   "input_tokens": 1968,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_08": {
+   "input_tokens": 5187,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_09": {
+   "input_tokens": 29971,
+   "output_tokens": 107,
+   "thinking_tokens": 0
+  },
+  "test_10": {
+   "input_tokens": 19816,
+   "output_tokens": 31,
+   "thinking_tokens": 0
+  },
+  "test_11": {
+   "input_tokens": 25092,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_12": {
+   "input_tokens": 21249,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_13": {
+   "input_tokens": 7863,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_14": {
+   "input_tokens": 11184,
+   "output_tokens": 242,
+   "thinking_tokens": 0
+  },
+  "test_15": {
+   "input_tokens": 17329,
+   "output_tokens": 104,
+   "thinking_tokens": 0
+  },
+  "test_16": {
+   "input_tokens": 8042,
+   "output_tokens": 426,
+   "thinking_tokens": 0
+  },
+  "test_17": {
+   "input_tokens": 25840,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_18": {
+   "input_tokens": 11818,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_19": {
+   "input_tokens": 14477,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_20": {
+   "input_tokens": 18110,
+   "output_tokens": 193,
+   "thinking_tokens": 0
+  },
+  "test_21": {
+   "input_tokens": 21513,
+   "output_tokens": 274,
+   "thinking_tokens": 0
+  },
+  "test_22": {
+   "input_tokens": 30161,
+   "output_tokens": 137,
+   "thinking_tokens": 0
+  },
+  "test_23": {
+   "input_tokens": 12650,
+   "output_tokens": 59,
+   "thinking_tokens": 0
+  },
+  "test_24": {
+   "input_tokens": 12749,
+   "output_tokens": 46,
+   "thinking_tokens": 0
+  },
+  "test_25": {
+   "input_tokens": 5128,
+   "output_tokens": 44,
+   "thinking_tokens": 0
+  },
+  "test_26": {
+   "input_tokens": 7195,
+   "output_tokens": 296,
+   "thinking_tokens": 0
+  },
+  "test_27": {
+   "input_tokens": 13246,
+   "output_tokens": 21,
+   "thinking_tokens": 0
+  },
+  "test_28": {
+   "input_tokens": 22945,
+   "output_tokens": 74,
+   "thinking_tokens": 0
+  },
+  "test_29": {
+   "input_tokens": 27830,
+   "output_tokens": 338,
+   "thinking_tokens": 0
+  },
+  "test_30": {
+   "input_tokens": 8189,
+   "output_tokens": 240,
+   "thinking_tokens": 0
+  },
+  "test_31": {
+   "input_tokens": 14102,
+   "output_tokens": 76,
+   "thinking_tokens": 0
+  },
+  "test_32": {
+   "input_tokens": 5976,
+   "output_tokens": 50,
+   "thinking_tokens": 0
+  },
+  "test_33": {
+   "input_tokens": 2319,
+   "output_tokens": 753,
+   "thinking_tokens": 272
+  },
+  "test_35": {
+   "input_tokens": 5629,
+   "output_tokens": 66,
+   "thinking_tokens": 0
+  },
+  "test_36": {
+   "input_tokens": 1483,
+   "output_tokens": 42,
+   "thinking_tokens": 0
+  },
+  "test_37": {
+   "input_tokens": 5267,
+   "output_tokens": 50,
+   "thinking_tokens": 0
+  },
+  "test_38": {
+   "input_tokens": 6337,
+   "output_tokens": 58,
+   "thinking_tokens": 0
+  },
+  "test_40": {
+   "input_tokens": 4533,
+   "output_tokens": 15,
+   "thinking_tokens": 0
+  },
+  "test_41": {
+   "input_tokens": 5528,
+   "output_tokens": 61,
+   "thinking_tokens": 0
+  },
+  "test_42": {
+   "input_tokens": 4467,
+   "output_tokens": 102,
+   "thinking_tokens": 0
+  },
+  "test_43": {
+   "input_tokens": 4349,
+   "output_tokens": 89,
+   "thinking_tokens": 0
+  },
+  "test_44": {
+   "input_tokens": 3735,
+   "output_tokens": 116,
+   "thinking_tokens": 0
+  },
+  "test_45": {
+   "input_tokens": 4079,
+   "output_tokens": 182,
+   "thinking_tokens": 0
+  },
+  "test_46": {
+   "input_tokens": 4985,
+   "output_tokens": 91,
+   "thinking_tokens": 0
+  },
+  "test_47": {
+   "input_tokens": 4746,
+   "output_tokens": 77,
+   "thinking_tokens": 0
+  },
+  "test_48": {
+   "input_tokens": 4509,
+   "output_tokens": 104,
+   "thinking_tokens": 0
+  },
+  "test_49": {
+   "input_tokens": 4549,
+   "output_tokens": 92,
+   "thinking_tokens": 0
+  },
+  "test_50": {
+   "input_tokens": 4518,
+   "output_tokens": 62,
+   "thinking_tokens": 0
+  }
+ },
+ "output_tokens_details": {
+  "records_carrying_the_key": 48,
+  "records_whose_value_is_not_null": 48,
+  "of": 48
+ },
+ "rows_with_thinking_above_zero": {
+  "test_33": 272
+ },
+ "thinking_tokens_total": 272,
+ "rows_by_stop_reason": {
+  "end_turn": [
+   "test_01",
+   "test_02",
+   "test_03",
+   "test_04",
+   "test_05",
+   "test_06",
+   "test_07",
+   "test_08",
+   "test_09",
+   "test_10",
+   "test_11",
+   "test_12",
+   "test_13",
+   "test_14",
+   "test_15",
+   "test_16",
+   "test_17",
+   "test_18",
+   "test_19",
+   "test_20",
+   "test_21",
+   "test_22",
+   "test_23",
+   "test_24",
+   "test_25",
+   "test_26",
+   "test_27",
+   "test_28",
+   "test_29",
+   "test_30",
+   "test_31",
+   "test_32",
+   "test_33",
+   "test_35",
+   "test_36",
+   "test_37",
+   "test_38",
+   "test_40",
+   "test_41",
+   "test_42",
+   "test_43",
+   "test_44",
+   "test_45",
+   "test_46",
+   "test_47",
+   "test_48",
+   "test_49",
+   "test_50"
+  ]
+ },
+ "input_token_divergence": {
+  "rows": {},
+  "total": 0,
+  "note": "usage.input_tokens against the pre-submission count_tokens measurement over the same body, per row."
+ },
+ "cost_usd": {
+  "input": 0.55437,
+  "output": 0.02464,
+  "total": 0.57901,
+  "rates": "batch input $1.00 / MTok, batch output $5.00 / MTok"
+ },
+ "max_tokens_stops": [],
+ "stop_reasons": [
+  "end_turn"
+ ]
+}

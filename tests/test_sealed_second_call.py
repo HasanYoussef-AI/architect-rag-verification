@@ -39,7 +39,7 @@ from src.ingest.corpus_integrity import REPO_ROOT
 RUNS = REPO_ROOT / "data" / "runs"
 QUERY_SET = "test"
 CONDITION = "second_call"
-TIERS_UNDER_TEST = ("haiku45",)
+TIERS_UNDER_TEST = ("haiku45", "sonnet5")
 
 SEALED_ROWS = 50
 NOT_FIRED = ["test_34", "test_39"]
@@ -47,16 +47,19 @@ FIRING_ROWS = SEALED_ROWS - len(NOT_FIRED)
 
 # eval/generation_predictions.md section 11.2: the measured empty-slot context figure and the
 # two-ceiling bound of record, per tier over the 48 firing rows.
-EMPTY_SLOT_FIGURE = {"haiku45": 389427}
-BOUND_OF_RECORD = {"haiku45": 1925427}
+EMPTY_SLOT_FIGURE = {"haiku45": 389427, "sonnet5": 551295}
+BOUND_OF_RECORD = {"haiku45": 1925427, "sonnet5": 2087295}
 
 # Measured before submission and reported by the API afterwards. Equal on this run.
-COUNT_TOKENS_TOTAL = {"haiku45": 395720}
-USAGE_INPUT_TOTAL = {"haiku45": 395720}
+COUNT_TOKENS_TOTAL = {"haiku45": 395720, "sonnet5": 554370}
+USAGE_INPUT_TOTAL = {"haiku45": 395720, "sonnet5": 554370}
 
-EXPECTED_STOP_REASONS = {"haiku45": ["end_turn"]}
-EXPECTED_THINKING = {"haiku45": {"present": 48, "non_null": 0, "rows_above_zero": 0, "total": 0}}
-TRUE_RATES = {"haiku45": (0.50, 2.50)}
+EXPECTED_STOP_REASONS = {"haiku45": ["end_turn"], "sonnet5": ["end_turn"]}
+EXPECTED_THINKING = {
+    "haiku45": {"present": 48, "non_null": 0, "rows_above_zero": 0, "total": 0},
+    "sonnet5": {"present": 48, "non_null": 48, "rows_above_zero": 1, "total": 272},
+}
+TRUE_RATES = {"haiku45": (0.50, 2.50), "sonnet5": (1.00, 5.00)}
 
 
 def _records(tier: str) -> list[dict]:
@@ -287,3 +290,31 @@ def test_an_abstained_first_pass_still_received_a_second_call_with_an_empty_flag
         assert entry["n_flagged"] == 0, key
     issued = {r["custom_id"] for r in _records(tier)}
     assert set(abstained).issubset(issued)
+
+
+def test_the_tiers_share_a_firing_set_and_do_not_share_flagged_lists():
+    """One fact each way, and the pair is the point.
+
+    The corrective pass reads the query and the first-pass ten, neither of which varies by tier,
+    so every tier fires on the same rows. The flagged list reads the first answer, which does
+    vary, so the lists must differ. A change that made the firing sets diverge, or the flagged
+    lists identical, would mean one of those two inputs had stopped being what it is.
+    """
+    assert len(TIERS_UNDER_TEST) >= 2, "the comparison needs two committed tiers"
+    populations, flagged = {}, {}
+    for tier in TIERS_UNDER_TEST:
+        payload = _committed_flagged(tier)
+        populations[tier] = (
+            payload["population"]["fired"],
+            tuple(payload["population"]["not_fired"]),
+            tuple(sorted(v["query_id"] for v in payload["rows"].values())),
+        )
+        flagged[tier] = {v["query_id"]: tuple(v["flagged_units"]) for v in payload["rows"].values()}
+
+    assert len(set(populations.values())) == 1, "the tiers fire on different rows"
+    assert len({tuple(sorted(f.items())) for f in flagged.values()}) == len(TIERS_UNDER_TEST), (
+        "two tiers produced identical flagged lists, so the first answer stopped reaching them"
+    )
+    totals = {t: sum(len(u) for u in f.values()) for t, f in flagged.items()}
+    assert all(v >= 0 for v in totals.values())
+    assert len(set(totals.values())) > 1, "the flagged-unit counts are identical across tiers"

@@ -1,0 +1,428 @@
+{
+ "description": "The flagged lists the sealed second-call bodies carry, per row, for one tier. Each is the first answer's ungrounded units under src/complete/flagging.py, the frozen operational implementation, computed against the FIRST-PASS context. The bodies themselves carry the augmented context. Committed so a reviewer can rebuild every body exactly from committed files with no key.",
+ "produced_by": "python -m src.complete.run_second_call_flagged sonnet5",
+ "written_to": "eval/test_second_call_flagged.sonnet5.json",
+ "query_set": "test",
+ "tier": "sonnet5",
+ "first_pass_source": "data/runs/test.raw.sonnet5.jsonl",
+ "population": {
+  "starting_rows": 50,
+  "fired": 48,
+  "not_fired": [
+   "test_34",
+   "test_39"
+  ],
+  "rule": "src.complete.augment.augment reports triggered; a row it does not fire on receives no second call and its layer answer is its first-pass answer."
+ },
+ "grading_note": "Nothing here is graded. No claim unit is scored and no rate is computed. The grading of record is a separate commit over committed files, per CLAUDE.md Rule 9.",
+ "rows": {
+  "test__second_call__sonnet5__test_01": {
+   "query_id": "test_01",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 37,
+   "fetched_chunk_count": 27
+  },
+  "test__second_call__sonnet5__test_02": {
+   "query_id": "test_02",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 21,
+   "fetched_chunk_count": 11
+  },
+  "test__second_call__sonnet5__test_03": {
+   "query_id": "test_03",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 29,
+   "fetched_chunk_count": 19
+  },
+  "test__second_call__sonnet5__test_04": {
+   "query_id": "test_04",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 57,
+   "fetched_chunk_count": 47
+  },
+  "test__second_call__sonnet5__test_05": {
+   "query_id": "test_05",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 53,
+   "fetched_chunk_count": 43
+  },
+  "test__second_call__sonnet5__test_06": {
+   "query_id": "test_06",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 17,
+   "fetched_chunk_count": 7
+  },
+  "test__second_call__sonnet5__test_07": {
+   "query_id": "test_07",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 16,
+   "fetched_chunk_count": 6
+  },
+  "test__second_call__sonnet5__test_08": {
+   "query_id": "test_08",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 23,
+   "fetched_chunk_count": 13
+  },
+  "test__second_call__sonnet5__test_09": {
+   "query_id": "test_09",
+   "flagged_units": [
+    "The power to adopt delegated acts, including under Article 43(5) (amending Annexes VI and VII), was conferred on the Commission for a period of five years from 1 August 2024, with tacit extension for periods of identical duration unless the European Parliament or the Council opposes such extension."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 53,
+   "fetched_chunk_count": 43
+  },
+  "test__second_call__sonnet5__test_10": {
+   "query_id": "test_10",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 33,
+   "fetched_chunk_count": 23
+  },
+  "test__second_call__sonnet5__test_11": {
+   "query_id": "test_11",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 44,
+   "fetched_chunk_count": 34
+  },
+  "test__second_call__sonnet5__test_12": {
+   "query_id": "test_12",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 36,
+   "fetched_chunk_count": 26
+  },
+  "test__second_call__sonnet5__test_13": {
+   "query_id": "test_13",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 17,
+   "fetched_chunk_count": 7
+  },
+  "test__second_call__sonnet5__test_14": {
+   "query_id": "test_14",
+   "flagged_units": [
+    "Per Article 36(2), extensions to the scope of a notification follow the procedures in Articles 29 and 30.",
+    "Under Article 29, the application must be accompanied by:",
+    "an accreditation certificate, where one exists, issued by a national accreditation body attesting that the body fulfils the requirements in Article 31 (or, if no accreditation certificate can be provided, all documentary evidence necessary to verify, recognize, and regularly monitor compliance with Article 31); and"
+   ],
+   "n_flagged": 3,
+   "first_pass_class": "answered",
+   "context_set_size": 19,
+   "fetched_chunk_count": 9
+  },
+  "test__second_call__sonnet5__test_15": {
+   "query_id": "test_15",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 30,
+   "fetched_chunk_count": 20
+  },
+  "test__second_call__sonnet5__test_16": {
+   "query_id": "test_16",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 26,
+   "fetched_chunk_count": 16
+  },
+  "test__second_call__sonnet5__test_17": {
+   "query_id": "test_17",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 44,
+   "fetched_chunk_count": 34
+  },
+  "test__second_call__sonnet5__test_18": {
+   "query_id": "test_18",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 20,
+   "fetched_chunk_count": 10
+  },
+  "test__second_call__sonnet5__test_19": {
+   "query_id": "test_19",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 26,
+   "fetched_chunk_count": 16
+  },
+  "test__second_call__sonnet5__test_20": {
+   "query_id": "test_20",
+   "flagged_units": [
+    "Under Article 83(1)(a)/(b), this constitutes formal non-compliance (CE marking affixed in violation of Article 48)."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 32,
+   "fetched_chunk_count": 22
+  },
+  "test__second_call__sonnet5__test_21": {
+   "query_id": "test_21",
+   "flagged_units": [
+    "The list of criminal offences in Annex II includes:"
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 34,
+   "fetched_chunk_count": 24
+  },
+  "test__second_call__sonnet5__test_22": {
+   "query_id": "test_22",
+   "flagged_units": [
+    "The Regulation applies from 2 August 2026, except:",
+    "Article 6(1) and its corresponding obligations apply from 2 August 2027."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 50,
+   "fetched_chunk_count": 40
+  },
+  "test__second_call__sonnet5__test_23": {
+   "query_id": "test_23",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 25,
+   "fetched_chunk_count": 15
+  },
+  "test__second_call__sonnet5__test_24": {
+   "query_id": "test_24",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 41,
+   "fetched_chunk_count": 31
+  },
+  "test__second_call__sonnet5__test_25": {
+   "query_id": "test_25",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 12,
+   "fetched_chunk_count": 2
+  },
+  "test__second_call__sonnet5__test_26": {
+   "query_id": "test_26",
+   "flagged_units": [
+    "Depends on who provides the model and system:",
+    "In all other cases, **national market surveillance authorities** remain responsible for supervision. For general-purpose AI systems usable directly for at least one high-risk purpose, these authorities must cooperate with the AI Office to carry out compliance evaluations."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 15,
+   "fetched_chunk_count": 5
+  },
+  "test__second_call__sonnet5__test_27": {
+   "query_id": "test_27",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 23,
+   "fetched_chunk_count": 13
+  },
+  "test__second_call__sonnet5__test_28": {
+   "query_id": "test_28",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 37,
+   "fetched_chunk_count": 27
+  },
+  "test__second_call__sonnet5__test_29": {
+   "query_id": "test_29",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 46,
+   "fetched_chunk_count": 36
+  },
+  "test__second_call__sonnet5__test_30": {
+   "query_id": "test_30",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 17,
+   "fetched_chunk_count": 7
+  },
+  "test__second_call__sonnet5__test_31": {
+   "query_id": "test_31",
+   "flagged_units": [
+    "For SMEs, including start-ups, each fine is capped at whichever is lower: the percentage or the fixed amount referred to in paragraphs 3, 4, and 5 of Article 99."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 27,
+   "fetched_chunk_count": 17
+  },
+  "test__second_call__sonnet5__test_32": {
+   "query_id": "test_32",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 15,
+   "fetched_chunk_count": 5
+  },
+  "test__second_call__sonnet5__test_33": {
+   "query_id": "test_33",
+   "flagged_units": [
+    "Under MANAGE 3.1, an organization must regularly monitor AI risks and benefits from third-party resources, and apply and document risk controls."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 15,
+   "fetched_chunk_count": 5
+  },
+  "test__second_call__sonnet5__test_35": {
+   "query_id": "test_35",
+   "flagged_units": [
+    "Transparency answers \"what happened,\" explainability answers \"how\" a decision was made, and interpretability answers \"why\" a decision was made and its meaning or context to the user."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 31,
+   "fetched_chunk_count": 21
+  },
+  "test__second_call__sonnet5__test_36": {
+   "query_id": "test_36",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 12,
+   "fetched_chunk_count": 2
+  },
+  "test__second_call__sonnet5__test_37": {
+   "query_id": "test_37",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 15,
+   "fetched_chunk_count": 5
+  },
+  "test__second_call__sonnet5__test_38": {
+   "query_id": "test_38",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 13,
+   "fetched_chunk_count": 3
+  },
+  "test__second_call__sonnet5__test_40": {
+   "query_id": "test_40",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 21,
+   "fetched_chunk_count": 11
+  },
+  "test__second_call__sonnet5__test_41": {
+   "query_id": "test_41",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 13,
+   "fetched_chunk_count": 3
+  },
+  "test__second_call__sonnet5__test_42": {
+   "query_id": "test_42",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 27,
+   "fetched_chunk_count": 17
+  },
+  "test__second_call__sonnet5__test_43": {
+   "query_id": "test_43",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 37,
+   "fetched_chunk_count": 27
+  },
+  "test__second_call__sonnet5__test_44": {
+   "query_id": "test_44",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 32,
+   "fetched_chunk_count": 22
+  },
+  "test__second_call__sonnet5__test_45": {
+   "query_id": "test_45",
+   "flagged_units": [
+    "Under MAP 5.1, the AI Transparency Resources listed are:"
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 31,
+   "fetched_chunk_count": 21
+  },
+  "test__second_call__sonnet5__test_46": {
+   "query_id": "test_46",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 35,
+   "fetched_chunk_count": 25
+  },
+  "test__second_call__sonnet5__test_47": {
+   "query_id": "test_47",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 39,
+   "fetched_chunk_count": 29
+  },
+  "test__second_call__sonnet5__test_48": {
+   "query_id": "test_48",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 38,
+   "fetched_chunk_count": 28
+  },
+  "test__second_call__sonnet5__test_49": {
+   "query_id": "test_49",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 38,
+   "fetched_chunk_count": 28
+  },
+  "test__second_call__sonnet5__test_50": {
+   "query_id": "test_50",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 38,
+   "fetched_chunk_count": 28
+  }
+ }
+}
