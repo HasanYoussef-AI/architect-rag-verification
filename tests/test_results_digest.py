@@ -19,12 +19,24 @@ the per-stratum aggregates, the miss list and the carrier counts are all read ou
 generation runs will be scored against the rankings it records. An unpinned result is a result that
 can drift under the claims made about it, and the claims are already written into the session log.
 
-REPRODUCIBILITY. Unlike the embedding array's pin, this one is not a same-machine check. The
-artifact is reproducibility level 1: its inputs are the committed query file, the committed query
-embeddings, the committed chunk embeddings and the committed chunk order, and the runner uses no
-model and no key. A reviewer who re-runs `python -m src.score.run_retrieval_eval` on any machine
-should reproduce these bytes exactly, so a mismatch here is a real divergence rather than a
-platform difference.
+REPRODUCIBILITY, STATED WITH ITS CONDITION RATHER THAN AS A UNIVERSAL. Unlike the embedding
+array's pin, this one is not a same-machine check. The artifact is reproducibility level 1: its
+inputs are the committed query file, the committed query embeddings, the committed chunk
+embeddings and the committed chunk order, and the runner uses no model and no key. A clone holds
+these bytes on every platform, because `.gitattributes` disables end-of-line translation for the
+whole tree. A reviewer who re-runs `python -m src.score.run_retrieval_eval` reproduces them under
+a runtime whose text mode writes LF; the runner opens its output in text mode, so a runtime that
+writes CRLF produces different bytes without changing a single figure, and a mismatch under that
+condition is a platform difference rather than a divergence.
+
+CORRECTED. This paragraph read "A reviewer who re-runs `python -m src.score.run_retrieval_eval` on
+any machine should reproduce these bytes exactly, so a mismatch here is a real divergence rather
+than a platform difference." That was false in both halves at the time it was written: the
+repository then carried no `.gitattributes`, so a checkout configured to translate line endings
+changed the bytes of every text artifact in the tree, and the producer's text-mode write makes the
+re-run half platform-dependent whatever git does. The checkout half is now true by mechanism and
+the re-run half is stated with its condition. A pin whose failure mode a reader cannot distinguish
+is a pin that gets deleted the first time it fires.
 """
 
 from __future__ import annotations

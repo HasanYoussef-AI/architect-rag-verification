@@ -1,0 +1,23 @@
+# End-of-line translation is disabled for the whole tree.
+#
+# WHY THIS FILE EXISTS. Every result artifact under data/ and eval/ is pinned by a sha256 in
+# tests/, and the corpus artifacts are pinned by the corpus integrity digests. A checkout that
+# rewrote line endings would change those bytes without changing a single figure, and every one of
+# those pins would fire for a platform reason rather than for a divergence. `-text` tells git to
+# store and check out bytes verbatim on every platform, which is what makes those pins mean what
+# they say and what makes the repository's reproducibility claim true off this machine.
+#
+# `text=auto` IS REJECTED RATHER THAN MERELY NOT CHOSEN, and the measurement is the reason. Three
+# committed corpus artifacts carry CRLF sequences as extracted, measured over all 252 tracked
+# files: data/chunks/nist_ai_100_1.extracted.txt at 1373, nist_ai_600_1.extracted.txt at 2411 and
+# nist_playbook.extracted.txt at 5026, every CR byte in each being part of a CRLF. git reports all
+# three as mixed, since they carry lone LFs as well. Renormalisation would rewrite them on
+# check-in and break the digests that certify the corpus is what the publishers served. Disabling
+# translation preserves whatever each file already holds, which is the only behaviour compatible
+# with a tree whose bytes are the artifact.
+#
+# WHAT THIS DOES NOT FIX, STATED SO IT IS NOT MISTAKEN FOR COMPLETE. This governs git. It does not
+# govern how a producer writes a file: the result runners open their output in text mode, so a
+# runtime whose text mode writes CRLF produces different bytes when a reviewer re-runs one. The
+# three digest pins state that condition rather than asserting it away.
+* -text

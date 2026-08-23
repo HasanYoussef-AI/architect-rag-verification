@@ -36,12 +36,19 @@ REPRODUCIBILITY, STATED WITH ITS CONDITION RATHER THAN AS A UNIVERSAL. The artif
 reproducibility level 1: its inputs are the nine committed result files under data/runs/, the three
 committed flagged artifacts, the committed sealed retrieval results, the committed chunk store and
 the committed unit index, and the runner uses no model, no key, no network and no clock. A reviewer
-re-running `python -m src.score.run_sealed_grading` reproduces these bytes under an LF checkout and
-a runtime whose text mode writes LF. This repository carries no `.gitattributes`, so a checkout
-configured to translate line endings changes the bytes of every text artifact in the tree without
-changing a single figure, and a mismatch under that condition is a platform difference rather than
-a divergence. The condition is stated here rather than asserted away, because a pin whose failure
+re-running `python -m src.score.run_sealed_grading` reproduces these bytes under a runtime whose
+text mode writes LF. A clone holds them on every platform, because `.gitattributes` disables
+end-of-line translation for the whole tree; that half is true by mechanism. The runner opens its
+output in text mode, so a runtime that writes CRLF produces different bytes without changing a
+single figure, and a mismatch under that condition is a platform difference rather than a
+divergence. The condition is stated here rather than asserted away, because a pin whose failure
 mode a reader cannot distinguish is a pin that gets deleted the first time it fires.
+
+CORRECTED at the commit that added `.gitattributes`. This paragraph read "This repository carries
+no `.gitattributes`, so a checkout configured to translate line endings changes the bytes of every
+text artifact in the tree", which was true when written and is false of the tree this file now
+ships in. The same commit corrected the stronger claim the two older pins carried, which asserted
+reproduction on any machine without either condition.
 """
 
 from __future__ import annotations
