@@ -1,0 +1,506 @@
+{
+ "description": "The flagged lists the sealed second-call bodies carry, per row, for one tier. Each is the first answer's ungrounded units under src/complete/flagging.py, the frozen operational implementation, computed against the FIRST-PASS context. The bodies themselves carry the augmented context. Committed so a reviewer can rebuild every body exactly from committed files with no key.",
+ "produced_by": "python -m src.complete.run_second_call_flagged haiku45",
+ "written_to": "eval/test_second_call_flagged.haiku45.json",
+ "query_set": "test",
+ "tier": "haiku45",
+ "first_pass_source": "data/runs/test.raw.haiku45.jsonl",
+ "population": {
+  "starting_rows": 50,
+  "fired": 48,
+  "not_fired": [
+   "test_34",
+   "test_39"
+  ],
+  "rule": "src.complete.augment.augment reports triggered; a row it does not fire on receives no second call and its layer answer is its first-pass answer."
+ },
+ "grading_note": "Nothing here is graded. No claim unit is scored and no rate is computed. The grading of record is a separate commit over committed files, per CLAUDE.md Rule 9.",
+ "rows": {
+  "test__second_call__haiku45__test_01": {
+   "query_id": "test_01",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 37,
+   "fetched_chunk_count": 27
+  },
+  "test__second_call__haiku45__test_02": {
+   "query_id": "test_02",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 21,
+   "fetched_chunk_count": 11
+  },
+  "test__second_call__haiku45__test_03": {
+   "query_id": "test_03",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 29,
+   "fetched_chunk_count": 19
+  },
+  "test__second_call__haiku45__test_04": {
+   "query_id": "test_04",
+   "flagged_units": [
+    "The provided context does not include Article 114 of the EU AI Act."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 57,
+   "fetched_chunk_count": 47
+  },
+  "test__second_call__haiku45__test_05": {
+   "query_id": "test_05",
+   "flagged_units": [
+    "The provided context does not contain Article 181 of the EU AI Act."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 53,
+   "fetched_chunk_count": 43
+  },
+  "test__second_call__haiku45__test_06": {
+   "query_id": "test_06",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 17,
+   "fetched_chunk_count": 7
+  },
+  "test__second_call__haiku45__test_07": {
+   "query_id": "test_07",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 16,
+   "fetched_chunk_count": 6
+  },
+  "test__second_call__haiku45__test_08": {
+   "query_id": "test_08",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 23,
+   "fetched_chunk_count": 13
+  },
+  "test__second_call__haiku45__test_09": {
+   "query_id": "test_09",
+   "flagged_units": [
+    "According to Article 97(2), the power to adopt delegated acts referred to in Article 43(5) and (6) (which includes the power to amend Annexes VI and VII) was conferred on the Commission for a period of **five years from 1 August 2024**."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 53,
+   "fetched_chunk_count": 43
+  },
+  "test__second_call__haiku45__test_10": {
+   "query_id": "test_10",
+   "flagged_units": [
+    "However, the provided context does not specify what information is required in that secure non-public section registration.",
+    "Annex IX lists information requirements for the general registration under Article 71(4), but the context does not clarify whether all Annex IX points apply to the law enforcement registration in the secure non-public section or if different requirements apply."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 33,
+   "fetched_chunk_count": 23
+  },
+  "test__second_call__haiku45__test_11": {
+   "query_id": "test_11",
+   "flagged_units": [
+    "According to the provided context, the technical documentation must contain a **post-market monitoring plan** as part of the technical documentation referred to in Annex IV.",
+    "Article 72(3) states that \"The post-market monitoring plan shall be part of the technical documentation referred to in Annex IV.\" Article 72(1) and (2) specify that providers must establish a post-market monitoring system that \"actively and systematically collect, document and analyse relevant data...on the performance of high-risk AI systems throughout their lifetime, and which allow the provider to evaluate the continuous compliance of AI systems with the requirements set out in Chapter III, Section 2.\"",
+    "However, Article 72(2) notes that this obligation \"shall not cover sensitive operational data of deployers which are law-enforcement authorities,\" providing a limited exception for law enforcement providers regarding operational data."
+   ],
+   "n_flagged": 3,
+   "first_pass_class": "answered",
+   "context_set_size": 44,
+   "fetched_chunk_count": 34
+  },
+  "test__second_call__haiku45__test_12": {
+   "query_id": "test_12",
+   "flagged_units": [
+    "Based on the provided context, I do not have enough information to answer this question.",
+    "The context shows that electronic instructions for use are not required for high-risk AI systems in law enforcement and migration, asylum and border control management (Annex III, points 1, 6 and 7), as stated in Annex VIII, Section A, point 12.",
+    "However, the context does not specify any other Annex III areas that are exempt from providing electronic instructions for use."
+   ],
+   "n_flagged": 3,
+   "first_pass_class": "answered",
+   "context_set_size": 36,
+   "fetched_chunk_count": 26
+  },
+  "test__second_call__haiku45__test_13": {
+   "query_id": "test_13",
+   "flagged_units": [
+    "The provided context establishes that market surveillance authorities must respect confidentiality of trade secrets (Article 78), but it does not specify a date from which this obligation begins."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 17,
+   "fetched_chunk_count": 7
+  },
+  "test__second_call__haiku45__test_14": {
+   "query_id": "test_14",
+   "flagged_units": [
+    "The provided context states in Article 36(2) that \"the procedures laid down in Articles 29 and 30 shall apply to extensions of the scope of the notification,\" but it does not specify what documentation or information must accompany an application for extension of scope.",
+    "While Article 29 describes requirements for initial notification applications, the context does not explicitly detail what must accompany an extension application specifically."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 19,
+   "fetched_chunk_count": 9
+  },
+  "test__second_call__haiku45__test_15": {
+   "query_id": "test_15",
+   "flagged_units": [
+    "The provided context does not contain the full text of Article 2(1) of the EU AI Act that would specify which categories of actors are identified there.",
+    "Therefore, I do not have enough information to answer this question."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 30,
+   "fetched_chunk_count": 20
+  },
+  "test__second_call__haiku45__test_16": {
+   "query_id": "test_16",
+   "flagged_units": [
+    "Based on the provided context, at an earlier stage, the AI Office could have requested the following documentation:",
+    "**Technical documentation** as specified in Article 53 and 55, which should include (per Annex XII):",
+    "General description of the model (intended tasks, acceptable use policies, architecture, parameters, modality of inputs/outputs, etc.)",
+    "Description of model elements and development process (technical means for integration, data used for training/testing/validation, data provenance and curation methodologies)",
+    "**A publicly available summary** of the content used for pre-training and training, including main data collections and narrative explanations of data sources (per Recital 107)",
+    "**Any additional information necessary** for assessing compliance with the Regulation (per Article 91)",
+    "The Commission may request this documentation through a structured dialogue with the provider before formally requesting information (Article 91)."
+   ],
+   "n_flagged": 7,
+   "first_pass_class": "answered",
+   "context_set_size": 26,
+   "fetched_chunk_count": 16
+  },
+  "test__second_call__haiku45__test_17": {
+   "query_id": "test_17",
+   "flagged_units": [
+    "The provided context does not specify the maximum administrative fine for an authorised representative's failure to keep technical documentation available.",
+    "While Article 99 and Article 100 outline administrative fines for various infringements of the EU AI Act, they do not specifically address the penalty for this particular breach by an authorised representative."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 44,
+   "fetched_chunk_count": 34
+  },
+  "test__second_call__haiku45__test_18": {
+   "query_id": "test_18",
+   "flagged_units": [
+    "Based on the provided context, the requirement for separate confirmation by two natural persons is established in **Article 14, paragraph 5** of the EU AI Act itself, not in a separate document that must inform the deployer.",
+    "Additionally, **Recital (73)** explains that providers should identify appropriate human oversight measures before placing the system on the market or putting it into service, including this two-person verification requirement for biometric identification systems."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 20,
+   "fetched_chunk_count": 10
+  },
+  "test__second_call__haiku45__test_19": {
+   "query_id": "test_19",
+   "flagged_units": [
+    "According to the provided context, when a distributor puts its own trademark on a high-risk AI system already placed on the market, it becomes considered a provider of that high-risk AI system and must assume all relevant provider obligations under Article 16.",
+    "However, the context does not specify what quality-related system must be in place.",
+    "The context mentions that providers must have a \"post-market monitoring system\" in place (Recital 155), but it does not detail the specific quality-related system requirements that apply to providers under Article 16."
+   ],
+   "n_flagged": 3,
+   "first_pass_class": "answered",
+   "context_set_size": 26,
+   "fetched_chunk_count": 16
+  },
+  "test__second_call__haiku45__test_20": {
+   "query_id": "test_20",
+   "flagged_units": [
+    "According to Article 83(1)(a) of the EU AI Act, the market surveillance authority must require the provider to put an end to the non-compliance, since the CE marking has been affixed in violation of Article 48."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 32,
+   "fetched_chunk_count": 22
+  },
+  "test__second_call__haiku45__test_21": {
+   "query_id": "test_21",
+   "flagged_units": [
+    "According to Annex II, the criminal offences listed are:"
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 34,
+   "fetched_chunk_count": 24
+  },
+  "test__second_call__haiku45__test_22": {
+   "query_id": "test_22",
+   "flagged_units": [
+    "According to the provided context, the EU AI Act applies from **2 August 2026** as the general application date.",
+    "However, there are earlier application dates for specific provisions:",
+    "**2 February 2025**: Chapters I and II (prohibitions and general provisions)",
+    "**2 August 2025**: Chapter III Section 4, Chapter V, Chapter VII, Chapter XII, and Article 78 (governance and enforcement provisions, notified bodies, penalties, and general-purpose AI model obligations)",
+    "**2 August 2027**: Article 6(1) and corresponding obligations"
+   ],
+   "n_flagged": 5,
+   "first_pass_class": "answered",
+   "context_set_size": 50,
+   "fetched_chunk_count": 40
+  },
+  "test__second_call__haiku45__test_23": {
+   "query_id": "test_23",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 25,
+   "fetched_chunk_count": 15
+  },
+  "test__second_call__haiku45__test_24": {
+   "query_id": "test_24",
+   "flagged_units": [
+    "According to Article 61(2) of the EU AI Act, informed consent must be **dated and documented**."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 41,
+   "fetched_chunk_count": 31
+  },
+  "test__second_call__haiku45__test_25": {
+   "query_id": "test_25",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 12,
+   "fetched_chunk_count": 2
+  },
+  "test__second_call__haiku45__test_26": {
+   "query_id": "test_26",
+   "flagged_units": [
+    "According to the provided context, the supervising authority depends on who provides the model and system:",
+    "**National market surveillance authorities**: In all other cases, national market surveillance authorities remain responsible for supervising AI systems."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 15,
+   "fetched_chunk_count": 5
+  },
+  "test__second_call__haiku45__test_27": {
+   "query_id": "test_27",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 23,
+   "fetched_chunk_count": 13
+  },
+  "test__second_call__haiku45__test_28": {
+   "query_id": "test_28",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 37,
+   "fetched_chunk_count": 27
+  },
+  "test__second_call__haiku45__test_29": {
+   "query_id": "test_29",
+   "flagged_units": [
+    "According to Article 49(3) of the EU AI Act, before putting into service a high-risk AI system listed in Annex III, deployers that are public authorities, Union institutions, bodies, offices or agencies must:",
+    "Additionally, according to Article 27(1), deployers that are bodies governed by public law must perform a fundamental rights impact assessment prior to deploying the high-risk AI system, and then notify the market surveillance authority of the results (Article 27(3))."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 46,
+   "fetched_chunk_count": 36
+  },
+  "test__second_call__haiku45__test_30": {
+   "query_id": "test_30",
+   "flagged_units": [
+    "According to Article 74(12) of the EU AI Act, providers must grant market surveillance authorities:",
+    "**Full access to documentation** related to high-risk AI systems",
+    "Additionally, Article 74(13) specifies that market surveillance authorities shall be granted access to the **source code** of high-risk AI systems upon a reasoned request, but only when access is necessary to assess conformity with Chapter III, Section 2 requirements AND testing or auditing procedures based on the data and documentation provided have been exhausted or proved insufficient."
+   ],
+   "n_flagged": 3,
+   "first_pass_class": "answered",
+   "context_set_size": 17,
+   "fetched_chunk_count": 7
+  },
+  "test__second_call__haiku45__test_31": {
+   "query_id": "test_31",
+   "flagged_units": [
+    "This means SMEs receive the benefit of the lowest applicable fine cap among the specified options, providing them with more favorable treatment compared to larger operators."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 27,
+   "fetched_chunk_count": 17
+  },
+  "test__second_call__haiku45__test_32": {
+   "query_id": "test_32",
+   "flagged_units": [
+    "According to the provided context, privacy and cybersecurity risk management considerations and approaches should be applied at the following points in an AI system's lifecycle:",
+    "Additionally, for general-purpose AI models with systemic risks, providers should ensure cybersecurity protection \"along the entire model's lifecycle.\""
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 15,
+   "fetched_chunk_count": 5
+  },
+  "test__second_call__haiku45__test_33": {
+   "query_id": "test_33",
+   "flagged_units": [
+    "According to the provided context, an organization must:"
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 15,
+   "fetched_chunk_count": 5
+  },
+  "test__second_call__haiku45__test_35": {
+   "query_id": "test_35",
+   "flagged_units": [
+    "According to the provided context:"
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 31,
+   "fetched_chunk_count": 21
+  },
+  "test__second_call__haiku45__test_36": {
+   "query_id": "test_36",
+   "flagged_units": [
+    "According to the provided context, organizational practices must be in place to:"
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 12,
+   "fetched_chunk_count": 2
+  },
+  "test__second_call__haiku45__test_37": {
+   "query_id": "test_37",
+   "flagged_units": [
+    "According to the provided context, the physical synthesis, development, production, and use of chemical or biological agents will continue to require both **applicable expertise and supporting materials and infrastructure**, even as generative AI improves."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 15,
+   "fetched_chunk_count": 5
+  },
+  "test__second_call__haiku45__test_38": {
+   "query_id": "test_38",
+   "flagged_units": [
+    "According to the provided context, NIST identifies three privacy principles that are put at risk when personal data is used to train generative AI:",
+    "**Transparency** - users are not aware of specific data sources used in training",
+    "**Individual participation (including consent)** - individuals lack awareness and control over their data use",
+    "**Purpose specification** - the original purpose for data collection may not align with its use in GAI training"
+   ],
+   "n_flagged": 4,
+   "first_pass_class": "answered",
+   "context_set_size": 13,
+   "fetched_chunk_count": 3
+  },
+  "test__second_call__haiku45__test_40": {
+   "query_id": "test_40",
+   "flagged_units": [
+    "The provided context contains the action MP-2.3-001 itself, but does not include information about its parent subcategory or what that parent subcategory requires."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 21,
+   "fetched_chunk_count": 11
+  },
+  "test__second_call__haiku45__test_41": {
+   "query_id": "test_41",
+   "flagged_units": [
+    "Based on the provided context, the parent subcategory (MEASURE 2.2) requires organizations to:",
+    "**Protect human subjects** during measurement and evaluation of AI systems that involve testing with human subjects or using human subject data",
+    "**Follow human subjects research requirements**, including informed consent and compensation, during dataset collection activities",
+    "**Ensure data representativeness** that reflects the population within the context of use",
+    "The action MS-2.2-003 (providing withdrawal and consent revocation options) directly implements this parent requirement by operationalizing the documented need to provide mechanisms for revoking consent for present or future data use."
+   ],
+   "n_flagged": 5,
+   "first_pass_class": "answered",
+   "context_set_size": 13,
+   "fetched_chunk_count": 3
+  },
+  "test__second_call__haiku45__test_42": {
+   "query_id": "test_42",
+   "flagged_units": [
+    "The context provided contains the specific action (GV-3.2-004) that establishes policies for user feedback mechanisms, but it does not include information about the parent subcategory or its requirements."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 27,
+   "fetched_chunk_count": 17
+  },
+  "test__second_call__haiku45__test_43": {
+   "query_id": "test_43",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 37,
+   "fetched_chunk_count": 27
+  },
+  "test__second_call__haiku45__test_44": {
+   "query_id": "test_44",
+   "flagged_units": [
+    "The provided context shows MANAGE 3.1 as a section title and description, but does not include a list of AI transparency resources under it."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 32,
+   "fetched_chunk_count": 22
+  },
+  "test__second_call__haiku45__test_45": {
+   "query_id": "test_45",
+   "flagged_units": [
+    "According to the context, MAP 5.1 lists the following AI Transparency Resources:"
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 31,
+   "fetched_chunk_count": 21
+  },
+  "test__second_call__haiku45__test_46": {
+   "query_id": "test_46",
+   "flagged_units": [
+    "The provided context does not include a section labeled \"MAP 3.4\" with AI transparency resources.",
+    "The context shows MAP sections 1.3, 3.1, 3.2, 3.3, 4.2, 5.1, and 5.2, but not MAP 3.4."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 35,
+   "fetched_chunk_count": 25
+  },
+  "test__second_call__haiku45__test_47": {
+   "query_id": "test_47",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 39,
+   "fetched_chunk_count": 29
+  },
+  "test__second_call__haiku45__test_48": {
+   "query_id": "test_48",
+   "flagged_units": [
+    "The provided context does not contain any resources listed under \"MANAGE 4.2.\" The context only includes resources from MAP 4.2, GOVERN sections, and MAP sections 1.3, 3.1, 3.2, 3.3, and 3.4."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 38,
+   "fetched_chunk_count": 28
+  },
+  "test__second_call__haiku45__test_49": {
+   "query_id": "test_49",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 38,
+   "fetched_chunk_count": 28
+  },
+  "test__second_call__haiku45__test_50": {
+   "query_id": "test_50",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 38,
+   "fetched_chunk_count": 28
+  }
+ }
+}

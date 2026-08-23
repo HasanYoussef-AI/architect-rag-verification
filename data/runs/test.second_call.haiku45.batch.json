@@ -1,0 +1,330 @@
+{
+ "description": "Batch record for the sealed Haiku second calls, the layer's corrective pass. One request per row the committed corrective pass fires on, carrying the augmented context, the first answer from the committed first pass, and the flagged claim units in eval/test_second_call_flagged.haiku45.json. The answers are in test.second_call.haiku45.jsonl, one JSON object per line keyed and sorted by custom_id, each carrying the response whole and the sha256 of the request body that produced it. Nothing here is graded.",
+ "produced_by": "src.generate.batch.submit and src.generate.batch.collect",
+ "query_set": "test",
+ "condition": "second_call",
+ "tier": "haiku45",
+ "model_requested": "claude-haiku-4-5-20251001",
+ "model_reported": [
+  "claude-haiku-4-5-20251001"
+ ],
+ "batch_id": "msgbatch_01HUAUxBwjDa71wUUAVaXVjE",
+ "transport": "Batch API",
+ "submitted_utc": "2026-08-23T00:28:07Z",
+ "created_at_utc": "2026-08-23T00:28:39Z",
+ "ended_at_utc": "2026-08-23T00:30:07Z",
+ "collected_utc": "2026-08-23T00:31:00Z",
+ "processing_status": "ended",
+ "request_count": 48,
+ "request_counts": {
+  "canceled": 0,
+  "errored": 0,
+  "expired": 0,
+  "processing": 0,
+  "succeeded": 48
+ },
+ "population": {
+  "rows": 48,
+  "source": "the rows src.complete.augment.augment fires on, 48 of 50",
+  "not_fired": [
+   "test_34",
+   "test_39"
+  ],
+  "flagged_list": "eval/test_second_call_flagged.haiku45.json"
+ },
+ "decoding": {
+  "temperature": 0,
+  "thinking": null,
+  "effort": null,
+  "max_tokens": 16000,
+  "source": "data/runs/run_manifest.json, tiers.haiku45, as committed at 50bd34a"
+ },
+ "request_body_digest": {
+  "set": "abcb68590b73dd2169c9e75a313734105a9163a0c35f12fa2c09f46a046adeb8",
+  "content": "51c93e8dcc9aa79f7603c43c293ba6ecfdc42e679f067080c9678805a2ab24df",
+  "per_body_field": "body_sha256",
+  "expression": "src.generate.assemble.request_body_digest, sha256 over json.dumps(body, ensure_ascii=False, sort_keys=True, separators=(\",\",\":\"))"
+ },
+ "count_tokens_total": {
+  "measured": 395720,
+  "bound_of_record": 1925427,
+  "at_or_below_bound": true,
+  "measured_empty_slot_figure": 389427,
+  "fill_delta": 6293,
+  "source_of_bound": "eval/generation_predictions.md section 11.2",
+  "measured_utc": "2026-08-23T00:26:43Z"
+ },
+ "usage_totals": {
+  "input_tokens": 395720,
+  "output_tokens": 3880,
+  "note": "Summed from the usage block of every record in test.second_call.haiku45.jsonl. The input total is 395720 against the pre-submission count_tokens measurement of 395720 over the same bodies, a difference of 0."
+ },
+ "usage_per_row": {
+  "test_01": {
+   "input_tokens": 3519,
+   "output_tokens": 14
+  },
+  "test_02": {
+   "input_tokens": 3473,
+   "output_tokens": 14
+  },
+  "test_03": {
+   "input_tokens": 3993,
+   "output_tokens": 14
+  },
+  "test_04": {
+   "input_tokens": 23906,
+   "output_tokens": 14
+  },
+  "test_05": {
+   "input_tokens": 22544,
+   "output_tokens": 14
+  },
+  "test_06": {
+   "input_tokens": 1564,
+   "output_tokens": 14
+  },
+  "test_07": {
+   "input_tokens": 1355,
+   "output_tokens": 14
+  },
+  "test_08": {
+   "input_tokens": 3595,
+   "output_tokens": 14
+  },
+  "test_09": {
+   "input_tokens": 21179,
+   "output_tokens": 78
+  },
+  "test_10": {
+   "input_tokens": 14086,
+   "output_tokens": 127
+  },
+  "test_11": {
+   "input_tokens": 18385,
+   "output_tokens": 183
+  },
+  "test_12": {
+   "input_tokens": 15498,
+   "output_tokens": 14
+  },
+  "test_13": {
+   "input_tokens": 5473,
+   "output_tokens": 14
+  },
+  "test_14": {
+   "input_tokens": 7707,
+   "output_tokens": 99
+  },
+  "test_15": {
+   "input_tokens": 12379,
+   "output_tokens": 14
+  },
+  "test_16": {
+   "input_tokens": 5985,
+   "output_tokens": 233
+  },
+  "test_17": {
+   "input_tokens": 18599,
+   "output_tokens": 14
+  },
+  "test_18": {
+   "input_tokens": 8532,
+   "output_tokens": 85
+  },
+  "test_19": {
+   "input_tokens": 10756,
+   "output_tokens": 106
+  },
+  "test_20": {
+   "input_tokens": 12770,
+   "output_tokens": 188
+  },
+  "test_21": {
+   "input_tokens": 15154,
+   "output_tokens": 177
+  },
+  "test_22": {
+   "input_tokens": 21664,
+   "output_tokens": 132
+  },
+  "test_23": {
+   "input_tokens": 9079,
+   "output_tokens": 54
+  },
+  "test_24": {
+   "input_tokens": 9273,
+   "output_tokens": 43
+  },
+  "test_25": {
+   "input_tokens": 3743,
+   "output_tokens": 78
+  },
+  "test_26": {
+   "input_tokens": 5119,
+   "output_tokens": 127
+  },
+  "test_27": {
+   "input_tokens": 9237,
+   "output_tokens": 51
+  },
+  "test_28": {
+   "input_tokens": 16566,
+   "output_tokens": 60
+  },
+  "test_29": {
+   "input_tokens": 20039,
+   "output_tokens": 183
+  },
+  "test_30": {
+   "input_tokens": 5806,
+   "output_tokens": 177
+  },
+  "test_31": {
+   "input_tokens": 10264,
+   "output_tokens": 59
+  },
+  "test_32": {
+   "input_tokens": 4171,
+   "output_tokens": 89
+  },
+  "test_33": {
+   "input_tokens": 1789,
+   "output_tokens": 237
+  },
+  "test_35": {
+   "input_tokens": 3975,
+   "output_tokens": 80
+  },
+  "test_36": {
+   "input_tokens": 1202,
+   "output_tokens": 159
+  },
+  "test_37": {
+   "input_tokens": 3776,
+   "output_tokens": 38
+  },
+  "test_38": {
+   "input_tokens": 4600,
+   "output_tokens": 107
+  },
+  "test_40": {
+   "input_tokens": 3140,
+   "output_tokens": 14
+  },
+  "test_41": {
+   "input_tokens": 4114,
+   "output_tokens": 168
+  },
+  "test_42": {
+   "input_tokens": 3099,
+   "output_tokens": 14
+  },
+  "test_43": {
+   "input_tokens": 2979,
+   "output_tokens": 67
+  },
+  "test_44": {
+   "input_tokens": 2615,
+   "output_tokens": 72
+  },
+  "test_45": {
+   "input_tokens": 2805,
+   "output_tokens": 119
+  },
+  "test_46": {
+   "input_tokens": 3552,
+   "output_tokens": 69
+  },
+  "test_47": {
+   "input_tokens": 3265,
+   "output_tokens": 56
+  },
+  "test_48": {
+   "input_tokens": 3197,
+   "output_tokens": 65
+  },
+  "test_49": {
+   "input_tokens": 3114,
+   "output_tokens": 65
+  },
+  "test_50": {
+   "input_tokens": 3085,
+   "output_tokens": 53
+  }
+ },
+ "output_tokens_details": {
+  "records_carrying_the_key": 48,
+  "records_whose_value_is_not_null": 0,
+  "of": 48
+ },
+ "rows_with_thinking_above_zero": {},
+ "thinking_tokens_total": 0,
+ "rows_by_stop_reason": {
+  "end_turn": [
+   "test_01",
+   "test_02",
+   "test_03",
+   "test_04",
+   "test_05",
+   "test_06",
+   "test_07",
+   "test_08",
+   "test_09",
+   "test_10",
+   "test_11",
+   "test_12",
+   "test_13",
+   "test_14",
+   "test_15",
+   "test_16",
+   "test_17",
+   "test_18",
+   "test_19",
+   "test_20",
+   "test_21",
+   "test_22",
+   "test_23",
+   "test_24",
+   "test_25",
+   "test_26",
+   "test_27",
+   "test_28",
+   "test_29",
+   "test_30",
+   "test_31",
+   "test_32",
+   "test_33",
+   "test_35",
+   "test_36",
+   "test_37",
+   "test_38",
+   "test_40",
+   "test_41",
+   "test_42",
+   "test_43",
+   "test_44",
+   "test_45",
+   "test_46",
+   "test_47",
+   "test_48",
+   "test_49",
+   "test_50"
+  ]
+ },
+ "input_token_divergence": {
+  "rows": {},
+  "total": 0,
+  "note": "usage.input_tokens against the pre-submission count_tokens measurement over the same body, per row."
+ },
+ "cost_usd": {
+  "input": 0.19786,
+  "output": 0.0097,
+  "total": 0.20756,
+  "rates": "batch input $0.50 / MTok, batch output $2.50 / MTok"
+ },
+ "max_tokens_stops": [],
+ "stop_reasons": [
+  "end_turn"
+ ]
+}
