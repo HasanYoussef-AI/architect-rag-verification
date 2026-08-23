@@ -4,6 +4,297 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-23, the sealed run graded, and what the layer's delta is made of
+
+The study has its numbers. Fifty pre-registered queries were answered by three model tiers under
+three conditions, nine runs in all, and every answer was graded in one commit by a grader frozen
+before any sealed answer existed. Pooled over the three tiers the raw unsupported-claim rate is
+0.4461, 120 ungrounded units of 269 over 91 answered rows, and the layer condition is 0.3008, 80
+of 266 over 72 answered rows. Those two rates are over different row sets, which is why the
+answered-row counts stand beside them here and in every table the results artifact carries.
+
+### The instrument was fixed before the answers it judges
+
+The grounding predicate and its two constants were committed at `9e1e021` and frozen at `15e31d5`,
+which sits after the development first pass landed and before any development second call was
+submitted. The overlap threshold stayed at 0.75 and the short-unit length at 4. `PREREGISTRATION.md`
+allowed one move at that commit against the twelve development generations alone; neither moved,
+and after it neither could move for any reason, including a number that looked wrong. The freeze
+commit reported what the reference condition turned on its own sample and the answer was zero of
+26 surface-carrying units, a disclosed condition on the instrument rather than a reason to widen
+anything.
+
+Two readings of `PREREGISTRATION.md` line 37 were adopted and are recorded because the sentence
+admits others. "Semantic-overlap thresholds" is satisfied by normalised-token overlap rather than
+by embeddings, so every headline re-derives from committed files with no model, no key and no
+optional dependency; an embedding predicate would have put a model inside the grader of record,
+which Rule 2 does not admit. "The twelve development generations" is read as twelve queries on
+each of three tiers, thirty-six answers, because twelve and thirty-six are different denominators
+and the looser reading would have understated the sample the freeze rested on.
+
+The development run's whole purpose was to fix those thresholds where the sealed set could not
+reach them. It graded 36 answers, 30 of them answered, at a pooled first-pass rate of 0.3986 over
+148 claim units. Its findings carried into the sealed run unchanged: that the layer's completeness
+pass fetched the right blocks and rescued nothing, and that a rate can fall while the ungrounded
+count holds still, so no comparison ships without the unit count on both sides.
+
+Grading ran once, at `3c4afec`, after all nine runs were committed. Nothing gradeable was left
+outside it, and Rule 9's separation is structural rather than procedural: the grader takes an
+answer and a context and is passed no stratum, no gold and no row identifier except to key its
+output.
+
+### The results of record
+
+Raw, over all fifty rows per tier, with the answered-row count beside every rate:
+
+    Claude Haiku 4.5, no thinking                   78 of 140 units, 0.5571, 40 answered, 10 abstained
+    Claude Sonnet 5, adaptive at effort high        15 of  57 units, 0.2632, 23 answered, 27 abstained
+    Claude Opus 4.8, adaptive at effort low         27 of  72 units, 0.3750, 28 answered, 22 abstained
+    pooled                                         120 of 269 units, 0.4461, 91 answered, 59 abstained
+
+Layer, same rows, same grader, the second answer on the 48 rows the corrective pass fires on and
+the first answer on `test_34` and `test_39`, where it does not fire and the layer therefore acted
+neither by a second call nor by abstaining:
+
+    Claude Haiku 4.5, no thinking                   48 of 118 units, 0.4068, 27 answered, 23 abstained
+    Claude Sonnet 5, adaptive at effort high        13 of  58 units, 0.2241, 19 answered, 31 abstained
+    Claude Opus 4.8, adaptive at effort low         19 of  90 units, 0.2111, 26 answered, 24 abstained
+    pooled                                          80 of 266 units, 0.3008, 72 answered, 78 abstained
+
+Over the 42 gold-bearing rows the pooled raw rate is 0.4419, 118 of 267, and the layer rate is
+0.3008, 80 of 266, the layer figure being identical to its all-fifty figure because every
+adversarial row abstains under the layer on every tier.
+
+The rate over the whole answered set mixes rows the layer never touched with rows it rewrote. The
+comparable set, the rows carrying a second call that were answered at the first pass, is the
+narrower comparison, and it ships with the claim-unit count on both passes:
+
+    Claude Haiku 4.5     38 rows    68 of 128, 0.5313   to   38 of 106, 0.3585
+    Claude Sonnet 5      22 rows    14 of  54, 0.2593   to   12 of  55, 0.2182
+    Claude Opus 4.8      27 rows    27 of  69, 0.3913   to   19 of  87, 0.2184
+
+### What the reduction is made of
+
+The reduction did not arrive by unsupported claims being removed, and the decomposition says so.
+Splitting the comparable set into rows the layer abstains on and rows answered in both conditions:
+
+    abstention removed        13 rows carrying 26 of  28 units on Haiku
+                               4 rows carrying  2 of   4 units on Sonnet
+                               2 rows carrying  4 of   4 units on Opus
+
+    on rows answered in both, ungrounded units removed      4, 0 and 4
+    on rows answered in both, grounded units added         10, 5 and 26
+    on rows answered in both, total units added            6, 5 and 22
+
+Across all three tiers eight ungrounded units disappeared from rows that answered in both
+conditions, and 41 grounded units were added to them. Abstention removed rows whose raw rate was
+far above the tier average, 26 of 28 units on the Haiku rows it removed. The layer's measured
+effect on this corpus is therefore mostly a denominator effect and an abstention effect, and the
+part of it that is unsupported content actually disappearing is small.
+
+The flagged-unit fate table says the same thing from the other side. Across the three tiers 109
+units were flagged as unsupported and handed to the model with an instruction to support them from
+the expanded context or leave them out. Eighty-four did not come back verbatim. Twenty-five came
+back unchanged and every one of those was still unsupported. Not one flagged unit anywhere was
+rescued by the fetched context, on any tier, which reproduces the development result exactly: the
+completeness pass fetches the right blocks and the flagged units are paraphrase of blocks that
+were already present, so there is nothing for a fetch to repair.
+
+### The near-miss reduction is grader conformance, under a rule fixed before the number existed
+
+`eval/generation_predictions.md` section 10.5 committed the reading in advance: a near-miss
+reduction counts as the layer working only if it concentrates on units carrying the queried
+reference surface, and a reduction that does not is grader conformance, the model rewriting toward
+source wording. The measurement decides it and the direction is unambiguous. On every tier and in
+both conditions, every unit carrying a reference surface is ungrounded and every unit carrying
+none is grounded. Haiku's rate fell from 5 of 6 to 4 of 9 while its surface-carrying units went
+from 5 of 5 ungrounded to 4 of 4 ungrounded, a rate of 1.0 on both sides, and four grounded units
+carrying no surface were added underneath. Sonnet and Opus did not move at all, 1 of 6 in both
+conditions. The reduction sits entirely on the units the reference condition is silent about, so
+it is reported as grader conformance and not as the layer working.
+
+### The no-context condition, under its own two names
+
+The contamination probe reports a no-context abstention rate and a parametric coincidence rate,
+and neither is placed beside an unsupported-claim rate. They count opposite things over answers
+produced under a prompt carrying no closed-book instruction, so a table putting them in one column
+would be wrong however the columns were labelled.
+
+    Claude Haiku 4.5     abstention 0.6000    coincidence 0.0000, 0 of 124 units
+    Claude Sonnet 5      abstention 0.7600    coincidence 0.1000, 3 of  30 units
+    Claude Opus 4.8      abstention 0.6400    coincidence 0.1111, 3 of  27 units
+
+Over the 42 gold-bearing rows the coincidence rates are 0.0000, 0.1875 and 0.1765 on 92, 16 and 17
+units. Haiku's zero is a measurement and not an empty result: the same predicate in the same run
+returns grounded units on the other two tiers, so it is shown capable of a non-zero on this
+condition. Parametric knowledge of these frameworks reproduces almost none of the retrieved
+wording under a lexical ruler, which bounds how much of the raw score retrieval is not carrying.
+
+### The abstention rule has a measured cost, reported and not repaired
+
+Section 6.1's layer predicate abstains when the marker is returned on either pass or when the
+second answer carries no grounded claim unit. Both halves fire. Of the layer's abstentions, 18 of
+23 on Haiku, 27 of 31 on Sonnet and 22 of 24 on Opus come from the marker on some pass; the
+zero-grounded clause is the sole route on five, four and two rows.
+
+The rule costs rows in both directions and both counts ship beside the abstention rate rather than
+inside it. Twenty-four rows across the three tiers abstained at the first pass and returned a
+substantive second answer, four on Haiku, eleven on Sonnet and nine on Opus, and the either-pass
+rule counts every one as a layer abstention. Two rows went the other way, both on Sonnet,
+`test_27` and `test_29`, fully grounded at the first pass and abstained on by the layer once the
+second call had run. The second call is not only a repair path; it can lose a row that was already
+sound. The fix that would recover the twenty-four is to let a grounded second answer override a
+first-pass marker, and it is refused because the same change lets a second call that invents an
+answer to an unanswerable question count as answered, which is the adversarial rows' protection.
+
+### The secondary comparison
+
+Claude Haiku 4.5 with no thinking, plus the layer, reaches 48 of 118 units, 0.4068, over 27
+answered rows. Claude Opus 4.8 with adaptive thinking at effort low, raw, reaches 27 of 72,
+0.3750, over 28 answered rows. The cheap tier with the layer does not reach the expensive tier
+without it. No figure was predicted for this pair and it is reported whichever way it falls,
+including this one, which is the outcome least useful to the case study.
+
+### The layer's added cost and latency
+
+The corrective pass issues no model call of its own; it resolves references printed in the query
+and the first-pass ten and fetches by identifier, 930 chunks over the 48 firing rows on every
+tier, final context sets running 12 to 57 with a mean of 29.4. The added generation cost is the
+second call alone, the first pass being shared with the raw condition by construction: 0.207560,
+0.579010 and 1.479963 dollars, 2.266533 in total, at batch latencies of 88, 73 and 66 seconds from
+batch creation to completion. The nine runs together cost 3.218898 dollars.
+
+### The sealed predictions, ten held and fifteen contradicted
+
+Twenty-six predictions were committed before any sealed answer existed and are scored mechanically
+from the graded blocks inside the results artifact rather than read off. Ten held, fifteen are
+contradicted, and one attached no prediction to the pair it names. Every contradicted line stands
+as written.
+
+Four contradictions are worth their own sentence because they move a reading rather than a number.
+P7 put the Opus single-hop raw rate between 0.05 and 0.20 and it is 0.2381; the file had already
+fixed what a rate above 0.20 would mean, that paraphrase dominates and the ruler punishes it,
+making it a finding about the instrument before it is one about the model. P10's direction held on
+every tier and its mechanism did not: the excess ungrounded units on clean multi-hop do not
+concentrate on the five rows that are partial at first-pass recall, and on Sonnet those rows
+contribute no answered claim units at all. P17 reversed: near-miss sits below single-hop on Sonnet
+and Opus rather than above it, on a stratum whose rate rests on one answered row and six units on
+each of those tiers. P21 held its ceiling and lost its ordering, Opus at 0.1765 sitting below
+Sonnet at 0.1875.
+
+P16 held, and it is the one whose failure would have stopped the scope rather than lowered a
+score. The action-to-parent stratum stays at 0.25 recovered-passage recall, `test_41` recovered
+with all three carriers and `test_39`, `test_40` and `test_42` at zero. The route is
+sibling-label resolution and no action identifier or printed legend is read, so the parent
+derivation the layer-gold firewall bars did not run. The context this grading rebuilt for all
+fifty rows agrees with the committed layer artifact's own fetch counts on every row.
+
+### Two rows produced no answer, and the predicate that classified them was not patched
+
+On the Sonnet and Opus no-context runs, `test_37` returned `stop_reason` refusal with zero content
+blocks and zero output tokens. The committed detector compares a whole response against the
+abstention marker, so an empty response classifies as answered, which misdescribes a row that
+produced nothing. The predicate was frozen and was not moved. Both rows are counted in the
+answered-row denominator, contribute no claim unit, and are reported as their own named class
+beside the abstention figures with what their responses contained, which is nothing.
+
+That is what contradicts P24, under the clause P24 itself wrote: more answered rows with zero
+claim units than `marker_variant` rows means a second route exists that the file did not foresee,
+and the rows are listed. The route is a refusal. On the other seven tier and condition pairs the
+two counts are equal at zero, and no `marker_variant` response occurred anywhere in the sealed run.
+
+### One reading of the abstention rule was load-bearing on one row, and it is disclosed
+
+Section 6.1's second clause reads "zero grounded claim units after the second call". On `test_34`
+and `test_39` the corrective pass does not fire, so no second call exists, the clause has no
+referent, and only the marker clause applies to the one pass there is. The alternative reading
+would make Haiku's `test_39` a layer abstention, since its first answer is substantive, carries
+claim units and has none grounded. The literal reading was applied, the row the two readings
+separate is named in the results artifact and pinned by a test, and the choice is visible rather
+than silent. Adopting the other reading after seeing which row it moves is the fitting the
+pre-registration exists to forbid. On the other ambiguity in the same clause, whether an answer
+with no claim units at all counts as zero-grounded, the committed development implementation
+governs and no fired row on any tier distinguishes the two readings.
+
+### Corrections carried by this entry
+
+The commit message at `208741d` states that the grading artifact declares one figure "this tier is
+the first to exhibit", `first_pass_abstentions_with_a_substantive_second_answer`, which is 1. The
+field was newly declared at that commit and computed for both tiers then landed, and it is 1 on
+each, so the tier was not the first to exhibit it. Re-derived over the completed development set
+the field is 1 on all three tiers. Commit messages are not forward-editable and Rule 10's
+exceptions are spent, so the message stands and the divergence is recorded here.
+
+`eval/generation_predictions.md` section 1.5 records the tokenizer ratio between the tiers on the
+sealed first pass as 202612 over 140787, which is 1.439. The development first pass gives 48773
+over 33703, which is 1.4471. Both are recorded so the ratio reads as a tokenizer boundary rather
+than a property of one body, and no figure in this study is derived from either.
+
+Two batch records committed at `5994c51` carried a rates string naming another tier's prices beside
+figures computed at their own. The figures were correct on every record and were re-derived three
+ways before anything was touched. The string was corrected at `f0c7825`, and the producer now
+derives it from the tier's own rate constants rather than carrying a literal.
+
+Two committed digest pins asserted that a reviewer re-running their producer "on any machine"
+reproduces the pinned bytes, so that a mismatch is a divergence rather than a platform difference.
+The tree carried no `.gitattributes`, so a checkout translating line endings changed the bytes of
+every text artifact without changing a figure, and every digest pin would have fired for a platform
+reason. `6a6309a` sets `-text` across the tree, which makes the checkout half true by mechanism,
+and states the re-run half with its condition, since the result runners write in text mode and a
+runtime writing CRLF still produces different bytes. Renormalisation was rejected on a measurement
+rather than a preference: three committed corpus artifacts carry CRLF sequences as extracted,
+1373, 2411 and 5026 of them, and `text=auto` would have rewritten all three on check-in and broken
+the digests certifying the corpus is what the publishers served.
+
+### What the instrument still cannot see
+
+The unsupported-claim rate is a rate under a lexical ruler with no stemming and no entailment
+judge, so a true claim restating a present chunk in the model's own words scores as unsupported.
+Every rate here is a property of that ruler before it is a property of a model. Misattribution is
+caught only where a claim names a reference surface the committed grammar recognises; recitals,
+sections and chapters have no pattern, the second member of a coordinated citation is not
+captured, and a block can satisfy the reference test for a provision it cites rather than one it
+is. No prompt requests citations, so the failure of citing a real chunk that does not say the
+thing has no surface in this study and no figure scores it. The existence-denial grammar fixed
+before generation matched no claim unit anywhere on the sealed run; its development sample was
+already zero, so its only exercise remains the two constructible defects the same section names.
+
+The suite stands at 984 passed and 7 skipped over 991 collected, the skips at the four sites
+naming the deliberately uncommitted segment embedding cache. `ruff check` passes over `src` and
+`tests`.
+
+### Commits
+
+- e7a1391 docs: log the two Rule 4 generation-parameter corrections and the request assembler
+- 50bd34a feat(generate): the run manifest artifact, the measured decoding settings and the generation predictions
+- 3eb3960 fix(eval): correct the corpus-phrase artifact and name the second grounding implementation
+- eb206bb fix(eval): align on the rendered block and add the reference condition to the grounding predicate
+- 9e1e021 feat(score): the claim-unit segmenter, the grounding predicate and the adversarial verdict
+- f027fe3 feat(runs): the Haiku development first pass, twelve rows over the Batch API
+- 08bb610 feat(runs): the Sonnet development first pass, twelve rows over the Batch API
+- 92a4294 feat(runs): the Opus development first pass, twelve rows over the Batch API
+- 7d2241c fix(generate): correct the batch module docstring to match the committed entry points
+- 15e31d5 feat(score): freeze the grounding predicate and its thresholds against the development first pass
+- 525dee7 feat(runs): the Haiku development second calls, D1b-h, with their flagged lists and grading
+- 208741d feat(runs): the Sonnet development second calls and their grading
+- aba0360 feat(runs): the Opus development second calls and their grading
+- f9a4599 feat(runs): the sealed Haiku first pass and no-context run, fifty rows each over the Batch API
+- 5994c51 feat(runs): the sealed Sonnet first pass and no-context run, and one refused response
+- d4a32b6 feat(runs): the sealed Opus first pass and no-context run, completing the three first-pass tiers
+- f0c7825 fix(runs): correct the rates prose on the two Sonnet batch records
+- aa1fe13 feat(runs): the sealed Haiku second calls, the layer's corrective pass over 48 rows
+- 99cda78 feat(runs): the sealed Sonnet second calls, and a first-to-second-pass movement in one direction
+- 6393834 feat(runs): the sealed Opus second calls, completing every answer the scope will grade
+- 3c4afec feat(score): the grading of record for the sealed run, over all nine run and tier sets
+- 348bfb8 test(score): pin the grading results artifact under its own digest regime
+- 6a6309a fix(tests): disable end-of-line translation and correct a false universal in two digest pins
+
+The commit placing this entry touches only `SESSION_LOG.md` and is exempt under Rule 11. The
+interim entry at `e7a1391` names `87e5377` and `f07d837` and records that the scope-close entry
+would name its own placing commit, which this entry does above.
+
+Nothing was pushed and no remote is configured. `main` is unmoved.
+
 ## 2026-08-21, two generation parameters corrected under Rule 4, and the request assembler
 
 Two parameters `PREREGISTRATION.md` fixed before generation could not execute as written. Both
