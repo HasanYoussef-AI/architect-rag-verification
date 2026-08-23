@@ -39,7 +39,7 @@ from src.ingest.corpus_integrity import REPO_ROOT
 RUNS = REPO_ROOT / "data" / "runs"
 QUERY_SET = "test"
 CONDITION = "second_call"
-TIERS_UNDER_TEST = ("haiku45", "sonnet5")
+TIERS_UNDER_TEST = ("haiku45", "sonnet5", "opus48")
 
 SEALED_ROWS = 50
 NOT_FIRED = ["test_34", "test_39"]
@@ -47,19 +47,24 @@ FIRING_ROWS = SEALED_ROWS - len(NOT_FIRED)
 
 # eval/generation_predictions.md section 11.2: the measured empty-slot context figure and the
 # two-ceiling bound of record, per tier over the 48 firing rows.
-EMPTY_SLOT_FIGURE = {"haiku45": 389427, "sonnet5": 551295}
-BOUND_OF_RECORD = {"haiku45": 1925427, "sonnet5": 2087295}
+EMPTY_SLOT_FIGURE = {"haiku45": 389427, "sonnet5": 551295, "opus48": 551295}
+BOUND_OF_RECORD = {"haiku45": 1925427, "sonnet5": 2087295, "opus48": 2087295}
 
 # Measured before submission and reported by the API afterwards. Equal on this run.
-COUNT_TOKENS_TOTAL = {"haiku45": 395720, "sonnet5": 554370}
-USAGE_INPUT_TOTAL = {"haiku45": 395720, "sonnet5": 554370}
+COUNT_TOKENS_TOTAL = {"haiku45": 395720, "sonnet5": 554370, "opus48": 555470}
+USAGE_INPUT_TOTAL = {"haiku45": 395720, "sonnet5": 554370, "opus48": 555470}
 
-EXPECTED_STOP_REASONS = {"haiku45": ["end_turn"], "sonnet5": ["end_turn"]}
+EXPECTED_STOP_REASONS = {
+    "haiku45": ["end_turn"],
+    "sonnet5": ["end_turn"],
+    "opus48": ["end_turn"],
+}
 EXPECTED_THINKING = {
     "haiku45": {"present": 48, "non_null": 0, "rows_above_zero": 0, "total": 0},
     "sonnet5": {"present": 48, "non_null": 48, "rows_above_zero": 1, "total": 272},
+    "opus48": {"present": 48, "non_null": 48, "rows_above_zero": 22, "total": 2591},
 }
-TRUE_RATES = {"haiku45": (0.50, 2.50), "sonnet5": (1.00, 5.00)}
+TRUE_RATES = {"haiku45": (0.50, 2.50), "sonnet5": (1.00, 5.00), "opus48": (2.50, 12.50)}
 
 
 def _records(tier: str) -> list[dict]:
@@ -318,3 +323,26 @@ def test_the_tiers_share_a_firing_set_and_do_not_share_flagged_lists():
     totals = {t: sum(len(u) for u in f.values()) for t, f in flagged.items()}
     assert all(v >= 0 for v in totals.values())
     assert len(set(totals.values())) > 1, "the flagged-unit counts are identical across tiers"
+
+
+def test_the_two_tiers_sharing_a_tokenizer_share_their_bound_and_the_third_does_not():
+    """The committed gate-1a observation, checked where it has a consequence.
+
+    eval/generation_predictions.md section 1.5 records Sonnet and Opus returning identical
+    count_tokens figures on all 186 bodies and Haiku differing on all 186. Section 11.2 carries
+    that through into the second-call table, so those two tiers share an empty-slot figure and a
+    bound and Haiku does not. That is what makes their fill deltas directly comparable and
+    Haiku's not, so it is asserted rather than left as a coincidence of two equal numbers.
+    """
+    assert EMPTY_SLOT_FIGURE["sonnet5"] == EMPTY_SLOT_FIGURE["opus48"]
+    assert BOUND_OF_RECORD["sonnet5"] == BOUND_OF_RECORD["opus48"]
+    assert EMPTY_SLOT_FIGURE["haiku45"] != EMPTY_SLOT_FIGURE["sonnet5"]
+    assert BOUND_OF_RECORD["haiku45"] != BOUND_OF_RECORD["sonnet5"]
+    deltas = {
+        tier: _batch_record(tier)["count_tokens_total"]["fill_delta"]
+        for tier in TIERS_UNDER_TEST
+    }
+    assert all(v > 0 for v in deltas.values())
+    assert len(set(deltas.values())) == len(TIERS_UNDER_TEST), (
+        "two tiers filled their slots identically, which the differing flagged loads forbid"
+    )

@@ -1,0 +1,446 @@
+{
+ "description": "The flagged lists the sealed second-call bodies carry, per row, for one tier. Each is the first answer's ungrounded units under src/complete/flagging.py, the frozen operational implementation, computed against the FIRST-PASS context. The bodies themselves carry the augmented context. Committed so a reviewer can rebuild every body exactly from committed files with no key.",
+ "produced_by": "python -m src.complete.run_second_call_flagged opus48",
+ "written_to": "eval/test_second_call_flagged.opus48.json",
+ "query_set": "test",
+ "tier": "opus48",
+ "first_pass_source": "data/runs/test.raw.opus48.jsonl",
+ "population": {
+  "starting_rows": 50,
+  "fired": 48,
+  "not_fired": [
+   "test_34",
+   "test_39"
+  ],
+  "rule": "src.complete.augment.augment reports triggered; a row it does not fire on receives no second call and its layer answer is its first-pass answer."
+ },
+ "grading_note": "Nothing here is graded. No claim unit is scored and no rate is computed. The grading of record is a separate commit over committed files, per CLAUDE.md Rule 9.",
+ "rows": {
+  "test__second_call__opus48__test_01": {
+   "query_id": "test_01",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 37,
+   "fetched_chunk_count": 27
+  },
+  "test__second_call__opus48__test_02": {
+   "query_id": "test_02",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 21,
+   "fetched_chunk_count": 11
+  },
+  "test__second_call__opus48__test_03": {
+   "query_id": "test_03",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 29,
+   "fetched_chunk_count": 19
+  },
+  "test__second_call__opus48__test_04": {
+   "query_id": "test_04",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 57,
+   "fetched_chunk_count": 47
+  },
+  "test__second_call__opus48__test_05": {
+   "query_id": "test_05",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 53,
+   "fetched_chunk_count": 43
+  },
+  "test__second_call__opus48__test_06": {
+   "query_id": "test_06",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 17,
+   "fetched_chunk_count": 7
+  },
+  "test__second_call__opus48__test_07": {
+   "query_id": "test_07",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 16,
+   "fetched_chunk_count": 6
+  },
+  "test__second_call__opus48__test_08": {
+   "query_id": "test_08",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 23,
+   "fetched_chunk_count": 13
+  },
+  "test__second_call__opus48__test_09": {
+   "query_id": "test_09",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 53,
+   "fetched_chunk_count": 43
+  },
+  "test__second_call__opus48__test_10": {
+   "query_id": "test_10",
+   "flagged_units": [
+    "For law-enforcement high-risk AI systems (Annex III points 1, 6 and 7 in the areas of law enforcement, migration, asylum and border control management), the testing is registered in the secure non-public section of the EU database under Article 49(4), point (d), with the information specified therein — not with the Annex IX information.",
+    "Therefore Annex IX points do not apply to the registration of such law-enforcement systems."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 33,
+   "fetched_chunk_count": 23
+  },
+  "test__second_call__opus48__test_11": {
+   "query_id": "test_11",
+   "flagged_units": [
+    "The technical documentation (Annex IV) must include the post-market monitoring plan.",
+    "Under Article 72(3), the post-market monitoring plan is part of the technical documentation referred to in Annex IV, and it underpins the post-market monitoring system that actively and systematically collects, documents, and analyses data on the high-risk AI system's performance throughout its lifetime to evaluate its continuous compliance with the requirements set out in Chapter III, Section 2."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 44,
+   "fetched_chunk_count": 34
+  },
+  "test__second_call__opus48__test_12": {
+   "query_id": "test_12",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 36,
+   "fetched_chunk_count": 26
+  },
+  "test__second_call__opus48__test_13": {
+   "query_id": "test_13",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 17,
+   "fetched_chunk_count": 7
+  },
+  "test__second_call__opus48__test_14": {
+   "query_id": "test_14",
+   "flagged_units": [
+    "Under Article 36(2), extensions of the scope of a notification follow the procedures in Articles 29 and 30.",
+    "Accordingly, per Article 29(2), the application must be accompanied by:",
+    "an accreditation certificate (where one exists) from a national accreditation body attesting compliance with Article 31; and",
+    "any valid documents related to existing designations under other Union harmonisation legislation.",
+    "Where no accreditation certificate can be provided, the body must instead supply all documentary evidence necessary to verify, recognise and monitor its compliance with Article 31."
+   ],
+   "n_flagged": 5,
+   "first_pass_class": "answered",
+   "context_set_size": 19,
+   "fetched_chunk_count": 9
+  },
+  "test__second_call__opus48__test_15": {
+   "query_id": "test_15",
+   "flagged_units": [
+    "However, the provided context does not list which specific actors those are."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 30,
+   "fetched_chunk_count": 20
+  },
+  "test__second_call__opus48__test_16": {
+   "query_id": "test_16",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 26,
+   "fetched_chunk_count": 16
+  },
+  "test__second_call__opus48__test_17": {
+   "query_id": "test_17",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 44,
+   "fetched_chunk_count": 34
+  },
+  "test__second_call__opus48__test_18": {
+   "query_id": "test_18",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 20,
+   "fetched_chunk_count": 10
+  },
+  "test__second_call__opus48__test_19": {
+   "query_id": "test_19",
+   "flagged_units": [
+    "By putting its trademark on the system, the distributor is considered a provider (Article 25(1)(a)) and assumes the provider's obligations under Article 16.",
+    "As a provider, it must have a post-market monitoring system in place."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 26,
+   "fetched_chunk_count": 16
+  },
+  "test__second_call__opus48__test_20": {
+   "query_id": "test_20",
+   "flagged_units": [
+    "Because affixing the CE marking in a way that violates Article 48 constitutes formal non-compliance under Article 83(1)(a), the market surveillance authority must require the provider to put an end to the non-compliance within a period it may prescribe.",
+    "If the non-compliance persists, the authority must take appropriate and proportionate measures to restrict or prohibit the system on the market, or ensure it is recalled or withdrawn without delay."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 32,
+   "fetched_chunk_count": 22
+  },
+  "test__second_call__opus48__test_21": {
+   "query_id": "test_21",
+   "flagged_units": [
+    "The offences listed in Annex II are:"
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 34,
+   "fetched_chunk_count": 24
+  },
+  "test__second_call__opus48__test_22": {
+   "query_id": "test_22",
+   "flagged_units": [
+    "The EU AI Act applies from 2 August 2026, with certain exceptions (Chapters I and II from 2 February 2025; specified provisions from 2 August 2025; and Article 6(1) with corresponding obligations from 2 August 2027)."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 50,
+   "fetched_chunk_count": 40
+  },
+  "test__second_call__opus48__test_23": {
+   "query_id": "test_23",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 25,
+   "fetched_chunk_count": 15
+  },
+  "test__second_call__opus48__test_24": {
+   "query_id": "test_24",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 41,
+   "fetched_chunk_count": 31
+  },
+  "test__second_call__opus48__test_25": {
+   "query_id": "test_25",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 12,
+   "fetched_chunk_count": 2
+  },
+  "test__second_call__opus48__test_26": {
+   "query_id": "test_26",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 15,
+   "fetched_chunk_count": 5
+  },
+  "test__second_call__opus48__test_27": {
+   "query_id": "test_27",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 23,
+   "fetched_chunk_count": 13
+  },
+  "test__second_call__opus48__test_28": {
+   "query_id": "test_28",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 37,
+   "fetched_chunk_count": 27
+  },
+  "test__second_call__opus48__test_29": {
+   "query_id": "test_29",
+   "flagged_units": [
+    "Before putting into service a high-risk AI system listed in Annex III (except point 2), a deploying public authority must:",
+    "Perform a fundamental rights impact assessment covering the elements listed in Article 27(1) (as a body governed by public law), and once performed, notify the market surveillance authority of its results using the required template (Article 27(3)).",
+    "For systems in the areas of law enforcement, migration, asylum and border control management, the registration must be made in a secure non-public section of the database (Article 49(4))."
+   ],
+   "n_flagged": 3,
+   "first_pass_class": "answered",
+   "context_set_size": 46,
+   "fetched_chunk_count": 36
+  },
+  "test__second_call__opus48__test_30": {
+   "query_id": "test_30",
+   "flagged_units": [
+    "Providers must grant market surveillance authorities:",
+    "**Full access** to the documentation and the training, validation and testing data sets used for developing high-risk AI systems—where relevant and limited to what is necessary, including through APIs or other remote-access technical means (Art. 74(12))."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 17,
+   "fetched_chunk_count": 7
+  },
+  "test__second_call__opus48__test_31": {
+   "query_id": "test_31",
+   "flagged_units": [
+    "In the case of an SME, including a start-up, each fine shall be up to the percentages or amount referred to in the relevant paragraphs, whichever is lower."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 27,
+   "fetched_chunk_count": 17
+  },
+  "test__second_call__opus48__test_32": {
+   "query_id": "test_32",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 15,
+   "fetched_chunk_count": 5
+  },
+  "test__second_call__opus48__test_33": {
+   "query_id": "test_33",
+   "flagged_units": [
+    "Per MANAGE 3.1, an organisation must regularly monitor AI risks and benefits from third-party resources, and apply and document risk controls."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 15,
+   "fetched_chunk_count": 5
+  },
+  "test__second_call__opus48__test_35": {
+   "query_id": "test_35",
+   "flagged_units": [
+    "Transparency answers \"what happened,\" explainability answers \"how\" a decision was made, and interpretability answers \"why\" a decision was made and its meaning or context to the user."
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 31,
+   "fetched_chunk_count": 21
+  },
+  "test__second_call__opus48__test_36": {
+   "query_id": "test_36",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 12,
+   "fetched_chunk_count": 2
+  },
+  "test__second_call__opus48__test_37": {
+   "query_id": "test_37",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 15,
+   "fetched_chunk_count": 5
+  },
+  "test__second_call__opus48__test_38": {
+   "query_id": "test_38",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "answered",
+   "context_set_size": 13,
+   "fetched_chunk_count": 3
+  },
+  "test__second_call__opus48__test_40": {
+   "query_id": "test_40",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 21,
+   "fetched_chunk_count": 11
+  },
+  "test__second_call__opus48__test_41": {
+   "query_id": "test_41",
+   "flagged_units": [
+    "It requires:",
+    "Ensuring evaluations that use human subjects or their data reflect the population within the context of use, since non-representative data can lead to inaccurate assessments or harmful outcomes."
+   ],
+   "n_flagged": 2,
+   "first_pass_class": "answered",
+   "context_set_size": 13,
+   "fetched_chunk_count": 3
+  },
+  "test__second_call__opus48__test_42": {
+   "query_id": "test_42",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 27,
+   "fetched_chunk_count": 17
+  },
+  "test__second_call__opus48__test_43": {
+   "query_id": "test_43",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 37,
+   "fetched_chunk_count": 27
+  },
+  "test__second_call__opus48__test_44": {
+   "query_id": "test_44",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 32,
+   "fetched_chunk_count": 22
+  },
+  "test__second_call__opus48__test_45": {
+   "query_id": "test_45",
+   "flagged_units": [
+    "MAP 5.1 lists the following AI transparency resources:"
+   ],
+   "n_flagged": 1,
+   "first_pass_class": "answered",
+   "context_set_size": 31,
+   "fetched_chunk_count": 21
+  },
+  "test__second_call__opus48__test_46": {
+   "query_id": "test_46",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 35,
+   "fetched_chunk_count": 25
+  },
+  "test__second_call__opus48__test_47": {
+   "query_id": "test_47",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 39,
+   "fetched_chunk_count": 29
+  },
+  "test__second_call__opus48__test_48": {
+   "query_id": "test_48",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 38,
+   "fetched_chunk_count": 28
+  },
+  "test__second_call__opus48__test_49": {
+   "query_id": "test_49",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 38,
+   "fetched_chunk_count": 28
+  },
+  "test__second_call__opus48__test_50": {
+   "query_id": "test_50",
+   "flagged_units": [],
+   "n_flagged": 0,
+   "first_pass_class": "abstained",
+   "context_set_size": 38,
+   "fetched_chunk_count": 28
+  }
+ }
+}
