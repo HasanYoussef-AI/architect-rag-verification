@@ -115,13 +115,11 @@ EXPECTED_STOP_REASONS = {
 # Batch rates quoted in eval/generation_predictions.md section 11, dollars per million tokens.
 TRUE_RATES = {"haiku45": (0.50, 2.50), "sonnet5": (1.00, 5.00), "opus48": (2.50, 12.50)}
 
-# The rates STRING on these records names another tier's rates. The recorded cost NUMBERS are
-# correct and re-derive from the tier's own rates, asserted below; only the prose is wrong. It
-# reached data/runs/test.raw.sonnet5.batch.json and its no-context sibling at 5994c51, from a
-# hardcoded literal in the untracked runner that the per-tier rate table did not reach. The
-# records are committed and correcting them is an owner decision, so the defect is pinned here
-# instead: when the records are corrected these entries must be removed or this test fails.
-RATES_STRING_KNOWN_WRONG = {("sonnet5", "raw"), ("sonnet5", "no_context")}
+# Records whose rates string is known to name another tier's rates. The set is empty: the two
+# Sonnet records that carried a Haiku rates literal beside figures computed at Sonnet rates were
+# corrected, and their entries were removed here, which is what the correction forces. The
+# entries were not decoration; correcting the string with them still listed turned this test red.
+RATES_STRING_KNOWN_WRONG: set[tuple[str, str]] = set()
 
 # Batch records written before the Sonnet run carry a smaller field set. The Haiku records landed
 # at f9a4599, before that run surfaced a refusal and an input-token divergence and the runner

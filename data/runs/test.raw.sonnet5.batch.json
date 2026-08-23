@@ -371,7 +371,7 @@
   "input": 0.202612,
   "output": 0.014005,
   "total": 0.216617,
-  "rates": "batch input $0.50 / MTok, batch output $2.50 / MTok"
+  "rates": "batch input $1.00 / MTok, batch output $5.00 / MTok"
  },
  "max_tokens_stops": [],
  "stop_reasons": [
