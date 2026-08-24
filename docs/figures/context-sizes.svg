@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="360" viewBox="0 0 760 360" role="img" aria-labelledby="figure-title figure-desc">
+<title id="figure-title">Final context set size, all fifty rows</title>
+<desc id="figure-desc">Histogram of the final context set size across fifty rows, ranging from 10 to 57 chunks, with the rows on which the corrective pass did not fire sitting at exactly ten.</desc>
+<rect x="0" y="0" width="760" height="360" fill="#ffffff"/>
+<text x="30" y="34" font-size="17" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" font-weight="600">Final context set size, all fifty rows</text>
+<text x="30" y="56" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">The first-pass ten are never removed, reordered or truncated; fetched chunks are appended.</text>
+<line x1="78" y1="276" x2="698" y2="276" stroke="#d7dbdf" stroke-width="1"/>
+<text x="70" y="280" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="end">0</text>
+<line x1="78" y1="228.5" x2="698" y2="228.5" stroke="#d7dbdf" stroke-width="1"/>
+<text x="70" y="232.5" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="end">2</text>
+<line x1="78" y1="181" x2="698" y2="181" stroke="#d7dbdf" stroke-width="1"/>
+<text x="70" y="185" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="end">4</text>
+<line x1="78" y1="133.5" x2="698" y2="133.5" stroke="#d7dbdf" stroke-width="1"/>
+<text x="70" y="137.5" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="end">6</text>
+<line x1="78" y1="86" x2="698" y2="86" stroke="#d7dbdf" stroke-width="1"/>
+<text x="70" y="90" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="end">8</text>
+<line x1="78" y1="276" x2="698" y2="276" stroke="#5b6167" stroke-width="1.5"/>
+<rect x="81" y="228.5" width="41.692" height="47.5" fill="#2f5c8f"/>
+<text x="101.846" y="223.5" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">2</text>
+<text x="101.846" y="292" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">8</text>
+<rect x="128.692" y="86" width="41.692" height="190" fill="#2f5c8f"/>
+<text x="149.538" y="81" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">8</text>
+<text x="149.538" y="292" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">12</text>
+<rect x="176.385" y="157.25" width="41.692" height="118.75" fill="#2f5c8f"/>
+<text x="197.231" y="152.25" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">5</text>
+<text x="197.231" y="292" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">16</text>
+<rect x="224.077" y="157.25" width="41.692" height="118.75" fill="#2f5c8f"/>
+<text x="244.923" y="152.25" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">5</text>
+<text x="244.923" y="292" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">20</text>
+<rect x="271.769" y="157.25" width="41.692" height="118.75" fill="#2f5c8f"/>
+<text x="292.615" y="152.25" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">5</text>
+<text x="292.615" y="292" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">24</text>
+<rect x="319.462" y="181" width="41.692" height="95" fill="#2f5c8f"/>
+<text x="340.308" y="176" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">4</text>
+<text x="340.308" y="292" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">28</text>
+<rect x="367.154" y="157.25" width="41.692" height="118.75" fill="#2f5c8f"/>
+<text x="388" y="152.25" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">5</text>
+<text x="388" y="292" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">32</text>
+<rect x="414.846" y="86" width="41.692" height="190" fill="#2f5c8f"/>
+<text x="435.692" y="81" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">8</text>
+<text x="435.692" y="292" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">36</text>
+<rect x="462.538" y="252.25" width="41.692" height="23.75" fill="#2f5c8f"/>
+<text x="483.385" y="247.25" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">1</text>
+<text x="483.385" y="292" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">40</text>
+<rect x="510.231" y="204.75" width="41.692" height="71.25" fill="#2f5c8f"/>
+<text x="531.077" y="199.75" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">3</text>
+<text x="531.077" y="292" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">44</text>
+<rect x="557.923" y="252.25" width="41.692" height="23.75" fill="#2f5c8f"/>
+<text x="578.769" y="247.25" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">1</text>
+<text x="578.769" y="292" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">48</text>
+<rect x="605.615" y="228.5" width="41.692" height="47.5" fill="#2f5c8f"/>
+<text x="626.462" y="223.5" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">2</text>
+<text x="626.462" y="292" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">52</text>
+<rect x="653.308" y="252.25" width="41.692" height="23.75" fill="#2f5c8f"/>
+<text x="674.154" y="247.25" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">1</text>
+<text x="674.154" y="292" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">56</text>
+<text x="78" y="318" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">chunks in the final context set</text>
+<text x="78" y="342" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">min 10   median 29   mean 28.6   max 57</text>
+<text x="78" y="362" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">2 rows sit at exactly ten: the corrective pass did not fire on them.</text>
+</svg>

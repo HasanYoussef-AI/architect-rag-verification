@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="430" viewBox="0 0 760 430" role="img" aria-labelledby="figure-title figure-desc">
+<title id="figure-title">What the reduction is made of</title>
+<desc id="figure-desc">Grouped bar chart. For each of three model tiers, the ungrounded claim units removed by abstention, the ungrounded units removed on rows answered in both conditions, and the grounded units added on those rows.</desc>
+<rect x="0" y="0" width="760" height="430" fill="#ffffff"/>
+<text x="30" y="34" font-size="17" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" font-weight="600">What the reduction is made of</text>
+<text x="30" y="56" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">Claim units, over each tier's comparable set. Almost none of the reduction is unsupported</text>
+<text x="30" y="72" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">content disappearing.</text>
+<line x1="78" y1="324" x2="698" y2="324" stroke="#d7dbdf" stroke-width="1"/>
+<text x="70" y="328" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="end">0</text>
+<line x1="78" y1="266" x2="698" y2="266" stroke="#d7dbdf" stroke-width="1"/>
+<text x="70" y="270" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="end">7</text>
+<line x1="78" y1="208" x2="698" y2="208" stroke="#d7dbdf" stroke-width="1"/>
+<text x="70" y="212" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="end">14</text>
+<line x1="78" y1="150" x2="698" y2="150" stroke="#d7dbdf" stroke-width="1"/>
+<text x="70" y="154" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="end">21</text>
+<line x1="78" y1="92" x2="698" y2="92" stroke="#d7dbdf" stroke-width="1"/>
+<text x="70" y="96" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="end">28</text>
+<line x1="78" y1="324" x2="698" y2="324" stroke="#5b6167" stroke-width="1.5"/>
+<rect x="107.333" y="108.571" width="44" height="215.429" fill="#2f5c8f"/>
+<text x="129.333" y="102.571" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">26</text>
+<rect x="159.333" y="290.857" width="44" height="33.143" fill="#e8a33d"/>
+<text x="181.333" y="284.857" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">4</text>
+<rect x="211.333" y="241.143" width="44" height="82.857" fill="#7d9a4e"/>
+<text x="233.333" y="235.143" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">10</text>
+<text x="181.333" y="342" font-size="13" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">Haiku 4.5</text>
+<text x="181.333" y="358" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">13 rows abstained of 38</text>
+<rect x="314" y="307.429" width="44" height="16.571" fill="#2f5c8f"/>
+<text x="336" y="301.429" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">2</text>
+<rect x="366" y="324" width="44" height="1" fill="#e8a33d"/>
+<text x="388" y="318" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">0</text>
+<rect x="418" y="282.571" width="44" height="41.429" fill="#7d9a4e"/>
+<text x="440" y="276.571" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">5</text>
+<text x="388" y="342" font-size="13" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">Sonnet 5</text>
+<text x="388" y="358" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">4 rows abstained of 22</text>
+<rect x="520.667" y="290.857" width="44" height="33.143" fill="#2f5c8f"/>
+<text x="542.667" y="284.857" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">4</text>
+<rect x="572.667" y="290.857" width="44" height="33.143" fill="#e8a33d"/>
+<text x="594.667" y="284.857" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">4</text>
+<rect x="624.667" y="108.571" width="44" height="215.429" fill="#7d9a4e"/>
+<text x="646.667" y="102.571" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">26</text>
+<text x="594.667" y="342" font-size="13" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">Opus 4.8</text>
+<text x="594.667" y="358" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">2 rows abstained of 27</text>
+<rect x="78" y="381" width="11" height="11" fill="#2f5c8f"/>
+<text x="94" y="390" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a">ungrounded units removed by abstention</text>
+<rect x="78" y="401" width="11" height="11" fill="#e8a33d"/>
+<text x="94" y="410" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a">ungrounded units removed on rows answered in both</text>
+<rect x="78" y="421" width="11" height="11" fill="#7d9a4e"/>
+<text x="94" y="430" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a">grounded units added on rows answered in both</text>
+<text x="78" y="458" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">Across all three tiers 8 ungrounded units disappeared from rows answered in both conditions, and 41 grounded units were added.</text>
+</svg>
