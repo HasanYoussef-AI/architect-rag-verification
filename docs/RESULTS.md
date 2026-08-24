@@ -101,6 +101,15 @@ eight raw.
 to 0.1897 while the ungrounded count rises from 10 to 11. That is the denominator effect the
 reporting rule exists to expose, visible in one row.
 
+![Horizontal grouped bar chart in three panels, one per model tier. For each of the five committed strata, the raw and layer unsupported-claim rates, each bar labelled with its ungrounded units over its total claim units and its answered-row count, and each stratum a tier abstained on in every row marked as abstained rather than drawn as a zero bar.](figures/rates-by-stratum.svg)
+
+*Derived from `eval/test_grading_results.json` by `python -m src.figures.build_figures`. Every bar
+carries its ungrounded units over its total claim units and the number of answered rows it was
+computed over, the same reporting rule the tables above follow. A stratum a tier answered no row of
+carries no rate and is marked as abstained on all of them, never drawn as a bar of height zero.
+Several per-stratum denominators here are small, and the readings this section states in prose are
+the readings; the figure adds none.*
+
 ---
 
 ## 3. The comparable set
