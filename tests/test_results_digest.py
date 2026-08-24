@@ -19,15 +19,21 @@ the per-stratum aggregates, the miss list and the carrier counts are all read ou
 generation runs will be scored against the rankings it records. An unpinned result is a result that
 can drift under the claims made about it, and the claims are already written into the session log.
 
-REPRODUCIBILITY, STATED WITH ITS CONDITION RATHER THAN AS A UNIVERSAL. Unlike the embedding
-array's pin, this one is not a same-machine check. The artifact is reproducibility level 1: its
-inputs are the committed query file, the committed query embeddings, the committed chunk
-embeddings and the committed chunk order, and the runner uses no model and no key. A clone holds
-these bytes on every platform, because `.gitattributes` disables end-of-line translation for the
-whole tree. A reviewer who re-runs `python -m src.score.run_retrieval_eval` reproduces them under
-a runtime whose text mode writes LF; the runner opens its output in text mode, so a runtime that
-writes CRLF produces different bytes without changing a single figure, and a mismatch under that
-condition is a platform difference rather than a divergence.
+REPRODUCIBILITY, AND IT NO LONGER CARRIES A PLATFORM CONDITION. Unlike the embedding array's pin,
+this one is not a same-machine check. The artifact is reproducibility level 1: its inputs are the
+committed query file, the committed query embeddings, the committed chunk embeddings and the
+committed chunk order, and the runner uses no model and no key. Both halves of the claim are now
+true by mechanism. A clone holds these bytes on every platform, because `.gitattributes` disables
+end-of-line translation for the whole tree. A reviewer who re-runs
+`python -m src.score.run_retrieval_eval` reproduces them on every platform, because the runner
+passes `newline="\n"` and pins LF rather than inheriting the runtime's text-mode translation. A
+mismatch here is therefore a real divergence, which is what a pin is for.
+
+The re-run half carried a stated condition until the writer was pinned: the runner opened its
+output in default text mode, so a runtime writing CRLF produced different bytes without changing a
+single figure. That condition was true of the code it described and is now removed at its source
+rather than restated. Measured at the commit that pinned it: all three result artifacts rebuild
+byte-identically and the committed files carry zero CRLF sequences.
 
 CORRECTED. This paragraph read "A reviewer who re-runs `python -m src.score.run_retrieval_eval` on
 any machine should reproduce these bytes exactly, so a mismatch here is a real divergence rather

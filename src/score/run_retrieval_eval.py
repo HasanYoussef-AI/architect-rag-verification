@@ -143,8 +143,13 @@ def main(argv: list[str] | None = None) -> int:
         top10[row["id"]] = retriever.search(row["query"], embeddings[index])
 
     artifact = score_set(query_set, top10)
+    # newline="\n" pins LF on every platform. Without it the write inherits the runtime's text-mode
+    # translation, so a runtime writing CRLF produced different bytes without changing a figure and
+    # every digest pin over this artifact carried a platform condition it could not assert away.
     query_set.results.write_text(
-        json.dumps(artifact, indent=1, ensure_ascii=False) + "\n", encoding="utf-8"
+        json.dumps(artifact, indent=1, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+        newline="\n",
     )
     print(f"wrote {query_set.results}")
     print(json.dumps(artifact["aggregates"]["overall"], indent=1))

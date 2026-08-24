@@ -494,7 +494,8 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 1
 
-    LAYER_RESULTS.write_text(payload, encoding="utf-8")
+    # newline="\n" pins LF on every platform; see the note in src/score/run_retrieval_eval.py.
+    LAYER_RESULTS.write_text(payload, encoding="utf-8", newline="\n")
     print(f"wrote {LAYER_RESULTS}")
     print(json.dumps(artifact["aggregates"]["overall"], indent=1))
     for entry in artifact["predictions_scored"]:

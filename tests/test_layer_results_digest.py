@@ -18,16 +18,21 @@ predictions including the one recorded as contradicted, and the drops funnel are
 it, and the generation scope will be scored against the context sets it records. An unpinned result
 is a result that can drift under claims already made about it.
 
-REPRODUCIBILITY, STATED WITH ITS CONDITION RATHER THAN AS A UNIVERSAL. Like the first-pass pin and
-unlike the embedding array's, this is not a same-machine check. The artifact is reproducibility
-level 1 over three committed inputs, the first-pass results, the chunk store and the unit index,
-with no model, no key and no optional dependency. A clone holds these bytes on every platform,
-because `.gitattributes` disables end-of-line translation for the whole tree. A reviewer
-re-running `python -m src.score.run_layer_eval` reproduces them under a runtime whose text mode
-writes LF; the runner opens its output in text mode, so a runtime that writes CRLF produces
-different bytes without changing a single figure, and a mismatch under that condition is a
-platform difference rather than a divergence. tests/test_layer_eval.py asserts that rebuild
-directly; this file pins the bytes it produced.
+REPRODUCIBILITY, AND IT NO LONGER CARRIES A PLATFORM CONDITION. Like the first-pass pin and unlike
+the embedding array's, this is not a same-machine check. The artifact is reproducibility level 1
+over three committed inputs, the first-pass results, the chunk store and the unit index, with no
+model, no key and no optional dependency. Both halves of the claim are now true by mechanism. A
+clone holds these bytes on every platform, because `.gitattributes` disables end-of-line
+translation for the whole tree. A reviewer re-running `python -m src.score.run_layer_eval`
+reproduces them on every platform, because the runner passes `newline="\n"` and pins LF rather
+than inheriting the runtime's text-mode translation. A mismatch here is therefore a real
+divergence. tests/test_layer_eval.py asserts that rebuild directly; this file pins the bytes it
+produced.
+
+The re-run half carried a stated condition until the writer was pinned: the runner opened its
+output in default text mode, so a runtime writing CRLF produced different bytes without changing a
+single figure. That condition was true of the code it described and is now removed at its source
+rather than restated.
 
 CORRECTED. This paragraph read "A reviewer re-running `python -m src.score.run_layer_eval` on any
 machine should reproduce these bytes, so a mismatch here is a real divergence rather than a

@@ -1859,7 +1859,8 @@ def write(path=None):
     target = GRADING_PATH if path is None else path
     target.parent.mkdir(parents=True, exist_ok=True)
     payload = json.dumps(build(), ensure_ascii=False, indent=1, sort_keys=False) + "\n"
-    target.write_text(payload, encoding="utf-8")
+    # newline="\n" pins LF on every platform; see the note in src/score/run_retrieval_eval.py.
+    target.write_text(payload, encoding="utf-8", newline="\n")
     return target
 
 
