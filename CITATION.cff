@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: If you use this repository, please cite it as below.
+type: software
+title: architect-rag-verification
+authors:
+  - family-names: Youssef
+    given-names: Hasan
+license: Apache-2.0
