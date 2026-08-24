@@ -202,6 +202,10 @@ nor by abstaining.
 The two pooled rates are over different row sets, which is why the answered-row counts stand beside
 them here and in every table this repository publishes.
 
+![Grouped bar chart. For each of three model tiers, the raw and layer unsupported-claim rates, each bar labelled with its ungrounded units over total claim units.](docs/figures/rates-by-tier.svg)
+
+*Derived from `eval/test_grading_results.json` by `python -m src.figures.build_figures`.*
+
 ### What the reduction is made of, and this is the finding
 
 Restricting to the rows the layer actually acted on, and splitting them into rows it abstains on and
@@ -222,6 +226,11 @@ far above the tier average: 26 of 28 units on the Haiku rows it removed.
 **The layer's measured effect on this corpus is mostly a denominator effect and an abstention
 effect. The part that is unsupported content actually disappearing is small.**
 
+![Grouped bar chart. For each of three model tiers, the ungrounded claim units removed by abstention, the ungrounded units removed on rows answered in both conditions, and the grounded units added on those rows.](docs/figures/reduction-decomposition.svg)
+
+*Derived from the per-row blocks of `eval/test_grading_results.json` by
+`python -m src.figures.build_figures`.*
+
 ### The mechanism, from the other side: zero of 109
 
 The layer flagged 109 claim units across the three tiers as unsupported and handed each back to the
@@ -239,6 +248,10 @@ the development-run result exactly. The completeness pass fetched the right bloc
 units were paraphrase of blocks already present, so there was nothing for a fetch to repair. The
 layer's faithfulness effect comes from its detector plus its instruction, the model dropping or
 rewriting what was flagged, and not from retrieval completeness.
+
+![Stacked bar chart. For each of three model tiers, the flagged claim units split into dropped or rewritten, repeated unchanged and still unsupported, and repeated unchanged and now grounded, the last of which is zero on every tier.](docs/figures/flagged-fate.svg)
+
+*Derived from `eval/test_grading_results.json` by `python -m src.figures.build_figures`.*
 
 ### Retrieval, under two different names
 

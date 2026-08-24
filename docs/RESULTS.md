@@ -188,6 +188,45 @@ first-pass ten are never removed, never reordered and never truncated, so a sati
 absent and is never fetched. Any non-zero value there would be a defect in the corrective pass
 rather than a result.
 
+![Horizontal grouped bar chart. For each retrieval stratum, the first pass Recall at 10 and the layer condition's recovered-passage recall, reported under separate metric names because the two conditions are not measured on the same ruler.](figures/recall-by-stratum.svg)
+
+*Derived from `eval/test_retrieval_results.json` and `eval/test_layer_results.json` by
+`python -m src.figures.build_figures`.*
+
+### The corrective pass, and what it may not do
+
+The mechanism behind the two rows above that do not reach 1.0000. The barred box is not decoration:
+it is why action-to-parent reports 0.2500 rather than 1.0000, and it is held by type in the shipped
+modules rather than by discipline, so a retrieved chunk enters the layer as a three-field value and
+the fields that would shortcut the derivation are unreachable rather than declined.
+
+```mermaid
+flowchart TB
+    IN["Query text + fused top 10<br/>(text, chunk_id, unit_label only)"]
+    IN --> EX["C1 references.py<br/>extract citation-formed surfaces<br/>under a grammar fixed before execution"]
+    EX --> RES{"Resolves against the<br/>committed unit index?"}
+
+    RES -->|no| NR["NON-RESOLUTION<br/>a well-formed reference naming<br/>no unit in the corpus"]
+    RES -->|yes| MEM{"Is the unit in the<br/>context set?<br/>(lexical, on chunk_id)"}
+
+    MEM -->|yes| KEEP["Nothing to do"]
+    MEM -->|no| CA["CONTEXT ABSENCE<br/>the first pass named a passage<br/>and did not return it"]
+
+    CA --> FETCH["C3 augment.py<br/>fetch that unit's committed chunks"]
+    FETCH --> APPEND["Append after the first-pass ten<br/>AUGMENTATION ONLY:<br/>never removed, reordered or truncated"]
+    APPEND --> OUTC["Final context set"]
+
+    NR -.-> DIAG["Fabricated-provision signal"]
+
+    subgraph bar["Barred by the layer-gold firewall"]
+        X1["Action identifier to parent subcategory<br/>by suffix strip, printed legend, or any equivalent map"]
+        X2["Inverse citation walk<br/>(cited target back to citing source)"]
+        X3["structural_path, parent_id,<br/>and every relation artifact"]
+    end
+
+    style bar stroke-dasharray: 5 5
+```
+
 ---
 
 ## 7. The no-context condition
@@ -258,6 +297,10 @@ Latency of record is batch creation to completion, the API's own interval.
 The corrective pass itself issues no model call. Its cost is fetch volume: **930 chunks over the 48
 firing rows on every tier**, final context sets running 12 to 57 with a mean of 29.4.
 
+![Histogram of the final context set size across fifty rows, ranging from 10 to 57 chunks, with the rows on which the corrective pass did not fire sitting at exactly ten.](figures/context-sizes.svg)
+
+*Derived from `eval/test_layer_results.json` by `python -m src.figures.build_figures`.*
+
 Every committed cost figure was written by a float expression and re-derived in exact decimal. Every
 disagreement across the nine runs is exactly 0.0000005, a half-way tie at the sixth decimal place
 that the two roundings break in opposite directions. That is a property of the rounding and not a
@@ -271,6 +314,10 @@ Twenty-six predictions were committed before any sealed answer existed and are s
 from the graded blocks inside the results artifact rather than read off. **Ten held, fifteen are
 contradicted, and one attached no prediction to the pair it names.** Every contradicted line stands
 as written.
+
+![A single stacked bar showing the twenty-six pre-registered predictions split into those that held, those contradicted by the result, and the one to which no prediction was attached.](figures/predictions.svg)
+
+*Derived from `eval/test_grading_results.json` by `python -m src.figures.build_figures`.*
 
 Four contradictions move a reading rather than a number.
 
