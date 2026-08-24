@@ -1,4 +1,4 @@
-"""The six results figures, each derived from a committed artifact.
+"""The seven results figures, each derived from a committed artifact.
 
 EVERY NUMBER IN EVERY FIGURE COMES FROM A COMMITTED ARTIFACT, read here and never restated as a
 literal. The three sources are eval/test_grading_results.json, eval/test_retrieval_results.json and
@@ -20,11 +20,22 @@ ungrounded and total units they carried; ungrounded removed 4, 0 and 4; grounded
 
 EVERY RATE CARRIES ITS COUNTS, which is the reporting rule applied to graphics. A bar showing 0.5571
 is labelled 78/140. A chart is exactly where that rule is most often dropped.
+
+A STRATUM A TIER NEVER ANSWERED IS NOT A ZERO BAR. G7 reports per-stratum rates, and a tier that
+abstained on every row of a stratum has no rate at all. Drawing that as a bar of height zero would
+read as perfect performance on exactly the rows the model refused to answer, which is the reading
+the results documentation already refuses in its tables. Those cells print what happened instead.
+
+EACH FIGURE RETURNS ITS GEOMETRY along with its markup. The bounds check in tests/test_figures.py
+needs to know where the plot area ends and the legend begins, and recovering that by pattern
+matching on the emitted markup would be a detector keyed to structure rather than to the claim, the
+failure mode V20 names. The generator knows both rectangles exactly, so it reports them.
 """
 
 from __future__ import annotations
 
 import json
+from typing import NamedTuple
 
 from src.figures import svg
 from src.ingest.corpus_integrity import REPO_ROOT
@@ -46,12 +57,29 @@ REGIME_SHORT = {
     "opus48": "adaptive, effort low",
 }
 
+# The five committed strata, in the order the results tables list them. Named here rather than
+# discovered from the artifact so that a stratum vanishing from the data fails the figure loudly
+# instead of quietly shortening it.
+STRATA = ("single_hop", "clean_multi_hop", "action_to_parent", "near_miss", "adversarial")
+
 INK = "#1a1a1a"
 MUTED = "#5b6167"
 GRID = "#d7dbdf"
 RAW = "#2f5c8f"
 LAYER_C = "#e8a33d"
 THIRD = "#7d9a4e"
+
+
+class Fig(NamedTuple):
+    """A figure's markup and the two rectangles the bounds check judges it by.
+
+    `plot` is the axis area, as (x, y, width, height). `legend` is the legend block's bounding box,
+    as (x0, y0, x1, y1), covering its swatches and its text.
+    """
+
+    svg: str
+    plot: tuple[float, float, float, float]
+    legend: tuple[float, float, float, float]
 
 
 def _load(path):
@@ -106,18 +134,36 @@ def _frame(body, x0, y0, w, h, ymax, ticks, *, fmt=svg.num):
 
 
 def _legend(body, x, y, entries):
+    """One legend row, entries laid out left to right. Returns its bounding box."""
     cx = x
     for label, colour in entries:
         body.append(svg.rect(cx, y - 9, 11, 11, colour))
         body.append(svg.text(cx + 16, y, label, size=12, fill=INK))
         cx += 16 + svg.text_width(label, 12) + 26
+    return (x, y - 9, cx, y + 4)
+
+
+def _legend_stack(body, x, y, entries, *, step=20):
+    """One legend entry per line, stacked downward. Returns its bounding box.
+
+    Three figures built this inline and identically before the bounds check needed a box back from
+    it, so it is one helper now rather than three copies that can drift apart.
+    """
+    ly = y
+    right = x
+    for label, colour in entries:
+        body.append(svg.rect(x, ly - 9, 11, 11, colour))
+        body.append(svg.text(x + 16, ly, label, size=12, fill=INK))
+        right = max(right, x + 16 + svg.text_width(label, 12))
+        ly += step
+    return (x, y - 9, right, ly - step + 4)
 
 
 # --------------------------------------------------------------------------------------------
 # G1: unsupported-claim rate, raw against layer, per tier
 # --------------------------------------------------------------------------------------------
-def figure_rates_by_tier(grading: dict) -> str:
-    W, H = 760, 430
+def figure_rates_by_tier(grading: dict) -> Fig:
+    W, H = 760, 500
     x0, y0, w, h = 78, 78, 620, 250
     body: list[str] = []
     body.append(svg.text(30, 34, "Unsupported-claim rate, raw against layer", size=17, weight="600"))
@@ -152,7 +198,8 @@ def figure_rates_by_tier(grading: dict) -> str:
         body.append(svg.text(cx, y0 + h + 54, REGIME_SHORT[tier], size=11,
                              fill=MUTED, anchor="middle"))
 
-    _legend(body, x0, y0 + h + 92, [("raw, no verification layer", RAW), ("layer", LAYER_C)])
+    legend = _legend(body, x0, y0 + h + 92,
+                     [("raw, no verification layer", RAW), ("layer", LAYER_C)])
     pooled_raw = grading["per_condition"]["raw"]["pooled"]
     pooled_layer = grading["per_condition"]["layer"]["pooled"]
     body.append(svg.text(
@@ -167,19 +214,19 @@ def figure_rates_by_tier(grading: dict) -> str:
         "The three tiers are deployment configurations, not points on a capability scale.",
         size=11, fill=MUTED))
 
-    return svg.document(
+    return Fig(svg.document(
         W, H,
         "Unsupported-claim rate, raw against layer, by tier",
         "Grouped bar chart. For each of three model tiers, the raw and layer unsupported-claim "
         "rates, each bar labelled with its ungrounded units over total claim units.",
-        body)
+        body), (x0, y0, w, h), legend)
 
 
 # --------------------------------------------------------------------------------------------
 # G2: what the reduction is made of
 # --------------------------------------------------------------------------------------------
-def figure_reduction_decomposition(grading: dict) -> str:
-    W, H = 760, 430
+def figure_reduction_decomposition(grading: dict) -> Fig:
+    W, H = 760, 510
     x0, y0, w, h = 78, 92, 620, 232
     body: list[str] = []
     body.append(svg.text(30, 34, "What the reduction is made of", size=17, weight="600"))
@@ -218,34 +265,34 @@ def figure_reduction_decomposition(grading: dict) -> str:
             f"{grading['per_condition']['layer']['comparable_set'][tier]['rows']}",
             size=11, fill=MUTED, anchor="middle"))
 
-    ly = y0 + h + 66
-    for label, _, colour in series:
-        body.append(svg.rect(x0, ly - 9, 11, 11, colour))
-        body.append(svg.text(x0 + 16, ly, label, size=12, fill=INK))
-        ly += 20
+    legend = _legend_stack(body, x0, y0 + h + 66, [(label, colour) for label, _, colour in series])
 
     total_ung = sum(dec[t]["ungrounded_removed"] for t in TIERS)
     total_grd = sum(dec[t]["grounded_added"] for t in TIERS)
+    ly = legend[3] + 24
     body.append(svg.text(
-        x0, ly + 8,
-        f"Across all three tiers {total_ung} ungrounded units disappeared from rows answered in "
+        x0, ly,
+        f"Across all three tiers {total_ung} ungrounded units disappeared from rows answered in",
+        size=11, fill=MUTED))
+    body.append(svg.text(
+        x0, ly + 18,
         f"both conditions, and {total_grd} grounded units were added.",
         size=11, fill=MUTED))
 
-    return svg.document(
+    return Fig(svg.document(
         W, H,
         "What the reduction is made of",
         "Grouped bar chart. For each of three model tiers, the ungrounded claim units removed by "
         "abstention, the ungrounded units removed on rows answered in both conditions, and the "
         "grounded units added on those rows.",
-        body)
+        body), (x0, y0, w, h), legend)
 
 
 # --------------------------------------------------------------------------------------------
 # G3: the flagged-unit fate table
 # --------------------------------------------------------------------------------------------
-def figure_flagged_fate(grading: dict) -> str:
-    W, H = 760, 400
+def figure_flagged_fate(grading: dict) -> Fig:
+    W, H = 760, 440
     x0, y0, w, h = 78, 96, 620, 210
     body: list[str] = []
     body.append(svg.text(30, 34, "What happened to the 109 flagged units", size=17, weight="600"))
@@ -292,28 +339,26 @@ def figure_flagged_fate(grading: dict) -> str:
                              f"rescued by fetched context: {blk['repeated_and_now_grounded']}",
                              size=11, fill=MUTED, anchor="middle"))
 
-    ly = y0 + h + 62
-    for label, colour in (("dropped or rewritten", RAW),
-                          ("repeated unchanged, still unsupported", LAYER_C),
-                          ("repeated unchanged, now grounded (zero on every tier)", THIRD)):
-        body.append(svg.rect(x0, ly - 9, 11, 11, colour))
-        body.append(svg.text(x0 + 16, ly, label, size=12, fill=INK))
-        ly += 20
+    legend = _legend_stack(body, x0, y0 + h + 62, [
+        ("dropped or rewritten", RAW),
+        ("repeated unchanged, still unsupported", LAYER_C),
+        ("repeated unchanged, now grounded (zero on every tier)", THIRD),
+    ])
 
-    return svg.document(
+    return Fig(svg.document(
         W, H,
         "What happened to the 109 flagged units",
         "Stacked bar chart. For each of three model tiers, the flagged claim units split into "
         "dropped or rewritten, repeated unchanged and still unsupported, and repeated unchanged "
         "and now grounded, the last of which is zero on every tier.",
-        body)
+        body), (x0, y0, w, h), legend)
 
 
 # --------------------------------------------------------------------------------------------
 # G4: recall by stratum, first pass against layer, under two metric names
 # --------------------------------------------------------------------------------------------
-def figure_recall_by_stratum(retrieval: dict, layer: dict) -> str:
-    W, H = 860, 440
+def figure_recall_by_stratum(retrieval: dict, layer: dict) -> Fig:
+    W, H = 860, 460
     x0, y0, w, h = 250, 78, 520, 236
     body: list[str] = []
     body.append(svg.text(30, 34, "Retrieval by stratum, under two metric names", size=17,
@@ -346,8 +391,8 @@ def figure_recall_by_stratum(retrieval: dict, layer: dict) -> str:
         body.append(svg.rect(x0, cy + 2, max(b / ymax * w, 0.8), bh, LAYER_C))
         body.append(svg.text(x0 + b / ymax * w + 6, cy + 11, svg.num(b), size=10, fill=MUTED))
 
-    _legend(body, x0, y0 + h + 46,
-            [("Recall@10, first pass", RAW), ("recovered-passage recall, layer", LAYER_C)])
+    legend = _legend(body, x0, y0 + h + 46,
+                     [("Recall@10, first pass", RAW), ("recovered-passage recall, layer", LAYER_C)])
 
     ov_fp = retrieval["aggregates"]["overall"]["recall_at_10"]
     ov_lay = layer["aggregates"]["overall"]["recovered_passage_recall_layer"]
@@ -361,20 +406,20 @@ def figure_recall_by_stratum(retrieval: dict, layer: dict) -> str:
         "The layer condition reports no rank-based figure: under augmentation k is not ten.",
         size=11, fill=MUTED))
 
-    return svg.document(
+    return Fig(svg.document(
         W, H,
         "Retrieval by stratum, under two metric names",
         "Horizontal grouped bar chart. For each retrieval stratum, the first pass Recall at 10 "
         "and the layer condition's recovered-passage recall, reported under separate metric names "
         "because the two conditions are not measured on the same ruler.",
-        body)
+        body), (x0, y0, w, h), legend)
 
 
 # --------------------------------------------------------------------------------------------
 # G5: final context set size, all fifty rows
 # --------------------------------------------------------------------------------------------
-def figure_context_sizes(layer: dict) -> str:
-    W, H = 760, 360
+def figure_context_sizes(layer: dict) -> Fig:
+    W, H = 760, 400
     x0, y0, w, h = 78, 86, 620, 190
     body: list[str] = []
     body.append(svg.text(30, 34, "Final context set size, all fifty rows", size=17, weight="600"))
@@ -420,19 +465,23 @@ def figure_context_sizes(layer: dict) -> str:
         f"{unaug} rows sit at exactly ten: the corrective pass did not fire on them.",
         size=11, fill=MUTED))
 
-    return svg.document(
+    # This figure carries no legend: one series, distinguished by its axis rather than by colour.
+    # The bounds check still needs a box, so it is reported as the footnote band it actually has.
+    legend = (x0, y0 + h + 32, x0 + 420, y0 + h + 89)
+
+    return Fig(svg.document(
         W, H,
         "Final context set size, all fifty rows",
         f"Histogram of the final context set size across fifty rows, ranging from {lo} to {hi} "
         "chunks, with the rows on which the corrective pass did not fire sitting at exactly ten.",
-        body)
+        body), (x0, y0, w, h), legend)
 
 
 # --------------------------------------------------------------------------------------------
 # G6: the pre-registered predictions
 # --------------------------------------------------------------------------------------------
-def figure_predictions(grading: dict) -> str:
-    W, H = 760, 300
+def figure_predictions(grading: dict) -> Fig:
+    W, H = 760, 310
     x0, y0, w = 78, 120, 620
     body: list[str] = []
     body.append(svg.text(30, 34, "The twenty-six pre-registered predictions", size=17,
@@ -465,31 +514,112 @@ def figure_predictions(grading: dict) -> str:
                              anchor="middle", weight="600"))
         bx += seg
 
-    ly = y0 + bar_h + 34
-    for label, colour in order:
-        v = counts.get(label, 0)
-        body.append(svg.rect(x0, ly - 9, 11, 11, colour))
-        body.append(svg.text(x0 + 16, ly, f"{label.replace('_', ' ')}: {v}", size=12, fill=INK))
-        ly += 20
+    legend = _legend_stack(body, x0, y0 + bar_h + 44, [
+        (f"{label.replace('_', ' ')}: {counts.get(label, 0)}", colour) for label, colour in order
+    ])
 
     body.append(svg.text(
-        x0, ly + 8,
+        x0, legend[3] + 22,
         f"{total} predictions scored. A contradicted prediction that gets edited is not a prediction.",
         size=11, fill=MUTED))
 
-    return svg.document(
+    return Fig(svg.document(
         W, H,
         "The twenty-six pre-registered predictions",
         "A single stacked bar showing the twenty-six pre-registered predictions split into those "
         "that held, those contradicted by the result, and the one to which no prediction was "
         "attached.",
-        body)
+        body), (x0, y0, w, bar_h), legend)
+
+
+# --------------------------------------------------------------------------------------------
+# G7: unsupported-claim rate by stratum, raw against layer, one panel per tier
+# --------------------------------------------------------------------------------------------
+def figure_rates_by_stratum(grading: dict) -> Fig:
+    """All five committed strata on every panel, and no zero bar standing in for an abstention.
+
+    The denominators here are small on several strata, which is why nothing in this figure reads a
+    verdict off a comparison. The rate, its counts and its answered-row count are printed and the
+    reading is left to docs/RESULTS.md, which carries it.
+    """
+    W, H = 820, 790
+    lab_x = 196
+    x0, w = 206, 400
+    panel_top = 108
+    row_h = 30
+    panel_h = len(STRATA) * row_h + 44
+
+    body: list[str] = []
+    body.append(svg.text(30, 34, "Unsupported-claim rate by stratum, raw against layer",
+                         size=17, weight="600"))
+    body.append(svg.text(
+        30, 56,
+        "All five committed strata on every tier. Each bar is labelled with its ungrounded units",
+        size=12, fill=MUTED))
+    body.append(svg.text(
+        30, 72,
+        "over its total claim units. Lower is better.",
+        size=12, fill=MUTED))
+
+    raw_ps = grading["per_condition"]["raw"]["per_stratum"]
+    lay_ps = grading["per_condition"]["layer"]["per_stratum"]
+
+    bh = 9
+    for pi, tier in enumerate(TIERS):
+        py = panel_top + pi * panel_h
+        body.append(svg.text(30, py, TIER_LABEL[tier], size=13, weight="600"))
+        body.append(svg.text(30, py + 16, REGIME_SHORT[tier], size=11, fill=MUTED))
+        body.append(svg.line(x0, py + 8, x0 + w, py + 8, GRID, width=1))
+        for t in (0.25, 0.5, 0.75, 1.0):
+            xt = x0 + t * w
+            body.append(svg.line(xt, py + 8, xt, py + 8 + len(STRATA) * row_h, GRID, width=1))
+            body.append(svg.text(xt, py, svg.num(t), size=10, fill=MUTED, anchor="middle"))
+        body.append(svg.line(x0, py + 8, x0, py + 8 + len(STRATA) * row_h, MUTED, width=1.5))
+
+        for si, stratum in enumerate(STRATA):
+            cy = py + 8 + si * row_h + row_h / 2
+            body.append(svg.text(lab_x, cy + 4, stratum, size=11, fill=INK, anchor="end"))
+            for j, (blk, colour) in enumerate(
+                ((raw_ps[tier][stratum], RAW), (lay_ps[tier][stratum], LAYER_C))
+            ):
+                by = cy - bh - 1 if j == 0 else cy + 1
+                if blk["answered_rows"] == 0:
+                    body.append(svg.text(
+                        x0 + 4, by + bh - 1,
+                        f"abstained on all {blk['rows']} rows",
+                        size=10, fill=MUTED))
+                    continue
+                rate = blk["unsupported_claim_rate"]
+                body.append(svg.rect(x0, by, max(rate * w, 0.8), bh, colour))
+                body.append(svg.text(
+                    x0 + rate * w + 6, by + bh - 1,
+                    f"{blk['ungrounded_units']}/{blk['claim_units']}  {svg.num(rate)}  "
+                    f"{blk['answered_rows']} answered",
+                    size=10, fill=MUTED))
+
+    legend_y = panel_top + len(TIERS) * panel_h + 44
+    legend = _legend(body, x0, legend_y,
+                     [("raw, no verification layer", RAW), ("layer", LAYER_C)])
+    body.append(svg.text(
+        x0, legend_y + 26,
+        "A stratum a tier answered no row of carries no rate and is marked, never drawn as zero.",
+        size=11, fill=MUTED))
+
+    return Fig(svg.document(
+        W, H,
+        "Unsupported-claim rate by stratum, raw against layer, by tier",
+        "Horizontal grouped bar chart in three panels, one per model tier. For each of the five "
+        "committed strata, the raw and layer unsupported-claim rates, each bar labelled with its "
+        "ungrounded units over its total claim units and its answered-row count, and each stratum "
+        "a tier abstained on in every row marked as abstained rather than drawn as a zero bar.",
+        body), (x0, panel_top, w, len(TIERS) * panel_h), legend)
 
 
 # --------------------------------------------------------------------------------------------
 
 FIGURES = {
     "rates-by-tier.svg": ("figure_rates_by_tier", ("grading",)),
+    "rates-by-stratum.svg": ("figure_rates_by_stratum", ("grading",)),
     "reduction-decomposition.svg": ("figure_reduction_decomposition", ("grading",)),
     "flagged-fate.svg": ("figure_flagged_fate", ("grading",)),
     "recall-by-stratum.svg": ("figure_recall_by_stratum", ("retrieval", "layer")),
@@ -498,8 +628,8 @@ FIGURES = {
 }
 
 
-def build_all() -> dict[str, str]:
-    """Every figure, as {filename: svg text}. Pure function of the three committed artifacts."""
+def build_all_figs() -> dict[str, Fig]:
+    """Every figure with its geometry. Pure function of the three committed artifacts."""
     sources = {
         "grading": _load(GRADING),
         "retrieval": _load(RETRIEVAL),
@@ -510,3 +640,8 @@ def build_all() -> dict[str, str]:
         fn = globals()[fn_name]
         out[name] = fn(*[sources[a] for a in args])
     return out
+
+
+def build_all() -> dict[str, str]:
+    """Every figure, as {filename: svg text}. Pure function of the three committed artifacts."""
+    return {name: fig.svg for name, fig in build_all_figs().items()}

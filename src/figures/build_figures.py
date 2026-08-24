@@ -1,4 +1,4 @@
-"""Write the six results figures to docs/figures/.
+"""Write the seven results figures to docs/figures/.
 
 Run:  python -m src.figures.build_figures [--check]
 

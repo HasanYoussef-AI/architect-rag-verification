@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="760" height="430" viewBox="0 0 760 430" role="img" aria-labelledby="figure-title figure-desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="500" viewBox="0 0 760 500" role="img" aria-labelledby="figure-title figure-desc">
 <title id="figure-title">Unsupported-claim rate, raw against layer, by tier</title>
 <desc id="figure-desc">Grouped bar chart. For each of three model tiers, the raw and layer unsupported-claim rates, each bar labelled with its ungrounded units over total claim units.</desc>
-<rect x="0" y="0" width="760" height="430" fill="#ffffff"/>
+<rect x="0" y="0" width="760" height="500" fill="#ffffff"/>
 <text x="30" y="34" font-size="17" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" font-weight="600">Unsupported-claim rate, raw against layer</text>
 <text x="30" y="56" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">Lower is better. Each bar is labelled with its ungrounded units over its total claim units.</text>
 <line x1="78" y1="328" x2="698" y2="328" stroke="#d7dbdf" stroke-width="1"/>
