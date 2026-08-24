@@ -4,6 +4,35 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-24, README's suite figures corrected to the fresh-clone measurement
+
+`README.md` stated the suite as 991 tests, a fresh clone as 984 passed with 7 skipped, and the
+cache-present environment as 991 passed with 0 skipped. All three predate two scopes of test
+additions, and all three disagreed with `docs/REPRODUCE.md` once that file was re-derived from a
+real fresh clone in the preceding scope. They now carry that measurement: 1058, 1047 with 11
+skipped, and 1058 with 0 skipped. The open disagreement the preceding entry recorded is closed.
+
+One clause moved beyond the three figures. The sentence carrying the fresh-clone count restated it
+as "the seven at four sites that each name the deliberately uncommitted segment embedding cache", so
+correcting the number alone would have produced a sentence contradicting itself two words later.
+
+The clause was independently wrong. A fresh clone's eleven skips sit in three classes across two
+files: four naming the `onnxruntime` build-only dependency, four naming the pinned model, and three
+naming the segment cache. What the clause described accurately was the environment with the `embed`
+group installed and no cache built, where seven skips do sit at four sites in
+`tests/test_attributability.py` and every one names the cache. It was the with-embed environment
+under a fresh-clone label, the same defect `docs/REPRODUCE.md` carried in the same place, which is
+what two files written from one measurement produce.
+
+The sentence directing a reader to read the skips by name rather than by count is unchanged, and is
+better supported after the correction than before it.
+
+### Commits
+
+- b9fde0e docs(readme): correct three stale suite figures against the fresh-clone measurement
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-24, the figures on the brand palette, and the reproduction walkthrough re-derived
 
 ### The reproduction walkthrough was telling reviewers the wrong number
