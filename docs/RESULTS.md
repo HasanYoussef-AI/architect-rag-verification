@@ -4,6 +4,10 @@ Every figure here is read from `eval/test_grading_results.json`, `eval/test_retr
 or `eval/test_layer_results.json`, all three pinned by digest and asserted on every suite run. See
 [REPRODUCE.md](REPRODUCE.md).
 
+Machine-readable CSV forms of the tables below are in [`results/tables/`](../results/tables), one
+observation per row, written from the same three artifacts by
+`python -m src.figures.build_tables` and pinned by digest like everything else here.
+
 ---
 
 ## How rates are reported here

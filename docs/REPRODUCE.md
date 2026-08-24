@@ -229,6 +229,9 @@ files contain zero CRLF sequences.
 ## Step 5. Read the results
 
 - `docs/RESULTS.md` carries the full per-tier, per-stratum, per-condition tables.
+- `results/tables/` carries the same tables as CSV, one observation per row, written by
+  `python -m src.figures.build_tables` and pinned by digest. Load these rather than walking the
+  JSON if you want to plot a series or check an arithmetic identity.
 - `eval/test_grading_results.json` is the artifact every headline number is read from. It is
   836,853 bytes and it carries its own derivations: each aggregate block states in its own text how
   it was computed and which counts it sums.
