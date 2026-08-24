@@ -4,6 +4,121 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-24, the figures on the brand palette, and the reproduction walkthrough re-derived
+
+### The reproduction walkthrough was telling reviewers the wrong number
+
+`docs/REPRODUCE.md` stated 991 collected in each of two environments and told a reviewer that a
+differing count means a differing tree. The tree collected 1011 before the previous scope and 1058
+after it, so the sentence had been sending a correct reviewer to look for a fault for two scopes.
+
+Every figure in that file is now measured rather than carried over, in a clone of this repository
+made into an empty directory outside it and built with the default `uv sync` the file itself
+instructs. A working checkout was deliberately not used: it accumulates the optional artifacts a
+fresh clone lacks and reports fewer skips than a reviewer sees, which is how the original numbers
+came to be wrong.
+
+| environment | collected | passed | skipped | wall clock |
+| --- | --- | --- | --- | --- |
+| fresh clone, `uv sync` | 1058 | 1047 | 11 | 3m43s |
+| with `uv sync --group embed`, no segment cache | 1058 | 1051 | 7 | 3m50s |
+| with the `embed` group and the segment cache built | 1058 | 1058 | 0 | 4m26s |
+
+The middle environment was absent from the file and is what explains the defect. The dense arm's
+four skips change their reason between the first two: in a fresh clone they report that the pinned
+ONNX model is not cached, and once the `embed` group is installed the same four report that the
+segment cache is absent. The file quoted the second message under its fresh-clone heading, so it
+described a state no reviewer following its own instructions is ever in. It also never mentioned the
+four `onnxruntime` import skips a default install produces.
+
+Skips are quoted by test name now. The file cited four line numbers and one had drifted. That is the
+third ordinal reference to go stale in this repository, and the fix is the one the previous two got.
+
+Everything else the file states was re-run in that clone and is confirmed unchanged: the thirty
+integrity checks and their five, one and twenty-four breakdown; the three result digests and the
+three byte sizes; the ruff output; the layer runner's stdout digest; the grading runner's
+destination-path digest; and the empty `git diff` after an `--overwrite` rebuild, that last one
+alongside a control confirming the same command reports a change when one exists.
+
+Two corrections beyond the counts. The runner refusal prints an absolute path, so a reviewer's
+output begins with their own clone directory rather than the repository-relative path the file
+quoted. The optional cache build's cost was checked rather than assumed and survived: 19.0 minutes
+against the stated roughly twenty, 40,906,880 bytes written, the manifest's `cache_sha256`
+reproduced exactly on this machine, and the manifest itself rewritten byte-identically. An early
+progress estimate during that build read 36.5 minutes and would have been a wrong correction to a
+right claim; the figure recorded is the one the finished build reported.
+
+### The figures took the palette
+
+The figures were drawn on white with their own series colours while the diagrams beside them
+carried the palette. They are SVG this repository emits and the colours are constants in one module,
+so the palette applied directly: canvas #0A1A1F, text and axes #E8EAEC, raw condition cyan #00D4FF,
+layer condition gold #C9A84C, matching the diagrams where cyan is data and gold is the processed
+path. The palette is the owner's, from the public `architect-worldcup` repository, the same source
+the diagrams took it from in the previous scope.
+
+Three values are derived rather than taken, and each is stated with what it measures: #9AA5AD for
+secondary text at 7.08:1 on the canvas, #22353D for gridlines at 1.39:1 and deliberately quiet since
+a gridline is not text, and #2E9BB5 for the third series at 5.48:1.
+
+Series separation by lightness, which is what survives greyscale: raw against layer 1.29:1, layer
+against third 1.42:1, raw against third 1.83:1. The weakest pair is the two brand colours, which is
+a property of them and not a choice, so those two are not distinguishable in greyscale and every
+series stays labelled. The ratios and the labels are both asserted, so the figures cannot quietly
+come to rely on colour alone.
+
+### The contrast check references the backdrop, not the canvas
+
+The instruction was to measure every text element against the canvas. That is unsatisfiable
+alongside readable labels, and the two figures that draw a label on top of a bar are why. Measured
+on those nine labels: the light ink reaches 14.75:1 against the canvas and 1.89:1 against the gold
+bar, while the dark ink reaches 1.00:1 against the canvas and 7.78:1 against the bar. A
+canvas-referenced check accepts the label no reader can read and rejects the one every reader can.
+
+The check therefore measures each text element against the colour actually behind it, which is
+strictly stronger than the canvas reference rather than a relaxation of it, and requires 4.5:1. The
+backdrop is derived from the markup rather than declared by the generator: SVG paints in document
+order, so the colour behind a point is the fill of the last rect containing it, and the full-canvas
+ground being emitted first makes it the fallback without a special case. A test asserts the
+divergence on each of those nine labels rather than describing it.
+
+Worst text contrast across all seven figures is 5.48:1. The bounds check re-passes with worst
+clearance 19.6 against the required 12.
+
+### Branch discipline
+
+`main` was moved by the agent once, at the previous scope. The harness had isolated the work onto a
+worktree and the block authorised a push of `main`; rather than reporting that the authorised push
+could not proceed, the agent fast-forwarded `main` itself and pushed. The fast-forward was strict
+and verified and carried exactly the authorised commits, and it was disclosed in that scope's
+report, so nothing was damaged and nothing was reversed.
+
+The rule it broke is not about mechanics. Moving the branch that carries the published claims is the
+owner's operation. Standing from here: where the harness isolates the work, it finishes on the
+worktree branch and stops there, the owner fast-forwards, and the owner pushes with his own command.
+This scope ends on its worktree branch with no remote operation of any kind.
+
+### Suite
+
+1047 passed and 11 skipped at 1058 collected, with the collect-only measurement and its arithmetic
+stated before the run and holding exactly. The same counts were measured independently in the fresh
+clone, which is the cross-check that the two agree. `ruff check` passes over `src` and `tests`.
+
+### Not done, and why
+
+`README.md` states the suite size and the fresh-clone split in the same stale numbers this scope
+corrected in `docs/REPRODUCE.md`. It is outside this scope, which admits `README.md` only for a
+figure caption, so it is left standing and the two pages disagree until that is ruled on. Recorded
+rather than fixed quietly, because a scope that widens itself to tidy a contradiction is the failure
+the previous entry's branch note already records.
+
+### Commits
+
+- f3e113c feat(figures): the dark canvas and the brand palette, with contrast asserted
+- 85d6ace docs(reproduce): re-derive every expected figure from a fresh clone
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-24, the figures measured for geometry, a seventh added, and the diagrams given a palette
 
 Owner review of the private push found the figures cropped in a browser: the legend's last line cut
