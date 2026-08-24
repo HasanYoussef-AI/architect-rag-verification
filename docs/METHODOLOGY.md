@@ -30,6 +30,8 @@ Every headline is the layer-minus-raw delta on the identical query set under the
 
 Both the answering model and every check reason only over the documents and chunks provided, never from training memory. These frameworks are in the models' training data, so without strict closed-book enforcement the system could score well while ignoring retrieval entirely. Closed-book enforcement is the spine of the result and is demonstrable.
 
+This repository's use of "closed-book" is the inverse of the term's common usage. Here it names the grounding discipline of answering only from retrieved context; in the wider literature it usually names answering with no retrieval at all. The no-retrieval condition in this study is therefore called no-context, a naming decision recorded in `PREREGISTRATION.md` at the point it was made, so the two senses do not collide anywhere in this repository.
+
 ## Scoring integrity
 
 The deterministic scorer is the grader of record. It produces every headline number, reproduces for free with no key, and cannot be tuned by rewriting a prompt. Since the person building the checks also reports the results, a promptable LLM judge as grader would be a place to consciously or unconsciously flatter the layer. The deterministic grader removes that risk by construction.
