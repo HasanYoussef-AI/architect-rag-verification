@@ -90,22 +90,62 @@ check requires deleting a failing test.
 
 ### What you should see
 
-Two figures, and which one you get depends on your environment. Both are correct.
+Three figures, and which one you get depends on your environment. All three are correct.
 
-| environment | collected | passed | skipped |
-| --- | --- | --- | --- |
-| **a fresh clone** | 991 | 984 | 7 |
-| with the optional model and cache present | 991 | 991 | 0 |
+Every number in this section was measured by cloning this repository into an empty directory,
+running `uv sync`, and running the suite there. None of it is carried over from a working checkout,
+because a working checkout accumulates the optional artifacts a fresh clone does not have and will
+report fewer skips than a reviewer sees.
 
-**A fresh clone gives 984 passed and 7 skipped, and that is the expected result.** All seven skips
-sit at four sites in `tests/test_attributability.py` and every one names the artifact it needs:
+| environment | collected | passed | skipped | wall clock |
+| --- | --- | --- | --- | --- |
+| **a fresh clone**, `uv sync` | 1058 | 1047 | 11 | 3m43s |
+| with `uv sync --group embed`, no segment cache | 1058 | 1051 | 7 | 3m50s |
+| with the `embed` group and the segment cache built | 1058 | 1058 | 0 | 4m26s |
+
+**A fresh clone gives 1047 passed and 11 skipped, and that is the expected result.** The eleven fall
+into three classes, and every one names the artifact it needs. Tests are named rather than located
+by line, because a line number drifts with every edit above it and has already been wrong in this
+file once.
+
+Four in `tests/test_query_embeddings_provenance.py`, needing `onnxruntime`, which `uv sync` does not
+install because it is in the build-only `embed` group:
 
 ```
-SKIPPED [1] tests/test_attributability.py:219: no segment cache built; the staleness path needs one to be stale against.
-SKIPPED [4] tests/test_attributability.py:496: no segment embedding cache. It is deliberately not committed; build it with python -m src.goldset.build_segment_embeddings.
-SKIPPED [1] tests/test_attributability.py:581: the cache itself is not present; only the manifest ships.
-SKIPPED [1] tests/test_attributability.py:617: the cache itself is not present; only the manifest ships.
+test_regenerated_rankings_match_committed_results[development]
+test_regenerated_rankings_match_committed_results[test]
+test_committed_array_reproduces_regenerated_rankings[development]
+test_committed_array_reproduces_regenerated_rankings[test]
+    could not import 'onnxruntime': No module named 'onnxruntime'
 ```
+
+Four in `tests/test_attributability.py`, the dense arm, needing the pinned model:
+
+```
+test_dense_arm_scores_the_shared_segments
+test_dense_arm_at_segment_granularity_finds_the_case_a_partner
+test_dense_arm_applies_no_floor_and_declares_level_3
+test_the_dense_arm_scored_population_equals_the_segment_population
+    the pinned ONNX model is not cached. It is deliberately outside the offline
+    reproducibility set, so its absence skips the dense arm rather than failing it.
+```
+
+Three in `tests/test_attributability.py`, needing the segment embedding cache:
+
+```
+test_a_stale_segment_cache_raises_rather_than_scoring_the_wrong_text
+    no segment cache built; the staleness path needs one to be stale against.
+test_manifest_matches_the_cache_it_describes
+test_the_manifest_takes_no_value_from_the_untracked_index
+    the cache itself is not present; only the manifest ships.
+```
+
+**The dense arm's four skips change their reason between the first two environments, and that is
+worth knowing before you read your own output.** In a fresh clone they report that the pinned model
+is not cached. After `uv sync --group embed` the model can be loaded, so the same four report that
+the segment embedding cache is absent instead, and name the command that builds it. An earlier
+revision of this file quoted the second message under the fresh-clone heading, which is a state no
+reviewer following the instructions above will ever be in.
 
 The segment embedding cache is 40,906,880 bytes, about ten times the committed chunk embedding
 array, and is deliberately not committed on size. `eval/segment_embedding_manifest.json` carries its
@@ -113,10 +153,11 @@ digest, its segment count, its exclusion funnel, the pinned model revision and t
 builds it, in its place.
 
 **Read the skips by name, not by count.** The count moves as query sets and optional artifacts are
-registered. A skip naming the segment cache is expected in a fresh clone. A skip naming anything
-else is not, and is worth reporting.
+registered, and it has moved three times already. The names above are stable. A skip naming the
+segment cache, the pinned model or `onnxruntime` is expected. A skip naming anything else is not,
+and is worth reporting.
 
-The collected count is 991 in both environments. If yours differs, the tree differs.
+The collected count is 1058 in every environment. If yours differs, the tree differs.
 
 ### Lint
 
@@ -157,10 +198,13 @@ it is logged, so it does not happen by running a command twice.
 
 ```
 $ python -m src.score.run_retrieval_eval
-eval/test_retrieval_results.json already exists. A committed result is not silently replaced;
-re-running over one is a Rule 4 correction and takes --overwrite, whose use is logged in the
-commit message and the session log.
+<your clone>/eval/test_retrieval_results.json already exists. A committed result is not silently
+replaced; re-running over one is a Rule 4 correction and takes --overwrite, whose use is logged in
+the commit message and the session log.
 ```
+
+The path the runner prints is absolute, so your output begins with your own clone directory rather
+than with the repository-relative path shown above. The message is otherwise verbatim.
 
 Two ways to re-derive without touching anything.
 
@@ -250,8 +294,15 @@ uv sync --group embed
 python -m src.goldset.build_segment_embeddings
 ```
 
-The build takes roughly twenty minutes and produces about 41 MB under `embeddings_cache/`, which is
-git-ignored. After it, the suite reports 991 passed and 0 skipped.
+Measured on the machine this file was written on: the build took 19.0 minutes and wrote 40,906,880
+bytes to `embeddings_cache/segment_embeddings.npy`, which is git-ignored. After it the suite reports
+1058 passed and 0 skipped, which is the third row of the table above.
+
+Two things reproduced exactly on that run and are worth knowing, because they are what the manifest
+exists to let you check. The rebuilt cache's SHA-256 matched
+`eval/segment_embedding_manifest.json`'s `cache_sha256` exactly, and the build rewrites that
+manifest as its last step, which came back byte-identical to the committed one. Both are
+same-machine reproductions; see the caveat below.
 
 `onnxruntime` is pinned to `==1.27.0` because its reduction order is version-sensitive and the
 committed embeddings were generated with that build. Regenerating from the pinned ONNX revision
