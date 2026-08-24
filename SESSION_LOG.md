@@ -4,6 +4,247 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-24, the publication documentation pass
+
+The repository is a readable artifact. The README carried seven TODO placeholders and now carries
+the case study; the reproduction walkthrough, the full results tables, the figures and the tables
+directory exist. Three defects in shipped files were corrected, and they were found by two
+different instruments rather than one: a false clause in the Phase 0 bootstrap entry, found by
+sweeping every prose artifact against the repository; and a cross-pin check that had stopped being
+complete together with a digest claim carrying a platform condition, both found by the facts audit
+that opened the pass rather than by the prose sweep.
+
+No result moved. Every headline figure is the one the sealed run produced, and the three result
+artifacts are byte-identical to what `356f23d`, `3be93d2` and `3c4afec` committed.
+
+### A hash-citation claim, tense-marked
+
+The Phase 0 bootstrap entry supports the pre-push rebuild in part with the clause "no README or
+pre-registration cites these hashes". That clause is false in one of its two halves and is marked
+rather than deleted.
+
+Establishing when it went false produced a more precise account than the defect itself. It was true
+when written: the bootstrap `PREREGISTRATION.md` carries no commit-shaped string anywhere, measured
+against a control finding two in the current revision of the same file. It went false at `18603e9`,
+the commit that extended the pre-registration, whose revision note cites the bootstrap commit under
+the identifier that commit carried before the history rebuild. `dbe8b33` later re-anchored that
+citation to the hash the entry prints, which moved the pointer and not the fact. A pickaxe search
+points at `dbe8b33` and that is not where the claim broke.
+
+The superseded identifier is not written into the entry, because it does not resolve in the current
+history and S10 bars a citation that does not. The remaining halves hold and are measured:
+`README.md` carries no commit-shaped string at all, and `d574a88b`, the second bootstrap commit, is
+cited by neither file.
+
+### One invariant stated at two strengths
+
+The cross-pin check in `tests/test_layer_results_digest.py` compared its own digest against exactly
+one other. That was complete while two result pins existed and stopped being complete when the
+grading pin landed at `348bfb8`: a check against a single other pin leaves a pair unexamined and
+narrows further as pins are added.
+
+No coverage gap was closed. `tests/test_grading_results_digest.py` carried the all-pairs form from
+its first landing and already asserted everything the two-way form asserted, over a strict superset
+of the pins. What was removed is one invariant stated at two strengths in two files, with the weaker
+statement sitting in the file whose sibling's docstring explains why the weak shape was outgrown.
+
+### The writers pin LF, and a digest claim stops carrying a condition
+
+The three result runners wrote in default text mode, so their bytes depended on the runtime's
+line-ending translation. A runtime writing CRLF produced different bytes without changing a figure,
+which gave every digest pin over those artifacts a failure mode a reader could not distinguish from
+a real divergence. All three now pass `newline="\n"`.
+
+Both halves of each digest claim are now true by mechanism. The checkout half was already so, from
+`.gitattributes` setting `-text` at `6a6309a`; the rebuild half is now.
+
+The change spans `src/` and `tests/` in one commit, and the reason is the defect it avoids. The
+`src/` change alone would have left three shipped docstrings asserting that the runner opens its
+output in default text mode, which stops being true the moment the writer is pinned. A change that
+knowingly falsifies shipped text is the class of defect the `6e3c0ce` carrier attribution already
+cost this repository once. Each docstring now states the mechanism and keeps the superseded
+condition in the past tense.
+
+Measured rather than assumed, with the prediction stated before the first command ran. Each
+artifact was rebuilt through its own write call to a temporary path outside the repository, so no
+committed result was touched and `--overwrite` was never passed; line-ending translation is a
+property of the open mode rather than of the destination, so a temporary path tests the writer
+exactly. All three rebuild byte-identically with zero CRLF sequences on both sides, measured three
+times: before the change, after the `src/` change, and after the full change. The comparator carries
+its own control, returning not-identical when applied to the same content with LF translated to
+CRLF, so the three identical verdicts are measurements rather than a predicate that cannot fail.
+
+The 2026-08-23 entry is not amended. It records that the runners wrote in text mode, which was true
+of the code when that entry was written.
+
+### The documentation set
+
+`README.md` replaces its placeholder. It leads with the finding rather than the delta: the layer's
+measured effect on this corpus is mostly abstention and denominator change, and almost none of it is
+unsupported content disappearing. Every rate carries its ungrounded count, its total claim units and
+its answered-row count. The near-miss reduction is reported as grader conformance under the reading
+fixed before the number existed. The no-context condition reports two figures under their own names
+and neither sits beside an unsupported-claim rate. The secondary comparison is reported in the
+direction it fell, which is the direction least useful to the case study. Raw is stated to mean no
+verification layer, not no retrieval, and the two conditions share no metric label anywhere,
+including in the figures.
+
+`docs/REPRODUCE.md` is the walkthrough. Its most useful content is the part a naive instruction
+would have got wrong: the three runners refuse to overwrite a committed result, so a reviewer
+following a bare command hits a refusal and concludes the repository is broken. The refusal is
+quoted and explained, and two non-destructive routes are given, the layer runner's `--stdout` piped
+to a digest and the grading runner's destination-path form. Expected output is stated for every
+step, including that a fresh clone reports 984 passed and 7 skipped rather than a clean run, with
+the skips quoted so they can be matched by name.
+
+`docs/RESULTS.md` carries the full per-tier, per-stratum and per-condition tables, the five withheld
+fixes with the commit hashes that make each refusal checkable, nine what-still-fails entries, five
+exclusions, and the exploratory follow-on recorded as not run. All five committed strata are listed
+with explicit values, and a stratum with zero answered rows reports undefined rather than zero.
+
+`eval/README.md` gains the three results artifacts under their own heading rather than in the Files
+list, because a pre-registration artifact exists to have been unchanged since before any result and
+a result could not have existed before the thing it measures; filing them together would assert the
+property the commit ordering exists to make false.
+
+`CITATION.cff` landed without its `url` and `repository-code` fields, on the ground that a
+repository with no remote and nothing pushed has no address and any URL written into it would be a
+fabrication rather than a citation. The repository was then created, private and empty, and the
+fields were filled at `46d8677` with the real address. Nothing is pushed and no remote is
+configured locally, so the URL is the correct permanent address and does not resolve for a reader
+until the repository is made public. A citation file records where an artifact lives rather than
+whether a reader currently has access.
+
+### Closed-book, in the inverse of its common sense
+
+Owner-directed change to `docs/METHODOLOGY.md`. This repository uses "closed-book" for the grounding
+discipline of answering only from retrieved context; the wider literature uses it for the opposite.
+A reader arriving at the Closed-book enforcement section reads it in the standard sense and concludes
+the study's spine is a no-retrieval condition, which is backwards.
+
+The resolution already existed in the wrong place for a reader. `PREREGISTRATION.md` records the
+collision and the decision it forced, that the no-retrieval condition is named no-context precisely
+so the term is not reused, but a reader reaches that file third if at all. The clarification now sits
+where the term is defined.
+
+Every factual claim in the added sentences was checked against the repository before it landed. The
+contradiction sweep of record is the full-tree sweep over every prose artifact at the open of the
+pass, plus a scoped recheck: of the eight artifacts swept, five were byte-unchanged and the three
+that changed each changed in exactly one commit of this pass.
+
+### The figures, and why they are not drawn by a plotting library
+
+Six figures under `docs/figures/`, four tables under `results/tables/`, each derived from a committed
+artifact by a committed script, so a figure is exactly as reproducible as the rate it draws.
+
+SVG is emitted directly. Plotting back-ends embed a creation timestamp, a library version string,
+per-element ids derived from object identity, and font metrics resolved against whatever fonts the
+machine has. Each is a source of byte drift that would have to be stripped afterwards, and a
+determinism claim resting on stripping is weaker than one resting on never emitting. Emitting the
+markup makes determinism a property of construction. It also keeps the figures inside the
+reproducibility posture: a plotting dependency would mean a reviewer needs it installed to rebuild a
+figure, when nothing else in the offline set needs more than the standard library and numpy.
+
+Two consecutive builds from a deleted state produce byte-identical output on all six figures and all
+four tables, and the comparison carries a control showing it reports a difference when one exists.
+
+Three checks guard them and none subsumes the others. Digest pins compare committed bytes against a
+constant and catch a file changed by hand. Rebuild checks derive each file from the committed
+artifacts and catch the generator and the committed file parting company, which a digest pin cannot
+see because it never runs the generator. A determinism check builds twice in one process and catches
+a generator that agrees with the committed bytes on the run that produced them and would not on the
+next. Changing one colour constant by a single hex digit turned the rebuild check red alone while
+every digest pin stayed green, which demonstrates the surface split rather than asserting it.
+
+Every rate in a figure carries its counts, which is the reporting rule applied to graphics: a bar
+showing 0.5571 is labelled 78 over 140. The two-ruler rule is asserted on the emitted markup rather
+than on the generator, because a figure can satisfy every naming rule in its source and still render
+a shared axis label.
+
+One figure derives rather than reads, and it is marked as the exception. The reduction decomposition
+is not stored as fields in the grading artifact; it is computed from the committed per-row blocks by
+splitting each tier's comparable set into rows the layer abstains on and rows answered in both.
+
+The CSV writer's first form did not quote. The reasoning-regime values carry a comma, "Claude Haiku
+4.5, no thinking", and an unquoted comma does not fail: it shifts every column after it by one and
+the file parses into the wrong shape, which is worse than not parsing. Found by reading the first
+emitted file and pinned by a test asserting every table parses to a rectangle.
+
+`results/tables/` had carried a bare `.gitkeep` since the Phase 0 bootstrap. The four files add a
+projection, not a fact: `eval/test_grading_results.json` remains the artifact of record, and what it
+is not is loadable in one line. At `7746114` the results documentation and the reproduction
+walkthrough gained a line naming the directory and its deriving script, and the placeholder was
+removed, since a machine-readable form nobody is told about is not machine-readable in any useful
+sense and a placeholder left beside the content it held space for reads as an oversight.
+
+### The commit trailer, measured
+
+The `Claude-Session:` provenance trailer is appended by the harness when the session that produced a
+commit was configured to append it. The record of that distribution has been carried as a single
+later gap, and that framing is superseded.
+
+Measured over the whole history: **85 of 157 commits carry no trailer, in fifteen alternating runs.**
+Eight of those runs fall after the convention began. The twelve-commit run from `208741d` through
+`6a6309a`, previously described as the exception, is one of the eight.
+
+The 2026-08-01 entry's account is accurate as far as it goes and is the anchor for this one. It
+records the trailer as absent from the first 25 commits, carried by 42 of the 43 that follow, and
+absent from `9e13d61` onward. That matches the measurement exactly through ordinal 90. It went stale
+only as later scopes alternated, which is a property of the harness configuration in force at each
+scope rather than of who wrote a diff.
+
+`README.md` states the shape at the model level without enumerating it, because a reader running
+`git log` finds the non-uniformity directly and is owed the reason rather than a count. The trailer
+is a provenance reference and not an authorship claim, and no number in this repository depends on
+it.
+
+### Licensing
+
+Confirmed as Apache 2.0 and closed. The decision was already taken and shipped: `LICENSE` is
+tracked, `README.md` and `corpus/SOURCES.md` both declare it, and corpus documents and vendored
+files keep their own terms recorded per artifact. Nothing in the tree changed.
+
+### What this pass did not do
+
+No figure or table was added to `results/tables/` beyond the four named, and no page gained anything
+beyond a figure, its caption and its source line. The 2026-08-23 entry's sentence that the result
+runners "write in text mode" stands: it records what was true of the code when that entry was
+written. It is cited here by date and phrase rather than by line number, because this file grows at
+the top and an ordinal into it is stale the moment the next entry lands. The tracker's record of
+the second history operation names a second half that no shipping file discloses, and `README.md`
+says only what the shipped record already says.
+
+### Suite
+
+1004 passed and 7 skipped at 1011 collected, the seven at four sites in
+`tests/test_attributability.py` each naming the deliberately uncommitted segment embedding cache.
+Measured in a fresh checkout where that cache is absent, which makes this the fresh-clone baseline
+directly rather than derived. Every suite run in this pass was preceded by a collect-only
+measurement with its arithmetic stated beside it, and every prediction held. `ruff check` passes over
+`src` and `tests`.
+
+### Commits
+
+- 0293fe2 test(eval): widen the layer results pin to compare against every other result pin
+- b1bad80 fix(score): pin LF in the three result writers and remove the platform condition it forced
+- 0f1253a docs(results): the full results tables, the withheld fixes, and what still fails
+- e7a3be8 docs(reproduce): the step-by-step reproduction walkthrough
+- a9f798b docs(readme): replace the placeholder with the case study
+- dfaf564 docs(eval): list the three results artifacts in the eval README
+- 67aa86b docs: add CITATION.cff
+- f9cc776 docs(methodology): state that closed-book is used here in the inverse of its common sense
+- 4be145f feat(figures): the six results figures and their deterministic generator
+- b2ca974 feat(figures): the results tables as CSV, and results/tables stops being an empty promise
+- 35e8399 test(figures): pin the figures and tables under the result-artifact regime
+- 0c84565 docs: embed the six figures and place the corrective-pass diagram
+- 7746114 docs: point at the CSV tables and retire the placeholder that stood for them
+- 46d8677 docs: fill the CITATION url now that the repository exists
+
+`83c983d` touches only `SESSION_LOG.md` and is named by no entry, under Rule 11. The commit placing
+this entry is exempt under the same rule.
+
+Nothing was pushed and no remote is configured. `main` is unmoved.
+
 ## 2026-08-23, the sealed run graded, and what the layer's delta is made of
 
 The study has its numbers. Fifty pre-registered queries were answered by three model tiers under
