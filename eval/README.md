@@ -191,3 +191,27 @@ the same shape and the same norms. Nothing else in the suite depends on the mode
   extra. Within the stratum, `matcher_revision` carries a value on every row and
   `matcher_recheck` is null wherever the row was not re-derived, so the key is required and its
   value is not.
+
+## Results artifacts
+
+Three files in this directory are results rather than pre-registration or authoring records, and
+they are listed apart from the query set for that reason. Each is pinned by sha256 in its own test
+file, and each moves only by a logged Rule 4 correction that moves its pin in the same commit, so
+no commit in history has an artifact and its digest disagreeing.
+
+- `test_retrieval_results.json`: the first pass on the sealed fifty. Recall@10, Precision@10 with
+  its carrier count, MRR and NDCG@10 against the fused top 10, per query and macro-averaged over
+  the 42 gold-bearing rows. The eight adversarial rows carry `metrics` null and enter no aggregate.
+  Produced by `python -m src.score.run_retrieval_eval`, pinned by `tests/test_results_digest.py`.
+- `test_layer_results.json`: the layer condition over the same rows. Recovered-passage recall over
+  the final context set with that set's size beside it, and no rank-based figure, because under
+  augmentation the context set is not ten chunks. Produced by `python -m src.score.run_layer_eval`,
+  pinned by `tests/test_layer_results_digest.py`.
+- `test_grading_results.json`: the grading of record, all nine run and tier sets in one invocation
+  by a grader frozen before any sealed answer existed. Every headline figure in the study is read
+  from this file. Produced by `python -m src.score.run_sealed_grading`, pinned by
+  `tests/test_grading_results_digest.py`.
+
+The two retrieval files never share a metric label, which is why they are separate artifacts rather
+than two blocks of one. `docs/RESULTS.md` carries the tables read out of all three, and
+`docs/REPRODUCE.md` gives the commands that re-derive them without touching the committed copies.
