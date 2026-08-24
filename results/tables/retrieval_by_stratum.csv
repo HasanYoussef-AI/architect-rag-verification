@@ -1,0 +1,12 @@
+stratum,n_queries,precision_at_10_first_pass,recall_at_10_first_pass,mrr_first_pass,ndcg_at_10_first_pass,recovered_passage_recall_layer,context_set_size_mean_layer
+adversarial/iso,0,,,,,,29
+adversarial/nonexistent_identifier,0,,,,,,35.75
+adversarial/out_of_domain,0,,,,,,23
+multi_hop/action_subcategory,4,0,0,0,0,0.25,17.75
+multi_hop/eu_internal_xref,12,0.2,0.791667,0.641667,0.589797,0.875,31.666667
+near_miss/block_clusters,3,0.033333,0.333333,0.047619,0.111111,1,33.333333
+near_miss/near_duplicate,5,0,0,0,0,1,37.6
+single_hop/eu_ai_act,11,0.118182,1,0.893939,0.920994,1,29.727273
+single_hop/nist_ai_100_1,5,0.22,1,0.8,0.852372,1,16.6
+single_hop/nist_ai_600_1,2,0.1,1,0.75,0.815465,1,14
+overall,42,0.121429,0.678571,0.551814,0.557967,0.892857,28.6

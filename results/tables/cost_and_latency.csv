@@ -1,0 +1,10 @@
+tier,run,input_tokens,output_tokens,cost_usd_committed,cost_usd_exact_decimal,latency_seconds_created_to_ended
+haiku45,no_context,4559,3179,0.010227,0.0102270,140
+haiku45,raw,140787,4530,0.081718,0.0817185,140
+haiku45,second_call,395720,3880,0.20756,0.20756,88
+sonnet5,no_context,6515,2050,0.016765,0.016765,140
+sonnet5,raw,202612,2801,0.216617,0.216617,143
+sonnet5,second_call,554370,4928,0.57901,0.57901,73
+opus48,no_context,6468,4317,0.070133,0.0701325,63
+opus48,raw,202612,4030,0.556905,0.556905,65
+opus48,second_call,555470,7303,1.479963,1.4799625,66
