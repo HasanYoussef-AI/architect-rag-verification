@@ -4,6 +4,135 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-24, the figures measured for geometry, a seventh added, and the diagrams given a palette
+
+Owner review of the private push found the figures cropped in a browser: the legend's last line cut
+at the bottom edge of the reduction decomposition and of the flagged-unit fate. Every committed
+check was green throughout. All three were byte guards, a digest pin, a rebuild against the
+committed artifacts and a two-build determinism check, and none of them asks where a glyph lands.
+Geometry had never been asserted.
+
+### The defect was wider than the report
+
+Measured over all six committed figures rather than the two it was reported on: four emitted text
+below the bottom edge of their own viewBox, and one of those also ran off the right edge by 129
+units, a summary line that no reader had ever seen. Two were clear. Clearances are to the nearest
+edge, in viewBox units, against the 12 the check now requires.
+
+| figure | viewBox before | bottom clearance before | viewBox after | bottom clearance after |
+| --- | --- | --- | --- | --- |
+| rates-by-tier | 760 x 430 | -43.3 | 760 x 500 | 26.7 |
+| reduction-decomposition | 760 x 430 | -31.3, and -128.9 right | 760 x 510 | 30.7 |
+| flagged-fate | 760 x 400 | -11.6 | 760 x 440 | 28.4 |
+| context-sizes | 760 x 360 | -5.3 | 760 x 400 | 34.7 |
+| recall-by-stratum | 860 x 440 | 26.7 | 860 x 460 | 46.7 |
+| predictions | 760 x 300 | 28.7 | 760 x 310 | 30.7 |
+
+Fourteen violations across the six before the generator was touched, none after. The fix was height
+and margin, never smaller text, since a figure that fits by shrinking its labels has traded one
+rendering defect for another.
+
+### The thresholds, and why they are set where they are
+
+`src/figures/geometry.py` parses the emitted markup into per-element extents. Margin 12 on all four
+edges; legend blocks must clear the plot area by 24. A string's width is estimated rather than
+measured, because there is no font engine here by deliberate choice, so the estimate is multiplied
+by 1.15 before it is judged and the vertical extent uses ascent 0.85 and descent 0.30 of the font
+size. All three allowances inflate the region in the direction that makes the check stricter, which
+is the only honest direction for a check resting on an approximation. The values are stated in
+`tests/test_figures.py` beside the assertions that use them.
+
+Each figure now returns its plot and legend rectangles alongside its markup. Recovering those from
+the emitted text by pattern would be a detector keyed to structure while the claim lives in
+position, which is the failure V20 names.
+
+### The regression test was blind, and the control found it
+
+The check was shown red on the committed figures before any generator change. The regression test
+that pins the defect permanently was not sound at first. It reconstructed each figure at the height
+it shipped at and asserted that some violation was reported, and that assertion passed on figures
+that were never cropped: shrinking a viewBox also stops the full-canvas background rect matching the
+canvas, so the ground itself starts being judged and produces a violation on its own. The test was
+therefore reporting a pass by blindness on exactly the property it existed to check.
+
+Found by running the reconstruction against the two figures that were never cropped and getting a
+violation from both. The reconstruction now resizes the ground with the canvas and requires a text
+element crossing the bottom edge specifically, and the two uncropped figures are asserted to come
+back clean, which is what makes a violation on the other four a statement about those four.
+
+### The seventh figure
+
+Unsupported-claim rate by stratum, raw beside layer, one panel per tier, from
+`eval/test_grading_results.json`. All five committed strata appear on every panel, checked by
+counting each stratum's label once per tier rather than by reading the picture. Every bar carries
+its ungrounded units over its total claim units and its answered-row count.
+
+A stratum a tier answered no row of is marked as abstained on all of them rather than drawn as a bar
+of height zero, which is the by-stratum ruling the tables already follow. That wording is a
+measurement and not a description: all seven such cells were checked to carry `abstaining_rows`
+equal to `rows`, against a control of the seventeen cells that abstain on some rows and not all.
+
+The caption names the deriving script and the source artifact and draws no verdict. Several
+per-stratum denominators are small, and the near-miss movement is reported in `README.md` as grader
+conformance rather than as the layer working; a caption restating it as a win would contradict the
+page it sits beside. A test asserts the figure's text carries no verdict vocabulary.
+
+Its thirty cells were re-derived from the artifact and matched against the thirty cells of the
+section 2 tables it sits under, so the figure and the page agree by measurement rather than by both
+having been written from the same source.
+
+### The diagram palette
+
+The three Mermaid diagrams, two in `README.md` and one in `docs/RESULTS.md`, inherited GitHub's
+theme, so a reader in dark mode and a reader in light mode saw different pictures and neither was
+designed. The palette is the one the owner's public `architect-worldcup` repository already uses
+across the seven diagrams in its `README.md`, copied verbatim and confirmed byte-identical against
+that file. Data and input nodes take the cyan stroke, processing and check nodes the gold, outputs
+and results the cyan.
+
+Styling only, and asserted so: every node label, edge and subgraph line was extracted with class
+assignments stripped, before and after, and the two differ by one blank line per diagram ahead of
+the classDef block.
+
+The source carries no subgraph and no `style` or `linkStyle` anywhere, so it settles nothing for the
+subgraph container boxes all three diagrams here use. Those are left at the Mermaid default rather
+than given an invented treatment, which means the containers still follow the reader's theme while
+the nodes no longer do. Recorded as a gap rather than closed.
+
+### A false empty, recorded
+
+The palette's provenance was first checked with GitHub code search, which returned zero hits for
+every term. A control searching that repository for a word that must occur in it also returned zero,
+so the index does not cover the repository and the zeros were false empties rather than absences.
+The provenance was then established by fetching the file and reading it.
+
+### Two stale claims in the reproduction walkthrough, not corrected here
+
+`docs/REPRODUCE.md` tells a reviewer to expect 991 collected and quotes a skip at
+`tests/test_attributability.py:496`. The tree collected 1011 before this scope opened, so the count
+was already stale by twenty, and the site is `:491` carrying a different reason. The page also does
+not mention that a default install skips four further tests in
+`tests/test_query_embeddings_provenance.py`, because `onnxruntime` sits in the `embed` dependency
+group that a normal test run does not install. This scope did not touch that file, and the numbers
+in it move again with the tests added here. Recorded so the correction is scoped deliberately rather
+than folded into a change about figures.
+
+### Suite
+
+1028 passed and 11 skipped at 1039 collected. The collect-only measurement was taken before the run
+with its arithmetic stated beside it, 1011 plus one from the digest parametrisation growing to seven
+figures plus twenty-seven new, and it held exactly. The eleven skips are the seven at four sites in
+`tests/test_attributability.py` that the previous entry records, plus the four above. `ruff check`
+passes over `src` and `tests`.
+
+### Commits
+
+- b7fbdcd feat(figures): a bounds check over the emitted markup, and the crops it caught
+- 2646fb5 docs(results): embed the by-stratum rate figure beside the by-stratum tables
+- ac1dc3b docs: take the diagram palette from the public architect-worldcup repository
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-24, the publication documentation pass
 
 The repository is a readable artifact. The README carried seven TODO placeholders and now carries
