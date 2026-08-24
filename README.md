@@ -28,32 +28,36 @@ different metric names, because a single number over both hides exactly the fail
 
 ```mermaid
 flowchart LR
-    Q["Query"] --> RET["Retrieval"]
-    RET --> CTX["Retrieved context"]
-    CTX --> GEN["Generation"]
-    GEN --> ANS["Answer"]
+    Q["Query"]:::data --> RET["Retrieval"]:::layer
+    RET --> CTX["Retrieved context"]:::data
+    CTX --> GEN["Generation"]:::layer
+    GEN --> ANS["Answer"]:::out
 
     subgraph s1["Surface one: generation faithfulness"]
         direction TB
-        S1A["Retrieval is correct"]
-        S1B["The answer asserts what<br/>the context does not support"]
-        S1C["Detected by: claim-level grounding<br/>Reported as: unsupported-claim rate"]
+        S1A["Retrieval is correct"]:::layer
+        S1B["The answer asserts what<br/>the context does not support"]:::layer
+        S1C["Detected by: claim-level grounding<br/>Reported as: unsupported-claim rate"]:::layer
         S1A --> S1B --> S1C
     end
 
     subgraph s2["Surface two: retrieval completeness"]
         direction TB
-        S2A["Retrieval misses a relevant unit"]
-        S2B["The answer is faithful to what<br/>was retrieved, and wrong"]
-        S2C["Invisible to faithfulness scoring<br/>Reported as: recovered-passage recall"]
+        S2A["Retrieval misses a relevant unit"]:::layer
+        S2B["The answer is faithful to what<br/>was retrieved, and wrong"]:::layer
+        S2C["Invisible to faithfulness scoring<br/>Reported as: recovered-passage recall"]:::layer
         S2A --> S2B --> S2C
     end
 
     GEN -.-> s1
     RET -.-> s2
 
-    s1 --> DEC{"Answer, flag, or abstain"}
+    s1 --> DEC{"Answer, flag, or abstain"}:::out
     s2 --> DEC
+
+    classDef layer fill:#0A1A1F,stroke:#C9A84C,stroke-width:2px,color:#E8EAEC
+    classDef data fill:#0A1A1F,stroke:#00D4FF,stroke-width:2px,color:#E8EAEC
+    classDef out fill:#0A1A1F,stroke:#00D4FF,stroke-width:2px,color:#E8EAEC
 ```
 
 ## The design
@@ -83,11 +87,11 @@ same first pass, which removes generation variance from the delta rather than sa
 ```mermaid
 flowchart TB
     subgraph shared["Shared by both conditions, identical"]
-        Q["50 pre-registered queries"]
-        C["Corpus: 1,294 chunks<br/>frozen before any query"]
-        B["BM25<br/>depth 100"]
-        D["Dense, bge-base-en-v1.5<br/>depth 100"]
-        F["Reciprocal rank fusion<br/>fused top 10"]
+        Q["50 pre-registered queries"]:::data
+        C["Corpus: 1,294 chunks<br/>frozen before any query"]:::data
+        B["BM25<br/>depth 100"]:::layer
+        D["Dense, bge-base-en-v1.5<br/>depth 100"]:::layer
+        F["Reciprocal rank fusion<br/>fused top 10"]:::layer
         Q --> B
         Q --> D
         C --> B
@@ -96,29 +100,33 @@ flowchart TB
         D --> F
     end
 
-    F --> P1["First pass: one model call<br/>closed-book prompt"]
+    F --> P1["First pass: one model call<br/>closed-book prompt"]:::layer
 
-    P1 --> RAW["RAW<br/>answer scored as is"]
-    P1 --> LAY["LAYER<br/>same answer enters the checks"]
+    P1 --> RAW["RAW<br/>answer scored as is"]:::out
+    P1 --> LAY["LAYER<br/>same answer enters the checks"]:::out
 
     subgraph layer["Verification layer, no model inside it"]
-        G["Grounding check<br/>flags unsupported claim units"]
-        A["Completeness check<br/>finds named-but-absent units"]
-        R["Corrective pass<br/>resolve and fetch by identifier"]
+        G["Grounding check<br/>flags unsupported claim units"]:::layer
+        A["Completeness check<br/>finds named-but-absent units"]:::layer
+        R["Corrective pass<br/>resolve and fetch by identifier"]:::layer
         G --> R
         A --> R
     end
 
     LAY --> G
     LAY --> A
-    R --> P2["Second call<br/>expanded context + flagged list"]
-    P2 --> AB{"Grounded?"}
-    AB -->|yes| OUT["Layer answer"]
-    AB -->|no| ABS["Abstain"]
+    R --> P2["Second call<br/>expanded context + flagged list"]:::layer
+    P2 --> AB{"Grounded?"}:::layer
+    AB -->|yes| OUT["Layer answer"]:::out
+    AB -->|no| ABS["Abstain"]:::out
 
-    RAW --> GR["Deterministic grader<br/>frozen before any sealed answer<br/>separate invocation, no gold, no stratum"]
+    RAW --> GR["Deterministic grader<br/>frozen before any sealed answer<br/>separate invocation, no gold, no stratum"]:::layer
     OUT --> GR
     ABS --> GR
+
+    classDef layer fill:#0A1A1F,stroke:#C9A84C,stroke-width:2px,color:#E8EAEC
+    classDef data fill:#0A1A1F,stroke:#00D4FF,stroke-width:2px,color:#E8EAEC
+    classDef out fill:#0A1A1F,stroke:#00D4FF,stroke-width:2px,color:#E8EAEC
 ```
 
 ### Closed-book enforcement

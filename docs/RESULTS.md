@@ -215,29 +215,33 @@ the fields that would shortcut the derivation are unreachable rather than declin
 
 ```mermaid
 flowchart TB
-    IN["Query text + fused top 10<br/>(text, chunk_id, unit_label only)"]
-    IN --> EX["C1 references.py<br/>extract citation-formed surfaces<br/>under a grammar fixed before execution"]
-    EX --> RES{"Resolves against the<br/>committed unit index?"}
+    IN["Query text + fused top 10<br/>(text, chunk_id, unit_label only)"]:::data
+    IN --> EX["C1 references.py<br/>extract citation-formed surfaces<br/>under a grammar fixed before execution"]:::layer
+    EX --> RES{"Resolves against the<br/>committed unit index?"}:::layer
 
-    RES -->|no| NR["NON-RESOLUTION<br/>a well-formed reference naming<br/>no unit in the corpus"]
-    RES -->|yes| MEM{"Is the unit in the<br/>context set?<br/>(lexical, on chunk_id)"}
+    RES -->|no| NR["NON-RESOLUTION<br/>a well-formed reference naming<br/>no unit in the corpus"]:::out
+    RES -->|yes| MEM{"Is the unit in the<br/>context set?<br/>(lexical, on chunk_id)"}:::layer
 
-    MEM -->|yes| KEEP["Nothing to do"]
-    MEM -->|no| CA["CONTEXT ABSENCE<br/>the first pass named a passage<br/>and did not return it"]
+    MEM -->|yes| KEEP["Nothing to do"]:::out
+    MEM -->|no| CA["CONTEXT ABSENCE<br/>the first pass named a passage<br/>and did not return it"]:::out
 
-    CA --> FETCH["C3 augment.py<br/>fetch that unit's committed chunks"]
-    FETCH --> APPEND["Append after the first-pass ten<br/>AUGMENTATION ONLY:<br/>never removed, reordered or truncated"]
-    APPEND --> OUTC["Final context set"]
+    CA --> FETCH["C3 augment.py<br/>fetch that unit's committed chunks"]:::layer
+    FETCH --> APPEND["Append after the first-pass ten<br/>AUGMENTATION ONLY:<br/>never removed, reordered or truncated"]:::layer
+    APPEND --> OUTC["Final context set"]:::out
 
-    NR -.-> DIAG["Fabricated-provision signal"]
+    NR -.-> DIAG["Fabricated-provision signal"]:::out
 
     subgraph bar["Barred by the layer-gold firewall"]
-        X1["Action identifier to parent subcategory<br/>by suffix strip, printed legend, or any equivalent map"]
-        X2["Inverse citation walk<br/>(cited target back to citing source)"]
-        X3["structural_path, parent_id,<br/>and every relation artifact"]
+        X1["Action identifier to parent subcategory<br/>by suffix strip, printed legend, or any equivalent map"]:::layer
+        X2["Inverse citation walk<br/>(cited target back to citing source)"]:::layer
+        X3["structural_path, parent_id,<br/>and every relation artifact"]:::layer
     end
 
     style bar stroke-dasharray: 5 5
+
+    classDef layer fill:#0A1A1F,stroke:#C9A84C,stroke-width:2px,color:#E8EAEC
+    classDef data fill:#0A1A1F,stroke:#00D4FF,stroke-width:2px,color:#E8EAEC
+    classDef out fill:#0A1A1F,stroke:#00D4FF,stroke-width:2px,color:#E8EAEC
 ```
 
 ---
