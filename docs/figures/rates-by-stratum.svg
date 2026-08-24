@@ -2,117 +2,117 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="820" height="790" viewBox="0 0 820 790" role="img" aria-labelledby="figure-title figure-desc">
 <title id="figure-title">Unsupported-claim rate by stratum, raw against layer, by tier</title>
 <desc id="figure-desc">Horizontal grouped bar chart in three panels, one per model tier. For each of the five committed strata, the raw and layer unsupported-claim rates, each bar labelled with its ungrounded units over its total claim units and its answered-row count, and each stratum a tier abstained on in every row marked as abstained rather than drawn as a zero bar.</desc>
-<rect x="0" y="0" width="820" height="790" fill="#ffffff"/>
-<text x="30" y="34" font-size="17" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" font-weight="600">Unsupported-claim rate by stratum, raw against layer</text>
-<text x="30" y="56" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">All five committed strata on every tier. Each bar is labelled with its ungrounded units</text>
-<text x="30" y="72" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">over its total claim units. Lower is better.</text>
-<text x="30" y="108" font-size="13" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" font-weight="600">Haiku 4.5</text>
-<text x="30" y="124" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">no thinking</text>
-<line x1="206" y1="116" x2="606" y2="116" stroke="#d7dbdf" stroke-width="1"/>
-<line x1="306" y1="116" x2="306" y2="266" stroke="#d7dbdf" stroke-width="1"/>
-<text x="306" y="108" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">0.25</text>
-<line x1="406" y1="116" x2="406" y2="266" stroke="#d7dbdf" stroke-width="1"/>
-<text x="406" y="108" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">0.5</text>
-<line x1="506" y1="116" x2="506" y2="266" stroke="#d7dbdf" stroke-width="1"/>
-<text x="506" y="108" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">0.75</text>
-<line x1="606" y1="116" x2="606" y2="266" stroke="#d7dbdf" stroke-width="1"/>
-<text x="606" y="108" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">1</text>
-<line x1="206" y1="116" x2="206" y2="266" stroke="#5b6167" stroke-width="1.5"/>
-<text x="196" y="135" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="end">single_hop</text>
-<rect x="206" y="121" width="150" height="9" fill="#2f5c8f"/>
-<text x="362" y="129" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">33/88  0.375  18 answered</text>
-<rect x="206" y="132" width="130.232" height="9" fill="#e8a33d"/>
-<text x="342.232" y="140" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">28/86  0.326  17 answered</text>
-<text x="196" y="165" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="end">clean_multi_hop</text>
-<rect x="206" y="151" width="341.176" height="9" fill="#2f5c8f"/>
-<text x="553.176" y="159" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">29/34  0.853  12 answered</text>
-<rect x="206" y="162" width="250" height="9" fill="#e8a33d"/>
-<text x="462" y="170" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">10/16  0.625  4 answered</text>
-<text x="196" y="195" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="end">action_to_parent</text>
-<rect x="206" y="181" width="360" height="9" fill="#2f5c8f"/>
-<text x="572" y="189" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">9/10  0.9  4 answered</text>
-<rect x="206" y="192" width="342.857" height="9" fill="#e8a33d"/>
-<text x="554.857" y="200" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">6/7  0.857  2 answered</text>
-<text x="196" y="225" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="end">near_miss</text>
-<rect x="206" y="211" width="333.333" height="9" fill="#2f5c8f"/>
-<text x="545.333" y="219" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">5/6  0.833  4 answered</text>
-<rect x="206" y="222" width="177.778" height="9" fill="#e8a33d"/>
-<text x="389.778" y="230" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">4/9  0.444  4 answered</text>
-<text x="196" y="255" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="end">adversarial</text>
-<rect x="206" y="241" width="400" height="9" fill="#2f5c8f"/>
-<text x="612" y="249" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">2/2  1  2 answered</text>
-<text x="210" y="260" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">abstained on all 8 rows</text>
-<text x="30" y="302" font-size="13" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" font-weight="600">Sonnet 5</text>
-<text x="30" y="318" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">adaptive, effort high</text>
-<line x1="206" y1="310" x2="606" y2="310" stroke="#d7dbdf" stroke-width="1"/>
-<line x1="306" y1="310" x2="306" y2="460" stroke="#d7dbdf" stroke-width="1"/>
-<text x="306" y="302" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">0.25</text>
-<line x1="406" y1="310" x2="406" y2="460" stroke="#d7dbdf" stroke-width="1"/>
-<text x="406" y="302" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">0.5</text>
-<line x1="506" y1="310" x2="506" y2="460" stroke="#d7dbdf" stroke-width="1"/>
-<text x="506" y="302" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">0.75</text>
-<line x1="606" y1="310" x2="606" y2="460" stroke="#d7dbdf" stroke-width="1"/>
-<text x="606" y="302" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">1</text>
-<line x1="206" y1="310" x2="206" y2="460" stroke="#5b6167" stroke-width="1.5"/>
-<text x="196" y="329" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="end">single_hop</text>
-<rect x="206" y="315" width="87.805" height="9" fill="#2f5c8f"/>
-<text x="299.805" y="323" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">9/41  0.22  18 answered</text>
-<rect x="206" y="326" width="60" height="9" fill="#e8a33d"/>
-<text x="272" y="334" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">6/40  0.15  14 answered</text>
-<text x="196" y="359" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="end">clean_multi_hop</text>
-<rect x="206" y="345" width="200" height="9" fill="#2f5c8f"/>
-<text x="412" y="353" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">5/10  0.5  4 answered</text>
-<rect x="206" y="356" width="200" height="9" fill="#e8a33d"/>
-<text x="412" y="364" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">6/12  0.5  4 answered</text>
-<text x="196" y="389" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="end">action_to_parent</text>
-<text x="210" y="383" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">abstained on all 4 rows</text>
-<text x="210" y="394" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">abstained on all 4 rows</text>
-<text x="196" y="419" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="end">near_miss</text>
-<rect x="206" y="405" width="66.667" height="9" fill="#2f5c8f"/>
-<text x="278.667" y="413" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">1/6  0.167  1 answered</text>
-<rect x="206" y="416" width="66.667" height="9" fill="#e8a33d"/>
-<text x="278.667" y="424" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">1/6  0.167  1 answered</text>
-<text x="196" y="449" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="end">adversarial</text>
-<text x="210" y="443" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">abstained on all 8 rows</text>
-<text x="210" y="454" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">abstained on all 8 rows</text>
-<text x="30" y="496" font-size="13" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" font-weight="600">Opus 4.8</text>
-<text x="30" y="512" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">adaptive, effort low</text>
-<line x1="206" y1="504" x2="606" y2="504" stroke="#d7dbdf" stroke-width="1"/>
-<line x1="306" y1="504" x2="306" y2="654" stroke="#d7dbdf" stroke-width="1"/>
-<text x="306" y="496" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">0.25</text>
-<line x1="406" y1="504" x2="406" y2="654" stroke="#d7dbdf" stroke-width="1"/>
-<text x="406" y="496" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">0.5</text>
-<line x1="506" y1="504" x2="506" y2="654" stroke="#d7dbdf" stroke-width="1"/>
-<text x="506" y="496" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">0.75</text>
-<line x1="606" y1="504" x2="606" y2="654" stroke="#d7dbdf" stroke-width="1"/>
-<text x="606" y="496" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">1</text>
-<line x1="206" y1="504" x2="206" y2="654" stroke="#5b6167" stroke-width="1.5"/>
-<text x="196" y="523" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="end">single_hop</text>
-<rect x="206" y="509" width="95.238" height="9" fill="#2f5c8f"/>
-<text x="307.238" y="517" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">10/42  0.238  18 answered</text>
-<rect x="206" y="520" width="75.862" height="9" fill="#e8a33d"/>
-<text x="287.862" y="528" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">11/58  0.19  18 answered</text>
-<text x="196" y="553" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="end">clean_multi_hop</text>
-<rect x="206" y="539" width="311.111" height="9" fill="#2f5c8f"/>
-<text x="523.111" y="547" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">14/18  0.778  8 answered</text>
-<rect x="206" y="550" width="100" height="9" fill="#e8a33d"/>
-<text x="312" y="558" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">5/20  0.25  6 answered</text>
-<text x="196" y="583" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="end">action_to_parent</text>
-<rect x="206" y="569" width="133.333" height="9" fill="#2f5c8f"/>
-<text x="345.333" y="577" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">2/6  0.333  1 answered</text>
-<rect x="206" y="580" width="133.333" height="9" fill="#e8a33d"/>
-<text x="345.333" y="588" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">2/6  0.333  1 answered</text>
-<text x="196" y="613" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="end">near_miss</text>
-<rect x="206" y="599" width="66.667" height="9" fill="#2f5c8f"/>
-<text x="278.667" y="607" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">1/6  0.167  1 answered</text>
-<rect x="206" y="610" width="66.667" height="9" fill="#e8a33d"/>
-<text x="278.667" y="618" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">1/6  0.167  1 answered</text>
-<text x="196" y="643" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="end">adversarial</text>
-<text x="210" y="637" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">abstained on all 8 rows</text>
-<text x="210" y="648" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">abstained on all 8 rows</text>
-<rect x="206" y="725" width="11" height="11" fill="#2f5c8f"/>
-<text x="222" y="734" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a">raw, no verification layer</text>
-<rect x="398.72" y="725" width="11" height="11" fill="#e8a33d"/>
-<text x="414.72" y="734" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a">layer</text>
-<text x="206" y="760" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">A stratum a tier answered no row of carries no rate and is marked, never drawn as zero.</text>
+<rect x="0" y="0" width="820" height="790" fill="#0A1A1F"/>
+<text x="30" y="34" font-size="17" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" font-weight="600">Unsupported-claim rate by stratum, raw against layer</text>
+<text x="30" y="56" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">All five committed strata on every tier. Each bar is labelled with its ungrounded units</text>
+<text x="30" y="72" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">over its total claim units. Lower is better.</text>
+<text x="30" y="108" font-size="13" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" font-weight="600">Haiku 4.5</text>
+<text x="30" y="124" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">no thinking</text>
+<line x1="206" y1="116" x2="606" y2="116" stroke="#22353D" stroke-width="1"/>
+<line x1="306" y1="116" x2="306" y2="266" stroke="#22353D" stroke-width="1"/>
+<text x="306" y="108" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="middle">0.25</text>
+<line x1="406" y1="116" x2="406" y2="266" stroke="#22353D" stroke-width="1"/>
+<text x="406" y="108" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="middle">0.5</text>
+<line x1="506" y1="116" x2="506" y2="266" stroke="#22353D" stroke-width="1"/>
+<text x="506" y="108" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="middle">0.75</text>
+<line x1="606" y1="116" x2="606" y2="266" stroke="#22353D" stroke-width="1"/>
+<text x="606" y="108" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="middle">1</text>
+<line x1="206" y1="116" x2="206" y2="266" stroke="#E8EAEC" stroke-width="1.5"/>
+<text x="196" y="135" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="end">single_hop</text>
+<rect x="206" y="121" width="150" height="9" fill="#00D4FF"/>
+<text x="362" y="129" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">33/88  0.375  18 answered</text>
+<rect x="206" y="132" width="130.232" height="9" fill="#C9A84C"/>
+<text x="342.232" y="140" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">28/86  0.326  17 answered</text>
+<text x="196" y="165" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="end">clean_multi_hop</text>
+<rect x="206" y="151" width="341.176" height="9" fill="#00D4FF"/>
+<text x="553.176" y="159" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">29/34  0.853  12 answered</text>
+<rect x="206" y="162" width="250" height="9" fill="#C9A84C"/>
+<text x="462" y="170" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">10/16  0.625  4 answered</text>
+<text x="196" y="195" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="end">action_to_parent</text>
+<rect x="206" y="181" width="360" height="9" fill="#00D4FF"/>
+<text x="572" y="189" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">9/10  0.9  4 answered</text>
+<rect x="206" y="192" width="342.857" height="9" fill="#C9A84C"/>
+<text x="554.857" y="200" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">6/7  0.857  2 answered</text>
+<text x="196" y="225" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="end">near_miss</text>
+<rect x="206" y="211" width="333.333" height="9" fill="#00D4FF"/>
+<text x="545.333" y="219" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">5/6  0.833  4 answered</text>
+<rect x="206" y="222" width="177.778" height="9" fill="#C9A84C"/>
+<text x="389.778" y="230" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">4/9  0.444  4 answered</text>
+<text x="196" y="255" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="end">adversarial</text>
+<rect x="206" y="241" width="400" height="9" fill="#00D4FF"/>
+<text x="612" y="249" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">2/2  1  2 answered</text>
+<text x="210" y="260" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">abstained on all 8 rows</text>
+<text x="30" y="302" font-size="13" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" font-weight="600">Sonnet 5</text>
+<text x="30" y="318" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">adaptive, effort high</text>
+<line x1="206" y1="310" x2="606" y2="310" stroke="#22353D" stroke-width="1"/>
+<line x1="306" y1="310" x2="306" y2="460" stroke="#22353D" stroke-width="1"/>
+<text x="306" y="302" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="middle">0.25</text>
+<line x1="406" y1="310" x2="406" y2="460" stroke="#22353D" stroke-width="1"/>
+<text x="406" y="302" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="middle">0.5</text>
+<line x1="506" y1="310" x2="506" y2="460" stroke="#22353D" stroke-width="1"/>
+<text x="506" y="302" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="middle">0.75</text>
+<line x1="606" y1="310" x2="606" y2="460" stroke="#22353D" stroke-width="1"/>
+<text x="606" y="302" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="middle">1</text>
+<line x1="206" y1="310" x2="206" y2="460" stroke="#E8EAEC" stroke-width="1.5"/>
+<text x="196" y="329" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="end">single_hop</text>
+<rect x="206" y="315" width="87.805" height="9" fill="#00D4FF"/>
+<text x="299.805" y="323" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">9/41  0.22  18 answered</text>
+<rect x="206" y="326" width="60" height="9" fill="#C9A84C"/>
+<text x="272" y="334" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">6/40  0.15  14 answered</text>
+<text x="196" y="359" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="end">clean_multi_hop</text>
+<rect x="206" y="345" width="200" height="9" fill="#00D4FF"/>
+<text x="412" y="353" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">5/10  0.5  4 answered</text>
+<rect x="206" y="356" width="200" height="9" fill="#C9A84C"/>
+<text x="412" y="364" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">6/12  0.5  4 answered</text>
+<text x="196" y="389" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="end">action_to_parent</text>
+<text x="210" y="383" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">abstained on all 4 rows</text>
+<text x="210" y="394" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">abstained on all 4 rows</text>
+<text x="196" y="419" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="end">near_miss</text>
+<rect x="206" y="405" width="66.667" height="9" fill="#00D4FF"/>
+<text x="278.667" y="413" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">1/6  0.167  1 answered</text>
+<rect x="206" y="416" width="66.667" height="9" fill="#C9A84C"/>
+<text x="278.667" y="424" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">1/6  0.167  1 answered</text>
+<text x="196" y="449" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="end">adversarial</text>
+<text x="210" y="443" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">abstained on all 8 rows</text>
+<text x="210" y="454" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">abstained on all 8 rows</text>
+<text x="30" y="496" font-size="13" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" font-weight="600">Opus 4.8</text>
+<text x="30" y="512" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">adaptive, effort low</text>
+<line x1="206" y1="504" x2="606" y2="504" stroke="#22353D" stroke-width="1"/>
+<line x1="306" y1="504" x2="306" y2="654" stroke="#22353D" stroke-width="1"/>
+<text x="306" y="496" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="middle">0.25</text>
+<line x1="406" y1="504" x2="406" y2="654" stroke="#22353D" stroke-width="1"/>
+<text x="406" y="496" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="middle">0.5</text>
+<line x1="506" y1="504" x2="506" y2="654" stroke="#22353D" stroke-width="1"/>
+<text x="506" y="496" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="middle">0.75</text>
+<line x1="606" y1="504" x2="606" y2="654" stroke="#22353D" stroke-width="1"/>
+<text x="606" y="496" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="middle">1</text>
+<line x1="206" y1="504" x2="206" y2="654" stroke="#E8EAEC" stroke-width="1.5"/>
+<text x="196" y="523" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="end">single_hop</text>
+<rect x="206" y="509" width="95.238" height="9" fill="#00D4FF"/>
+<text x="307.238" y="517" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">10/42  0.238  18 answered</text>
+<rect x="206" y="520" width="75.862" height="9" fill="#C9A84C"/>
+<text x="287.862" y="528" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">11/58  0.19  18 answered</text>
+<text x="196" y="553" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="end">clean_multi_hop</text>
+<rect x="206" y="539" width="311.111" height="9" fill="#00D4FF"/>
+<text x="523.111" y="547" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">14/18  0.778  8 answered</text>
+<rect x="206" y="550" width="100" height="9" fill="#C9A84C"/>
+<text x="312" y="558" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">5/20  0.25  6 answered</text>
+<text x="196" y="583" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="end">action_to_parent</text>
+<rect x="206" y="569" width="133.333" height="9" fill="#00D4FF"/>
+<text x="345.333" y="577" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">2/6  0.333  1 answered</text>
+<rect x="206" y="580" width="133.333" height="9" fill="#C9A84C"/>
+<text x="345.333" y="588" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">2/6  0.333  1 answered</text>
+<text x="196" y="613" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="end">near_miss</text>
+<rect x="206" y="599" width="66.667" height="9" fill="#00D4FF"/>
+<text x="278.667" y="607" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">1/6  0.167  1 answered</text>
+<rect x="206" y="610" width="66.667" height="9" fill="#C9A84C"/>
+<text x="278.667" y="618" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">1/6  0.167  1 answered</text>
+<text x="196" y="643" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="end">adversarial</text>
+<text x="210" y="637" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">abstained on all 8 rows</text>
+<text x="210" y="648" font-size="10" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">abstained on all 8 rows</text>
+<rect x="206" y="725" width="11" height="11" fill="#00D4FF"/>
+<text x="222" y="734" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC">raw, no verification layer</text>
+<rect x="398.72" y="725" width="11" height="11" fill="#C9A84C"/>
+<text x="414.72" y="734" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC">layer</text>
+<text x="206" y="760" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">A stratum a tier answered no row of carries no rate and is marked, never drawn as zero.</text>
 </svg>

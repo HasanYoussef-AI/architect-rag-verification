@@ -2,21 +2,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="760" height="310" viewBox="0 0 760 310" role="img" aria-labelledby="figure-title figure-desc">
 <title id="figure-title">The twenty-six pre-registered predictions</title>
 <desc id="figure-desc">A single stacked bar showing the twenty-six pre-registered predictions split into those that held, those contradicted by the result, and the one to which no prediction was attached.</desc>
-<rect x="0" y="0" width="760" height="310" fill="#ffffff"/>
-<text x="30" y="34" font-size="17" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" font-weight="600">The twenty-six pre-registered predictions</text>
-<text x="30" y="56" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">Committed before any sealed answer existed and scored mechanically from the graded blocks.</text>
-<text x="30" y="72" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">Every contradicted line stands as written; the predictions file is not edited.</text>
-<rect x="78" y="120" width="238.462" height="46" fill="#7d9a4e"/>
-<text x="197.231" y="149" font-size="16" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#ffffff" text-anchor="middle" font-weight="600">10</text>
-<rect x="316.462" y="120" width="357.692" height="46" fill="#2f5c8f"/>
-<text x="495.308" y="149" font-size="16" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#ffffff" text-anchor="middle" font-weight="600">15</text>
-<rect x="674.154" y="120" width="23.846" height="46" fill="#5b6167"/>
-<text x="686.077" y="149" font-size="16" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#ffffff" text-anchor="middle" font-weight="600">1</text>
-<rect x="78" y="201" width="11" height="11" fill="#7d9a4e"/>
-<text x="94" y="210" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a">held: 10</text>
-<rect x="78" y="221" width="11" height="11" fill="#2f5c8f"/>
-<text x="94" y="230" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a">contradicted: 15</text>
-<rect x="78" y="241" width="11" height="11" fill="#5b6167"/>
-<text x="94" y="250" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a">not predicted: 1</text>
-<text x="78" y="276" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">26 predictions scored. A contradicted prediction that gets edited is not a prediction.</text>
+<rect x="0" y="0" width="760" height="310" fill="#0A1A1F"/>
+<text x="30" y="34" font-size="17" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" font-weight="600">The twenty-six pre-registered predictions</text>
+<text x="30" y="56" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">Committed before any sealed answer existed and scored mechanically from the graded blocks.</text>
+<text x="30" y="72" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">Every contradicted line stands as written; the predictions file is not edited.</text>
+<rect x="78" y="120" width="238.462" height="46" fill="#C9A84C"/>
+<text x="197.231" y="149" font-size="16" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#0A1A1F" text-anchor="middle" font-weight="600">10</text>
+<rect x="316.462" y="120" width="357.692" height="46" fill="#00D4FF"/>
+<text x="495.308" y="149" font-size="16" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#0A1A1F" text-anchor="middle" font-weight="600">15</text>
+<rect x="674.154" y="120" width="23.846" height="46" fill="#2E9BB5"/>
+<text x="686.077" y="149" font-size="16" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#0A1A1F" text-anchor="middle" font-weight="600">1</text>
+<rect x="78" y="201" width="11" height="11" fill="#C9A84C"/>
+<text x="94" y="210" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC">held: 10</text>
+<rect x="78" y="221" width="11" height="11" fill="#00D4FF"/>
+<text x="94" y="230" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC">contradicted: 15</text>
+<rect x="78" y="241" width="11" height="11" fill="#2E9BB5"/>
+<text x="94" y="250" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC">not predicted: 1</text>
+<text x="78" y="276" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">26 predictions scored. A contradicted prediction that gets edited is not a prediction.</text>
 </svg>

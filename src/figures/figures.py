@@ -62,12 +62,34 @@ REGIME_SHORT = {
 # instead of quietly shortening it.
 STRATA = ("single_hop", "clean_multi_hop", "action_to_parent", "near_miss", "adversarial")
 
-INK = "#1a1a1a"
-MUTED = "#5b6167"
-GRID = "#d7dbdf"
-RAW = "#2f5c8f"
-LAYER_C = "#e8a33d"
-THIRD = "#7d9a4e"
+# The palette, from src/figures/svg.py, which records where each colour comes from. Bound to the
+# names the figure bodies already used so that the restyle is a change of value and not of code.
+#
+# Measured relative luminance, and the ratio each colour makes against the canvas:
+#
+#   canvas  #0A1A1F  L 0.0090   1.00
+#   ink     #E8EAEC  L 0.8205  14.75   primary text and axes
+#   muted   #9AA5AD  L 0.3679   7.08   secondary text
+#   grid    #22353D  L 0.0323   1.39   deliberately low, a gridline is not text
+#   raw     #00D4FF  L 0.5431   9.98   cyan, the raw condition
+#   layer   #C9A84C  L 0.4096   7.79   gold, the layer condition
+#   third   #2E9BB5  L 0.2735   5.48   cyan darkened toward the canvas
+#
+# Series separation by lightness, which is what survives greyscale and most colour blindness:
+#
+#   raw against layer    1.29   inherent to the two brand colours, not separable in greyscale
+#   layer against third  1.42
+#   raw against third    1.83
+#
+# The raw-against-layer figure is why every series is also labelled. That was already this
+# module's stance and the restyle does not weaken it; it makes the number explicit.
+INK = svg.INK
+MUTED = svg.MUTED
+GRID = svg.GRID
+RAW = svg.SERIES_RAW
+LAYER_C = svg.SERIES_LAYER
+THIRD = svg.SERIES_THIRD
+ON_SERIES = svg.ON_SERIES
 
 
 class Fig(NamedTuple):
@@ -129,7 +151,7 @@ def _frame(body, x0, y0, w, h, ymax, ticks, *, fmt=svg.num):
         yt = y_of(t)
         body.append(svg.line(x0, yt, x0 + w, yt, GRID, width=1))
         body.append(svg.text(x0 - 8, yt + 4, fmt(t), size=11, fill=MUTED, anchor="end"))
-    body.append(svg.line(x0, y0 + h, x0 + w, y0 + h, MUTED, width=1.5))
+    body.append(svg.line(x0, y0 + h, x0 + w, y0 + h, INK, width=1.5))
     return y_of
 
 
@@ -328,7 +350,7 @@ def figure_flagged_fate(grading: dict) -> Fig:
             top = y_of(acc + v)
             body.append(svg.rect(bx, top, bw, y_of(acc) - top, colour))
             body.append(svg.text(bx + bw / 2, top + (y_of(acc) - top) / 2 + 4, str(v),
-                                 size=12, fill="#ffffff", anchor="middle", weight="600"))
+                                 size=12, fill=ON_SERIES, anchor="middle", weight="600"))
             acc += v
         body.append(svg.text(bx + bw / 2, y_of(acc) - 10,
                              f"{blk['flagged_in']} flagged", size=12,
@@ -378,7 +400,7 @@ def figure_recall_by_stratum(retrieval: dict, layer: dict) -> Fig:
         xt = x0 + t * w
         body.append(svg.line(xt, y0, xt, y0 + h, GRID, width=1))
         body.append(svg.text(xt, y0 + h + 16, svg.num(t), size=11, fill=MUTED, anchor="middle"))
-    body.append(svg.line(x0, y0, x0, y0 + h, MUTED, width=1.5))
+    body.append(svg.line(x0, y0, x0, y0 + h, INK, width=1.5))
 
     bh = 11
     for i, key in enumerate(strata):
@@ -499,7 +521,10 @@ def figure_predictions(grading: dict) -> Fig:
     counts = {}
     for e in scored:
         counts[e["verdict"]] = counts.get(e["verdict"], 0) + 1
-    order = (("held", THIRD), ("contradicted", RAW), ("not_predicted", MUTED))
+    # Three verdict categories, assigned for lightness separation rather than for meaning:
+    # this figure carries no raw or layer condition, so the two condition colours are free
+    # here. MUTED is a text colour and is never a fill.
+    order = (("held", LAYER_C), ("contradicted", RAW), ("not_predicted", THIRD))
     total = len(scored)
 
     bx = x0
@@ -510,7 +535,7 @@ def figure_predictions(grading: dict) -> Fig:
             continue
         seg = v / total * w
         body.append(svg.rect(bx, y0, seg, bar_h, colour))
-        body.append(svg.text(bx + seg / 2, y0 + 29, str(v), size=16, fill="#ffffff",
+        body.append(svg.text(bx + seg / 2, y0 + 29, str(v), size=16, fill=ON_SERIES,
                              anchor="middle", weight="600"))
         bx += seg
 
@@ -574,7 +599,7 @@ def figure_rates_by_stratum(grading: dict) -> Fig:
             xt = x0 + t * w
             body.append(svg.line(xt, py + 8, xt, py + 8 + len(STRATA) * row_h, GRID, width=1))
             body.append(svg.text(xt, py, svg.num(t), size=10, fill=MUTED, anchor="middle"))
-        body.append(svg.line(x0, py + 8, x0, py + 8 + len(STRATA) * row_h, MUTED, width=1.5))
+        body.append(svg.line(x0, py + 8, x0, py + 8 + len(STRATA) * row_h, INK, width=1.5))
 
         for si, stratum in enumerate(STRATA):
             cy = py + 8 + si * row_h + row_h / 2

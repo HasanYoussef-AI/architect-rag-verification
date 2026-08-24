@@ -21,17 +21,49 @@ widths at a nominal size. It is used only for centring and for background boxes,
 number, so an approximation that is a few percent out shifts a label by a pixel and changes no
 figure's meaning.
 
-COLOUR. Figures paint an explicit light background rather than inheriting the page's. GitHub
-renders an embedded SVG over the reader's theme background, and a figure with a transparent ground
-and dark text is unreadable in dark mode. An explicit ground is bright in dark mode and correct in
-both, which is the better failure. The series palette is distinguishable in greyscale and does not
-rely on the red-green axis; every series is additionally distinguished by its label, so colour is
-never the only channel.
+COLOUR. Figures paint an explicit ground rather than inheriting the page's. GitHub renders an
+embedded SVG over the reader's theme background, so a figure with a transparent ground renders
+against two different colours for two different readers and one of them will be unreadable. The
+ground is stated here, which makes a figure look the same to both.
+
+The ground is now the dark canvas of the palette the diagrams use, and the palette is the one the
+owner's public architect-worldcup repository carries in its committed diagrams: canvas #0A1A1F,
+text #E8EAEC, cyan #00D4FF for the raw condition and gold #C9A84C for the layer condition, matching
+the diagrams where cyan is data and gold is the processed path. Earlier revisions of this module
+painted a light ground and argued for it on the same reasoning; what changed is which explicit
+ground is used, not whether one is stated.
+
+The palette does not rely on the red-green axis. It does not separate cyan from gold by lightness
+either: those two sit at a 1.29 to 1 luminance ratio, which is a property of the two brand colours
+rather than a choice made here, so they are not distinguishable in greyscale. Every series is
+additionally labelled, which is why colour is never the only channel and why that ratio is
+survivable. The third series is set apart in lightness from both, and the values and their
+measurements are in `figures.py` beside the constants.
+
+CONTRAST IS ASSERTED, NOT ASSUMED. Every text element is measured against the colour actually
+behind it, which is the canvas for text on open ground and the bar fill for a label drawn on top of
+a bar, and required to reach 4.5 to 1. Measuring in-bar labels against the canvas instead would
+pass light text sitting on a light bar, which is the one case the check exists to catch.
 """
 
 from __future__ import annotations
 
 from xml.sax.saxutils import escape
+
+# --------------------------------------------------------------------------------------------
+# The palette. Canvas, ink and the two condition colours are taken verbatim from the diagrams;
+# the rest are derived from them and each derivation states what it is for and what it measures.
+# Luminance is the WCAG relative luminance and every ratio below is against the canvas unless
+# stated otherwise. The measurements live in tests/test_figures.py, which recomputes them.
+# --------------------------------------------------------------------------------------------
+CANVAS = "#0A1A1F"        # the ground, from the diagram palette
+INK = "#E8EAEC"           # primary text and axes, from the diagram palette. 14.75:1 on canvas
+MUTED = "#9AA5AD"         # secondary text. Canvas lightened toward ink. 7.08:1 on canvas
+GRID = "#22353D"          # gridlines. Canvas lightened slightly. 1.39:1, deliberately low
+SERIES_RAW = "#00D4FF"    # raw condition, cyan, from the diagram palette where cyan is data
+SERIES_LAYER = "#C9A84C"  # layer condition, gold, from the diagram palette, the processed path
+SERIES_THIRD = "#2E9BB5"  # third series. Cyan darkened toward canvas, set apart in lightness
+ON_SERIES = "#0A1A1F"     # a label drawn on top of a series fill, which is light, so this is dark
 
 # Nominal per-character advance widths at font-size 1, by rough class. Estimation only.
 _NARROW = set("iljItf1.,:;'|!")
@@ -85,7 +117,7 @@ def line(x1, y1, x2, y2, stroke, *, width=1.0, dash=None):
     return "".join(parts)
 
 
-def text(x, y, s, *, size=12, fill="#1a1a1a", anchor="start", weight=None, family=None):
+def text(x, y, s, *, size=12, fill=INK, anchor="start", weight=None, family=None):
     fam = family or "system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif"
     parts = [
         f'<text x="{num(x)}" y="{num(y)}" font-size="{num(size)}"',
@@ -112,6 +144,6 @@ def document(width: float, height: float, title: str, desc: str, body: list[str]
         f' aria-labelledby="figure-title figure-desc">',
         f"<title id=\"figure-title\">{escape(title)}</title>",
         f"<desc id=\"figure-desc\">{escape(desc)}</desc>",
-        rect(0, 0, width, height, "#ffffff"),
+        rect(0, 0, width, height, CANVAS),
     ]
     return "\n".join(head + body + ["</svg>", ""])

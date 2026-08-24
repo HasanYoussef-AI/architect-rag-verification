@@ -200,3 +200,118 @@ def clearance(
             min(vh - e["y1"] for e in els),
         ),
     }
+
+
+# --------------------------------------------------------------------------------------------
+# Contrast. Whether a text element can actually be read against what is behind it.
+# --------------------------------------------------------------------------------------------
+
+def _srgb_to_linear(channel: float) -> float:
+    """One sRGB channel in 0..1 to linear light, per the WCAG definition."""
+    if channel <= 0.03928:
+        return channel / 12.92
+    return ((channel + 0.055) / 1.055) ** 2.4
+
+
+def relative_luminance(colour: str) -> float:
+    """WCAG relative luminance of a #rrggbb colour."""
+    s = colour.lstrip("#")
+    if len(s) != 6:
+        raise ValueError(f"expected #rrggbb, got {colour!r}")
+    r, g, b = (int(s[i:i + 2], 16) / 255 for i in (0, 2, 4))
+    return (
+        0.2126 * _srgb_to_linear(r)
+        + 0.7152 * _srgb_to_linear(g)
+        + 0.0722 * _srgb_to_linear(b)
+    )
+
+
+def contrast_ratio(a: str, b: str) -> float:
+    """WCAG contrast ratio between two #rrggbb colours, always at or above 1."""
+    la, lb = relative_luminance(a), relative_luminance(b)
+    hi, lo = max(la, lb), min(la, lb)
+    return (hi + 0.05) / (lo + 0.05)
+
+
+def _rects_in_paint_order(markup: str) -> list[dict]:
+    out = []
+    for attrs in _RECT_RE.findall(markup):
+        fill = _str_attr(attrs, "fill", "")
+        if not fill.startswith("#"):
+            continue
+        x = _attr(attrs, "x", 0.0) or 0.0
+        y = _attr(attrs, "y", 0.0) or 0.0
+        w = _attr(attrs, "width", 0.0) or 0.0
+        h = _attr(attrs, "height", 0.0) or 0.0
+        out.append({"fill": fill, "x0": x, "y0": y, "x1": x + w, "y1": y + h})
+    return out
+
+
+def text_contrasts(
+    markup: str,
+    *,
+    width_multiplier: float = WIDTH_MULTIPLIER,
+) -> list[dict]:
+    """Every text element with the colour behind it and the ratio it makes against it.
+
+    The backdrop is derived from the markup rather than declared by the generator: SVG paints in
+    document order, so the colour behind a point is the fill of the last rect whose box contains
+    it. The full-canvas ground is the first rect emitted, which makes it the fallback for text on
+    open ground without that being a special case.
+
+    Measuring against the canvas alone would be the wrong check. A label drawn on top of a light
+    series bar is high-contrast against a dark canvas and invisible against the bar, and that is
+    exactly the case a contrast check on a dark-canvas figure exists to catch.
+    """
+    rects = _rects_in_paint_order(markup)
+    canvas = rects[0]["fill"] if rects else "#000000"
+    out = []
+    for attrs, raw in _TEXT_RE.findall(markup):
+        s = unescape(raw)
+        size = _attr(attrs, "font-size", 12.0) or 12.0
+        x = _attr(attrs, "x", 0.0) or 0.0
+        y = _attr(attrs, "y", 0.0) or 0.0
+        anchor = _str_attr(attrs, "text-anchor", "start")
+        fill = _str_attr(attrs, "fill", "")
+        if not fill.startswith("#"):
+            continue
+        w = text_width(s, size) * width_multiplier
+        if anchor == "middle":
+            cx = x
+        elif anchor == "end":
+            cx = x - w / 2
+        else:
+            cx = x + w / 2
+        cy = y - 0.35 * size
+        backdrop = canvas
+        for r in rects:
+            if r["x0"] <= cx <= r["x1"] and r["y0"] <= cy <= r["y1"]:
+                backdrop = r["fill"]
+        out.append({
+            "label": s,
+            "fill": fill,
+            "backdrop": backdrop,
+            "on_backdrop": contrast_ratio(fill, backdrop),
+            "on_canvas": contrast_ratio(fill, canvas),
+            "size": size,
+        })
+    return out
+
+
+def contrast_violations(
+    markup: str,
+    *,
+    minimum: float = 4.5,
+    width_multiplier: float = WIDTH_MULTIPLIER,
+) -> list[str]:
+    """Every text element failing to reach `minimum` against the colour behind it, worst first."""
+    bad = []
+    for t in text_contrasts(markup, width_multiplier=width_multiplier):
+        if t["on_backdrop"] < minimum:
+            bad.append((
+                t["on_backdrop"],
+                f"text {t['label']!r} at size {t['size']:g} in {t['fill']} on {t['backdrop']} "
+                f"reaches {t['on_backdrop']:.2f}:1, under the required {minimum}:1",
+            ))
+    bad.sort(key=lambda pair: pair[0])
+    return [line for _, line in bad]

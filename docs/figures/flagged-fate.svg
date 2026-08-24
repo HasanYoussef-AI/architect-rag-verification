@@ -2,46 +2,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="760" height="440" viewBox="0 0 760 440" role="img" aria-labelledby="figure-title figure-desc">
 <title id="figure-title">What happened to the 109 flagged units</title>
 <desc id="figure-desc">Stacked bar chart. For each of three model tiers, the flagged claim units split into dropped or rewritten, repeated unchanged and still unsupported, and repeated unchanged and now grounded, the last of which is zero on every tier.</desc>
-<rect x="0" y="0" width="760" height="440" fill="#ffffff"/>
-<text x="30" y="34" font-size="17" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" font-weight="600">What happened to the 109 flagged units</text>
-<text x="30" y="56" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">Each flagged unit was returned to the model with the expanded context and an instruction</text>
-<text x="30" y="72" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167">to support it or leave it out. Not one was rescued by the fetched context, on any tier.</text>
-<line x1="78" y1="306" x2="698" y2="306" stroke="#d7dbdf" stroke-width="1"/>
-<text x="70" y="310" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="end">0</text>
-<line x1="78" y1="253.5" x2="698" y2="253.5" stroke="#d7dbdf" stroke-width="1"/>
-<text x="70" y="257.5" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="end">17.5</text>
-<line x1="78" y1="201" x2="698" y2="201" stroke="#d7dbdf" stroke-width="1"/>
-<text x="70" y="205" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="end">35</text>
-<line x1="78" y1="148.5" x2="698" y2="148.5" stroke="#d7dbdf" stroke-width="1"/>
-<text x="70" y="152.5" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="end">52.5</text>
-<line x1="78" y1="96" x2="698" y2="96" stroke="#d7dbdf" stroke-width="1"/>
-<text x="70" y="100" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="end">70</text>
-<line x1="78" y1="306" x2="698" y2="306" stroke="#5b6167" stroke-width="1.5"/>
-<rect x="154.333" y="159" width="54" height="147" fill="#2f5c8f"/>
-<text x="181.333" y="236.5" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#ffffff" text-anchor="middle" font-weight="600">49</text>
-<rect x="154.333" y="102" width="54" height="57" fill="#e8a33d"/>
-<text x="181.333" y="134.5" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#ffffff" text-anchor="middle" font-weight="600">19</text>
-<text x="181.333" y="92" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">68 flagged</text>
-<text x="181.333" y="324" font-size="13" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">Haiku 4.5</text>
-<text x="181.333" y="340" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">rescued by fetched context: 0</text>
-<rect x="361" y="273" width="54" height="33" fill="#2f5c8f"/>
-<text x="388" y="293.5" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#ffffff" text-anchor="middle" font-weight="600">11</text>
-<rect x="361" y="264" width="54" height="9" fill="#e8a33d"/>
-<text x="388" y="272.5" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#ffffff" text-anchor="middle" font-weight="600">3</text>
-<text x="388" y="254" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">14 flagged</text>
-<text x="388" y="324" font-size="13" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">Sonnet 5</text>
-<text x="388" y="340" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">rescued by fetched context: 0</text>
-<rect x="567.667" y="234" width="54" height="72" fill="#2f5c8f"/>
-<text x="594.667" y="274" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#ffffff" text-anchor="middle" font-weight="600">24</text>
-<rect x="567.667" y="225" width="54" height="9" fill="#e8a33d"/>
-<text x="594.667" y="233.5" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#ffffff" text-anchor="middle" font-weight="600">3</text>
-<text x="594.667" y="215" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">27 flagged</text>
-<text x="594.667" y="324" font-size="13" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a" text-anchor="middle" font-weight="600">Opus 4.8</text>
-<text x="594.667" y="340" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#5b6167" text-anchor="middle">rescued by fetched context: 0</text>
-<rect x="78" y="359" width="11" height="11" fill="#2f5c8f"/>
-<text x="94" y="368" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a">dropped or rewritten</text>
-<rect x="78" y="379" width="11" height="11" fill="#e8a33d"/>
-<text x="94" y="388" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a">repeated unchanged, still unsupported</text>
-<rect x="78" y="399" width="11" height="11" fill="#7d9a4e"/>
-<text x="94" y="408" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#1a1a1a">repeated unchanged, now grounded (zero on every tier)</text>
+<rect x="0" y="0" width="760" height="440" fill="#0A1A1F"/>
+<text x="30" y="34" font-size="17" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" font-weight="600">What happened to the 109 flagged units</text>
+<text x="30" y="56" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">Each flagged unit was returned to the model with the expanded context and an instruction</text>
+<text x="30" y="72" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD">to support it or leave it out. Not one was rescued by the fetched context, on any tier.</text>
+<line x1="78" y1="306" x2="698" y2="306" stroke="#22353D" stroke-width="1"/>
+<text x="70" y="310" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="end">0</text>
+<line x1="78" y1="253.5" x2="698" y2="253.5" stroke="#22353D" stroke-width="1"/>
+<text x="70" y="257.5" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="end">17.5</text>
+<line x1="78" y1="201" x2="698" y2="201" stroke="#22353D" stroke-width="1"/>
+<text x="70" y="205" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="end">35</text>
+<line x1="78" y1="148.5" x2="698" y2="148.5" stroke="#22353D" stroke-width="1"/>
+<text x="70" y="152.5" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="end">52.5</text>
+<line x1="78" y1="96" x2="698" y2="96" stroke="#22353D" stroke-width="1"/>
+<text x="70" y="100" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="end">70</text>
+<line x1="78" y1="306" x2="698" y2="306" stroke="#E8EAEC" stroke-width="1.5"/>
+<rect x="154.333" y="159" width="54" height="147" fill="#00D4FF"/>
+<text x="181.333" y="236.5" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#0A1A1F" text-anchor="middle" font-weight="600">49</text>
+<rect x="154.333" y="102" width="54" height="57" fill="#C9A84C"/>
+<text x="181.333" y="134.5" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#0A1A1F" text-anchor="middle" font-weight="600">19</text>
+<text x="181.333" y="92" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="middle" font-weight="600">68 flagged</text>
+<text x="181.333" y="324" font-size="13" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="middle" font-weight="600">Haiku 4.5</text>
+<text x="181.333" y="340" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="middle">rescued by fetched context: 0</text>
+<rect x="361" y="273" width="54" height="33" fill="#00D4FF"/>
+<text x="388" y="293.5" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#0A1A1F" text-anchor="middle" font-weight="600">11</text>
+<rect x="361" y="264" width="54" height="9" fill="#C9A84C"/>
+<text x="388" y="272.5" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#0A1A1F" text-anchor="middle" font-weight="600">3</text>
+<text x="388" y="254" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="middle" font-weight="600">14 flagged</text>
+<text x="388" y="324" font-size="13" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="middle" font-weight="600">Sonnet 5</text>
+<text x="388" y="340" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="middle">rescued by fetched context: 0</text>
+<rect x="567.667" y="234" width="54" height="72" fill="#00D4FF"/>
+<text x="594.667" y="274" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#0A1A1F" text-anchor="middle" font-weight="600">24</text>
+<rect x="567.667" y="225" width="54" height="9" fill="#C9A84C"/>
+<text x="594.667" y="233.5" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#0A1A1F" text-anchor="middle" font-weight="600">3</text>
+<text x="594.667" y="215" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="middle" font-weight="600">27 flagged</text>
+<text x="594.667" y="324" font-size="13" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC" text-anchor="middle" font-weight="600">Opus 4.8</text>
+<text x="594.667" y="340" font-size="11" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#9AA5AD" text-anchor="middle">rescued by fetched context: 0</text>
+<rect x="78" y="359" width="11" height="11" fill="#00D4FF"/>
+<text x="94" y="368" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC">dropped or rewritten</text>
+<rect x="78" y="379" width="11" height="11" fill="#C9A84C"/>
+<text x="94" y="388" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC">repeated unchanged, still unsupported</text>
+<rect x="78" y="399" width="11" height="11" fill="#2E9BB5"/>
+<text x="94" y="408" font-size="12" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#E8EAEC">repeated unchanged, now grounded (zero on every tier)</text>
 </svg>

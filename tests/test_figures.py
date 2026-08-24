@@ -43,7 +43,7 @@ import re
 
 import pytest
 
-from src.figures import geometry
+from src.figures import geometry, svg
 from src.figures.build_figures import FIGURES_DIR
 from src.figures.build_tables import TABLES_DIR
 from src.figures.build_tables import build_all as build_tables
@@ -52,15 +52,15 @@ from src.figures.figures import build_all as build_figures
 from src.figures.figures import build_all_figs, decomposition
 from src.ingest.corpus_integrity import REPO_ROOT
 
-# Computed at the commit that moved these files under the bounds check.
+# Computed at the commit that put these files on the dark canvas.
 FIGURE_DIGESTS = {
-    "context-sizes.svg": "ba2cf65489504ec035ae25439063da7c4fcbc9c786f3a3665f7b32018449dec5",
-    "flagged-fate.svg": "60f075f4afab0cfc0a3dfc8179127acbeb4f7f0c8b838e4cbb52c36bb7e99034",
-    "predictions.svg": "50255952d723068fc408ee5116ff1e685a7beecfdcad29dc96afef7dc3293c85",
-    "rates-by-stratum.svg": "0e8baf52075cd40c56d892612262f60c739cbf51e556cd86260af0da4dc5cd6b",
-    "rates-by-tier.svg": "ae80dc27f2b15ec8924ed53615d8483983e6a397323aae0cb32c20d48fb46f75",
-    "recall-by-stratum.svg": "21851153d7e031f4607740640cb786376e871c2fa61b43d2357da48c02f3bc65",
-    "reduction-decomposition.svg": "7288071b9ecae41cdfc107a447acaa1298388487ca4a9d2296e8c46d3130c004",
+    "context-sizes.svg": "d92429a55429a4cf0ec49122f67884131f7cef78045d3486b0b73cf0e9629df2",
+    "flagged-fate.svg": "71e543336750cc9407e362e092b99d4263c2a0cd703c78857e7a056909ccc0eb",
+    "predictions.svg": "57aa7ad89f08f496b35323d37002e0ffd631dc24335e6d992e6d78ecabbf5fc0",
+    "rates-by-stratum.svg": "8deb73c8f002414ef34456301baaed167f8b8371af71429940079e1d920107e4",
+    "rates-by-tier.svg": "f3ba128db2d15321182a9c12917df52c395173b6873ee702fedd5d4c006db181",
+    "recall-by-stratum.svg": "ba893129ed37608c189520602df067e8267eff9ac7eff057dfe134e75aa18b9e",
+    "reduction-decomposition.svg": "bb95f1747c7c01c3b5f2eb4da774211bb3cb3559fa093a6d8397517a8a6782f2",
 }
 
 # --------------------------------------------------------------------------------------------
@@ -93,6 +93,23 @@ LEGEND_GAP = 24.0
 
 BOUNDS = {"margin": MARGIN, "width_multiplier": WIDTH_MULTIPLIER,
           "ascent": ASCENT, "descent": DESCENT}
+
+# --------------------------------------------------------------------------------------------
+# MIN_CONTRAST, 4.5 to 1, the WCAG AA threshold for body text, applied to every text element in
+# every figure against the colour actually behind it.
+#
+# Against the colour behind it, not against the canvas. On a dark canvas those differ for any
+# label drawn on top of a bar, and they differ in both directions, which is why the backdrop is
+# the right reference and the canvas is not:
+#
+#   light label on the gold series   14.75:1 against the canvas,  1.89:1 against the bar
+#   dark label on the gold series     1.00:1 against the canvas,  7.78:1 against the bar
+#
+# A canvas-referenced check passes the first, which no reader can read, and fails the second,
+# which every reader can. The figures use the second, and this threshold judges it against the
+# bar. Text on open ground has the canvas as its backdrop, so nothing is exempted.
+# --------------------------------------------------------------------------------------------
+MIN_CONTRAST = 4.5
 
 TABLE_DIGESTS = {
     "cost_and_latency.csv": "3aace4ddd7924310ad991605431fa6e75aed8db475e82e800ad86183f16d7f47",
@@ -504,6 +521,147 @@ def test_a_stratum_with_no_answered_row_is_marked_rather_than_drawn_as_zero():
     assert not any(0 < w < 1 for w in widths), (
         "a bar of near-zero width is present, which is what the marking exists to avoid"
     )
+
+
+# ------------------------------------------------------------------------------------------------
+# Contrast. Whether the text can be read against what is behind it.
+# ------------------------------------------------------------------------------------------------
+
+@pytest.mark.parametrize("name", sorted(FIGURE_DIGESTS))
+def test_every_text_element_reaches_the_contrast_minimum(name):
+    """Every label in every figure, against the colour behind it."""
+    markup = (FIGURES_DIR / name).read_text(encoding="utf-8")
+    bad = geometry.contrast_violations(
+        markup, minimum=MIN_CONTRAST, width_multiplier=WIDTH_MULTIPLIER)
+    assert not bad, f"{name} has {len(bad)} unreadable text element(s):\n  " + "\n  ".join(bad)
+
+
+@pytest.mark.parametrize("name", sorted(FIGURE_DIGESTS))
+def test_every_figure_carries_text_and_a_dark_canvas(name):
+    """Guards the check above against passing because it found nothing to judge.
+
+    A contrast check over zero text elements reports clean. The canvas is asserted here too, since
+    every ratio above is taken against it or against a bar drawn on it.
+    """
+    markup = (FIGURES_DIR / name).read_text(encoding="utf-8")
+    found = geometry.text_contrasts(markup, width_multiplier=WIDTH_MULTIPLIER)
+    assert len(found) >= 10, f"{name} yielded only {len(found)} text elements to judge"
+    assert f'fill="{svg.CANVAS}"' in markup, f"{name} does not paint the palette canvas"
+    assert geometry.relative_luminance(svg.CANVAS) < 0.05, "the canvas is not dark"
+
+
+def test_the_in_bar_labels_are_the_case_the_backdrop_reference_exists_for():
+    """The two figures that draw a label on top of a bar, measured both ways.
+
+    This is the evidence for referencing the backdrop rather than the canvas, and it is asserted
+    rather than described: these labels are unreadable by the canvas-referenced measure and
+    readable by the backdrop one, so a canvas-referenced check would have rejected the correct
+    colour and accepted the wrong one.
+    """
+    on_bars = []
+    for name in sorted(FIGURE_DIGESTS):
+        markup = (FIGURES_DIR / name).read_text(encoding="utf-8")
+        for t in geometry.text_contrasts(markup, width_multiplier=WIDTH_MULTIPLIER):
+            if t["backdrop"] != svg.CANVAS:
+                on_bars.append((name, t))
+    assert on_bars, "no figure draws a label on a bar, so this check would prove nothing"
+    for name, t in on_bars:
+        assert t["on_backdrop"] >= MIN_CONTRAST, f"{name}: {t['label']!r} unreadable on its bar"
+        assert t["on_canvas"] < MIN_CONTRAST, (
+            f"{name}: {t['label']!r} would also pass a canvas-referenced check, so it is not an "
+            "instance of the divergence this test records"
+        )
+        light = geometry.contrast_ratio(svg.INK, t["backdrop"])
+        assert light < MIN_CONTRAST, (
+            f"{name}: the light ink would reach {light:.2f}:1 on {t['backdrop']}, so the dark "
+            "label is not the only readable choice there and this reasoning does not hold"
+        )
+
+
+def test_the_contrast_check_is_capable_of_failing():
+    """V20. Light text on a light bar must be rejected, and known ratios must come out right."""
+    doc = (
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100">'
+        f'<rect x="0" y="0" width="200" height="100" fill="{svg.CANVAS}"/>'
+        f'<rect x="20" y="20" width="160" height="60" fill="{svg.SERIES_LAYER}"/>'
+        f'<text x="100" y="55" font-size="12" fill="{svg.INK}" text-anchor="middle">78</text>'
+        "</svg>"
+    )
+    bad = geometry.contrast_violations(doc, minimum=MIN_CONTRAST)
+    assert bad, "light text on the gold series was accepted, so the check cannot fail"
+    assert "1.89" in bad[0], f"the reported ratio is not the measured one: {bad[0]}"
+
+    # The same document with the dark label the figures actually use.
+    fixed = doc.replace(f'fill="{svg.INK}" text-anchor', f'fill="{svg.ON_SERIES}" text-anchor')
+    assert geometry.contrast_violations(fixed, minimum=MIN_CONTRAST) == []
+
+    # Known anchors for the ratio itself.
+    assert round(geometry.contrast_ratio("#ffffff", "#000000"), 2) == 21.0
+    assert round(geometry.contrast_ratio("#000000", "#000000"), 2) == 1.0
+    assert round(geometry.relative_luminance("#ffffff"), 4) == 1.0
+    assert round(geometry.relative_luminance("#000000"), 4) == 0.0
+
+
+def test_the_palette_is_the_diagram_palette_and_its_separations_are_measured():
+    """The brand colours are verbatim, the derived ones are stated, and the ratios are recomputed.
+
+    The raw-against-layer separation is 1.29 to 1, which is a property of the two brand colours
+    rather than a choice, so those two are not distinguishable in greyscale and every series is
+    additionally labelled. That is asserted here so the figure cannot quietly stop being labelled.
+    """
+    assert svg.CANVAS == "#0A1A1F"
+    assert svg.INK == "#E8EAEC"
+    assert svg.SERIES_RAW == "#00D4FF"
+    assert svg.SERIES_LAYER == "#C9A84C"
+
+    ratios = {
+        "ink on canvas": geometry.contrast_ratio(svg.INK, svg.CANVAS),
+        "muted on canvas": geometry.contrast_ratio(svg.MUTED, svg.CANVAS),
+        "raw on canvas": geometry.contrast_ratio(svg.SERIES_RAW, svg.CANVAS),
+        "layer on canvas": geometry.contrast_ratio(svg.SERIES_LAYER, svg.CANVAS),
+        "third on canvas": geometry.contrast_ratio(svg.SERIES_THIRD, svg.CANVAS),
+    }
+    for what, r in ratios.items():
+        assert r >= 3.0, f"{what} is only {r:.2f}:1"
+    assert ratios["ink on canvas"] >= MIN_CONTRAST
+    assert ratios["muted on canvas"] >= MIN_CONTRAST
+
+    # A gridline is not text and is deliberately quiet.
+    assert geometry.contrast_ratio(svg.GRID, svg.CANVAS) < 2.0
+
+    # Every series pair is separated in lightness, and the weakest pair is the two brand colours.
+    pairs = {
+        ("raw", "layer"): geometry.contrast_ratio(svg.SERIES_RAW, svg.SERIES_LAYER),
+        ("layer", "third"): geometry.contrast_ratio(svg.SERIES_LAYER, svg.SERIES_THIRD),
+        ("raw", "third"): geometry.contrast_ratio(svg.SERIES_RAW, svg.SERIES_THIRD),
+    }
+    assert round(pairs[("raw", "layer")], 2) == 1.29
+    assert pairs[("layer", "third")] > pairs[("raw", "layer")]
+    assert pairs[("raw", "third")] > pairs[("layer", "third")]
+    assert min(pairs.values()) == pairs[("raw", "layer")]
+
+    # Colour is never the only channel, which is what makes 1.29:1 survivable.
+    for name, label in (("rates-by-tier.svg", "raw, no verification layer"),
+                        ("rates-by-stratum.svg", "raw, no verification layer")):
+        text = (FIGURES_DIR / name).read_text(encoding="utf-8")
+        assert label in text, f"{name} no longer labels its series"
+
+
+def test_no_figure_carries_a_gradient_or_a_filter():
+    """No decoration. The palette and the dark ground are the whole of it."""
+    for name in sorted(FIGURE_DIGESTS):
+        markup = (FIGURES_DIR / name).read_text(encoding="utf-8")
+        for banned in ("Gradient", "<filter", "feGaussianBlur", "url(#", "opacity=", "<style"):
+            assert banned not in markup, f"{name} carries {banned}"
+
+
+def test_no_figure_keeps_a_colour_from_the_light_palette():
+    """The restyle is complete, asserted on the markup rather than on the constants."""
+    retired = ("#ffffff", "#1a1a1a", "#5b6167", "#d7dbdf", "#2f5c8f", "#e8a33d", "#7d9a4e")
+    for name in sorted(FIGURE_DIGESTS):
+        markup = (FIGURES_DIR / name).read_text(encoding="utf-8")
+        for colour in retired:
+            assert colour not in markup.lower(), f"{name} still carries {colour}"
 
 
 def test_the_stratum_figure_draws_no_verdict():
