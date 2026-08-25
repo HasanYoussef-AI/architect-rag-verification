@@ -4,10 +4,11 @@ Nothing here needs an API key, a network connection, or money. The generation st
 its outputs are committed. Everything downstream re-derives from those committed files.
 
 Expect the wall clock to be dominated by the test suite, which means it scales with the machine
-rather than being a property of this repository. Two measurements, both from runs that happened:
-the suite alone takes 3m43s in a fresh clone on the development machine, macOS on arm64; the whole
-workflow job takes 5m21s on a GitHub-hosted `ubuntu-latest` runner, Ubuntu 24.04 on x86_64, of
-which 5m07s is the single step that runs collection and then the suite.
+rather than being a property of this repository. Locally, the suite alone takes 3m43s in a fresh
+clone on the development machine, macOS on arm64. On continuous integration it is a range and not a
+figure: the three runs recorded so far on a GitHub-hosted `ubuntu-latest` runner, Ubuntu 24.04 on
+x86_64, took 5m21s, 5m27s and 6m44s for the whole job, measured from job start to job completion. A
+single number would drift the way a line number drifts, so the spread is what to expect there.
 
 ---
 
