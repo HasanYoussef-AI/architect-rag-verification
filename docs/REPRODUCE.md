@@ -4,7 +4,7 @@ Nothing here needs an API key, a network connection, or money. The generation st
 its outputs are committed. Everything downstream re-derives from those committed files.
 
 Expect the wall clock to be dominated by the test suite, which means it scales with the machine
-rather than being a property of this repository. Locally, the suite alone takes 3m43s in a fresh
+rather than being a property of this repository. Locally, the suite alone takes 4m04s in a fresh
 clone on the development machine, macOS on arm64. On continuous integration it is a range and not a
 figure: the three runs recorded so far on a GitHub-hosted `ubuntu-latest` runner, Ubuntu 24.04 on
 x86_64, took 5m21s, 5m27s and 6m44s for the whole job, measured from job start to job completion. A
@@ -104,11 +104,11 @@ report fewer skips than a reviewer sees.
 
 | environment | collected | passed | skipped | wall clock |
 | --- | --- | --- | --- | --- |
-| **a fresh clone**, `uv sync` | 1058 | 1047 | 11 | 3m43s |
-| with `uv sync --group embed`, no segment cache | 1058 | 1051 | 7 | 3m50s |
-| with the `embed` group and the segment cache built | 1058 | 1058 | 0 | 4m26s |
+| **a fresh clone**, `uv sync` | 1061 | 1050 | 11 | 4m04s |
+| with `uv sync --group embed`, no segment cache | 1061 | 1054 | 7 | 4m02s |
+| with the `embed` group and the segment cache built | 1061 | 1061 | 0 | 3m57s |
 
-**A fresh clone gives 1047 passed and 11 skipped, and that is the expected result.** The eleven fall
+**A fresh clone gives 1050 passed and 11 skipped, and that is the expected result.** The eleven fall
 into three classes, and every one names the artifact it needs. Tests are named rather than located
 by line, because a line number drifts with every edit above it and has already been wrong in this
 file once.
@@ -162,7 +162,7 @@ registered, and it has moved three times already. The names above are stable. A 
 segment cache, the pinned model or `onnxruntime` is expected. A skip naming anything else is not,
 and is worth reporting.
 
-The collected count is 1058 in every environment. If yours differs, the tree differs.
+The collected count is 1061 in every environment. If yours differs, the tree differs.
 
 ### Lint
 
@@ -301,7 +301,7 @@ python -m src.goldset.build_segment_embeddings
 
 Measured on the machine this file was written on: the build took 19.0 minutes and wrote 40,906,880
 bytes to `embeddings_cache/segment_embeddings.npy`, which is git-ignored. After it the suite reports
-1058 passed and 0 skipped, which is the third row of the table above.
+1061 passed and 0 skipped, which is the third row of the table above.
 
 Two things reproduced exactly on that run and are worth knowing, because they are what the manifest
 exists to let you check. The rebuilt cache's SHA-256 matched
