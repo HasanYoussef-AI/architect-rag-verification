@@ -4,6 +4,65 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-25, continuous integration on the documented fresh-clone path
+
+The repository had no `.github` directory and no continuous integration. A repository whose whole
+argument is reproducibility, that documents an exact fresh-clone result, and that has only ever
+shown that result on one machine, was leaving its strongest evidence unclaimed. `ruff` was
+configured and unenforced, which reads worse than not configuring it.
+
+The workflow runs what `docs/REPRODUCE.md` instructs a stranger to run, in that order and with
+nothing added: the default `uv sync` with no `embed` group and no segment cache, the corpus
+integrity check, `ruff check src tests`, and the suite. It fails on any of the three, needs no
+secret, and runs on Linux.
+
+### Why the fresh-clone figures are the assertion
+
+The last step does not merely run the suite. It reads the fresh-clone row of the environment table
+out of `docs/REPRODUCE.md` and compares the run against it, so the tree and the walkthrough have to
+agree or the build is red. The figures are not written into the workflow: hardcoding them would let
+the walkthrough go stale silently, which is the defect that file has already carried twice, found
+by hand both times. Reading them from the file makes the two check each other.
+
+Every parse is asserted before it is used, and each failure path was exercised before the check was
+trusted. A drifted result fails; an unparseable pytest output fails loudly rather than defaulting;
+a `docs/REPRODUCE.md` with no fresh-clone row fails rather than skipping. A check that reports a
+pass because it found nothing to judge is the failure V20 names, and a parser is exactly where that
+happens.
+
+Platform is the second reason. `docs/REPRODUCE.md` claims byte-identical rebuilds and the three
+result writers pin LF for it, and that claim had only ever been exercised on macOS. The suite
+asserts those digests, so a green Linux run is the first evidence for it. The documented skip
+counts have also only been measured on macOS; if Linux disagrees, the disagreement is the finding
+rather than a malfunction.
+
+No badge was added. A badge before a passing run is a claim ahead of its evidence.
+
+### Five outside claims measured, none acted on
+
+An outside review of the published tree raised five code claims. All five were measured here and
+none was fixed in this scope, deliberately. Two are worth recording because they change what a
+future scope would do.
+
+The lint contradiction resolves without either side being wrong. `[tool.ruff]` sets `line-length`
+and `target-version` and selects no rules, so the documented command runs ruff's default `E4`,
+`E7`, `E9` and `F` and is genuinely clean. Wider selections are equally genuine: `--select B` finds
+18 and `--select ALL` finds 5800. What did not reproduce is the review's total of 85, which matched
+none of seventeen selections across three scopes. A real gap sits underneath it: `line-length` is
+configured but `E501` is not in the default selection, so 171 lines exceed the repository's own
+stated limit and nothing enforces it.
+
+The eight `B023` flags are eight flags on two closures, `handle` in `src/ingest/xref.py` and
+`decrease` in `src/score/run_sealed_grading.py`. Neither is stored, returned or passed on, and both
+are called only within the iteration that creates them, so the late binding never resolves against
+a later value. They are correct as written.
+
+### Commits
+
+- 9f4f98a ci: run the documented fresh-clone path on every push and pull request
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-24, README's suite figures corrected to the fresh-clone measurement
 
 `README.md` stated the suite as 991 tests, a fresh clone as 984 passed with 7 skipped, and the
