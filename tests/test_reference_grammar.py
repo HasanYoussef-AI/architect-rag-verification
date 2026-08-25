@@ -21,6 +21,7 @@ import ast
 import builtins
 import json
 import re
+from dataclasses import FrozenInstanceError
 from pathlib import Path
 
 import pytest
@@ -440,6 +441,6 @@ def test_the_literal_scanner_ignores_prose_and_catches_code():
 def test_the_reference_dataclass_is_frozen():
     """Frozen so a caller cannot rewrite a resolved candidate after the fact."""
     reference = Reference("eu_article", "Article 6", 0, 9, ("eu_ai_act:art_6",))
-    with pytest.raises(Exception):
+    with pytest.raises(FrozenInstanceError):
         reference.kind = "mutated"
     assert references.Reference is Reference

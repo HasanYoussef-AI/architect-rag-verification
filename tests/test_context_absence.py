@@ -32,7 +32,7 @@ from __future__ import annotations
 import ast
 import builtins
 import json
-from dataclasses import fields, is_dataclass
+from dataclasses import FrozenInstanceError, fields, is_dataclass
 
 import pytest
 
@@ -310,14 +310,14 @@ def test_retrieved_context_carries_the_three_admitted_values_and_no_others():
     chunk = RetrievedChunk(chunk_id="eu_ai_act:art_6", text="x", unit_label="Article 6")
     assert not hasattr(chunk, "structural_path")
     assert not hasattr(chunk, "parent_id")
-    with pytest.raises(Exception):
+    with pytest.raises(FrozenInstanceError):
         chunk.text = "mutated"
 
 
 def test_the_completeness_report_is_frozen():
     assert is_dataclass(CompletenessReport)
     report = assess("no references here", [], frozenset())
-    with pytest.raises(Exception):
+    with pytest.raises(FrozenInstanceError):
         report.absent_units = ()
 
 

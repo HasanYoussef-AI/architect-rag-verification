@@ -21,7 +21,7 @@ from __future__ import annotations
 import ast
 import builtins
 import json
-from dataclasses import fields, is_dataclass
+from dataclasses import FrozenInstanceError, fields, is_dataclass
 
 import pytest
 
@@ -296,7 +296,7 @@ def test_fetched_chunks_are_the_same_type_the_first_pass_arrives_in():
 
 def test_the_augmentation_result_is_frozen(store):
     result = augment("no references here", [], store)
-    with pytest.raises(Exception):
+    with pytest.raises(FrozenInstanceError):
         result.context = ()
 
 
