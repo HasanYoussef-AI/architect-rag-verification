@@ -4,6 +4,55 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-26, the documented suite figures move with the tree
+
+The checksum separation in the entry below added three tests, so every figure in the repository
+stating a suite result went stale at the same moment. They move together here. The entry below is
+not amended; this extends the record rather than rewriting it.
+
+The workflow's assertion is what caught the disagreement. It reads the fresh-clone row of
+`docs/REPRODUCE.md` and compares a real run against it, and it went red on this branch reporting
+`collected` and `passed` as DIFFERS while `skipped` still matched. No reader noticed and no test
+failed; the check that exists for exactly this reported it.
+
+All three environment rows moved, not only the fresh-clone one, and all three are measurements. The
+segment embedding cache built in an earlier scope was still on disk and its SHA-256 still matches
+the committed manifest, so the third row was measured rather than derived.
+
+| environment | was | now |
+| --- | --- | --- |
+| a fresh clone | 1058, 1047, 11 | 1061, 1050, 11 |
+| with the `embed` group, no segment cache | 1058, 1051, 7 | 1061, 1054, 7 |
+| with the `embed` group and the cache built | 1058, 1058, 0 | 1061, 1061, 0 |
+
+`README.md` moved with them, because the two files agreeing is a property this repository has
+already been corrected once to establish.
+
+A sweep over all 275 tracked files found the stale figures in five. Two are corrected here. The
+other three are left: this log records past measurements in past entries,
+`eval/test_query_verification.jsonl` matches on `char_end_in_chunk` offsets, and
+`vendor/bge-base-en-v1.5/tokenizer.json` matches on token ids for three letters.
+
+### One finding recorded and not acted on
+
+The three tests added with the checksum separation reach no network, measured rather than reasoned:
+run with the socket layer disabled and a cold model cache they make zero socket calls, because all
+three replace `download_onnx` before `onnx_session` is entered.
+
+The pre-existing dense-arm path does. Under the identical guard and the identical cold cache the
+dense-arm tests make nine socket calls, requesting the pinned weight from `huggingface.co` with
+retries. `huggingface_hub` reaches a default install transitively through `tokenizers`, so
+`download_onnx` gets past its import in a fresh clone and calls `hf_hub_download`, which carries no
+`local_files_only`. The workflow caches uv packages and not the model cache, so continuous
+integration starts cold on every run and takes that path. Nothing in this scope changed it, and it
+is recorded here rather than fixed, since the offline reproducibility set is where it matters.
+
+### Commits
+
+- f4becdf docs: move every documented suite figure to the tree that gained three tests
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-25, the swallowed checksum error, the lint selection, and the timing envelope
 
 Five commits on a branch off `main`, for a pull request. Four items an outside review and the
