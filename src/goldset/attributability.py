@@ -419,7 +419,7 @@ def dense_arm(
     vector = embed_texts([normalise_for_comparison(span)], session)[0]
     scores = vectors @ vector
     best: dict[str, tuple[float, str]] = {}
-    for (unit, segment), score in zip(pairs, scores):
+    for (unit, segment), score in zip(pairs, scores, strict=True):
         if unit in gold_units:
             continue
         if unit not in best or score > best[unit][0]:
@@ -454,15 +454,35 @@ def dense_arm(
 
 
 def onnx_session():
-    """The pinned ONNX session, or None when the model is not already cached.
+    """The pinned ONNX session, or None when the model or its dependencies are absent.
 
-    Never triggers a download, matching tests/test_query_embeddings_provenance.py: the model is
-    not in the offline reproducibility set, so absence is a skip and not a failure.
+    TWO OUTCOMES THAT MUST NOT LOOK ALIKE. Absence returns None, so the dense arm skips: the model
+    is deliberately outside the offline reproducibility set and a fresh clone cannot reach it, which
+    is a skip and not a failure. A weight that is present and fails its pinned SHA-256 raises,
+    because that is not absence, it is an integrity failure, and a check whose failure is
+    indistinguishable from "not installed" is not a check at all.
+
+    This caught every exception and returned None until the two were separated, so a tampered weight
+    reported as an uncached one and the dense arm skipped quietly. tests/test_attributability.py
+    pins all three paths, the mismatch and both absences, so the swallow cannot return without a
+    failing test.
+
+    The two absence paths fail at different points and are both kept: `huggingface_hub` is missing
+    in a default install, and `onnxruntime` can be missing after the weight has been fetched and
+    verified.
     """
-    try:
-        from src.retrieve.embed import download_onnx, make_session
+    from src.retrieve.embed import download_onnx, make_session
 
-        return make_session(download_onnx())
+    try:
+        path = download_onnx()
+    except ValueError:
+        # The pinned checksum did not match. Present and wrong, not absent.
+        raise
+    except Exception:
+        return None
+
+    try:
+        return make_session(path)
     except Exception:
         return None
 

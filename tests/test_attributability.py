@@ -485,6 +485,60 @@ def test_dense_arm_records_its_absence_rather_than_omitting_it(corpus):
     assert block["exclusion_funnel"]["comparable_segments"] == 13316
 
 
+# --- the two paths out of onnx_session, which must not report alike -----------------------------
+
+def test_a_checksum_mismatch_raises_rather_than_reading_as_an_absent_model(monkeypatch):
+    """A model that is present and wrong must not report the same as a model that is absent.
+
+    The catch in `onnx_session` swallowed every exception, so a weight that failed its SHA-256
+    returned None and the dense arm skipped with a message saying the model was not cached. An
+    integrity check whose failure is indistinguishable from absence is not an integrity check, and
+    this repository's whole argument is that verification has to be able to fail.
+
+    Pinned here so the swallow cannot come back without deleting a failing test.
+    """
+    from src.retrieve import embed
+
+    def tampered(*_args, **_kwargs):
+        raise ValueError(f"ONNX checksum mismatch: expected {embed.ONNX_SHA256}, got {'0' * 64}")
+
+    monkeypatch.setattr(embed, "download_onnx", tampered)
+    with pytest.raises(ValueError, match="ONNX checksum mismatch"):
+        onnx_session()
+
+
+def test_an_absent_dependency_still_returns_none_rather_than_raising(monkeypatch):
+    """The other path, unchanged: absence is a skip and not a failure.
+
+    `huggingface_hub` is in the build-only `embed` group, so a default install cannot reach the
+    model at all. That has to keep returning None, or every fresh clone fails the dense arm instead
+    of skipping it, which is the behaviour the four dense-arm skips depend on.
+    """
+    from src.retrieve import embed
+
+    def absent(*_args, **_kwargs):
+        raise ImportError("No module named 'huggingface_hub'")
+
+    monkeypatch.setattr(embed, "download_onnx", absent)
+    assert onnx_session() is None
+
+
+def test_an_absent_onnxruntime_still_returns_none_rather_than_raising(monkeypatch):
+    """The second absence path, which fails later than the first and must report the same.
+
+    The weight can be present and verified while `onnxruntime` is missing, because they arrive from
+    different places. Narrowing the catch must not turn that into a failure either.
+    """
+    from src.retrieve import embed
+
+    def no_runtime(*_args, **_kwargs):
+        raise ImportError("No module named 'onnxruntime'")
+
+    monkeypatch.setattr(embed, "download_onnx", lambda *a, **k: "/nonexistent/model.onnx")
+    monkeypatch.setattr(embed, "make_session", no_runtime)
+    assert onnx_session() is None
+
+
 def _dense_or_skip(corpus):
     session = onnx_session()
     if session is None:
