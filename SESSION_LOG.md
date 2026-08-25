@@ -4,6 +4,60 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-25, the workflow's action versions and the timing claim, on the open branch
+
+Two corrections on the branch carrying the continuous integration pull request, made before it
+merged. The entry above names the workflow commit and is not amended.
+
+### The documented fresh-clone figures now hold on a second platform
+
+The workflow ran green, and its final step is an assertion rather than a report: it read the
+fresh-clone row of `docs/REPRODUCE.md` and compared the run against it. 1058 collected, 1047 passed
+and 11 skipped therefore hold on a GitHub-hosted `ubuntu-latest` runner, Ubuntu 24.04 on x86_64, as
+well as on the development machine, macOS on arm64. That is a second platform and a second
+architecture.
+
+It is also the first evidence outside one machine for the byte-identity the three result writers
+pin LF to protect, since the suite asserts those digests and the suite passed there.
+
+### The action versions
+
+The green run carried a deprecation annotation: `actions/checkout@v4` and `astral-sh/setup-uv@v5`
+both declare `using: node20`, which GitHub is retiring. Both moved to their current major, read
+from each action's own repository rather than from memory: checkout to `v7`, whose floating tag
+resolves to the same commit as its `v7.0.1` release, and setup-uv to `v10.0.1`. Both declare
+`using: node24`.
+
+setup-uv is pinned to an exact release because it publishes floating major tags only through `v7`,
+so no `v10` tag exists to point at. Nothing the workflow depends on moved: checkout takes no inputs
+here, and `enable-cache` keeps its name and its `auto` default across the two setup-uv versions and
+is set explicitly in any case.
+
+### The timing claim
+
+The file opened by telling a reader to expect about four minutes, almost all of it the suite. One
+machine produced that, and the runner contradicted it at 5m21s for the job with 5m07s in the step
+that runs collection and then the suite. The number was not wrong so much as unqualified, which
+here is the same defect: an unconditioned duration reads as a property of the repository rather
+than of the machine.
+
+It now carries both measurements with their conditions, and both are from runs that happened rather
+than from an estimate. What the two share is stated instead of a single figure: the wall clock is
+dominated by the suite, so it scales with the machine.
+
+The environment table was not touched. Its fresh-clone row is what the workflow parses, and the row
+is byte-identical after the change with only its line number moved; the assertion was run against
+the edited file and still reads all three figures from it. Every other duration in the file was
+checked rather than assumed, and the cache build's 19.0 minutes and 40,906,880 bytes are confirmed
+against the measurement that produced them.
+
+### Commits
+
+- 9eccd29 ci: move both actions to their current major, off the deprecated Node 20 runtime
+- 5926407 docs(reproduce): the timing claim gains its second measurement and its conditions
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-25, continuous integration on the documented fresh-clone path
 
 The repository had no `.github` directory and no continuous integration. A repository whose whole
