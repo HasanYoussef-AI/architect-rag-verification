@@ -4,6 +4,90 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-26, the offline claim becomes true by mechanism
+
+`docs/REPRODUCE.md` opens with "Nothing here needs an API key, a network connection, or money."
+Until this scope that was true in outcome and false in mechanism. `onnx_session` resolved the pinned
+weight through `download_onnx`, which calls `hf_hub_download` with no `local_files_only`, so every
+offline run of the dense arm reached `huggingface.co`, failed, retried five times and then skipped.
+Nothing failed, because the arm skips either way. A reader running offline saw retry warnings and a
+delay where the file describes a clean skip, and would reasonably have concluded something was
+broken.
+
+The previous entry recorded the attempt and did not act on it. This closes it.
+
+### The two needs were opposite, so they were separated
+
+`download_onnx` is unchanged. It serves `build_embeddings.py` and `build_query_embeddings.py`, both
+generators that legitimately fetch the pinned revision and both documented as outside the offline
+set. The caller inside the offline set needed the opposite, so `cached_onnx_path` resolves from the
+local cache and verifies, and the fetching function keeps fetching for the callers that want it.
+Neither path pays for the other.
+
+The pattern was already in the repository. `tests/test_query_embeddings_provenance.py` resolved the
+same weight with `local_files_only=True`; the production path had simply not adopted it.
+
+Both properties the previous scope established survive. A weight absent from the cache returns None
+and the dense arm skips, with all four skip reasons unchanged. A cached weight failing its pinned
+digest still raises rather than reading as absent.
+
+### The guard is permanent, and it carries its own control
+
+`tests/test_offline_reproducibility.py` stubs the socket layer, counts every attempt, and points the
+model cache at an empty directory before asking. The cold cache is the whole point: on a machine
+that already holds the weight the check passes whether the code is right or wrong, and that warm
+cache is exactly what hid the defect during the first measurement of it.
+
+Shown red against the previous code, reporting two connections to `huggingface.co` with the HEAD
+request and its retry in the captured output. Beside it, a check that makes a real connection
+attempt under the same stubs and requires the counter to move, so a future zero is a measurement
+rather than a detector that has stopped seeing.
+
+### What this changed for a reader, beyond the mechanism
+
+Installing the `embed` group no longer makes the model loadable on its own, because nothing in the
+offline set downloads the weight now. Priming the cache is an explicit step and the optional section
+carries it as its own command. The generator already said this in its own error text, that it never
+downloads and the cache must be primed first, and that sentence is now true of the code beneath it.
+
+Two environment rows are renamed for the same reason: their condition changed, not only their
+counts.
+
+### The figures moved again
+
+The guard added two tests. All three rows were measured in the environment each names:
+
+| environment | was | now |
+| --- | --- | --- |
+| a fresh clone | 1061, 1050, 11 | 1063, 1052, 11 |
+| embed group, model primed, no segment cache | 1061, 1054, 7 | 1063, 1056, 7 |
+| embed group, model primed, segment cache built | 1061, 1061, 0 | 1063, 1063, 0 |
+
+`README.md` moved with them.
+
+### Whether continuous integration was fetching, at the strength the evidence supports
+
+Not settled, and it cannot now be settled in retrospect.
+
+What is measured: the previous code, with a cold model cache and the socket layer stubbed, attempts
+`huggingface.co` and requests the pinned weight by HEAD. What is known about the runner: the
+workflow caches uv packages and nothing caches the model directory, so every run began cold. Those
+two together make it very likely that each run fetched the weight, which is 435,811,539 bytes, with
+the network available rather than failing as it does offline.
+
+What is absent is any observation. No line in any of the three run logs records it, and that is not
+evidence either way, because `huggingface_hub` suppresses progress output when stdout is not a
+terminal. The only lines matching a model fetch are `uv` installing the `hf-xet` package. Nothing
+was instrumented before the change and the change removes the call, so no run made from here can
+answer it. It is recorded as inference and not as observation, and it stays that way.
+
+### Commits
+
+- 5642d54 fix(goldset): resolve the pinned weight from the local cache, never the network
+- 518ae60 docs: the priming step the offline fix makes explicit, and the figures that moved with it
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-26, the documented suite figures move with the tree
 
 The checksum separation in the entry below added three tests, so every figure in the repository
