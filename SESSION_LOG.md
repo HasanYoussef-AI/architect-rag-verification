@@ -4,6 +4,79 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-25, the swallowed checksum error, the lint selection, and the timing envelope
+
+Five commits on a branch off `main`, for a pull request. Four items an outside review and the
+previous scope's measurements left open, plus one amendment.
+
+### A tampered model no longer reads as an absent one
+
+`onnx_session` caught every exception and returned None, so a weight failing its pinned SHA-256
+reported exactly as a weight that was never fetched: the dense arm skipped, saying the model was not
+cached. A repository whose argument is that verification must be able to fail cannot carry an
+integrity check whose failure is indistinguishable from absence.
+
+The two outcomes are separated at the point they occur. A checksum `ValueError` propagates;
+everything else from either call still returns None. The catch was not widened and neither absence
+path was narrowed, because both have to keep skipping and they fail at different points:
+`huggingface_hub` is missing in a default install, and `onnxruntime` can be missing after the weight
+has been fetched and verified.
+
+Three tests pin the three paths. The mismatch test was shown red against the previous code, failing
+with `DID NOT RAISE ValueError`, while the two absence tests passed unchanged, which is what makes
+them the guard that this change did not disturb them. The seven attributability skips are unchanged.
+
+The docstring's claim that the function never triggers a download is removed rather than kept.
+Nothing enforces it: `hf_hub_download` is called without `local_files_only`, so it fetches when the
+model is absent and the network is up. The claim was not verifiable.
+
+### The lint configuration, resolved in two directions
+
+Both were configured claims that were not true, and the measurement pointed opposite ways.
+
+The selection was empty, so `ruff check` meant `E4`, `E7`, `E9` and `F`, and "ruff clean" here was
+narrower than a reader would assume. It is explicit now and adds flake8-bugbear: 59 rules enabled
+before, 98 after. All eighteen bugbear findings were resolved before the rule was selected, so it
+lands green rather than with an ignore list. Four `B905` zips gained `strict=True`, two `B007` loop
+variables were renamed, four `B017` assertions were narrowed to `FrozenInstanceError`, and eight
+`B023` flags over two closures are silenced at their sites with the reason recorded, both closures
+having been measured as unable to outlive the iteration that creates them.
+
+The line length went the other way and is now declared rather than enforced. `E501` is not selected
+and never was, so `line-length = 100` had never been checked. Enforcement is unavailable for two
+measured reasons. Two of the 171 over-length lines are inside `src/complete/flagging.py` and
+`src/score/grounding.py`, which are frozen and pinned byte-for-byte. Nine more are the literal body
+of `RAW_SYSTEM` in `src/generate/prompts.py`, whose rendered text is hashed into `body_sha256` on
+every committed row and re-verified on every suite run; wrapping them inserts newlines into the
+prompt and changes what the sealed record says was sent. The sealed artifacts outrank the linter
+here as the freeze does. The convention itself is real, 171 of 30,905 lines being 0.55 percent, and
+the configuration keeps it while no longer looking enforced.
+
+### The timing envelope
+
+A third CI run took 6m44s against the 5m21s the walkthrough recorded, so a reader would routinely
+see a figure outside the stated one. The three runs so far took 5m21s, 5m27s and 6m44s for the whole
+job, measured from job start to completion, and the file states the spread and the basis rather than
+a point. No fourth figure is estimated and the local measurement is unchanged.
+
+### Open, and deliberately not closed here
+
+The three tests added above move the suite from 1058 collected and 1047 passed to 1061 and 1050. The
+environment table in `docs/REPRODUCE.md` still records the former, so the workflow's assertion fails
+against this branch, reporting `collected` and `passed` as DIFFERS. That is the assertion working:
+it exists to make a tree and its walkthrough disagree loudly. The scope for this work barred
+changing those counts, so the row is left as it stands and the correction is the owner's to make.
+
+### Commits
+
+- 155acfd fix(goldset): a tampered model raises where an absent one skips
+- 8e72c2b test: narrow four blind exception assertions to the exception actually raised
+- 31b6315 style: resolve the remaining bugbear findings ahead of selecting the rule set
+- d1f3196 build: select the lint rules explicitly, and declare line-length for what it is
+- bca8f70 docs(reproduce): the CI wall clock becomes an envelope rather than a point
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-25, the workflow's action versions and the timing claim, on the open branch
 
 Two corrections on the branch carrying the continuous integration pull request, made before it
