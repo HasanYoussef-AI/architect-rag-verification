@@ -37,8 +37,42 @@ embed = [
 package = false
 
 [tool.ruff]
+# An authoring and formatter target, NOT a lint rule, and stated here because the difference is
+# load-bearing. E501 is not selected below, so `ruff check` does not enforce this and never has.
+# The convention is real: 171 of 30,905 lines in src and tests exceed it, 0.55 percent. Enforcing
+# it is not available, for two measured reasons rather than for effort.
+#
+# Two of the 171 are inside src/complete/flagging.py and src/score/grounding.py, which are frozen
+# by eval/generation_predictions.md section 5.4 and pinned byte-for-byte in
+# tests/test_grader_freeze.py. They cannot be reflowed at all.
+#
+# Nine are the literal body of RAW_SYSTEM in src/generate/prompts.py. That text is rendered into
+# every request body, SHA-256'd into body_sha256 on every committed row, and re-verified by
+# verify_chain on every suite run. Wrapping those lines inserts newlines into the prompt itself,
+# which changes what the sealed record says was sent to the models. That is falsifying the
+# experiment to satisfy a style rule, and the sealed artifacts outrank the linter here exactly as
+# the freeze does.
+#
+# So the limit is declared for what it is. A rule that cannot be enforced should say so rather than
+# sit in the configuration looking enforced, which is the same defect as a configured and
+# unenforced linter.
 line-length = 100
 target-version = "py312"
+
+[tool.ruff.lint]
+# Selected explicitly rather than left to the default, because the default is E4, E7, E9 and F and
+# "ruff clean" in this repository has therefore been a narrower claim than a reader would assume.
+#
+# E4, E7, E9 and F are the previous default, kept so nothing that passed before starts failing for
+# an unrelated reason. B is flake8-bugbear, added because it produced the only findings any review
+# has surfaced here: eighteen, all outside the four frozen modules, all now resolved. Four B017
+# assertions were narrowed to the exception actually raised, four B905 zips gained an explicit
+# strict=, two B007 loop variables were renamed, and eight B023 flags over two closures are
+# silenced at their sites with the reason recorded there, having been measured as unreachable.
+#
+# Nothing is blanket-ignored. A wide selection carrying a wide ignore list claims more than it
+# checks, which is worse than a narrow selection stated honestly.
+select = ["E4", "E7", "E9", "F", "B"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
