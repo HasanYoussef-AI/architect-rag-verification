@@ -363,9 +363,9 @@ network and no cost.
 These three digests are asserted by committed tests on every suite run, so a rebuild that disagrees
 with the published bytes fails the suite rather than passing quietly.
 
-The suite is 1061 tests. A fresh clone reports **1050 passed and 11 skipped**, naming the
+The suite is 1063 tests. A fresh clone reports **1052 passed and 11 skipped**, naming the
 `onnxruntime` build-only dependency, the pinned model, and the deliberately uncommitted segment
-embedding cache. With that cache built and the pinned model present it is 1061 passed and 0 skipped.
+embedding cache. With that cache built and the pinned model present it is 1063 passed and 0 skipped.
 Read the skips by name rather than by count.
 
 [docs/REPRODUCE.md](docs/REPRODUCE.md) has the full walkthrough, including how to re-derive an

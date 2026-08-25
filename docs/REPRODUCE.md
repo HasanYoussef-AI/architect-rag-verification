@@ -4,7 +4,7 @@ Nothing here needs an API key, a network connection, or money. The generation st
 its outputs are committed. Everything downstream re-derives from those committed files.
 
 Expect the wall clock to be dominated by the test suite, which means it scales with the machine
-rather than being a property of this repository. Locally, the suite alone takes 4m04s in a fresh
+rather than being a property of this repository. Locally, the suite alone takes 3m54s in a fresh
 clone on the development machine, macOS on arm64. On continuous integration it is a range and not a
 figure: the three runs recorded so far on a GitHub-hosted `ubuntu-latest` runner, Ubuntu 24.04 on
 x86_64, took 5m21s, 5m27s and 6m44s for the whole job, measured from job start to job completion. A
@@ -104,11 +104,11 @@ report fewer skips than a reviewer sees.
 
 | environment | collected | passed | skipped | wall clock |
 | --- | --- | --- | --- | --- |
-| **a fresh clone**, `uv sync` | 1061 | 1050 | 11 | 4m04s |
-| with `uv sync --group embed`, no segment cache | 1061 | 1054 | 7 | 4m02s |
-| with the `embed` group and the segment cache built | 1061 | 1061 | 0 | 3m57s |
+| **a fresh clone**, `uv sync` | 1063 | 1052 | 11 | 3m54s |
+| with the `embed` group and the model cache primed, no segment cache | 1063 | 1056 | 7 | 3m59s |
+| with the `embed` group, the model primed and the segment cache built | 1063 | 1063 | 0 | 3m51s |
 
-**A fresh clone gives 1050 passed and 11 skipped, and that is the expected result.** The eleven fall
+**A fresh clone gives 1052 passed and 11 skipped, and that is the expected result.** The eleven fall
 into three classes, and every one names the artifact it needs. Tests are named rather than located
 by line, because a line number drifts with every edit above it and has already been wrong in this
 file once.
@@ -147,10 +147,12 @@ test_the_manifest_takes_no_value_from_the_untracked_index
 
 **The dense arm's four skips change their reason between the first two environments, and that is
 worth knowing before you read your own output.** In a fresh clone they report that the pinned model
-is not cached. After `uv sync --group embed` the model can be loaded, so the same four report that
-the segment embedding cache is absent instead, and name the command that builds it. An earlier
-revision of this file quoted the second message under the fresh-clone heading, which is a state no
-reviewer following the instructions above will ever be in.
+is not cached. Once the `embed` group is installed AND the model cache has been primed, the same
+four report that the segment embedding cache is absent instead, and name the command that builds it.
+Installing the group alone is not enough: nothing in the offline set downloads the weight, by
+design, so priming is an explicit step and it is in the optional section below. An earlier revision
+of this file quoted the second message under the fresh-clone heading, which is a state no reviewer
+following the instructions above will ever be in.
 
 The segment embedding cache is 40,906,880 bytes, about ten times the committed chunk embedding
 array, and is deliberately not committed on size. `eval/segment_embedding_manifest.json` carries its
@@ -162,7 +164,7 @@ registered, and it has moved three times already. The names above are stable. A 
 segment cache, the pinned model or `onnxruntime` is expected. A skip naming anything else is not,
 and is worth reporting.
 
-The collected count is 1061 in every environment. If yours differs, the tree differs.
+The collected count is 1063 in every environment. If yours differs, the tree differs.
 
 ### Lint
 
@@ -296,12 +298,20 @@ reproducibility set.
 
 ```
 uv sync --group embed
+python -c "from src.retrieve.embed import download_onnx; print(download_onnx())"
 python -m src.goldset.build_segment_embeddings
 ```
 
+The middle command is the one that fetches, and it is separate on purpose. Nothing the offline set
+runs will download the weight: `src/goldset/attributability.py` resolves it from the local cache
+only, so that `docs/REPRODUCE.md`'s opening claim about not needing a network connection is true by
+mechanism rather than because a failed attempt is swallowed. The generator says the same thing in
+its own error text, that it never downloads and the cache must be primed first, and until this was
+separated that sentence was not true of the code beneath it.
+
 Measured on the machine this file was written on: the build took 19.0 minutes and wrote 40,906,880
 bytes to `embeddings_cache/segment_embeddings.npy`, which is git-ignored. After it the suite reports
-1061 passed and 0 skipped, which is the third row of the table above.
+1063 passed and 0 skipped, which is the third row of the table above.
 
 Two things reproduced exactly on that run and are worth knowing, because they are what the manifest
 exists to let you check. The rebuilt cache's SHA-256 matched
