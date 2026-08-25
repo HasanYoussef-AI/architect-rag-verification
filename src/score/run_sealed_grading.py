@@ -1207,9 +1207,14 @@ def _score_predictions(per_condition: dict, graded: dict, strata: dict[str, str]
         raw_rows = per_condition["raw"]["concentration"][t]["clean_multi_hop_per_row"]
         layer_rows = per_condition["layer"]["concentration"][t]["clean_multi_hop_per_row"]
 
+        # B023 is silenced on the two lines below for the reason recorded at the matching site
+        # in src/ingest/xref.py: `raw_rows` and `layer_rows` are captured late, but `decrease` is
+        # consumed by the two sum() calls immediately below, within the iteration that defines
+        # it, and is never stored or returned. Eager consumption by sum() is what makes the late
+        # binding unreachable here.
         def decrease(q):
-            a = raw_rows[q]["ungrounded_units"] if raw_rows[q]["answered"] else 0
-            b = layer_rows[q]["ungrounded_units"] if layer_rows[q]["answered"] else 0
+            a = raw_rows[q]["ungrounded_units"] if raw_rows[q]["answered"] else 0  # noqa: B023
+            b = layer_rows[q]["ungrounded_units"] if layer_rows[q]["answered"] else 0  # noqa: B023
             return a - b
 
         named_drop = sum(decrease(q) for q in P11_NAMED_ROWS)

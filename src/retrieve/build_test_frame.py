@@ -241,7 +241,7 @@ def build_frame() -> dict:
     assert sum(sh_alloc.values()) == 18
     assert sh_alloc == {"eu_ai_act": 11, "nist_ai_100_1": 5, "nist_ai_600_1": 2}, (
         f"single-hop allocation {sh_alloc} does not reproduce the ruling's 11/5/2; "
-        f"eligible populations were {dict(zip(sh_sources, sizes))}"
+        f"eligible populations were {dict(zip(sh_sources, sizes, strict=True))}"
     )
 
     # clean multi-hop: EU internal cross-reference edges, both endpoints out of closure.

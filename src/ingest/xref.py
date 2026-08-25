@@ -224,12 +224,17 @@ def extract_references(
     for _, sentence in split_sentences(text):
         instruments = external_instruments_in(sentence)
 
+        # B023 is silenced on the four lines below rather than the rule being dropped. This
+        # closure captures `sentence` and `instruments` late, which is a real bug class, but it
+        # is called only at the two finditer loops at the end of this iteration and is never
+        # stored, returned or passed on, so the capture always resolves against the iteration
+        # that created it. Verified by enumerating every call site.
         def handle(match, kind: str, to_int, to_str, prefix: str) -> None:
-            verdict, qualifier = _adjacent_qualifier(sentence, match.end())
+            verdict, qualifier = _adjacent_qualifier(sentence, match.end())  # noqa: B023
             members = _expand(match.group("num"), match.group("more") or "", to_int, to_str)
             ids = [f"{doc_id}:{prefix}{m}" for m in members]
             surface = re.sub(r"\s+", " ", match.group(0)).strip()
-            context = re.sub(r"\s+", " ", sentence).strip()
+            context = re.sub(r"\s+", " ", sentence).strip()  # noqa: B023
 
             if verdict == "self":
                 outcome, reason = "internal", "explicit 'of this Regulation'"
@@ -243,9 +248,9 @@ def extract_references(
                     {"ref": i, "reason": reason, "surface": surface, "sentence": context}
                     for i in ids
                 )
-            elif instruments:
+            elif instruments:  # noqa: B023
                 outcome = "dropped"
-                reason = f"{DROP_SENTENCE_INSTRUMENT}: {instruments[0]}"
+                reason = f"{DROP_SENTENCE_INSTRUMENT}: {instruments[0]}"  # noqa: B023
                 dropped.extend(
                     {"ref": i, "reason": reason, "surface": surface, "sentence": context}
                     for i in ids

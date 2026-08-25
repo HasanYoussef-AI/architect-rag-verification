@@ -117,7 +117,7 @@ def test_the_three_result_pins_are_over_different_artifacts():
     digests = [LAYER_RESULTS_SHA256, GRADING_RESULTS_SHA256, RESULTS_SHA256]
     assert len(set(paths)) == 3, paths
     assert len(set(digests)) == 3, digests
-    for path, pinned in zip(paths, digests):
+    for path, pinned in zip(paths, digests, strict=True):
         assert hashlib.sha256(path.read_bytes()).hexdigest() == pinned, path
 
 

@@ -454,7 +454,7 @@ def test_build_body_refuses_a_tier_with_unmeasured_parameters():
     with pytest.raises(ValueError, match="gate 1a"):
         build_body(request, unmeasured)
 
-    for key, tier in TIERS.items():
+    for _key, tier in TIERS.items():
         build_body(request, tier)  # every measured tier builds rather than raising
 
 

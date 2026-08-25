@@ -54,7 +54,7 @@ def test_matmul_and_matvec_paths_agree_after_quantisation():
         if not line.strip():
             continue
         row = json.loads(line)
-        for edge in row.get("action_subcategory", []):
+        for _edge in row.get("action_subcategory", []):
             queries.append(idx[row["unit_id"]])
 
     membership = ordering = 0
