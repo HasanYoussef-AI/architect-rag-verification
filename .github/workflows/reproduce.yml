@@ -1,0 +1,74 @@
+# The documented reproduction path, executed on every push and pull request.
+#
+# This workflow exists to run the walkthrough a stranger is told to run, not a convenient subset of
+# it. docs/REPRODUCE.md tells a reviewer to clone, run the default `uv sync`, check the corpus, and
+# run the suite; every step below is that instruction, in that order, with nothing added.
+#
+# Two things it establishes that a local run cannot.
+#
+# The first is that the documented fresh-clone result holds somewhere other than the author's
+# machine. The final step compares the run against the environment table in docs/REPRODUCE.md
+# rather than against a constant written here, so the tree and the walkthrough have to agree or the
+# build goes red. A walkthrough that quietly goes stale is a defect this repository has already
+# corrected in that file twice.
+#
+# The second is platform. docs/REPRODUCE.md claims byte-identical rebuilds and the three result
+# writers pin LF for that reason, and until this workflow existed that claim had only been
+# exercised on macOS. The suite asserts those digests, so a green run here is the first evidence
+# for it on Linux.
+#
+# No secret is referenced anywhere in this file, and none is needed. Every number this repository
+# publishes re-derives from committed bytes with no API key, which is the whole reproducibility
+# claim; a workflow that needed a key would contradict it.
+
+name: reproduce
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reproduce-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fresh-clone:
+    name: the documented fresh-clone path
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out the tree
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      # The default sync, exactly as the walkthrough instructs. The `embed` group is deliberately
+      # not installed: it is build-only, and its absence is what produces the documented skips.
+      - name: uv sync
+        run: uv sync
+
+      - name: Step 1, verify the corpus is what the publishers served
+        run: uv run python -m src.ingest.corpus_integrity
+
+      - name: Lint
+        run: uv run ruff check src tests
+
+      # Captured to files rather than read from the log, because the next step parses them and a
+      # parse that silently finds nothing is worse than no check at all. pipefail makes a failing
+      # suite fail the step here rather than being swallowed by tee.
+      - name: Step 2, run the suite
+        run: |
+          set -o pipefail
+          uv run python -m pytest -q --collect-only 2>&1 | tee collect.txt
+          uv run python -m pytest -q 2>&1 | tee run.txt
+
+      - name: Assert the result docs/REPRODUCE.md documents
+        run: uv run python .github/assert_documented_result.py collect.txt run.txt
