@@ -497,12 +497,13 @@ def test_a_checksum_mismatch_raises_rather_than_reading_as_an_absent_model(monke
 
     Pinned here so the swallow cannot come back without deleting a failing test.
     """
+    from src.goldset import attributability
     from src.retrieve import embed
 
     def tampered(*_args, **_kwargs):
         raise ValueError(f"ONNX checksum mismatch: expected {embed.ONNX_SHA256}, got {'0' * 64}")
 
-    monkeypatch.setattr(embed, "download_onnx", tampered)
+    monkeypatch.setattr(attributability, "cached_onnx_path", tampered)
     with pytest.raises(ValueError, match="ONNX checksum mismatch"):
         onnx_session()
 
@@ -514,12 +515,12 @@ def test_an_absent_dependency_still_returns_none_rather_than_raising(monkeypatch
     model at all. That has to keep returning None, or every fresh clone fails the dense arm instead
     of skipping it, which is the behaviour the four dense-arm skips depend on.
     """
-    from src.retrieve import embed
+    from src.goldset import attributability
 
     def absent(*_args, **_kwargs):
         raise ImportError("No module named 'huggingface_hub'")
 
-    monkeypatch.setattr(embed, "download_onnx", absent)
+    monkeypatch.setattr(attributability, "cached_onnx_path", absent)
     assert onnx_session() is None
 
 
@@ -529,12 +530,13 @@ def test_an_absent_onnxruntime_still_returns_none_rather_than_raising(monkeypatc
     The weight can be present and verified while `onnxruntime` is missing, because they arrive from
     different places. Narrowing the catch must not turn that into a failure either.
     """
+    from src.goldset import attributability
     from src.retrieve import embed
 
     def no_runtime(*_args, **_kwargs):
         raise ImportError("No module named 'onnxruntime'")
 
-    monkeypatch.setattr(embed, "download_onnx", lambda *a, **k: "/nonexistent/model.onnx")
+    monkeypatch.setattr(attributability, "cached_onnx_path", lambda: "/nonexistent/model.onnx")
     monkeypatch.setattr(embed, "make_session", no_runtime)
     assert onnx_session() is None
 

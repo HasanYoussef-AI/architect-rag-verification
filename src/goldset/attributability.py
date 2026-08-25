@@ -453,6 +453,46 @@ def dense_arm(
     }
 
 
+def cached_onnx_path() -> str:
+    """The pinned ONNX weight resolved from the local cache, verified, without any connection.
+
+    WHY THIS EXISTS RATHER THAN A CALL TO download_onnx. `src/retrieve/embed.py`'s `download_onnx`
+    fetches, which is correct for its other two callers: `build_embeddings.py` and
+    `build_query_embeddings.py` are generators that legitimately pull the pinned revision and are
+    documented as outside the offline reproducibility set. This module's caller is inside it, and
+    the two needs are opposite, so they are separated here rather than one path paying for the
+    other.
+
+    That separation is what makes `docs/REPRODUCE.md`'s opening claim true by mechanism. It says
+    "Nothing here needs an API key, a network connection, or money", and until this function existed
+    the dense arm reached `huggingface.co` on every offline run, failed, retried, and then skipped.
+    The outcome was right and the mechanism was not, which a reader running offline saw as retry
+    warnings and a delay rather than as the clean skip the file describes.
+
+    `local_files_only=True` is not a new idea here; it is the pattern
+    `tests/test_query_embeddings_provenance.py` already used for the same weight. The production
+    path simply had not adopted it.
+
+    Raises when the weight is not cached, which the caller reads as absence, and raises ValueError
+    when a cached weight fails its pinned digest, which is not absence and must not be read as it.
+    """
+    from huggingface_hub import hf_hub_download
+
+    from src.retrieve.embed import (
+        MODEL_REPO,
+        MODEL_REVISION,
+        ONNX_FILE,
+        ONNX_SHA256,
+        sha256_file,
+    )
+
+    path = hf_hub_download(MODEL_REPO, ONNX_FILE, revision=MODEL_REVISION, local_files_only=True)
+    actual = sha256_file(path)
+    if actual != ONNX_SHA256:
+        raise ValueError(f"ONNX checksum mismatch: expected {ONNX_SHA256}, got {actual}")
+    return path
+
+
 def onnx_session():
     """The pinned ONNX session, or None when the model or its dependencies are absent.
 
@@ -467,14 +507,16 @@ def onnx_session():
     pins all three paths, the mismatch and both absences, so the swallow cannot return without a
     failing test.
 
-    The two absence paths fail at different points and are both kept: `huggingface_hub` is missing
-    in a default install, and `onnxruntime` can be missing after the weight has been fetched and
+    The two absence paths fail at different points and are both kept: the weight can be absent from
+    the local cache, and `onnxruntime` can be missing after a cached weight has been resolved and
     verified.
+
+    IT RESOLVES FROM THE LOCAL CACHE AND NEVER OPENS A CONNECTION. See `cached_onnx_path`.
     """
-    from src.retrieve.embed import download_onnx, make_session
+    from src.retrieve.embed import make_session
 
     try:
-        path = download_onnx()
+        path = cached_onnx_path()
     except ValueError:
         # The pinned checksum did not match. Present and wrong, not absent.
         raise
