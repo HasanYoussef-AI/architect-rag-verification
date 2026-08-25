@@ -42,11 +42,21 @@ jobs:
     timeout-minutes: 30
 
     steps:
+      # Both actions are on their current major. The previous pins, checkout@v4 and setup-uv@v5,
+      # both declared `using: node20`, which GitHub is retiring and which put a deprecation
+      # annotation on the checks tab of a public repository. checkout@v7 and setup-uv@v10.0.1 both
+      # declare `using: node24`.
+      #
+      # setup-uv is pinned to an exact release rather than a floating major because it publishes
+      # floating major tags only through v7; there is no v10 tag to point at. An exact pin is the
+      # better fit here anyway, since every other version in this repository is pinned exactly.
+      # `enable-cache` keeps its name and its "auto" default across v5 and v10.0.1, and it is set
+      # explicitly below, so nothing this workflow depends on moved.
       - name: Check out the tree
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v10.0.1
         with:
           enable-cache: true
 
