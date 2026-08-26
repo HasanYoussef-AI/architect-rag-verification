@@ -33,10 +33,13 @@ the same harness in the same kind of subprocess and requires the count to move.
 from __future__ import annotations
 
 import os
+import socket
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+
+import pytest
 
 from src.ingest.corpus_integrity import REPO_ROOT
 
@@ -119,6 +122,31 @@ def test_the_offline_set_opens_no_connection_when_the_model_is_absent():
         f"the offline path opened {attempts} connection(s) with the model absent. "
         "docs/REPRODUCE.md says a network connection is not needed, and that has to be true by "
         f"mechanism rather than because the attempt fails. Output:\n{output}"
+    )
+
+
+def test_the_session_guard_records_and_attributes_a_connection(monkeypatch):
+    """The control for the session-wide guard in conftest.py, and it ships rather than being run once.
+
+    That guard reports zero for the whole suite. A counter reporting zero has two explanations and
+    only one is good news, so its recording code is exercised here on every run.
+
+    It uses the same factory conftest.py installs, over a private sink of its own. That matters: a
+    control that opened a connection into the session's sink would trip the very check it exists to
+    verify, and the only way out of that would be an exemption for itself. There is no exemption
+    list in this guard and this is how it stays that way.
+    """
+    from tests._netguard import install
+
+    sink: list = []
+    install(monkeypatch, sink)
+
+    with pytest.raises(OSError):
+        socket.create_connection(("127.0.0.1", 9))
+
+    assert sink == [("127.0.0.1", 9)], (
+        f"the recording stubs did not capture the attempt they intercepted, so the session guard's "
+        f"zero would prove nothing. Recorded: {sink!r}"
     )
 
 

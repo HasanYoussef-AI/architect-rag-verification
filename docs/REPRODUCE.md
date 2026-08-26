@@ -4,7 +4,7 @@ Nothing here needs an API key, a network connection, or money. The generation st
 its outputs are committed. Everything downstream re-derives from those committed files.
 
 Expect the wall clock to be dominated by the test suite, which means it scales with the machine
-rather than being a property of this repository. Locally, the suite alone takes 3m54s in a fresh
+rather than being a property of this repository. Locally, the suite alone takes 4m10s in a fresh
 clone on the development machine, macOS on arm64. On continuous integration the suite step falls
 into two clusters, one near five minutes and one near six and a half, with nothing between them.
 The gap is consistent with different runner hardware being assigned between jobs rather than with
@@ -105,11 +105,11 @@ report fewer skips than a reviewer sees.
 
 | environment | collected | passed | skipped | wall clock |
 | --- | --- | --- | --- | --- |
-| **a fresh clone**, `uv sync` | 1063 | 1052 | 11 | 3m54s |
-| with the `embed` group and the model cache primed, no segment cache | 1063 | 1056 | 7 | 3m59s |
-| with the `embed` group, the model primed and the segment cache built | 1063 | 1063 | 0 | 3m51s |
+| **a fresh clone**, `uv sync` | 1064 | 1053 | 11 | 4m10s |
+| with the `embed` group and the model cache primed, no segment cache | 1064 | 1057 | 7 | 4m23s |
+| with the `embed` group, the model primed and the segment cache built | 1064 | 1064 | 0 | 4m28s |
 
-**A fresh clone gives 1052 passed and 11 skipped, and that is the expected result.** The eleven fall
+**A fresh clone gives 1053 passed and 11 skipped, and that is the expected result.** The eleven fall
 into three classes, and every one names the artifact it needs. Tests are named rather than located
 by line, because a line number drifts with every edit above it and has already been wrong in this
 file once.
@@ -165,7 +165,7 @@ registered, and it has moved three times already. The names above are stable. A 
 segment cache, the pinned model or `onnxruntime` is expected. A skip naming anything else is not,
 and is worth reporting.
 
-The collected count is 1063 in every environment. If yours differs, the tree differs.
+The collected count is 1064 in every environment. If yours differs, the tree differs.
 
 ### Lint
 
@@ -312,7 +312,7 @@ separated that sentence was not true of the code beneath it.
 
 Measured on the machine this file was written on: the build took 19.0 minutes and wrote 40,906,880
 bytes to `embeddings_cache/segment_embeddings.npy`, which is git-ignored. After it the suite reports
-1063 passed and 0 skipped, which is the third row of the table above.
+1064 passed and 0 skipped, which is the third row of the table above.
 
 Two things reproduced exactly on that run and are worth knowing, because they are what the manifest
 exists to let you check. The rebuilt cache's SHA-256 matched
