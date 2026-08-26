@@ -55,9 +55,23 @@ jobs:
       - name: Check out the tree
         uses: actions/checkout@v7
 
+      # uv itself is pinned. It was floating: the action reports it cannot read a version from
+      # uv.toml or pyproject.toml, neither of which declares one, and falls back to latest. That is
+      # how these runs moved from 0.12.5 to 0.12.6 mid-stream when 0.12.6 was released, without
+      # anything in this repository changing. A repository whose argument is that a stranger
+      # reproduces its numbers exactly should not leave the tool that builds the environment
+      # floating, and this project already pins onnxruntime to an exact patch for a narrower reason.
+      #
+      # 0.11.13 is what the development machine resolves, so it is the version every documented
+      # figure in docs/REPRODUCE.md was measured under. Pinning latest instead would pin whatever is
+      # newest rather than what was measured, which is the opposite of the point.
+      #
+      # Note for the first run under this pin: the cache key includes the uv version, so this
+      # invalidates the existing key once and the run after it hits again.
       - name: Install uv
         uses: astral-sh/setup-uv@v10.0.1
         with:
+          version: "0.11.13"
           enable-cache: true
 
       # The default sync, exactly as the walkthrough instructs. The `embed` group is deliberately
