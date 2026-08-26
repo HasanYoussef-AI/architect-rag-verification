@@ -4,6 +4,53 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-27, rule 15 placed, and how a guard failure presents
+
+Owner-directed governance change. Rule 15 is Hasan's decision and his wording, approved in session
+and placed as drafted: no test in the suite may open a network connection, asserted across the whole
+session by `tests/conftest.py`, with no exemption list and none to be added. It records the two
+defects that forced it, a dependency's telemetry opening a socket inside the offline set and a guard
+that passed precisely when a network was available, and it accepts the third-party sensitivity in the
+same breath as the rule.
+
+Every factual claim in the rule was checked against the repository before it landed, which is what
+`CLAUDE.md` requires of a change to itself. The guard exists, records every attempt, names the test
+that made it, and fails the run on a non-zero total, all measured rather than described. Rules 1
+through 15 are present once each and in order.
+
+### The sweep found nothing to resolve
+
+Run before the governance commit, over all 278 tracked files, looking in particular for anything
+promising or implying a network exemption route, since the rule states there is none.
+
+Every survivor is a different subject. The layer-gold readable-surface allowlist in `CLAUDE.md` and
+`run_sealed_grading.py`; a JSON key-set whitelist in `eval/README.md`; a filesystem path allowlist in
+`tests/test_generate_assembly.py`, which is a restriction of the same kind rather than an exception;
+the segmentation exclusions in `attributability.py`; Rule 11 commit exemptions in this log; and
+vendored dictionary and corpus payload, the EU AI Act carrying its own exemption language. The only
+hits about network exemptions are the guard's own text saying there is none.
+
+### How a guard failure presents
+
+Recorded because it is a gotcha and it was written nowhere a developer would meet it.
+
+The check runs after the last test, so it cannot fail a test. It sets the session exit code and
+prints its report. Pytest's summary line therefore still reads as passing with the usual count, and
+that line is not the signal; the exit code is. Continuous integration reads the exit code and the
+workflow's pipefail setting fails the step on it, so a build cannot go green on this, but a person
+skimming only the summary can miss it, which is why the report block is printed last.
+
+The alternative was considered and declined. Forcing the failure into a test line needs a test that
+runs last, and ordering dependence is precisely the defect that made the previous guard report a zero
+it had not earned.
+
+### Commits
+
+- 9c03f24 docs(governance): rule 15, the offline suite opens no sockets
+- e96d301 docs(tests): record how an offline-guard failure presents
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-27, the offline claim asserted across the whole suite, and the constraint that creates
 
 `docs/REPRODUCE.md` claims reproduction needs no network connection. That is a claim about
