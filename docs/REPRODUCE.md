@@ -5,10 +5,11 @@ its outputs are committed. Everything downstream re-derives from those committed
 
 Expect the wall clock to be dominated by the test suite, which means it scales with the machine
 rather than being a property of this repository. Locally, the suite alone takes 3m54s in a fresh
-clone on the development machine, macOS on arm64. On continuous integration it is a range and not a
-figure: the three runs recorded so far on a GitHub-hosted `ubuntu-latest` runner, Ubuntu 24.04 on
-x86_64, took 5m21s, 5m27s and 6m44s for the whole job, measured from job start to job completion. A
-single number would drift the way a line number drifts, so the spread is what to expect there.
+clone on the development machine, macOS on arm64. On continuous integration the suite step falls
+into two clusters, one near five minutes and one near six and a half, with nothing between them.
+The gap is consistent with different runner hardware being assigned between jobs rather than with
+anything in this repository, so a figure of your own belongs to one cluster or the other rather
+than to a bracket worth checking it against.
 
 ---
 
