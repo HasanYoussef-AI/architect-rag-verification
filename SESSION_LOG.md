@@ -4,6 +4,46 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-27, the pooled mechanism sentence gains its limitation, and the lead does not
+
+The sentence that the layer's effect is mostly a denominator effect and an abstention effect is
+pooled, and in `docs/RESULTS.md` it sits directly above a per-tier table that contradicts it for one
+tier. The split was published and the figure drew it; nothing connected the two, so a reader had to
+notice the mismatch unaided. An outside reviewer did.
+
+Section 4 now states the limitation beneath the sentence it limits. Opus abstained on two rows
+carrying 4 of the 8 ungrounded units that went, so abstention is half the reduction there rather
+than most of it, and its claim units rose 69 to 87, so the denominator effect is present as well.
+The pooled sentence describes Haiku, where abstention removed 13 rows carrying 26 ungrounded units
+of 28.
+
+One correction to the reviewer's framing is folded in rather than repeated. They read units rising
+while ungrounded falls as showing the denominator effect absent on that tier. Units rising is the
+denominator effect. What is true is that abstention is half rather than most of the reduction, and
+that is what the passage says.
+
+`README.md` gains a pointer at its results-section occurrence and nothing else.
+
+### The lead sentence was deliberately left unqualified
+
+It stands exactly as it was, with no caveat and no pointer. The reason is not oversight and is
+recorded so it is not read as one.
+
+The lead is the honest unflattering summary a reader meets first, and it is why the rest of the
+document is trusted. Qualifying it toward the one tier where the mechanism is more favourable moves
+the summary in the direction that flatters the result, which is the direction this repository does
+not move in, whoever suggests it and however accurate the qualification. A pooled claim labelled as
+pooled, with the per-tier split published and pointed at from the results section, meets the honest
+minimum and errs on the correct side of it.
+
+No number, figure, table or artifact changed.
+
+### Commits
+
+- 34c8ead docs: the pooled mechanism sentence carries its own limitation
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-27, a contract moved underneath correct code, and the guard that missed it
 
 An outside reviewer cloned `1dc5e41` on x86_64 Linux and ran the documented path. Almost everything
