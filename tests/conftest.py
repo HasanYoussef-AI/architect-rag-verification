@@ -31,6 +31,15 @@ A CONSEQUENCE, ALSO CHOSEN. This makes the checks sensitive to third-party behav
 that starts fetching something on import can turn the build red with nothing in this tree changing.
 That is the correct sensitivity for a project whose central claim depends on how its dependencies
 behave, and it has already happened here once.
+
+HOW A FAILURE PRESENTS, WHICH IS NOT WHERE YOU WILL LOOK FIRST. This check runs after the last test,
+so it cannot fail a test. It sets the session's exit code and prints the report above. That means
+pytest's summary line still reads as passing, with the usual count, and the summary line is not the
+signal: the exit code is. Continuous integration reads it and the workflow's `set -o pipefail` fails
+the step, so a build cannot go green on this; a person skimming only the summary can miss it, which
+is why the report block is the last thing printed. Forcing the failure into a test line was
+considered and declined, because a test that has to run last is an ordering dependency, and ordering
+dependence is the defect that made the previous guard report a zero it had not earned.
 """
 
 from __future__ import annotations
