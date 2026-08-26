@@ -4,6 +4,76 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-27, the offline claim asserted across the whole suite, and the constraint that creates
+
+`docs/REPRODUCE.md` claims reproduction needs no network connection. That is a claim about
+everything a reader runs, and the guard asserting it was scoped to one function, which is where the
+first defect happened to be.
+
+Both defects this repository has had inside the offline set would have escaped a guard of that
+shape if they had appeared anywhere else. One was a dependency's telemetry opening a socket while
+building a user agent, which nothing here called deliberately. The other was a guard that passed
+precisely when a network was available to warm a cache early. Neither was in the function the guard
+watched by design; the first was there by accident.
+
+`tests/conftest.py` now records every socket attempt from any test, any path and any dependency, and
+fails the run if the total is not zero.
+
+### Both guards are kept, and neither replaces the other
+
+The wide one covers breadth, which the narrow one cannot: any code path, including one that arrives
+through a dependency nothing here calls.
+
+The narrow one asks the question with both cache locations cold in a fresh interpreter, which is what
+a reader with a fresh clone actually faces. The wide one cannot do that. Redirecting `HF_HOME` for
+the whole suite would make the model invisible and turn the documented second and third environments
+into the first, so the cold-cache question can only be asked in a subprocess by a check that owns its
+own environment.
+
+Attribution is part of the wide check. A failure names the tests that opened connections and what
+they reached for, because a bare total sends whoever reads it bisecting. Its control ships and runs
+on every suite, installing stubs from the same factory over a private sink so its deliberate
+connection never reaches the session's counter. A control that opened into the session sink would
+trip the check it exists to verify and would then need an exemption for itself.
+
+There is no exemption list. That is what separates this from the two wide selections this scope
+declined, the lint selection and the line length, each of which would have needed one. The
+measurement here is zero in every documented environment, including the one where the dense arm runs
+with the model and the segment cache present, so the guard is adopted whole or not at all and it is
+clean whole.
+
+### The standing constraint, chosen
+
+No test in this suite may open a socket. Nothing does today. The constraint is recorded as chosen
+rather than left to be discovered by whoever first needs one, and the guard's own docstring carries
+it, because that is where a developer meets it.
+
+If a test genuinely needs a connection, the answer is to raise it rather than to exempt it. A test
+that needs the network is either outside the offline set, in which case the set's boundary has moved
+and that is a decision, or it is a defect. Either way it is a conversation and not a line in a skip
+list.
+
+### A consequence, also chosen
+
+This makes the repository's checks sensitive to third-party behaviour. A dependency that starts
+fetching something on import can turn the build red with nothing in this tree changing. That is the
+correct sensitivity for a project whose central claim depends on how its dependencies behave, and
+this scope was bitten by exactly that, but it is a real consequence and it is chosen with the rest
+rather than absorbed quietly.
+
+### Figures
+
+The suite gains one test, the shipped control. All three rows were measured in the environment each
+names: 1064 collected, with 1053 passed and 11 skipped in a fresh clone, 1057 passed and 7 skipped
+with the `embed` group and the model primed, and 1064 passed with none skipped once the segment cache
+is built. `README.md` moved with them.
+
+### Commits
+
+- 90f1d67 test: assert across the whole session that the offline suite opens no connection
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-27, the pooled mechanism sentence gains its limitation, and the lead does not
 
 The sentence that the layer's effect is mostly a denominator effect and an abstention effect is
