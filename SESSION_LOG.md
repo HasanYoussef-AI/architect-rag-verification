@@ -4,6 +4,42 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-26, the timing paragraph stops carrying figures that drift
+
+The continuous integration timing sentences in `docs/REPRODUCE.md` named a run count and a top
+figure, and both had already drifted by the time they were read again: the count said three where
+seven runs existed, and the stated top of 6m44s was exceeded by a measured 6m45s. Correcting them to
+seven and 6m45s would have rebuilt the same fragility one round later.
+
+This file has now paid for that shape twice, once with the line numbers in its skip listing and once
+with a single timing figure that a second machine contradicted. The fix both times was to carry no
+quantity a later run can falsify, and that is what this applies to the third instance.
+
+The replacement states the measurement rather than a bracket. The suite step falls into two
+clusters, one near five minutes and one near six and a half, with nothing between them, which is
+consistent with different runner hardware being assigned between jobs rather than with anything in
+the tree. A reader landing in either cluster understands their own number instead of checking it
+against a limit that will move. No run count, and no boundary presented as a limit.
+
+The local measurement and its conditions are unchanged, and the environment table the workflow's
+assertion reads was not touched. The assertion was run against the amended file and still reads all
+three figures from it, which is the check that matters when the file moves and the row does not.
+
+Nothing else in the file states a continuous integration duration, so nothing became redundant or
+contradictory. The other mentions of a runner are the three result runners that refuse to overwrite
+a committed artifact, the table's wall clocks are local measurements, and the 19.0 minutes is the
+one-off cache build.
+
+One thing worth recording beside the pin in the entry below: all three uv versions that have run
+here, 0.11.13 locally and 0.12.5 and 0.12.6 on the runner, produced identical suite figures. The pin
+is therefore an argument about determinism rather than a fix for a measured effect on the numbers.
+
+### Commits
+
+- 5af9516 docs(reproduce): state the two timing clusters instead of a bracket that keeps drifting
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-26, uv pinned, the dependency cache verified, and a prediction contradicted
 
 ### The build tool was floating and moved under the repository
