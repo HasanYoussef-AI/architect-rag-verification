@@ -4,6 +4,55 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-27, rule 15's clause, and the close of the post-publication hardening
+
+Owner-directed governance change, appended to rule 15 as drafted. It draws one distinction, between
+calling the connection helper and opening a connection, so that the guard's own control cannot be
+read as an exception to the rule it verifies. The rule's force comes from having no exemptions, and
+a reader who has to reconstruct why the control is not one is performing a reconstruction that can
+fail.
+
+Every claim in the appended sentence was checked against the control's code before it landed, which
+is what `CLAUDE.md` requires of a change to itself. The control calls `socket.create_connection`; the
+stub installed by `tests/_netguard.install` points that name at a plain function which appends to the
+sink and raises, constructing no socket; and the control asserts the sink recorded the attempt, which
+is what being shown able to move means.
+
+The contradiction sweep was not repeated. The tree has not moved except by this branch's own commits,
+which is nine ahead of `main` and none behind, with the remote unchanged.
+
+### What the post-publication hardening comprised, and what it did not touch
+
+This closes it. It began after the repository was public and every result was already committed, and
+it was entirely about whether the claims around those results hold mechanically.
+
+Continuous integration was added, running the fresh-clone path the walkthrough documents and
+asserting the documented figures against the run rather than merely running the suite. The lint
+selection was made explicit, since `ruff check` had meant four rule groups while reading as though it
+meant lint; the line length was declared rather than enforced, because nine of the over-length lines
+are prompt text hashed into sealed request bodies. A tampered model was separated from an absent one,
+so an integrity failure stopped reporting as a missing file. The claim that reproduction needs no
+network was made true by mechanism rather than by an attempt that fails, and then asserted across the
+whole suite rather than around the one function where the first defect happened to sit. Rule 15
+records the constraint that follows.
+
+**No result moved and no sealed artifact was touched across any of it.** Established rather than
+recalled: across the twenty-nine commits of the hardening, no file under `eval/`, `data/`, `corpus/`,
+`results/`, `docs/figures/` or `vendor/` changed, none of the four frozen grader modules changed, and
+the three result artifacts still carry the digests they were pinned to before it began. The
+comparison was run with a control showing it reports a difference when one exists.
+
+What changed was the workflow, the lint configuration, three prose files, the guard and its tests,
+and six source or test files carrying the checksum separation and the bugbear resolutions.
+`src/score/run_sealed_grading.py` is among them and is not frozen; it gained comments only, and its
+output is unchanged, which the digest pin and the re-render check assert on every run.
+
+### Commits
+
+- dd76429 docs(governance): rule 15 gains the clause distinguishing the control from an exception
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-27, rule 15 placed, and how a guard failure presents
 
 Owner-directed governance change. Rule 15 is Hasan's decision and his wording, approved in session
