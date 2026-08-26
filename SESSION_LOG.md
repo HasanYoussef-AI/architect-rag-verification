@@ -4,6 +4,68 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-27, a contract moved underneath correct code, and the guard that missed it
+
+An outside reviewer cloned `1dc5e41` on x86_64 Linux and ran the documented path. Almost everything
+held. One test failed: the offline guard reported a connection to `huggingface.co` on a fresh clone.
+
+The check on `main` was and is green, established from the Actions API rather than inferred. So this
+was the worse of the two possibilities: the workflow passing while a fresh clone fails, which means
+the workflow was not executing the fresh-clone path faithfully.
+
+### What was actually opening the socket
+
+Reproduced here on `main` before anything was changed, then traced rather than guessed. The
+reviewer's isolation was that `hf_hub_download` opens a socket before raising
+`LocalEntryNotFoundError`. Close, and the traceback says otherwise. `local_files_only` is honoured
+and the file is never fetched; reaching that entry point at all builds a user agent, and on
+huggingface_hub 1.x building it calls `_detect_agent._load_registry`, which fetches a registry over
+httpx. The connection is in `huggingface_hub/utils/_detect_agent.py`, nowhere near the cache lookup.
+
+So the diagnosis holds in its important half: the code was correct and the library's contract moved
+underneath it. What moved was not the one the code named.
+
+`try_to_load_from_cache` replaces it. Measured on this version: zero sockets whether the weight is
+cached or absent, `None` when absent, the real path when present. Its known-missing sentinel is a
+private object, so the check is that a real string path came back and exists, rather than importing a
+private name whose location has already moved once in this library. The two build generators are
+untouched and keep fetching.
+
+### Why continuous integration was green, which is the finding worth keeping
+
+The guard was order-dependent and nobody had asked whether it was. huggingface_hub caches its agent
+registry after first load, so any earlier test in the same process that touched the library left it
+loaded, and the guard then saw no fetch. Measured both ways on the same code and the same machine:
+alone it failed, and after `tests/test_attributability.py` it passed.
+
+It was therefore passing precisely when a network was available to populate that cache early, which
+is the opposite of what it exists to detect. A guard whose zero depends on the condition it is
+testing for is not a guard.
+
+It now runs its probe in a fresh interpreter. That alone was still not enough: the first subprocess
+version redirected only `HF_HUB_CACHE` and passed against the very code it was written to catch,
+because the agent registry caches on disk under `HF_HOME`. That was found by running the corrected
+guard against the old mechanism and getting a green it had no right to, which is the only reason it
+was caught at all. Both are redirected now, before the interpreter starts.
+
+### What this is not robust to
+
+Stated rather than implied. `try_to_load_from_cache` is documented as a filesystem lookup and is
+measurably one here, but that is a contract, and this defect was exactly a contract moving. If a
+future version gave it a network path, or changed its return so an absent weight no longer reads as
+absent, this breaks the same way.
+
+What makes such a move visible is the guard rather than the function, and only because the guard now
+asks the question in a fresh process with both cache locations moved aside. The general lesson is
+that depending on a library's raising behaviour is weaker than depending on the filesystem, and the
+protection here is a test that can still fail rather than a call that cannot.
+
+### Commits
+
+- b895f91 fix(goldset): decide model absence with a filesystem lookup, not a download entry point
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-26, the timing paragraph stops carrying figures that drift
 
 The continuous integration timing sentences in `docs/REPRODUCE.md` named a run count and a top
