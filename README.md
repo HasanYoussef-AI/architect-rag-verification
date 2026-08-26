@@ -234,6 +234,9 @@ far above the tier average: 26 of 28 units on the Haiku rows it removed.
 **The layer's measured effect on this corpus is mostly a denominator effect and an abstention
 effect. The part that is unsupported content actually disappearing is small.**
 
+Per tier this varies, and on Opus abstention accounts for half the reduction rather than most of it;
+[docs/RESULTS.md](docs/RESULTS.md) section 4 carries the split.
+
 ![Grouped bar chart. For each of three model tiers, the ungrounded claim units removed by abstention, the ungrounded units removed on rows answered in both conditions, and the grounded units added on those rows.](docs/figures/reduction-decomposition.svg)
 
 *Derived from the per-row blocks of `eval/test_grading_results.json` by

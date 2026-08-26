@@ -147,6 +147,12 @@ far above the tier average: 26 of 28 units on the Haiku rows it removed.
 **The layer's measured effect on this corpus is mostly a denominator effect and an abstention
 effect, and the part of it that is unsupported content actually disappearing is small.**
 
+That sentence is pooled and it flattens Opus. Two rows abstained there, carrying 4 of the 8
+ungrounded units that went, so abstention is half the reduction on that tier rather than most of it.
+Its claim units rose, 69 to 87, so the denominator effect is present as well. The per-tier columns
+above are the ones to read; the pooled sentence describes Haiku, where abstention removed 13 rows
+carrying 26 ungrounded units of 28.
+
 ---
 
 ## 5. The flagged-unit fate table
