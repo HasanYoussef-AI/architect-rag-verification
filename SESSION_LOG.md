@@ -4,6 +4,72 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-26, uv pinned, the dependency cache verified, and a prediction contradicted
+
+### The build tool was floating and moved under the repository
+
+The Install uv step reports that it cannot determine a version from `uv.toml` or `pyproject.toml`,
+neither of which declares one, and falls back to latest. The first three runs installed 0.12.5 and
+the last four installed 0.12.6, because 0.12.6 was released between them. Nothing here changed and
+the tool that builds the environment did.
+
+Pinned to 0.11.13, which is what the development machine resolves and therefore the version every
+documented figure was measured under. Pinning latest would pin whatever is newest rather than what
+was measured. Nothing in the tree changed beyond the workflow file and no documented figure moved.
+
+Two consequences, stated rather than discovered later. The cache key carries the uv version, so this
+invalidates it once. And 0.11.13 has never run on a hosted runner, since continuous integration has
+only seen 0.12.x; if the first run under it moves a figure, that is the finding and the figures
+follow it.
+
+### The dependency cache does hit, and the misses are explained
+
+It was not a cache configured and never restored. Across seven runs it missed five times and hit
+twice, and every miss has a cause.
+
+The key changed twice. The setup-uv upgrade from v5 to v10.0.1 changed the key's format, adding the
+runner image and moving its prefix, and the uv version moving from 0.12.5 to 0.12.6 changed its
+hash. Each change orphaned what was already stored.
+
+The remaining misses are cache scoping. A cache saved on a topic branch is not restorable from
+`main` or from another topic branch; only the default branch's caches are visible everywhere. So
+each key had to be saved once on `main` before anything could restore it, and once that happened it
+did: the last two runs both report the cache restored successfully.
+
+No change was made. The recommendation is to leave it, because the mechanism is working as designed
+and the misses were the cost of two deliberate version changes plus branch scoping rather than a
+defect.
+
+### A prediction, contradicted, and the instrument was too blunt to have settled it
+
+Predicted: if the previous code had been fetching the pinned weight on every run, the first run
+after removing that call would come in below the recorded envelope. It did not. The pull request run
+and the run on `main` after merging both landed inside it, beside the pre-fix run rather than below
+it.
+
+The prediction was badly formed rather than merely wrong. A 436 MB transfer on a hosted runner
+plausibly costs tens of seconds, while the measured run-to-run spread across these runs is 83
+seconds. The effect was smaller than the noise it would have had to be visible against, so neither
+outcome could have distinguished the two hypotheses. A test that cannot fail informatively is not a
+test.
+
+This neither confirms nor refutes the inference recorded in the entry below, and that inference is
+unchanged.
+
+### The wall clock is bimodal, and the envelope already spans it
+
+Measurement rather than conclusion. The suite step across seven runs: 5m07s, 5m04s, 6m30s, 5m06s,
+6m27s, 6m23s and 6m24s. Three cluster near 5m05s and four near 6m26s, with nothing between, which is
+consistent with different runner hardware between jobs rather than with anything in the tree.
+
+The envelope in `docs/REPRODUCE.md` spans both clusters, so it needs no edit and none was made.
+
+### Commits
+
+- 8efb042 ci: pin uv, which was floating and moved version mid-stream
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-26, the offline claim becomes true by mechanism
 
 `docs/REPRODUCE.md` opens with "Nothing here needs an API key, a network connection, or money."
