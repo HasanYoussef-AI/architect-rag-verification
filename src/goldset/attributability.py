@@ -469,14 +469,35 @@ def cached_onnx_path() -> str:
     The outcome was right and the mechanism was not, which a reader running offline saw as retry
     warnings and a delay rather than as the clean skip the file describes.
 
-    `local_files_only=True` is not a new idea here; it is the pattern
-    `tests/test_query_embeddings_provenance.py` already used for the same weight. The production
-    path simply had not adopted it.
+    WHY NOT hf_hub_download WITH local_files_only. That was the first form and it was not enough.
+    `local_files_only=True` is honoured, and the call does raise `LocalEntryNotFoundError` without
+    fetching the file, but on huggingface_hub 1.x reaching that download entry point at all builds a
+    user agent, and building it calls `_detect_agent._load_registry`, which fetches a registry from
+    `huggingface.co` over httpx. So the file was never fetched and a socket was opened anyway. An
+    outside reviewer running the documented path on Linux found it; the traceback puts the connection
+    in `huggingface_hub/utils/_detect_agent.py`, nowhere near the cache lookup.
+
+    `try_to_load_from_cache` is the library's own cache-lookup API and it has no HTTP client in its
+    path at all. Measured on this version: zero sockets whether the weight is cached or not, `None`
+    when it is absent, and the real path when it is present.
+
+    Its absent return is `None`, and it has a third return for a file recorded as known-missing.
+    That sentinel is a private object, so this checks that a real string path came back and that it
+    exists, rather than importing a private name whose location has already moved once in this
+    library.
+
+    ROBUSTNESS, STATED RATHER THAN ASSUMED. This is not immune to the library changing again. It
+    rests on `try_to_load_from_cache` remaining a filesystem lookup, which is what it is documented
+    to be and what it measurably is here, but that is a contract and contracts move; this defect was
+    exactly a contract moving underneath correct code. What makes a future move visible is
+    `tests/test_offline_reproducibility.py`, not this function.
 
     Raises when the weight is not cached, which the caller reads as absence, and raises ValueError
     when a cached weight fails its pinned digest, which is not absence and must not be read as it.
     """
-    from huggingface_hub import hf_hub_download
+    from pathlib import Path
+
+    from huggingface_hub import constants, try_to_load_from_cache
 
     from src.retrieve.embed import (
         MODEL_REPO,
@@ -486,11 +507,19 @@ def cached_onnx_path() -> str:
         sha256_file,
     )
 
-    path = hf_hub_download(MODEL_REPO, ONNX_FILE, revision=MODEL_REVISION, local_files_only=True)
-    actual = sha256_file(path)
+    found = try_to_load_from_cache(
+        MODEL_REPO, ONNX_FILE, revision=MODEL_REVISION, cache_dir=constants.HF_HUB_CACHE
+    )
+    if not isinstance(found, str) or not Path(found).exists():
+        raise FileNotFoundError(
+            f"{MODEL_REPO} {ONNX_FILE} at revision {MODEL_REVISION} is not in the local cache. "
+            "Nothing in the offline reproducibility set downloads it; see docs/REPRODUCE.md."
+        )
+
+    actual = sha256_file(found)
     if actual != ONNX_SHA256:
         raise ValueError(f"ONNX checksum mismatch: expected {ONNX_SHA256}, got {actual}")
-    return path
+    return found
 
 
 def onnx_session():
