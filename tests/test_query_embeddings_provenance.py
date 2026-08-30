@@ -40,8 +40,8 @@ state the level-2 rule forbids and the one thing that must be caught at every ba
 Checks 2 and 3 also require the pinned ONNX model. It is deliberately not in the offline
 reproducibility set -- the corpus and its embeddings are committed and re-embedding is never
 required to verify a headline number -- so they SKIP when the model is not already cached, and
-never trigger a download (local_files_only). They run where the model is present and the
-ordering gate is open.
+resolve it through cached_onnx_path, which reads the local cache and opens no connection at all.
+They run where the model is present and the ordering gate is open.
 """
 
 from __future__ import annotations
@@ -109,20 +109,19 @@ def _regenerate(query_set: QuerySet, session) -> np.ndarray:
 
 @pytest.fixture(scope="module")
 def onnx_session():
+    # RESOLVED FROM THE CACHE, NOT THROUGH THE DOWNLOAD ENTRY POINT. This asks a filesystem
+    # question, whether the pinned weight is on disk, and `cached_onnx_path` answers it with no
+    # HTTP client in its path. The previous form here was `hf_hub_download` with
+    # `local_files_only=True`, which honours the flag and fetches no file but still builds a user
+    # agent, and building it fetches an agent registry from `huggingface.co`. That is the same
+    # defect `src/goldset/attributability.py` was migrated for, at the call site that migration
+    # missed; its `cached_onnx_path` docstring carries the mechanism in full.
     pytest.importorskip("onnxruntime")
     try:
-        from huggingface_hub import hf_hub_download
+        from src.goldset.attributability import cached_onnx_path
+        from src.retrieve.embed import ONNX_SHA256, make_session, sha256_file
 
-        from src.retrieve.embed import (
-            MODEL_REPO,
-            MODEL_REVISION,
-            ONNX_FILE,
-            ONNX_SHA256,
-            make_session,
-            sha256_file,
-        )
-
-        path = hf_hub_download(MODEL_REPO, ONNX_FILE, revision=MODEL_REVISION, local_files_only=True)
+        path = cached_onnx_path()
         assert sha256_file(path) == ONNX_SHA256, "cached ONNX model does not match the pinned revision"
         return make_session(path)
     except Exception as exc:  # noqa: BLE001 - a missing offline model is a skip, not a failure

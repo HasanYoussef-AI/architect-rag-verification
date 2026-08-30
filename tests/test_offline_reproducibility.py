@@ -32,11 +32,14 @@ the same harness in the same kind of subprocess and requires the count to move.
 
 from __future__ import annotations
 
+import ast
+import inspect
 import os
 import socket
 import subprocess
 import sys
 import tempfile
+import textwrap
 from pathlib import Path
 
 import pytest
@@ -122,6 +125,59 @@ def test_the_offline_set_opens_no_connection_when_the_model_is_absent():
         f"the offline path opened {attempts} connection(s) with the model absent. "
         "docs/REPRODUCE.md says a network connection is not needed, and that has to be true by "
         f"mechanism rather than because the attempt fails. Output:\n{output}"
+    )
+
+
+def _imported_and_called_names(func) -> set[str]:
+    """Every name a function imports or calls, read from its AST rather than from its text.
+
+    Text matching is not good enough here and the reason is specific: the fixture under test
+    carries a comment naming `hf_hub_download`, because that is what it was migrated away from.
+    A detector matching the source text would find that comment and report on prose while the
+    claim lives in code, which is the blind-detector failure V20 records.
+    """
+    tree = ast.parse(textwrap.dedent(inspect.getsource(func)))
+    names: set[str] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            names.update(alias.name for alias in node.names)
+        elif isinstance(node, ast.Call):
+            if isinstance(node.func, ast.Name):
+                names.add(node.func.id)
+            elif isinstance(node.func, ast.Attribute):
+                names.add(node.func.attr)
+    return names
+
+
+def test_the_provenance_fixture_resolves_the_weight_without_the_download_entry_point():
+    """The call site the first migration missed, pinned so that reverting it fails a test.
+
+    WHY A STRUCTURAL PIN AND NOT A DYNAMIC ONE. Neither instrument in this repository catches a
+    revert of this call site. The session-wide guard in conftest.py sees it only when the agent
+    registry is cold, because `huggingface_hub` caches that registry on disk for 24 hours and
+    reads it without a socket while it is fresh; that is the condition that hid this defect for
+    three days. The subprocess guard above runs with both cache locations cold and would see it,
+    but it exercises `src.goldset.attributability`, not this fixture. And in the fresh-clone
+    environment continuous integration runs, `pytest.importorskip("onnxruntime")` skips these
+    tests before the fixture body executes at all, so nothing there can observe it either.
+
+    A structural assertion has none of those dependencies. It holds in every environment and in
+    every cache state, which is the property the dynamic checks turned out not to have.
+    """
+    from tests import test_query_embeddings_provenance as provenance
+
+    names = _imported_and_called_names(provenance.onnx_session)
+
+    assert "cached_onnx_path" in names, (
+        "the provenance fixture no longer resolves the pinned weight through cached_onnx_path. "
+        "That resolver is what keeps this call site free of an HTTP client, and it is the one "
+        f"the subprocess guard above actually exercises. Names found: {sorted(names)}"
+    )
+    assert "hf_hub_download" not in names, (
+        "the provenance fixture reaches huggingface_hub's download entry point again. Even with "
+        "local_files_only=True that builds a user agent, and building it fetches an agent "
+        "registry from huggingface.co, so the offline set opens a socket. See the cached_onnx_path "
+        f"docstring in src/goldset/attributability.py. Names found: {sorted(names)}"
     )
 
 
