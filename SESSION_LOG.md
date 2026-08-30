@@ -4,6 +4,133 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-30, the call site the migration missed, and a zero measured under a warm cache
+
+`tests/test_query_embeddings_provenance.py` resolved the pinned ONNX weight through
+`hf_hub_download` with `local_files_only=True`, the form `src/goldset/attributability.py` was
+migrated away from. The flag is honoured and no file is fetched, but reaching the download entry
+point builds a user agent, and building it fetches an agent registry from `huggingface.co`. The
+fixture asks whether the weight is on disk, which is a filesystem question, so it now asks
+`cached_onnx_path`, which has no HTTP client in its path.
+
+Rule 15 admits two outcomes for a test that reaches the network. This is the second: the boundary of
+the offline set does not move, no exemption was added, and the call site was fixed.
+
+### The guard, red then green, with the registry cold
+
+Measured on one machine, on `tests/test_query_embeddings_provenance.py`, with the registry file moved
+aside so nothing could be read from cache, in this order. Before: exit 1, the guard reporting one
+attempt to `('huggingface.co', 443)` attributed to
+`test_regenerated_rankings_match_committed_results[development]`. After: exit 0, no guard block.
+
+Behaviour with the weight genuinely absent is unchanged, measured with `HF_HUB_CACHE` pointed at an
+empty directory: 3 passed and 4 skipped before and after, the same four tests. Two things differ and
+both follow from the fix rather than from a change in the skip decision. The exit code goes 1 to 0,
+because the path to that skip no longer opens a socket. And the skip message now names this
+repository's guidance rather than the library's advice to set `local_files_only` to False, which is
+advice this repository must never take.
+
+### Why the earlier measurement and this one disagree
+
+The entry of 2026-08-27 recording the session-wide guard states that "The measurement here is zero in
+every documented environment, including the one where the dense arm runs with the model and the
+segment cache present". The same suite on the same machine now exits 1 in that environment, and did
+so on unmodified `main`, reproduced by stashing the working tree and confirming a zero-modification
+checkout.
+
+The cause is the agent registry's own cache. `huggingface_hub` writes it to a file under `HF_HOME`
+and reads it without a socket for 24 hours, refetching only once that expires, which its
+`_detect_agent` module carries as `_REGISTRY_TTL_SECONDS = 24 * 3600` and a `_load_registry` that
+returns the cached copy when it is younger than that. The file on this machine was last written at
+00:59:37 on 2026-08-27. The commit placing that entry has a committer date of 02:01:17 the same day,
+just over an hour later, inside the window. The zero was read off a warm cache.
+
+Established rather than adopted, by reproducing both states on demand against the unmodified tree.
+With the file's timestamp set to the present, exit 0 and zero attempts. With it at its real age of 89
+hours, exit 1 and one attempt. With the file removed, exit 1 and one attempt. Nothing else accounts
+for it: between the two commits `uv.lock` is byte-identical, `huggingface-hub` is pinned at 1.24.0 at
+both, and the only change to `tests/conftest.py` is nine lines of module docstring.
+
+One property makes the red permanent rather than intermittent. The guard intercepts the fetch before
+a socket exists, so it fails, so the library never rewrites the cache file. Measured across a run: the
+timestamp is identical before and after. Once past the expiry the environment cannot return itself to
+green, which is why this had been failing here for more than two days before anything looked.
+
+### The corrected position
+
+The earlier measurement is not amended and no history moves. It was true as taken and it proved less
+than it appeared to. What it established is that the guard reports zero in that environment when the
+agent registry is fresh. What it was read as establishing, that the offline set opens no connection in
+that environment, does not follow, and the defect fixed here was present and undetected throughout.
+
+The correct reading of that zero now: it was a measurement of a 24-hour window, not of the tree.
+
+### Three instances of one mechanism
+
+A warm cache has now hidden a real result three times in this area. The first was a guard that ran
+in-process, where any earlier test touching the library left the registry loaded; it failed alone and
+passed after `tests/test_attributability.py`. The second was a subprocess guard that redirected
+`HF_HUB_CACHE` and not `HF_HOME`, so it read the on-disk registry and returned a green against the
+very mechanism it was written to catch. The third is above.
+
+The general form, which is what carries forward: a check whose subject is an absence must state the
+cache condition it was measured under, or it is not a measurement. Three is no longer coincidence,
+and the condition is now part of what a zero has to carry here.
+
+### What pins the fix, and why it is structural rather than dynamic
+
+Neither existing instrument catches a revert of this call site. The session-wide guard sees it only
+when the registry is cold, which is the whole finding above. The subprocess guard runs with both
+caches cold but exercises `src.goldset.attributability`, not this fixture. And in the fresh-clone
+environment continuous integration runs, `pytest.importorskip("onnxruntime")` skips these tests before
+the fixture body executes, which is why every run of that workflow was green while the defect stood.
+
+The new test reads the fixture's AST rather than its text, because the fixture's own comment names
+`hf_hub_download` to explain the migration and a text match would report on prose while the claim
+lives in code. Both of its assertions were shown able to fail, the first against the full pre-fix
+source and the second against a source carrying both call forms.
+
+### The assertion script now runs in all three documented environments
+
+`.github/assert_documented_result.py` raised rather than comparing whenever a run reported no skips,
+because `pytest -q` omits a category from its summary when the count is zero. The walkthrough
+documents three environments and one of them has no skips, so the check could never be run against it.
+
+A missing phrase is still not read as zero. The summary line is located first and asserted to exist,
+and the counts are read only from inside it, so a category absent from an identified summary means
+zero while a file with no summary line at all still means nothing was measured. Those two cases were
+previously indistinguishable. Reading from one line also removes a looseness: the previous form
+searched the whole file and would have matched an outcome word inside this repository's own guard
+report, which prints after the summary.
+
+Nine cases were run against it. A drifted result, a missing documented row and empty output all exit
+1. A matching run exits 0. A zero-skip run documented as zero exits 0, and the same run documented as
+eleven exits 1, so the zero is compared rather than absorbed. Output carrying the word "skipped" with
+no summary line exits 1, and so does output truncated to the guard block alone. A real summary
+followed by the guard block reads the summary.
+
+The commit message at `dd0f879` calls those cases eight while enumerating nine. It is not
+forward-editable and carries the wrong count permanently, which is recorded here rather than left.
+
+### Figures
+
+The suite gains one test. All three rows were measured in the environment each names: 1065 collected,
+with 1054 passed and 11 skipped in a fresh clone, 1058 passed and 7 skipped with the `embed` group and
+the model primed, and 1065 passed with none skipped once the segment cache is built. `README.md` moved
+with them. The fresh-clone row was derived and committed before it was measured, and the measurement
+agreed with the derivation on all three figures.
+
+The wall-clock column is left alone. It is machine-dependent, the file already says so, and nothing
+asserts it.
+
+### Commits
+
+- 89ee7d9 fix(tests): resolve the pinned weight from the cache, not the download entry point
+- dd0f879 ci: read the suite counts from the summary line so a zero-skip run parses
+- 49eafe3 docs: move the documented suite figures to the tree that gained one test
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-30, author attribution
 
 `README.md` gains an author line at the end of the License section, the section already sitting
