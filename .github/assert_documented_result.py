@@ -15,6 +15,25 @@ EVERY PARSE IS ASSERTED BEFORE IT IS USED. A regex that matches nothing yields n
 comparison against no numbers is the kind of check that reports a pass because it found nothing to
 judge. Each parse below raises with the text it failed on rather than returning a default.
 
+WHY A ZERO SKIP COUNT IS INFERRED, AND WHY THAT IS NOT AN EXCEPTION TO THE LINE ABOVE. `pytest -q`
+omits a category from its summary when the count is zero, so a run with no skips prints
+"1065 passed in 227.62s" and the word "skipped" appears nowhere. Searching the whole file for a
+skip count therefore found nothing and raised, which meant this check could only ever run in an
+environment that happened to have a skip; the walkthrough documents three and only two of them do.
+
+The fix is not to treat a missing phrase as zero. That would make truncated output, a crashed
+interpreter and a genuinely clean run indistinguishable, which is one step from a script that reads
+missing output as a pass. Instead the summary LINE is located first and asserted to exist, and the
+counts are read only from inside it. A category absent from a line that has been positively
+identified as a pytest summary means zero, because that is pytest's format. A file with no summary
+line at all means nothing was measured, and that still raises. The two cases were previously
+indistinguishable and are now separated, which is the same separation this repository already made
+between a tampered model and an absent one.
+
+Reading the counts from one identified line rather than from the whole file also tightens the
+check: the previous form would have matched the word anywhere in the output, including inside this
+repository's own offline-guard report block, which prints after the summary.
+
 Usage:  python .github/assert_documented_result.py <collect-output> <run-output>
 """
 
@@ -33,8 +52,12 @@ FRESH_ROW = re.compile(
     r"^\|[^|]*fresh clone[^|]*\|\s*(\d+)\s*\|\s*(\d+)\s*\|\s*(\d+)\s*\|", re.M
 )
 COLLECTED = re.compile(r"(\d+)\s+tests?\s+collected")
-PASSED = re.compile(r"(\d+)\s+passed")
-SKIPPED = re.compile(r"(\d+)\s+skipped")
+
+# A pytest summary line carries at least one outcome count and the wall clock, on one line. Both
+# halves are required: "in 4.35s" alone appears in other output, and an outcome word alone appears
+# in this repository's guard report.
+_OUTCOME = re.compile(r"\b(\d+)\s+(passed|failed|errors?|skipped|xfailed|xpassed)\b")
+_WALL_CLOCK = re.compile(r"\bin\s+\d[\d.]*s")
 
 
 def _one(pattern: re.Pattern[str], text: str, what: str, source: str) -> int:
@@ -46,6 +69,35 @@ def _one(pattern: re.Pattern[str], text: str, what: str, source: str) -> int:
             f"--- last 40 lines of {source} ---\n" + "\n".join(text.splitlines()[-40:])
         )
     return int(match.group(1))
+
+
+def summary_line(text: str, source: str) -> str:
+    """The last pytest summary line in `text`, or a failure. Never a default.
+
+    Locating the line is what licenses reading an absent category as zero further down. If no line
+    qualifies, nothing was measured and that is reported rather than absorbed.
+    """
+    lines = [
+        line
+        for line in text.splitlines()
+        if _OUTCOME.search(line) and _WALL_CLOCK.search(line)
+    ]
+    if not lines:
+        raise SystemExit(
+            f"no pytest summary line found in {source}, so no run was measured. A summary line "
+            "carries an outcome count and a wall clock together. Its absence is a failure and not "
+            "a run with zero of everything.\n"
+            f"--- last 40 lines of {source} ---\n" + "\n".join(text.splitlines()[-40:])
+        )
+    return lines[-1]
+
+
+def outcome(line: str, category: str) -> int:
+    """A category's count within an already-identified summary line, zero when pytest omitted it."""
+    for count, name in _OUTCOME.findall(line):
+        if name == category:
+            return int(count)
+    return 0
 
 
 def main(argv: list[str]) -> int:
@@ -68,13 +120,15 @@ def main(argv: list[str]) -> int:
         "skipped": int(row.group(3)),
     }
 
+    line = summary_line(run_text, argv[1])
     got = {
         "collected": _one(COLLECTED, collect_text, "the collected count", argv[0]),
-        "passed": _one(PASSED, run_text, "the passed count", argv[1]),
-        "skipped": _one(SKIPPED, run_text, "the skipped count", argv[1]),
+        "passed": outcome(line, "passed"),
+        "skipped": outcome(line, "skipped"),
     }
 
     width = max(len(k) for k in want)
+    print(f"summary line read: {line.strip()}")
     print(f"{'':<{width}}  {'documented':>10}  {'measured':>9}")
     for key in ("collected", "passed", "skipped"):
         mark = "ok" if want[key] == got[key] else "DIFFERS"
