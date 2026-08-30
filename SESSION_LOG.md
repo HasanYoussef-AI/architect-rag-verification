@@ -4,6 +4,30 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-08-30, author attribution
+
+`README.md` gains an author line at the end of the License section, the section already sitting
+closest to authorship, and `CITATION.cff` gains the author's website. Both are authorship metadata.
+No claim moved with them: the two commits insert three lines across the two files and nothing else,
+the lead sentence is untouched, and no number, figure, table, threshold or result artifact changed.
+
+The site was verified to resolve before either commit landed, at HTTP 200 with no redirect, against
+a control on the same host returning 404 for a bogus path and 000 for an unresolvable host.
+
+`website` is the field the CFF 1.2.0 schema defines on a person, described there as "The person's
+website." and constrained to `^(https|http|ftp|sftp)://.+`. The top-level `url` was not reused for
+it. The schema describes that field as "The URL of a landing page/website for the software or
+dataset", which the source repository already fills, and a misused field in a machine-readable
+citation file is worse than an absent one. The edited file validates against the schema with zero
+errors, under a validator shown able to fail on a misspelled field name and on a non-URL value.
+
+### Commits
+
+- 0681cb0 docs: add an author line to the README
+- 6c74a5d docs: record the author's website in CITATION.cff
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-27, rule 15's clause, and the close of the post-publication hardening
 
 Owner-directed governance change, appended to rule 15 as drafted. It draws one distinction, between
