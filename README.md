@@ -488,3 +488,5 @@ The code in this repository is licensed under the Apache License 2.0, see [LICEN
 Corpus documents keep their own licenses and reuse terms, recorded per document in
 [corpus/SOURCES.md](corpus/SOURCES.md). Vendored third-party files keep theirs, recorded in the same
 file.
+
+Author: Hasan Youssef, [hasan.thearchitectai.ai](https://hasan.thearchitectai.ai).
