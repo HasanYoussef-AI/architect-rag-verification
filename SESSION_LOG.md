@@ -4,6 +4,117 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-09-16, the null behind the flagged-unit alignment figures
+
+`docs/RESULTS.md` section 5 explains a measured zero by asserting that the flagged units were
+paraphrase of blocks already present. The assertion had no measurement behind it. This scope built
+the measurement and pinned it, so the retrospective that will cite it can be written against an
+artifact rather than against a report.
+
+### What the artifact measures
+
+For each of the 109 claim units the operational flagging pass marked unsupported on the sealed set,
+two figures. The best alignment the grader of record found against the first-pass context the unit
+was flagged in, read out of `eval/test_grading_results.json` rather than recomputed. And the best
+alignment `src.score.grounding.window_score` finds for the same unit against every other sealed
+row's first-pass context. The second is a null.
+
+The null is why the artifact exists. No flagged unit scores near zero against its own context, the
+minimum being 0.176471, and read alone that figure says every flagged unit has lexically similar
+text present. It does not. The same units scored against a context drawn from a different row have
+a median of 0.285714, with 35 of 5,341 pairs at exactly zero. Multiset containment over a window of
+the unit's own length picks up function words and shared domain vocabulary, so the predicate returns
+no value near zero for in-domain text. That the measured set holds no near-zero value is a property
+of the ruler and not a fact about the units, and every figure read off the measured side now has
+the null committed beside it.
+
+### The sampling decision, and what it changed
+
+Enumerated. Every unit against all 49 sealed rows other than its own, 5,341 pairs, no draw and no
+seed. V5 prefers an exhaustive audit where the population can be enumerated, and this one can: the
+fifty first-pass tens hold 314 distinct rendered blocks across 500 chunk slots, so the whole
+enumeration is one pass over each unit against each distinct block. The per-row maximum is
+unaffected by the order blocks are scored in, which is what makes that a memoisation rather than an
+approximation, and the rebuild test recomputes every third unit against all 49 rows with no cache
+and its own tokenisation to hold it to that.
+
+The decision is not cosmetic. An uncommitted earlier form of this measurement drew five foreign
+rows per unit and reported 75 of 109 units aligning to their own context better than to any foreign
+one. Under enumeration that figure is 43 of 109. A sampled maximum understates the enumerated
+maximum, so the sampled count was an upper bound; the move is in the predicted direction and larger
+than the prediction implied, and it reverses the reading, since a majority of the population now
+fails to beat its own chance level rather than a minority. The sampled figure is carried nowhere. A
+number with a committed producer and a number without one do not belong beside each other.
+
+### What it decides
+
+Nothing, and the artifact says so in its own text. The measured distribution is continuous, largest
+adjacent gap 0.039773 across a range of 0.623529, so any band separating an absent source from a
+restatement would have to be invented rather than read off, and a band chosen on these observations
+is fitted under V15. The one bimodal quantity is the grader's `score`, and its low mode is the
+reference condition rather than a fact about sources: all twelve units at exactly zero carry a
+reference surface, and their overlap term runs 0.176471 to 0.777778. A classifier thresholding on
+`score` would read a signal about identifiers as a signal about sources.
+
+Three limits ship inside the artifact rather than in prose about it, so a reader of a number meets
+them where the number is. A foreign context is not guaranteed free of support for the unit scored
+against it, so the null is an upper bound on chance alignment and the separation is at least as
+large as reported. The predicate is lexical and punishes paraphrase, which the freeze commit already
+recorded, so a low alignment is consistent with an absent source and a faithful paraphrase alike.
+And a high alignment says a unit shares tokens with a present block, not that the block states the
+claim.
+
+### Classification, and why the three result pins were not widened
+
+The artifact is classed in its own text as an instrument measurement rather than a fourth condition
+result. The three existing pins assert a property of the outputs of the three measured conditions;
+this is a property of the grading predicate over a population the grading artifact defines. Its own
+disagreement check compares its digest against all three of theirs, so a pin copied from another
+file is still caught, and the boundary is stated in the pin file's docstring rather than left to be
+inferred from which files were edited.
+
+### The pins, red then green
+
+One value in the artifact changed from `"reproducibility_level": 1` to `2`, a replacement that is
+length-preserving in bytes. Seven tests went red across the two files, including both pins. The
+presence-and-size test stayed green at 261299 bytes before and after, which is the demonstration
+that the digest covers a surface the size check cannot. Restored from a copy taken before the
+mutation, 18 passed.
+
+The read guard is total rather than sampled. Every `open()` in the producer lives in `load_flagged`
+or `load_foreign_blocks`, and `window_score` opens nothing, so patching `open` around those two
+functions covers the whole file surface by construction; `load_foreign_blocks` was split out of the
+scoring loop for that reason. Its companion proves the marker list matches something.
+
+One test pins an arithmetic error caught while this measurement was being drafted. The paired test
+and the pooled quantile cut are different cuts of the same population, and a count from one was
+paired with a count from the other, producing 106 out of a population of 109. Each cut now sums to
+109 on its own as a failing test rather than a caution.
+
+### Figures
+
+The suite gains 18 tests. The collect-only prediction of 1083 was stated with its arithmetic, 1065
+plus 13 plus 5, before the run and agreed with it. All three documented rows moved: 1083 collected
+in every environment, with 1072 passed and 11 skipped in a fresh clone, 1076 passed and 7 skipped
+with the `embed` group and the model primed, and 1083 passed with none skipped once the segment
+cache is built. The second and third were measured in the environment each names, and the segment
+cache still matched `eval/segment_embedding_manifest.json`'s `cache_sha256` after being moved aside
+and replaced. The fresh-clone row was derived and committed before it was measured, on the ordering
+49eafe3 adopted, and the measurement agreed with the derivation on all three figures.
+
+`ruff check src tests` passes under the widened selection, against a control that reports F401 on a
+deliberately unused import. The offline guard reported zero connection attempts across the whole
+session, measured with the agent registry file 494 hours old and therefore well past the 24-hour
+expiry that made an earlier zero a reading of a warm cache rather than of the tree.
+
+### Commits
+
+- af1b134 feat(score): the flagged-unit alignment control, enumerated against every foreign sealed row
+- b12f828 test: pin the alignment control artifact and its rebuild
+- 024938e docs: move the documented suite figures to the tree that gained the alignment pins
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-08-30, the call site the migration missed, and a zero measured under a warm cache
 
 `tests/test_query_embeddings_provenance.py` resolved the pinned ONNX weight through
