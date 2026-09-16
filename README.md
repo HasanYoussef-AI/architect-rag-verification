@@ -254,9 +254,21 @@ model with an instruction to support it from the expanded context or leave it ou
 | Opus 4.8, adaptive at effort low | 27 | 3 | **0** | 24 |
 | **total** | **109** | **25** | **0** | **84** |
 
-**Not one flagged unit anywhere was rescued by the fetched context, on any tier.** This reproduces
-the development-run result exactly. The completeness pass fetched the right blocks; the flagged
-units were paraphrase of blocks already present, so there was nothing for a fetch to repair. The
+**Not one flagged unit anywhere came back both unchanged and grounded, on any tier.** This
+reproduces the development-run result exactly, and the completeness pass fetched the right blocks.
+
+What the flagged units are was measured afterwards and is narrower than this paragraph used to say.
+Against a null whose median is 0.285714, 43 of the 109 align to their own first-pass context better
+than to any of 49 foreign ones, 41 tie their best foreign row because the same block is carried in
+another row as well, and 25 align better to some foreign context than to their own. So the earlier
+reading, that the flagged units were paraphrase of blocks already present and there was therefore
+nothing for a fetch to repair, is **contradicted for 25, silent for 41 and unestablished for 43**.
+Section 5 of [RESULTS.md](docs/RESULTS.md) carries the table and section 16 carries why the question
+arose.
+
+**The zero is a partition, not a test of the fetch.** Only the 25 units that came back unchanged
+were ever in a position to be scored that way. The 84 that were dropped or rewritten left the
+answer, and nothing in the artifact maps a rewritten unit back to the flagged one it replaced. The
 layer's faithfulness effect comes from its detector plus its instruction, the model dropping or
 rewriting what was flagged, and not from retrieval completeness.
 

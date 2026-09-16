@@ -167,9 +167,22 @@ carrying 26 ungrounded units of 28.
 Both arithmetic identities are asserted in the artifact on all three tiers: flagged equals repeated
 plus dropped, and repeated equals now-grounded plus still-unsupported.
 
-**Zero of 109 flagged units were rescued by the fetched context, on any tier.** The completeness
+**Zero of 109 flagged units came back both unchanged and grounded, on any tier.** The completeness
 pass fetched the right blocks. What the flagged units are was measured afterwards, and the answer is
 narrower than the sentence this paragraph used to carry.
+
+**That zero is a partition, not a test of the fetch, and the denominator carries less than it
+looks.** Only the 25 units that came back unchanged were ever in a position to be scored that way.
+The 84 that were dropped or rewritten left the answer: `flagged_dropped_or_rewritten` is an
+exact-text test, `[f for f in flagged if f not in returned]`, so it conflates a unit deleted with a
+unit reworded, and nothing in the artifact maps a reworded unit back to the flagged one it replaced.
+What can be bounded is the ceiling: on 18 of the 49 row-tier pairs carrying a dropped unit, the
+second answer holds no grounded unit that was absent from the first, so the 27 dropped units on
+those pairs cannot have been reworded into a grounded one. For the other 57 the artifact is silent.
+
+Two different quantities in this section both equal 25, and they are not the same units. The 25 in
+the table above is the count that came back unchanged. The 25 below is the count that aligns better
+to a foreign context than to its own.
 
 Each flagged unit was scored against the first-pass context it was flagged in and against all 49
 other sealed rows' first-pass contexts, under the grader's own window comparison. The measurement is
