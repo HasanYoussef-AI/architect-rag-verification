@@ -1,10 +1,25 @@
-"""The alignment control over the flagged units, and the grounding predicate's own null.
+"""The alignment control over two populations of claim units, and the predicate's own null.
 
-WHAT THIS MEASURES. For every claim unit the operational flagging pass marked unsupported on the
-sealed set, two things: the best alignment the grader of record found for it against the first-pass
-context it was actually flagged in, and the best alignment the same function finds for it against
-every other sealed row's first-pass context. The second is a null. It says what this predicate
-returns for a unit whose supporting source is, on the whole, not in the context being scored.
+WHAT THIS MEASURES. For each claim unit in two populations of the sealed run's raw condition, two
+things: the best alignment the grader of record found for it against the first-pass context it was
+graded in, and the best alignment the same function finds for it against every other sealed row's
+first-pass context. The second is a null. It says what this predicate returns for a unit whose
+supporting source is, on the whole, not in the context being scored.
+
+THE TWO POPULATIONS PARTITION THE SAME SET. On the 48 row-tier pairs the corrective pass fires on,
+the raw condition holds 251 claim units. The flagged population is the 109 the operational flagging
+pass marked unsupported. The supported population is the remaining 142, which the grader marks
+grounded. The two implementations agree on every unit of the raw condition, so the split is the same
+whichever names it.
+
+THE SECOND POPULATION IS A POSITIVE CONTROL AND IT WAS NOT OPTIONAL. The flagged population's paired
+test reports that a majority of its units do not align to their own context better than to the best
+of 49 foreign ones. A test that reports a failure is trusted only once it has been shown to fire
+where the thing it looks for is present, which is the emptiness-claim discipline applied to a
+negative result. What the control can and cannot reach is stated in the artifact under
+`what_the_positive_control_cannot_reach`, and the limit is real: grounded means the overlap term
+reached the threshold, so this control proves the test fires on near-verbatim support and cannot
+prove it fires on support present as paraphrase.
 
 WHY IT EXISTS, AND IT IS NOT A CLASSIFIER. `docs/RESULTS.md` section 5 reported that zero flagged
 units were rescued by the fetched context and explained it by asserting the flagged units were
@@ -206,6 +221,90 @@ def load_flagged() -> tuple[list[dict], dict]:
     return units, funnel
 
 
+def load_supported() -> tuple[list[dict], dict]:
+    """The supported population: the grader's grounded units over the same rows, same order.
+
+    THE POSITIVE CONTROL'S POPULATION, and it is the exact complement of the flagged one over the
+    same row set. On the 48 row-tier pairs the corrective pass fired on, the raw condition holds 251
+    claim units; 109 are ungrounded and are the flagged population, and the remaining 142 are these.
+    Over all fifty rows the raw condition holds 269 units and 149 grounded, and the difference of 11
+    ungrounded units sits on test_34 and test_39, the two rows that receive no flagged list because
+    the corrective pass is silent on them. The funnel below carries both figures so the reconciliation
+    is in the artifact rather than in a reader's arithmetic.
+
+    Membership is the grader's own verdict, read out of eval/test_grading_results.json and never
+    recomputed, exactly as the flagged side's figures are. The operational implementation agrees with
+    it on every unit of the raw condition, 0 disagreements over all 269, so the two populations
+    partition the same set whichever implementation names them.
+    """
+    grading = json.loads(GRADING_PATH.read_text(encoding="utf-8"))
+    fired: dict[str, set[str]] = {}
+    for tier in TIER_KEYS:
+        artifact = json.loads(flagged_path(tier).read_text(encoding="utf-8"))
+        fired[tier] = {row["query_id"] for row in artifact["rows"].values()}
+
+    units: list[dict] = []
+    funnel = {
+        "starting_row_tier_pairs": 0,
+        "removed_corrective_pass_did_not_fire": 0,
+        "fired_row_tier_pairs": 0,
+        "raw_claim_units_on_those_pairs": 0,
+        "of_those_ungrounded_which_are_the_flagged_population": 0,
+        "of_those_grounded_which_is_this_population": 0,
+        "reconciliation_over_all_fifty_rows": {},
+    }
+
+    all_units = all_grounded = all_ungrounded = 0
+    for tier in TIER_KEYS:
+        rows = grading["rows"]["raw"][tier]
+        funnel["starting_row_tier_pairs"] += len(rows)
+        funnel["fired_row_tier_pairs"] += len(fired[tier])
+        funnel["removed_corrective_pass_did_not_fire"] += len(rows) - len(fired[tier])
+        for query_id in sorted(rows):
+            row = rows[query_id]
+            all_units += len(row["units"])
+            all_grounded += sum(1 for unit in row["units"] if unit["grounded"])
+            all_ungrounded += sum(1 for unit in row["units"] if not unit["grounded"])
+            if query_id not in fired[tier]:
+                continue
+            funnel["raw_claim_units_on_those_pairs"] += len(row["units"])
+            for position, unit in enumerate(row["units"]):
+                if not unit["grounded"]:
+                    funnel["of_those_ungrounded_which_are_the_flagged_population"] += 1
+                    continue
+                funnel["of_those_grounded_which_is_this_population"] += 1
+                units.append(
+                    {
+                        "tier": tier,
+                        "query_id": query_id,
+                        "position_in_answer": position,
+                        "text": unit["text"],
+                        "n_tokens": unit["n_tokens"],
+                        "n_surfaces": unit["n_surfaces"],
+                        "threshold": unit["threshold"],
+                        "own_overlap_max": unit["overlap_max"],
+                        "own_score": unit["score"],
+                        "own_grounded": unit["grounded"],
+                        "flagger_supported": unit["flagger_supported"],
+                    }
+                )
+    funnel["reconciliation_over_all_fifty_rows"] = {
+        "raw_claim_units": all_units,
+        "grounded": all_grounded,
+        "ungrounded": all_ungrounded,
+        "ungrounded_on_the_two_unfired_rows": all_ungrounded - funnel[
+            "of_those_ungrounded_which_are_the_flagged_population"
+        ],
+        "note": (
+            "The raw condition's pooled block reports the same 269 and 149 and 120, because a row "
+            "that abstained contributes no claim unit and the answered-row filter therefore removes "
+            "none. The 11 ungrounded units outside the flagged population are on test_34 and "
+            "test_39."
+        ),
+    }
+    return units, funnel
+
+
 def load_foreign_blocks() -> tuple[dict[str, tuple[str, ...]], dict[str, list[str]]]:
     """The sealed rows' first-pass blocks, tokenised once, keyed by chunk id.
 
@@ -267,6 +366,8 @@ def foreign_alignments(
         unit["foreign_max"] = max(values)
         unit["foreign_median"] = round(quantile(values, 0.50), 6)
         unit["foreign_mean"] = round(sum(values) / len(values), 6)
+        # Signed, so the two populations can be compared on one scale rather than by two rates.
+        unit["margin"] = round(unit["own_overlap_max"] - unit["foreign_max"], 6)
         unit["beats_every_foreign_row"] = unit["own_overlap_max"] > unit["foreign_max"]
         unit["beats_its_foreign_mean"] = unit["own_overlap_max"] > unit["foreign_mean"]
 
@@ -279,50 +380,142 @@ def foreign_alignments(
     }
 
 
-def build() -> dict:
-    units, funnel = load_flagged()
-    row_block_ids, block_tokens = load_foreign_blocks()
-    coverage = foreign_alignments(units, row_block_ids, block_tokens)
-
+def population_block(units: list[dict], funnel: dict, null_q95: float) -> dict:
+    """The same measurements over one population, so the two are reported on one ruler."""
     own = [unit["own_overlap_max"] for unit in units]
     own_score = [unit["own_score"] for unit in units]
     null = [
-        value
-        for unit in units
-        for value in unit["foreign_overlap_max_by_row"].values()
+        value for unit in units for value in unit["foreign_overlap_max_by_row"].values()
     ]
-
-    null_q95 = quantile(null, 0.95)
+    margins = [unit["margin"] for unit in units]
     beats = [unit for unit in units if unit["beats_every_foreign_row"]]
 
     per_tier: dict[str, dict] = {}
     for tier in TIER_KEYS:
         subset = [unit for unit in units if unit["tier"] == tier]
+        if not subset:
+            continue
         per_tier[tier] = {
-            "flagged_units": len(subset),
-            "own_overlap_max": summary([unit["own_overlap_max"] for unit in subset]),
-            "own_score": summary([unit["own_score"] for unit in subset]),
-            "beats_every_foreign_row": sum(1 for unit in subset if unit["beats_every_foreign_row"]),
+            "units": len(subset),
+            "beats_every_foreign_row": sum(1 for u in subset if u["beats_every_foreign_row"]),
             "does_not_beat_every_foreign_row": sum(
-                1 for unit in subset if not unit["beats_every_foreign_row"]
+                1 for u in subset if not u["beats_every_foreign_row"]
             ),
-            "at_or_below_the_pooled_null_q95": sum(
-                1 for unit in subset if unit["own_overlap_max"] <= null_q95
+            "beat_rate": round(
+                sum(1 for u in subset if u["beats_every_foreign_row"]) / len(subset), 6
             ),
-            "above_the_pooled_null_q95": sum(
-                1 for unit in subset if unit["own_overlap_max"] > null_q95
+            "own_overlap_max": summary([u["own_overlap_max"] for u in subset]),
+            "margin": summary([u["margin"] for u in subset]),
+            "at_or_below_the_pooled_flagged_null_q95": sum(
+                1 for u in subset if u["own_overlap_max"] <= null_q95
+            ),
+            "above_the_pooled_flagged_null_q95": sum(
+                1 for u in subset if u["own_overlap_max"] > null_q95
             ),
         }
 
-    zeros = [unit for unit in units if unit["own_score"] == 0.0]
-    condition_bit = [unit for unit in units if unit["own_score"] != unit["own_overlap_max"]]
+    return {
+        "funnel": funnel,
+        "n": len(units),
+        "own_distribution": {
+            "overlap_max": summary(own),
+            "score": summary(own_score),
+            "overlap_max_histogram": histogram(own),
+        },
+        "null_distribution": {
+            "caveat": (
+                "An upper bound on chance alignment, not a clean null. See foreign_context_caveat."
+            ),
+            "pairs": len(null),
+            "summary": summary(null),
+            "histogram": histogram(null),
+        },
+        "paired_result": {
+            "beats_every_foreign_row": len(beats),
+            "does_not_beat_every_foreign_row": len(units) - len(beats),
+            "beat_rate": round(len(beats) / len(units), 6),
+            "of": len(units),
+            "three_way": {
+                "note": (
+                    "The strict-inequality test above collapses two different outcomes. A unit "
+                    "that ties its best foreign row aligns to its own context exactly as well as "
+                    "to the best of 49 others, which happens when the same block sits in another "
+                    "row's top ten and is a fact about corpus duplication rather than about "
+                    "whether support is present. Only a strict loss is a unit that aligns better "
+                    "to a foreign context than to its own. The three-way split is the one that "
+                    "carries information."
+                ),
+                "strictly_beats": sum(1 for u in units if u["margin"] > 0),
+                "ties_its_best_foreign_row": sum(1 for u in units if u["margin"] == 0),
+                "strictly_worse_than_its_best_foreign_row": sum(
+                    1 for u in units if u["margin"] < 0
+                ),
+                "at_least_ties": sum(1 for u in units if u["margin"] >= 0),
+                "at_least_ties_rate": round(
+                    sum(1 for u in units if u["margin"] >= 0) / len(units), 6
+                ),
+                "strict_loss_rate": round(
+                    sum(1 for u in units if u["margin"] < 0) / len(units), 6
+                ),
+                "ties_whose_foreign_max_equals_their_own_overlap_max": sum(
+                    1
+                    for u in units
+                    if u["margin"] == 0 and u["foreign_max"] == u["own_overlap_max"]
+                ),
+                "ties_at_an_own_overlap_max_of_one": sum(
+                    1 for u in units if u["margin"] == 0 and u["own_overlap_max"] == 1.0
+                ),
+            },
+        },
+        "margin": {
+            "definition": "own overlap_max minus the maximum over all 49 foreign rows",
+            "summary": summary(margins),
+            "positive": sum(1 for m in margins if m > 0),
+            "zero": sum(1 for m in margins if m == 0),
+            "negative": sum(1 for m in margins if m < 0),
+            "histogram_note": "margins are signed, so the 0.05 histogram above is not used for them",
+            "largest_gaps": largest_gaps(margins),
+        },
+        "per_tier": per_tier,
+    }
+
+
+def build() -> dict:
+    flagged, flagged_funnel = load_flagged()
+    supported, supported_funnel = load_supported()
+    row_block_ids, block_tokens = load_foreign_blocks()
+    coverage = foreign_alignments(flagged, row_block_ids, block_tokens)
+    foreign_alignments(supported, row_block_ids, block_tokens)
+
+    flagged_null = [
+        value for unit in flagged for value in unit["foreign_overlap_max_by_row"].values()
+    ]
+    null_q95 = quantile(flagged_null, 0.95)
+
+    flagged_block = population_block(flagged, flagged_funnel, null_q95)
+    supported_block = population_block(supported, supported_funnel, null_q95)
+
+    zeros = [unit for unit in flagged if unit["own_score"] == 0.0]
+    condition_bit = [unit for unit in flagged if unit["own_score"] != unit["own_overlap_max"]]
+
+    flagged_margins = sorted(unit["margin"] for unit in flagged)
+    supported_margins = sorted(unit["margin"] for unit in supported)
+    combined = sorted(flagged_margins + supported_margins)
+    overlap_low = max(min(flagged_margins), min(supported_margins))
+    overlap_high = min(max(flagged_margins), max(supported_margins))
+    in_overlap_flagged = sum(1 for m in flagged_margins if overlap_low <= m <= overlap_high)
+    in_overlap_supported = sum(1 for m in supported_margins if overlap_low <= m <= overlap_high)
+
+    weakest = [unit for unit in supported if unit["own_overlap_max"] < 0.80]
 
     return {
         "description": (
-            "The best alignment the grader of record finds for every flagged claim unit of the "
-            "sealed run, against the first-pass context it was flagged in and against every other "
-            "sealed row's first-pass context. The second is the null this predicate returns when "
-            "the supporting source is, on the whole, not in the context being scored."
+            "Two populations of the sealed run's raw claim units, each scored against the "
+            "first-pass context it was graded in and against every other sealed row's first-pass "
+            "context. The flagged population is what the operational flagging pass marked "
+            "unsupported. The supported population is the grader's grounded units over the same "
+            "rows, and it is the positive control: a test that reports a failure to beat chance is "
+            "trusted only once it has been shown to fire where alignment genuinely exists."
         ),
         "produced_by": "python -m src.score.run_flagged_alignment_control",
         "written_to": str(CONTROL_PATH.relative_to(REPO_ROOT)),
@@ -332,8 +525,8 @@ def build() -> dict:
             "Instrument measurement, not a condition result. eval/test_retrieval_results.json, "
             "eval/test_layer_results.json and eval/test_grading_results.json are the outputs of "
             "the three measured conditions. This file is a property of the grading predicate, "
-            "measured over a population one of them defines, and it is pinned separately for that "
-            "reason rather than folded into the three."
+            "measured over two populations one of them defines, and it is pinned separately for "
+            "that reason rather than folded into the three."
         ),
         "decides_nothing": (
             "No threshold is chosen here and none is available. A threshold chosen after seeing "
@@ -352,15 +545,37 @@ def build() -> dict:
         "own_side_is_read_not_recomputed": (
             "own_overlap_max, own_score, own_grounded, n_tokens, n_surfaces and threshold are read "
             "out of eval/test_grading_results.json under rows.raw.<tier>.<query_id>.units[], "
-            "joined on the unit's exact text. This file therefore cannot disagree with the grading "
-            "artifact about the measured side. The join is total at the flagged population and the "
-            "unit texts within a row are unique, both asserted in the test file."
+            "joined on the unit's exact text for the flagged population and taken directly for the "
+            "supported one. This file therefore cannot disagree with the grading artifact about "
+            "the measured side."
+        ),
+        "why_the_second_population_is_here": (
+            "The emptiness-claim discipline applied to a negative result. The flagged population's "
+            "paired test reports that a majority of its units do not align to their own context "
+            "better than to the best of 49 foreign ones. Two readings fit that: the support was "
+            "absent from the context for those units, or this ruler cannot detect support at all, "
+            "in which case a genuinely supported unit would fail the same test. Only a control on "
+            "units the grader marks supported separates them, and without it the figure would be "
+            "written down without knowing which of the two it is about. The comparison block "
+            "states which, and states the limit of what the control can reach."
+        ),
+        "what_the_positive_control_cannot_reach": (
+            "The supported population is defined by the grader's own verdict, and grounded means "
+            "the overlap term reached the threshold, so every unit in it carries an own-context "
+            "overlap at or above 0.75 by construction. The control therefore demonstrates that the "
+            "paired test fires on near-verbatim support. It cannot demonstrate that the test fires "
+            "on support present as paraphrase, because a unit supported only by paraphrase is not "
+            "in this population: it is in the flagged one. Separating those two would need a "
+            "population of units independently judged supported while scoring below the threshold, "
+            "and this repository holds none. The RAGAS validation named in docs/METHODOLOGY.md is "
+            "the route to one and has not been run; src/ragas_validation/ holds an empty "
+            "__init__.py and no artifact is committed."
         ),
         "sampling_decision": {
             "decision": "enumerated, not sampled",
             "what_was_enumerated": (
-                "every flagged unit against every sealed row other than its own, 49 foreign rows "
-                "per unit, with no draw and no seed."
+                "every unit of both populations against every sealed row other than its own, 49 "
+                "foreign rows per unit, with no draw and no seed."
             ),
             "reason": (
                 "CLAUDE.md V5 prefers an exhaustive audit to a sample where the population can be "
@@ -371,10 +586,10 @@ def build() -> dict:
                 "distinct block."
             ),
             "supersedes": (
-                "An uncommitted earlier form of this measurement drew five foreign rows per unit. "
-                "A sampled maximum is an underestimate of the enumerated maximum, so the sampled "
-                "count of units beating every foreign row was an upper bound on the enumerated "
-                "one. The enumerated figure below is the measurement of record and the sampled "
+                "An uncommitted earlier form of this measurement drew five foreign rows per unit "
+                "and reported 75 of the 109 flagged units beating every foreign row. A sampled "
+                "maximum understates the enumerated maximum, so the sampled count was an upper "
+                "bound on the enumerated one, and under enumeration the figure is 43. The sampled "
                 "figure is not carried, because a number with a committed producer and a number "
                 "without one do not belong beside each other."
             ),
@@ -407,75 +622,149 @@ def build() -> dict:
             "chunk_store": "data/chunks/*.chunks.jsonl",
             "no_model_no_key_no_network": True,
         },
-        "population": funnel,
         "coverage": coverage,
-        "own_distribution": {
+        "populations": {
+            "flagged": flagged_block,
+            "supported": supported_block,
+        },
+        "comparison": {
             "note": (
-                "overlap_max and score of the flagged units against their own first-pass context, "
-                "read from the grading artifact. score is the grader of record's value with the "
-                "reference condition applied; overlap_max is the overlap term alone."
+                "The two populations on one ruler, same foreign row set, same frozen window "
+                "comparison, no draw and no seed on either side."
             ),
-            "pooled_overlap_max": summary(own),
-            "pooled_score": summary(own_score),
-            "pooled_overlap_max_histogram": histogram(own),
-            "pooled_score_histogram": histogram(own_score),
-        },
-        "null_distribution": {
-            "caveat": (
-                "An upper bound on chance alignment, not a clean null. See foreign_context_caveat."
-            ),
-            "pairs": len(null),
-            "pairs_note": (
-                "one per (flagged unit, foreign sealed row) pair, each the maximum over that row's "
-                "ten first-pass blocks."
-            ),
-            "summary": summary(null),
-            "histogram": histogram(null),
-            "reading": (
-                "The predicate returns no value near zero for in-domain text. That no flagged unit "
-                "scores near zero against its own context is therefore a property of this ruler "
-                "and not a fact about the units, and any reading of the measured figures has to "
-                "carry this distribution beside them."
-            ),
-        },
-        "paired_result": {
-            "test": (
-                "per unit, the unit's own overlap_max against the maximum over all 49 foreign "
-                "rows. A per-unit comparison, not a unit judged against a pooled quantile "
-                "assembled partly from other units' scores."
-            ),
-            "beats_every_foreign_row": len(beats),
-            "does_not_beat_every_foreign_row": len(units) - len(beats),
-            "beats_its_own_foreign_mean": sum(1 for unit in units if unit["beats_its_foreign_mean"]),
-            "of": len(units),
-            "reading": (
-                "For the units that beat every foreign row the measurement is consistent with "
-                "paraphrase of blocks already present. For those that do not it gives no reason to "
-                "prefer that reading over an absent source. Neither group is settled by it."
-            ),
+            "beat_rate": {
+                "flagged": flagged_block["paired_result"],
+                "supported": supported_block["paired_result"],
+            },
+            "does_the_test_discriminate": {
+                "question": (
+                    "Whether a failure to beat chance is a result about the units or about the "
+                    "ruler. If units the grader marks supported fail the same test, the ruler "
+                    "cannot detect support and the flagged figure is a fact about the instrument."
+                ),
+                "on_the_strict_test": (
+                    "Poorly. The supported population's strict beat rate is "
+                    f"{supported_block['paired_result']['beat_rate']} against the flagged "
+                    f"population's {flagged_block['paired_result']['beat_rate']}, a separation too "
+                    "small to carry a negative result. Read alone this says the test lacks power."
+                ),
+                "why_the_strict_test_understates_it": (
+                    "Every tie in both populations has a foreign maximum exactly equal to its own "
+                    "overlap, so a tie is the same text appearing in another row's top ten rather "
+                    "than a failure to detect support. The sealed rows hold 500 chunk slots over "
+                    "314 distinct blocks, and the corpus carries 55 normalise-identity groups over "
+                    "125 chunks, so a supporting block is often not unique to the row that needed "
+                    "it. The strict test therefore measures uniqueness of carriage, not presence "
+                    "of support."
+                ),
+                "on_the_three_way_split": (
+                    "It discriminates, and cleanly. Strict losses, the only units that align "
+                    "better to a foreign context than to their own, are "
+                    f"{supported_block['paired_result']['three_way']['strictly_worse_than_its_best_foreign_row']} "
+                    f"of {supported_block['n']} supported units and "
+                    f"{flagged_block['paired_result']['three_way']['strictly_worse_than_its_best_foreign_row']} "
+                    f"of {flagged_block['n']} flagged ones."
+                ),
+                "what_follows_for_the_flagged_figure": (
+                    "The flagged population's non-beating count is not one quantity. It is ties, "
+                    "which say the support is carried elsewhere too and are silent on the own "
+                    "context, plus strict losses, which are the units that align better somewhere "
+                    "else. Any statement about the flagged units has to use the second number and "
+                    "not the sum."
+                ),
+            },
+            "per_tier": {
+                tier: {
+                    "flagged": flagged_block["per_tier"].get(tier, {}).get("beat_rate"),
+                    "supported": supported_block["per_tier"].get(tier, {}).get("beat_rate"),
+                }
+                for tier in TIER_KEYS
+            },
+            "margin": {
+                "flagged": flagged_block["margin"]["summary"],
+                "supported": supported_block["margin"]["summary"],
+            },
+            "separation": {
+                "question": (
+                    "Whether the two populations' margins separate cleanly or overlap "
+                    "continuously. A clean separation and a continuous one say different things "
+                    "about the ruler."
+                ),
+                "flagged_margin_range": [
+                    round(flagged_margins[0], 6), round(flagged_margins[-1], 6)
+                ],
+                "supported_margin_range": [
+                    round(supported_margins[0], 6), round(supported_margins[-1], 6)
+                ],
+                "overlap_region": [round(overlap_low, 6), round(overlap_high, 6)],
+                "flagged_units_in_the_overlap_region": in_overlap_flagged,
+                "supported_units_in_the_overlap_region": in_overlap_supported,
+                "largest_gap_in_the_combined_margins": largest_gaps(combined, take=3),
+                "combined_n": len(combined),
+            },
+            "shared_null": {
+                "question": (
+                    "Whether the two populations face the same baseline. If their nulls differ, a "
+                    "comparison that assumes one baseline is comparing two things."
+                ),
+                "flagged_null": flagged_block["null_distribution"]["summary"],
+                "supported_null": supported_block["null_distribution"]["summary"],
+                "median_difference": round(
+                    supported_block["null_distribution"]["summary"]["median"]
+                    - flagged_block["null_distribution"]["summary"]["median"],
+                    6,
+                ),
+                "mean_difference": round(
+                    supported_block["null_distribution"]["summary"]["mean"]
+                    - flagged_block["null_distribution"]["summary"]["mean"],
+                    6,
+                ),
+            },
+            "weakest_true_positives": {
+                "note": (
+                    "The supported units closest to the threshold, own overlap_max below 0.80. "
+                    "They are the weakest true positives this repository holds, and how they fare "
+                    "is what says whether the test discriminates at the bottom of the supported "
+                    "range rather than only at the top."
+                ),
+                "n": len(weakest),
+                "beats_every_foreign_row": sum(
+                    1 for unit in weakest if unit["beats_every_foreign_row"]
+                ),
+                "own_overlap_max": summary([unit["own_overlap_max"] for unit in weakest])
+                if weakest
+                else None,
+                "margin": summary([unit["margin"] for unit in weakest]) if weakest else None,
+            },
         },
         "pooled_quantile_cut": {
             "note": (
-                "A second cut, reported beside the paired test and weaker than it, because a unit "
-                "is judged here against a quantile assembled partly from other units' scores. It "
-                "is a descriptive ruler mark and not a threshold."
+                "A second cut over the flagged population, reported beside the paired test and "
+                "weaker than it, because a unit is judged here against a quantile assembled partly "
+                "from other units' scores. It is a descriptive ruler mark and not a threshold."
             ),
             "null_q95": round(null_q95, 6),
-            "above": sum(1 for unit in units if unit["own_overlap_max"] > null_q95),
-            "at_or_below": sum(1 for unit in units if unit["own_overlap_max"] <= null_q95),
-            "of": len(units),
+            "above": sum(1 for unit in flagged if unit["own_overlap_max"] > null_q95),
+            "at_or_below": sum(1 for unit in flagged if unit["own_overlap_max"] <= null_q95),
+            "of": len(flagged),
         },
         "continuity": {
             "note": (
-                "Whether a cut can be read off the measured distribution rather than invented. "
-                "Reported, not acted on."
+                "Whether a cut can be read off the flagged population's measured distribution "
+                "rather than invented. Reported, not acted on."
             ),
-            "overlap_max_range": round(max(own) - min(own), 6),
-            "overlap_max_min": round(min(own), 6),
-            "overlap_max_max": round(max(own), 6),
-            "overlap_max_largest_gaps": largest_gaps(own),
+            "overlap_max_range": round(
+                max(u["own_overlap_max"] for u in flagged)
+                - min(u["own_overlap_max"] for u in flagged),
+                6,
+            ),
+            "overlap_max_min": round(min(u["own_overlap_max"] for u in flagged), 6),
+            "overlap_max_max": round(max(u["own_overlap_max"] for u in flagged), 6),
+            "overlap_max_largest_gaps": largest_gaps(
+                [u["own_overlap_max"] for u in flagged]
+            ),
             "score_largest_gaps_excluding_the_exact_zeros": largest_gaps(
-                [unit["own_score"] for unit in units if unit["own_score"] > 0.0]
+                [u["own_score"] for u in flagged if u["own_score"] > 0.0]
             ),
             "reading": (
                 "overlap_max is continuous: its largest adjacent gap is a small fraction of its "
@@ -486,40 +775,36 @@ def build() -> dict:
         },
         "score_bimodality": {
             "note": (
-                "score falls below overlap_max only where the reference condition rejected blocks "
-                "the overlap term would have scored. A classifier thresholding on score would read "
-                "a signal about identifiers as a signal about sources."
+                "Over the flagged population. score falls below overlap_max only where the "
+                "reference condition rejected blocks the overlap term would have scored. A "
+                "classifier thresholding on score would read a signal about identifiers as a "
+                "signal about sources."
             ),
             "units_with_score_exactly_zero": len(zeros),
             "all_of_them_carry_a_reference_surface": all(unit["n_surfaces"] > 0 for unit in zeros),
-            "their_overlap_max_min": round(min(unit["own_overlap_max"] for unit in zeros), 6),
-            "their_overlap_max_max": round(max(unit["own_overlap_max"] for unit in zeros), 6),
+            "their_overlap_max_min": round(min(u["own_overlap_max"] for u in zeros), 6),
+            "their_overlap_max_max": round(max(u["own_overlap_max"] for u in zeros), 6),
             "their_overlap_max_sorted": sorted(
                 round(unit["own_overlap_max"], 6) for unit in zeros
             ),
             "units_where_score_is_below_overlap_max": len(condition_bit),
-            "of_those_score_is_exactly_zero": sum(1 for unit in condition_bit if unit["own_score"] == 0.0),
+            "of_those_score_is_exactly_zero": sum(
+                1 for unit in condition_bit if unit["own_score"] == 0.0
+            ),
             "all_of_those_carry_a_reference_surface": all(
                 unit["n_surfaces"] > 0 for unit in condition_bit
             ),
-            "units_carrying_no_reference_surface": sum(1 for unit in units if unit["n_surfaces"] == 0),
+            "units_carrying_no_reference_surface": sum(
+                1 for unit in flagged if unit["n_surfaces"] == 0
+            ),
             "and_for_every_one_of_those_score_equals_overlap_max": all(
                 unit["own_score"] == unit["own_overlap_max"]
-                for unit in units
+                for unit in flagged
                 if unit["n_surfaces"] == 0
             ),
         },
-        "tier_heterogeneity": {
-            "note": (
-                "The tiers do not behave alike and the pooled figures describe no tier. Every "
-                "pooled number in this file should be read with this block beside it."
-            ),
-            "per_tier": per_tier,
-            "share_of_the_population_from_the_largest_tier": round(
-                max(per_tier[tier]["flagged_units"] for tier in TIER_KEYS) / len(units), 6
-            ),
-        },
-        "units": units,
+        "units": flagged,
+        "supported_units": supported,
     }
 
 
@@ -552,8 +837,8 @@ def main(argv: list[str] | None = None) -> int:
     # newline="\n" pins LF on every platform; see the note in src/score/run_retrieval_eval.py.
     CONTROL_PATH.write_text(payload, encoding="utf-8", newline="\n")
     print(f"wrote {CONTROL_PATH}")
-    print(json.dumps(artifact["paired_result"], indent=1))
-    print(json.dumps(artifact["null_distribution"]["summary"], indent=1))
+    print(json.dumps(artifact["comparison"]["beat_rate"], indent=1))
+    print(json.dumps(artifact["comparison"]["separation"], indent=1))
     return 0
 
 
