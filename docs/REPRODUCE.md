@@ -3,10 +3,11 @@
 Nothing here needs an API key, a network connection, or money. The generation step ran once and
 its outputs are committed. Everything downstream re-derives from those committed files.
 
-Expect the wall clock to be dominated by the test suite, which means it scales with the machine
-rather than being a property of this repository. Locally, the suite alone takes 4m10s in a fresh
-clone on the development machine, macOS on arm64. On continuous integration the suite step falls
-into two clusters, one near five minutes and one near six and a half, with nothing between them.
+Expect the wall clock to be dominated by the test suite, which means it scales with the machine and
+with the size of the suite rather than being a property of this repository. No local figure is given
+here: the suite has grown four times this month and a point figure goes stale with it, so one would
+be maintenance rather than information. On continuous integration the suite step falls into two
+clusters, one near five minutes and one near six and a half, with nothing between them.
 The gap is consistent with different runner hardware being assigned between jobs rather than with
 anything in this repository, so a figure of your own belongs to one cluster or the other rather
 than to a bracket worth checking it against.
@@ -103,11 +104,11 @@ running `uv sync`, and running the suite there. None of it is carried over from 
 because a working checkout accumulates the optional artifacts a fresh clone does not have and will
 report fewer skips than a reviewer sees.
 
-| environment | collected | passed | skipped | wall clock |
-| --- | --- | --- | --- | --- |
-| **a fresh clone**, `uv sync` | 1087 | 1076 | 11 | 4m10s |
-| with the `embed` group and the model cache primed, no segment cache | 1087 | 1080 | 7 | 4m23s |
-| with the `embed` group, the model primed and the segment cache built | 1087 | 1087 | 0 | 4m28s |
+| environment | collected | passed | skipped |
+| --- | --- | --- | --- |
+| **a fresh clone**, `uv sync` | 1087 | 1076 | 11 |
+| with the `embed` group and the model cache primed, no segment cache | 1087 | 1080 | 7 |
+| with the `embed` group, the model primed and the segment cache built | 1087 | 1087 | 0 |
 
 **A fresh clone gives 1076 passed and 11 skipped, and that is the expected result.** The eleven fall
 into three classes, and every one names the artifact it needs. Tests are named rather than located
@@ -353,6 +354,29 @@ opus48    claude-opus-4-8
 `claude-sonnet-5` and `claude-opus-4-8` are undated aliases, so a regeneration run resolves them to
 whatever those aliases point at on the day you run it. On two of three tiers you will therefore not
 be running the same experiment. The committed outputs are what the published numbers rest on.
+
+**MARKED CORRECTION.** The claim above that `claude-sonnet-5` and `claude-opus-4-8` are undated
+aliases is superseded by Anthropic's current documentation. It is marked rather than edited, on the
+precedent this repository already sets for marked corrections. Checked 2026-09-16, the model IDs and
+versioning page states that dateless IDs from the 4.6 generation onward are pinned snapshots and not
+aliases: "For the 4.6 generation and later, the dateless ID is the canonical model ID for that
+release. It maps to a single, fixed model snapshot. Anthropic does not update the weights or
+configuration of an existing model ID. When an updated version is available, it ships under a new
+model ID." The same page names the alias reading as a common misconception and separates it from the
+pre-4.6 case, where an alias such as `claude-sonnet-4-5` does resolve to the most recent dated
+snapshot for that minor version.
+
+What that page said when the paragraph above was written is not established. It carries no date and
+this repository holds no archived copy, so whether the paragraph was inaccurate when committed or was
+overtaken afterwards cannot be decided from the repository, and neither is asserted here.
+
+One limit survives and it is weaker than the one above. The same page records that "Model weights are
+fixed for a given ID, but the serving infrastructure around the model can change over time", naming
+the request router, safety classifiers and sampling logic, and that "Occasionally, infrastructure
+updates produce minor differences in observable behavior even when the model ID and weights have not
+changed". A regeneration run is therefore not guaranteed identical to the committed one on any tier,
+including Haiku. The committed outputs remain what the published numbers rest on, which is what this
+limit exists to say.
 
 **2. The dated Haiku snapshot has a published retirement date.** Anthropic's model deprecations page
 lists `claude-haiku-4-5-20251001` as Active with a tentative retirement date of not sooner than
