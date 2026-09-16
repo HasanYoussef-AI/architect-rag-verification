@@ -38,8 +38,8 @@ from src.ingest.corpus_integrity import REPO_ROOT
 CONTROL = REPO_ROOT / "eval" / "test_flagged_alignment_control.json"
 
 # Computed at the commit that produced the artifact.
-CONTROL_SHA256 = "375253251d7910bb4e8a390f5420630d7643dbfee477fb1a3191ce33cb5f868d"
-CONTROL_BYTES = 261299
+CONTROL_SHA256 = "f9945bf4e2eb9c06ee03466adc2bab59c9a27cb2ad86cbf13b27f4b9b659a8a9"
+CONTROL_BYTES = 575402
 
 
 def test_the_control_artifact_exists_and_ships():
@@ -102,26 +102,46 @@ def test_the_pinned_artifact_is_the_one_the_alignment_figures_are_read_from():
     """The pin guards the file the claims are made about, not a file with the right name.
 
     A digest over an artifact nobody reads certifies nothing, so this asserts the pinned file
-    carries the shape the figures are quoted from: the 109 flagged units, the enumerated null with
-    one pair per unit per foreign row, the paired counts, the per-tier block, and the continuity
-    figures that record there is no cut to read off.
+    carries the shape the figures are quoted from: both populations at their measured sizes, the
+    enumerated null with one pair per unit per foreign row on each, the three-way split that
+    separates ties from losses, the per-tier blocks, and the continuity figures that record there is
+    no cut to read off.
     """
     doc = json.loads(CONTROL.read_text(encoding="utf-8"))
     assert doc["reproducibility_level"] == 1
     assert doc["produced_by"] == "python -m src.score.run_flagged_alignment_control"
     assert len(doc["units"]) == 109, "the artifact does not hold the 109 flagged units"
-    assert doc["population"]["flagged_units"] == 109
-
-    assert doc["null_distribution"]["pairs"] == 109 * 49, (
-        "the null is not the enumerated one, so the sampling decision the artifact states is not "
-        "the one it carries"
+    assert len(doc["supported_units"]) == 142, (
+        "the artifact does not hold the 142 supported units, so the positive control is not the "
+        "one the figures are read from"
     )
+    assert doc["populations"]["flagged"]["funnel"]["flagged_units"] == 109
+
+    for name, expected in (("flagged", 109), ("supported", 142)):
+        block = doc["populations"][name]
+        assert block["n"] == expected
+        assert block["null_distribution"]["pairs"] == expected * 49, (
+            f"the {name} null is not the enumerated one, so the sampling decision the artifact "
+            "states is not the one it carries"
+        )
+        paired = block["paired_result"]
+        assert (
+            paired["beats_every_foreign_row"] + paired["does_not_beat_every_foreign_row"]
+            == expected
+        )
+        three = paired["three_way"]
+        assert (
+            three["strictly_beats"]
+            + three["ties_its_best_foreign_row"]
+            + three["strictly_worse_than_its_best_foreign_row"]
+            == expected
+        )
+        assert set(block["per_tier"]) == {"haiku45", "sonnet5", "opus48"}
     assert doc["coverage"]["sealed_rows"] == 50
 
-    paired = doc["paired_result"]
-    assert paired["beats_every_foreign_row"] + paired["does_not_beat_every_foreign_row"] == 109
-
-    assert set(doc["tier_heterogeneity"]["per_tier"]) == {"haiku45", "sonnet5", "opus48"}
+    # The discrimination verdict is what the second population exists to produce. If it ever goes
+    # missing the artifact still has both populations and says nothing about what they mean.
+    assert doc["comparison"]["does_the_test_discriminate"]["on_the_three_way_split"]
 
     # The continuity block is what says a threshold would have to be invented. If it ever reports a
     # gap that dominates the range, that is a finding and not a formatting change.
