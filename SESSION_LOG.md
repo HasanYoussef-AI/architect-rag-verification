@@ -4,6 +4,85 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-09-17, a corrected claim that survived the correction, and the sweep that was never run
+
+The defect is the sweep, not the claim. Section 5 of `docs/RESULTS.md` was corrected in the previous
+scope and nobody established whether the same claim survived anywhere else. It did, in `README.md`,
+in a stronger form than section 5 had ever carried.
+
+This repository built exactly this discipline in an earlier scope, when a suite figure was corrected
+in one file and a sweep found it in four. It was applied to a figure and not to a causal claim. The
+reusable part is that a corrected claim is swept for on the idea rather than on the sentence, because
+the surviving copy is rarely worded the same way, and the one here was worse than the original rather
+than a restatement of it.
+
+### What the sweep found
+
+A claim sweep over all 144 tracked markdown and python files, on four ideas rather than one string:
+that flagged units were paraphrase of present blocks, that there was nothing for a fetch to repair,
+that the corrective pass was aimed at or responded to the flagged units, and any phrasing presenting
+the zero as a test of the fetch. Both directions were controlled, a term set shown firing on a known
+instance and the same command returning empty on a term known absent.
+
+Thirty-seven lines outside `SESSION_LOG.md` matched at least one term. One passage needed correction:
+`README.md`, which carried the pre-correction account and added to it the clause "so there was
+nothing for a fetch to repair", the causal conclusion the measurement contradicts. The rest divided
+into already-correct instances, most of them the corrected text itself and the alignment control's
+own disclosures, and coincidental matches on an unrelated sense of "repair", which the repository
+uses idiomatically for a defect disclosed rather than repaired.
+
+`docs/METHODOLOGY.md`, `docs/REPRODUCE.md`, `eval/README.md` and `CLAUDE.md` carry none of the claim,
+each checked explicitly rather than by the absence of a hit in a wider sweep. `SESSION_LOG.md`
+entries record what was true when written and are not amended.
+
+### What was corrected, and what was kept
+
+"Rescued by the fetched context" becomes "came back both unchanged and grounded" in both files. The
+first phrasing asserts a cause that a partition does not carry.
+
+The paraphrase clause and the nothing-to-repair clause are replaced by what the alignment control
+measures. Two clauses beside them are kept rather than swept up with them. That the run reproduces
+the development result exactly is true, checked against `eval/dev_second_call_grading.json`, which
+reports zero on all three development tiers. And that the layer's faithfulness effect comes from its
+detector plus its instruction rather than from retrieval completeness is true, reached from a premise
+that does not hold and independently supported by the disjointness finding.
+
+### The denominator, stated precisely rather than overcorrected
+
+A second reader called the zero-of-109 figure a wrong denominator. That overstates it. The figure is
+arithmetically true as a partition: no flagged unit ended the second call both repeated unchanged and
+grounded. What it cannot support is the weight a reader gives it, because only the 25 that came back
+unchanged were ever in a position to be scored that way.
+
+Whether any of the 84 became grounded in reworded form is not tracked. `flagged_dropped_or_rewritten`
+is an exact-text test, and no field anywhere in `eval/test_grading_results.json` carries a successor
+mapping, established by enumerating every key matching rewritten, dropped, successor or replaced
+rather than by reading the producer alone.
+
+The ceiling is bounded rather than left open. On 18 of the 49 row-tier pairs carrying a dropped unit
+the second answer holds no grounded unit absent from the first, so the 27 dropped units on those
+pairs cannot have been reworded into a grounded one. For the other 57 the artifact is silent, and
+section 5 now says that rather than implying more.
+
+One hazard is named rather than left: two different quantities in section 5 both equal 25, the units
+that came back unchanged and the units that align better to a foreign context than to their own.
+
+### What was checked and not changed
+
+The corrective-pass diagram carries no edge implying flagged units feed the fetch. The word does not
+occur in it at all, measured against controls finding "fetch" twice and "unit" five times in the same
+block, so the diagram already shows only the reference-resolution path and nothing was touched.
+
+The flagged-fate figure's subtitle and the sealed-grading test that pins the zero both state the
+partition without asserting a cause, so both stand. Correcting either would have moved a pinned
+digest for no correctness gain.
+
+### Commits
+
+- 7955762 docs: correct the surviving pre-correction account in README, and give the zero its denominator
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-09-16, the four corrections, and a claim stated at the strength the ties leave it
 
 `docs/RESULTS.md` section 5 explained a measured zero by asserting that the flagged units were
