@@ -4,6 +4,109 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-09-16, the positive control, and what the paired test was actually measuring
+
+The alignment control reported that 66 of the 109 flagged units do not align to their own first-pass
+context better than to the best of 49 foreign ones. That figure was not writable, because two
+readings fit it and the artifact separated neither: the support was absent from the context for
+those units, or the predicate cannot detect support at all, in which case a genuinely supported unit
+would fail the same test. The second reading would make the figure a fact about the instrument
+rather than about the units, and it would bear on the headline unsupported-claim rate as well.
+
+### The control
+
+The grader's grounded units over the same rows, through the identical enumerated test: the same 49
+foreign rows per unit, the same frozen `window_score`, no draw and no seed. The two populations
+partition the same set. On the 48 row-tier pairs the corrective pass fires on, the raw condition
+holds 251 claim units, 109 ungrounded and 142 grounded. The artifact carries the reconciliation to
+the pooled 269, 149 and 120, with the 11 ungrounded units outside the flagged population located on
+test_34 and test_39, the two rows that receive no flagged list. The two grounding implementations
+agree on all 269 units of the raw condition, so the split is the same whichever names it.
+
+### The strict test failed, and the failure was informative
+
+Supported units beat every foreign row at 0.5634 against the flagged population's 0.3945. A
+separation that small cannot carry a negative result, and read alone it says the test lacks power.
+
+It does not. Every tie in both populations has a foreign maximum exactly equal to its own overlap,
+41 of 41 on the flagged side and 60 of 60 on the supported side, with 29 of those 60 at an own
+overlap of exactly 1.0. A tie is the same block sitting in another row's top ten. The fifty sealed
+first-pass tens hold 500 chunk slots over 314 distinct blocks, and the corpus carries 55
+normalise-identity groups over 125 chunks, so a supporting block is frequently not unique to the row
+that needed it. The strict inequality was measuring uniqueness of carriage, not presence of support,
+and the foreign-context caveat already in the artifact understated how hard that bites.
+
+### The three-way split is the result
+
+Separating ties from losses, a strict loss is the only outcome that means a unit aligns better to a
+foreign context than to its own. There are 2 of 142 supported units and 25 of 109 flagged, a rate of
+0.0141 against 0.2294. The test discriminates, and the discrimination is clean.
+
+What follows is that the flagged population's non-beating count is not one quantity. It is 41 ties,
+which say the support is carried elsewhere too and are silent about the row's own context, plus 25
+strict losses, which are the units that align better somewhere else. Any statement about the flagged
+units uses 25 and not 66. The earlier reading, that a majority of the flagged population fails to
+beat chance, was an artifact of collapsing ties into losses.
+
+The strict losses are concentrated: 23 of the 25 are Haiku, against 0 of 14 on Sonnet and 2 of 27 on
+Opus. On the supported side the same figure is 0, 1 and 1.
+
+### What the control cannot reach, recorded because it bounds the conclusion
+
+Grounded means the overlap term reached its threshold, so every supported unit carries an
+own-context overlap at or above 0.75 by construction. The control therefore shows the paired test
+fires on near-verbatim support and cannot show it fires on support present as paraphrase, because a
+unit supported only by paraphrase is not in this population: it is in the flagged one. Separating
+those would need units independently judged supported while scoring below the threshold, and this
+repository holds none. The RAGAS validation `docs/METHODOLOGY.md` names is the route to one, it has
+not been run, and `src/ragas_validation/` holds an empty `__init__.py` with no committed artifact.
+
+### Separation and the shared baseline, both asked and both answered
+
+The margins overlap continuously rather than separating. The flagged margins run -0.25 to 0.3810 and
+the supported -0.0556 to 1.0, and 90 flagged and 73 supported units sit inside the shared region.
+The largest gap in the combined margins is 0.25, between 0.75 and 1.0, which splits 242 from 9 and
+is the top of the supported range rather than a boundary between the populations.
+
+The two populations do not face the same baseline in the tail. Their nulls share a median at
+0.285714 and a mean within 0.0018, but the supported null reaches a q95 of 0.6464 against 0.4516 and
+a maximum of 1.0 against 0.8. That is duplication again: a near-verbatim quote of duplicated corpus
+text scores high wherever that text appears. A comparison that assumed one baseline would be
+comparing two things in the tail, which is where the strict test lives.
+
+### Figures
+
+The suite gains 4 tests. The collect-only prediction of 1087 was stated with its arithmetic, 1083
+plus 4, before the run and agreed with it. All three documented rows moved: 1087 collected in every
+environment, with 1076 passed and 11 skipped in a fresh clone, 1080 passed and 7 skipped with the
+`embed` group and the model primed, and 1087 passed with none skipped once the segment cache is
+built. The second and third were measured in the environment each names, and the segment cache
+matched `eval/segment_embedding_manifest.json`'s `cache_sha256` before the move and after the
+replacement. The fresh-clone row was derived and committed before it was measured and the
+measurement agreed on all three figures.
+
+Both pins were shown red again before either green was trusted, because a pin that was green before
+the file changed proves nothing about the file now. The same length-preserving mutation reddened 7
+tests across the two files at 575402 bytes unchanged, and the presence-and-size test stayed green,
+which is the demonstration that the digest covers a surface the size check cannot.
+
+`ruff check src tests` passes. The offline guard reported zero connection attempts across the whole
+session, measured with the agent registry file 496 hours old and therefore well past its 24-hour
+expiry. Two consecutive producer runs wrote identical bytes, with the comparator shown able to fail
+on a one-byte difference.
+
+The two full runs measured here were 4m51s and 4m50s, above the range the wall-clock column shows,
+because the control now scores 251 units against 314 distinct blocks rather than 109. That column is
+machine-dependent, nothing asserts it, and it was not moved on one machine's timing.
+
+### Commits
+
+- a653580 feat(score): the supported population, as the positive control the flagged figure needed
+- 9532a46 test: re-pin the control across both populations and pin the tie-versus-loss split
+- 8a6abfc docs: move the documented suite figures to the tree that gained the control's pins
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-09-16, the null behind the flagged-unit alignment figures
 
 `docs/RESULTS.md` section 5 explains a measured zero by asserting that the flagged units were
