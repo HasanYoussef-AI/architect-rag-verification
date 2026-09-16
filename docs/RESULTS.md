@@ -168,7 +168,51 @@ Both arithmetic identities are asserted in the artifact on all three tiers: flag
 plus dropped, and repeated equals now-grounded plus still-unsupported.
 
 **Zero of 109 flagged units were rescued by the fetched context, on any tier.** The completeness
-pass fetched the right blocks; the flagged units were paraphrase of blocks already present.
+pass fetched the right blocks. What the flagged units are was measured afterwards, and the answer is
+narrower than the sentence this paragraph used to carry.
+
+Each flagged unit was scored against the first-pass context it was flagged in and against all 49
+other sealed rows' first-pass contexts, under the grader's own window comparison. The measurement is
+`eval/test_flagged_alignment_control.json`, pinned by digest like every other artifact here.
+
+Read absolutely, the figures mislead. No flagged unit scores near zero against its own context, and
+none scores near zero against a foreign one either: the null's median is 0.285714, because multiset
+containment over a window of the unit's own length picks up function words and shared domain
+vocabulary between any claim about these frameworks and any passage from them. **A low absolute
+alignment is not evidence that a source was absent.**
+
+Against that null the 109 split three ways, not two.
+
+| outcome | n | what it means |
+| --- | --- | --- |
+| aligns better to its own context than to any of the 49 | 43 | consistent with paraphrase of a block already present |
+| ties its best foreign row | 41 | the same block is carried in another row as well |
+| aligns better to some foreign context than to its own | 25 | the own context is not where it aligns best |
+
+The 41 ties are not a middle case that could fall either way. **Every one has a foreign maximum
+exactly equal to its own overlap**, because the fifty sealed top tens hold 500 chunk slots over only
+314 distinct blocks and the corpus repeats its own statements across documents, so a supporting
+block is frequently not unique to the row that needed it. A tie says the text is carried in more than
+one row. It says nothing about whether it supports the claim in this one.
+
+**The test discriminates, and a control is what establishes that.** The grader's 142 grounded units
+over the same rows, through the identical test, produce **2 strict losses of 142** against the
+flagged population's **25 of 109**, which is 0.0141 against 0.2294. **The control reaches only part of the question,
+and the limit belongs here rather than in a footnote.** Grounded means the overlap term reached the
+threshold, so every unit in the control carries an own-context overlap at or above 0.75 by
+construction. It therefore shows the test fires on near-verbatim support and cannot show it fires on
+support present as paraphrase, because a unit supported only by paraphrase scores below the
+threshold and sits in the flagged population rather than the control. **Whether this ruler detects
+paraphrase at all is open.** The RAGAS validation named in `docs/METHODOLOGY.md` is what would settle
+it, and it has not been run.
+
+**So the sentence this paragraph used to carry is neither confirmed nor inverted.** It read that the
+flagged units were paraphrase of blocks already present. Against the measurement that is
+**contradicted for 25, silent for 41, and consistent but unestablished for the remaining 43**, since
+token overlap does not establish that the aligning block states the claim.
+
+The 25 are concentrated: 23 are Haiku, against 0 of 14 on Sonnet and 2 of 27 on Opus. Section 16
+carries the per-tier counts and what they mean for every pooled figure in this file.
 
 The population is the 48 rows the corrective pass fires on. Two rows are excluded on every tier
 because it does not fire on them, so no second-call body and no flagged list exists for them.
@@ -524,9 +568,207 @@ table would invite a reader to correct for something already handled.
 
 ## 15. A labelled exploratory follow-on, not run
 
-Three of the five withheld fixes, (b), (c) and (e), could be implemented as a v2 and run on the same
-sealed set. If that is ever done it is reported beside the pre-registered result as exploratory and
-never replaces it, because a design changed after seeing its own results is not the design that was
-pre-registered.
+An earlier revision of this section named three of the five withheld fixes, (b), (c) and (e), as
+implementable as a v2. **That list was wrong.** It is narrowed here rather than edited quietly.
+
+The reason it gave was that such a run is reported beside the pre-registered result as exploratory
+and never replaces it, because a design changed after seeing its own results is not the design that
+was pre-registered. That answers one objection. Section 12 raises a different one against (c): the
+fix there is refused because it is "the layer selecting its output on the metric the results report".
+Labelling a figure exploratory records when the design was fixed. It does not change what the figure
+measures. A layer that delivers whichever of two answers grades better under the grader of record
+produces a rate that is partly a measurement of its own fit to the ruler, and that is as true of an
+exploratory figure as of a pre-registered one.
+
+What is available:
+
+- **(b), whole.** Its refusal is a trade-off about what the abstention rule protects, with nothing in
+  it about optimising on the reported metric, and measuring a trade-off is what an exploratory arm is
+  for.
+- **(e), the structured-output half only.** Section 12(e) names two fixes, structured output or a
+  post-filter, and refuses them on two grounds. The seal bars changing v1's prompt literal, and a v2
+  carries its own pre-registration and its own prompt, so that ground does not reach the
+  structured-output route.
+
+What is not available:
+
+- **(c)**, and **the post-filter half of (e)**, both refused on the grader-conformance ground above,
+  which no labelling answers. They are off the list.
+
+A third candidate was considered after the flagged-unit alignment was measured, a deterministic
+detector separating an absent source from a restatement of present text. Section 16 records it as
+unavailable and why.
 
 **It has not been run and this repository publishes no v2 number.**
+
+
+---
+
+## 16. The layer's design assumption, and what the measurement found
+
+### What the layer was built to fix
+
+`docs/METHODOLOGY.md` separates two failure surfaces and says keeping them separate is the point.
+Surface one is generation faithfulness, "The model asserts claims the retrieved chunks do not
+support", answered by claim-level grounding checks under which "unsupported claims are flagged or
+refused". Surface two is retrieval completeness, "The retriever misses a relevant passage, the model
+answers faithfully from the partial context, and the answer is faithful but wrong", answered by a
+completeness check that "triggers corrective re-retrieval". The pre-registration's Layer condition
+names the same components in the same order: "Deterministic grounding check, deterministic
+completeness check, corrective re-retrieval, abstain if still ungrounded."
+
+### The assumption those components rested on
+
+The sequencing carries a claim that is nowhere argued for. "Abstain if **still** ungrounded" in the
+pre-registration, and "abstains only if it **still** cannot ground the answer" in the methodology,
+both presuppose that corrective re-retrieval can change whether a claim is grounded. The second-call
+system prompt states it to the model outright: "The context provided below may have been expanded
+since the first answer was written, and it may now contain passages the first answer did not have",
+and "Statements listed as unsupported were not supported by the context. Either support each one from
+the context provided below or leave it out."
+
+Stated plainly, the assumption is that an unsupported claim means its supporting source is absent
+from the context, and therefore that fetching the missing unit repairs it. It was written down in
+four places and named as an assumption in none, and it was never tested as one. That last clause
+rests on its absence from the four files above rather than on a positive finding, which is weaker
+evidence than the quotations beside it.
+
+### The two passes are disjoint, and the code establishes it
+
+**No predicate anywhere in the layer relates a flagged unit to a fetch.**
+
+The corrective pass is `src/complete/references.py`, `src/complete/absence.py` and
+`src/complete/augment.py`. Its entry point takes three arguments and none is the answer:
+
+    def augment(
+        query_text: str, first_pass: Sequence[RetrievedChunk], store: FetchStore
+    ) -> AugmentationResult:
+
+Its trigger is answer-independent. `context_absence_fires` returns `bool(report.absent_units)`, and
+`absent_units` is built from citation-formed surfaces extracted from the query text and the three
+admitted fields of each retrieved chunk, filtered to those resolving in the committed unit index and
+absent from the context set. What it fetches is those units.
+
+The flagging pass is `src/complete/flagging.py`, and in `src/complete/run_second_call_flagged.py` its
+output is computed **after** the trigger branch, on rows the corrective pass has already fired on:
+
+        result = augment(row["query"], first_pass, fetch)
+        if not result.triggered:
+            silent.append(query_id)
+            continue
+        flagged = list(flagged_units(answers[query_id], first_pass))
+
+The flagged list cannot reach the fetch even in principle: the fetch has already happened when the
+list is built. The two outputs meet once, in different slots of the same second-call request body.
+
+One measurement makes the disjointness mechanical rather than argued. The corrective pass fetched
+**930 chunks over the 48 firing rows, and the per-row counts are identical across all three tiers**,
+while those tiers produced three different sets of first answers and flagged lists of 68, 14 and 27
+units. A fetch that does not vary when the answers vary was not responding to the answers.
+
+The design's separation of the two surfaces was sound. What was not sound was the second call, which
+handed the model a flagged list and an augmented context and asserted a relation between them that
+nothing had built.
+
+### What executed, and what it produced
+
+The machinery ran in full. The corrective pass fired on 48 of 50 rows on every tier, silent only on
+`test_34` and `test_39`, fetched 930 chunks per tier, and issued a paid second call on every firing
+row, 144 calls at 2.266533 dollars, the whole of the layer's added generation cost.
+
+Of the 109 flagged units, 25 reappeared unchanged in the second answer and **none of the 25 became
+grounded**, on any tier. The other 84 did not reappear, so the grader produced no verdict about them
+in either direction: **the zero is over 25, not over 109.**
+
+### What the flagged units are, measured
+
+Section 5 carries the table. The 109 split 43 aligning better to their own context than to any of 49
+foreign ones, 41 tying their best foreign row, and 25 aligning better to some foreign context than to
+their own.
+
+**The ties are corpus duplication, not a middle case.** Every one of the 41 has a foreign maximum
+exactly equal to its own overlap, as do all 60 ties in the control population, 29 of those at exactly
+1.0. The fifty sealed top tens hold 500 chunk slots over 314 distinct blocks, and W1 above records
+what the corpus does with its own statements. A tie is the same block carried in another row, and it
+is silent about whether that block supports the claim in this one.
+
+**The test discriminates, and the control establishes it.** The grader's 142 grounded units over the
+same rows produce **2 strict losses of 142** against the flagged population's **25 of 109**, which
+is 0.0141 against 0.2294.
+**The control reaches only part of the question.** Grounded means the overlap term reached the
+threshold, so every unit in the control carries an own-context overlap at or above 0.75 by
+construction; it shows the test fires on near-verbatim support and cannot show it fires on support
+present as paraphrase, since a unit supported only by paraphrase scores below the threshold and is in
+the flagged population rather than the control. **Whether this ruler detects paraphrase at all is
+open, and the pre-registered RAGAS validation that would settle it has not been run.**
+
+### Why the zero happened is still not established
+
+**The expanded context arrived.** `src/score/run_sealed_grading.py` rebuilds every second-call request
+body and compares its digest against the `body_sha256` the record carries, raising rather than
+grading past a mismatch, and the layer's graded context size equals the corrective pass's own output
+on every firing row. Ruled out.
+
+**Retrieval found the right blocks, at gold level.** Recovered-passage recall is 0.8929 over the 42
+gold-bearing rows, 1.0000 on every single-hop stratum and both near-miss strata. Whether the fetched
+units carried text bearing on the particular flagged claim units is a different question and no
+committed figure answers it. Contradicted where measured, undetermined where it matters.
+
+**What the flagged units are is contradicted for 25, silent for 41 and unestablished for 43**, per
+section 5.
+
+None of the three is established as the cause. That is the state of the evidence and it is not
+narrowed here.
+
+### Two instrument properties the measurement exposed
+
+**The predicate returns no value near zero for in-domain text.** Scoring the flagged units against
+foreign first-pass contexts gives a median of 0.285714. That no flagged unit scored near zero against
+its own context is therefore a property of the ruler and not a fact about the units, and any future
+reading of these numbers has to carry the null beside them. The freeze commit's record of the
+predicate as lexical and punishing paraphrase is the same property seen from the other side.
+
+**The two populations do not share a baseline where the test looks.** Their nulls agree on the
+median, 0.285714 on both, and on the mean to within 0.0018, but the flagged null reaches a 95th
+percentile of 0.4516 and a maximum of 0.8 against the control's 0.6464 and 1.0. Duplicated corpus
+text scores high wherever it appears, and near-verbatim units quote it. The strict comparison lives
+in that tail, so **a comparison assuming one baseline would be comparing two things at the only place
+it looks.** Both nulls ship in the artifact rather than one.
+
+### The tiers do not behave alike, and this file has had to say so before
+
+| | flagged | aligns better | ties | **aligns worse** |
+| --- | --- | --- | --- | --- |
+| Haiku 4.5 | 68 | 22 | 23 | **23** |
+| Sonnet 5 | 14 | 7 | 7 | **0** |
+| Opus 4.8 | 27 | 14 | 11 | **2** |
+| pooled | 109 | 43 | 41 | **25** |
+
+**23 of the 25 are one tier**, 33.8 percent of Haiku's flagged units against none of Sonnet's and 2
+of Opus's. The pooled median own-context alignment of 0.533333 describes no tier: the three are
+0.4375, 0.604167 and 0.625.
+
+Section 4 already had to say this about a different figure, recording that its pooled sentence
+"flattens Opus" and "describes Haiku". This is the second time in this file, on a different
+measurement, and the pattern is worth naming rather than reporting twice as news: **on this corpus a
+pooled figure over three tiers has repeatedly turned out to be a Haiku figure.** Every pooled number
+in this section should be read with the table above beside it.
+
+### What the evidence supports next, not done
+
+The next step is not a change to the layer. It is establishing what the flagged units are, by reading
+each against the block it aligns with and judging whether that block states the claim, enumerated
+rather than sampled because 109 is enumerable. Only then does whether anything in the layer should
+change become answerable.
+
+A deterministic classifier separating an absent source from a restatement of present text is not
+available, for three reasons that are measurements rather than judgements. The distribution of
+own-context alignment is continuous, largest adjacent gap 0.039773 across a range of 0.623529, so a
+cut would have to be invented rather than read off. The one bimodal quantity, the grader's `score`,
+is bimodal because of the reference condition and not because of sources: all twelve units at exactly
+zero carry a reference surface and their overlap term runs 0.176471 to 0.777778, so a threshold on
+`score` would read a signal about identifiers as a signal about sources. And a threshold chosen after
+seeing these observations is fitted by this repository's own definition.
+
+**The reading has not been done, and this repository publishes no claim about what the 109 flagged
+units are.**
