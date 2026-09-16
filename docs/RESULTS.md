@@ -197,14 +197,15 @@ one row. It says nothing about whether it supports the claim in this one.
 
 **The test discriminates, and a control is what establishes that.** The grader's 142 grounded units
 over the same rows, through the identical test, produce **2 strict losses of 142** against the
-flagged population's **25 of 109**, which is 0.0141 against 0.2294. **The control reaches only part
-of the question, and the limit belongs here rather than in a footnote.** Grounded means the overlap
-term reached the threshold, so every unit in the control carries an own-context
-overlap at or above 0.75 by construction. It therefore shows the test fires on near-verbatim support and cannot show it fires on
-support present as paraphrase, because a unit supported only by paraphrase scores below the
-threshold and sits in the flagged population rather than the control. **Whether this ruler detects
-paraphrase at all is open.** The RAGAS validation named in `docs/METHODOLOGY.md` is what would settle
-it, and it has not been run.
+flagged population's **25 of 109**, which is 0.0141 against 0.2294.
+
+**The control reaches only part of the question, and the limit belongs here rather than in a
+footnote.** Grounded means the overlap term reached the threshold, so every unit in the control
+carries an own-context overlap at or above 0.75 by construction. It therefore shows the test fires
+on near-verbatim support and cannot show it fires on support present as paraphrase, because a unit
+supported only by paraphrase scores below the threshold and sits in the flagged population rather
+than the control. **Whether this ruler detects paraphrase at all is open.** The RAGAS validation
+named in `docs/METHODOLOGY.md` is what would settle it, and it has not been run.
 
 **So the sentence this paragraph used to carry is neither confirmed nor inverted.** It read that the
 flagged units were paraphrase of blocks already present. Against the measurement that is
