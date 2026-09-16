@@ -4,6 +4,122 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-09-16, the four corrections, and a claim stated at the strength the ties leave it
+
+`docs/RESULTS.md` section 5 explained a measured zero by asserting that the flagged units were
+paraphrase of blocks already present. That assertion had no measurement behind it, and it was the
+premise any redesign would have rested on. The measurement now exists and is pinned, and the four
+corrections it required land together.
+
+### The measurement moved twice before anything was written
+
+Under a sample of five foreign contexts per unit, 34 of 109 flagged units failed to beat their best
+foreign alignment. Under enumeration against all 49, the figure was 66. With ties separated from
+losses, it is 25. Nothing was published at any of the first two points.
+
+What explains the movement is the corpus rather than the units. A sampled maximum understates an
+enumerated one, which is why 34 became 66 and was predicted to move in that direction before it did.
+The second move is the one that carries information: every tie in both populations has a foreign
+maximum exactly equal to its own overlap, 41 of 41 on the flagged side and 60 of 60 on the control
+side with 29 of those at exactly 1.0, because the fifty sealed top tens hold 500 chunk slots over 314
+distinct blocks and the corpus repeats its statements across documents. A strict inequality over
+that structure measures uniqueness of carriage, not presence of support, and 66 was 41 units silent
+about their own context added to 25 that genuinely align better elsewhere.
+
+### What section 5 now says
+
+Contradicted for 25, silent for 41, consistent but unestablished for 43. The last because token
+overlap does not establish that the aligning block states the claim. The clause that the completeness
+pass fetched the right blocks is untouched; it rests on section 6's recovered-passage recall and
+always did.
+
+The section carries the null's median of 0.285714 where a reader meets the measured figures, because
+without it a low absolute alignment reads as evidence of an absent source and is not. It carries the
+three-way split rather than a beat rate. And it carries the control's circularity at the point of
+comparison rather than in a limits section: grounded requires the overlap term to have reached the
+threshold, so the control demonstrates the test fires on near-verbatim support and cannot demonstrate
+it fires on paraphrase, since a unit supported only by paraphrase is below threshold and therefore in
+the flagged population rather than the control.
+
+### The paraphrase question is open, and cannot be closed from committed files
+
+Separating the two readings would need units independently judged supported while scoring below the
+threshold. The RAGAS validation `docs/METHODOLOGY.md` names is the only committed route to such a
+population and it has not been run: `src/ragas_validation/` holds an empty `__init__.py` and no
+artifact is committed, checked rather than assumed. Both `docs/RESULTS.md` sections say so.
+
+What the control does establish is narrower and real. Strict losses are 2 of 142 against 25 of 109,
+so the test separates the flagged population from the near-verbatim-supported one by a factor of
+sixteen. That much discriminates, which is what makes the 25 a result about those units.
+
+### Section 15 and the tense-mark
+
+Section 15's candidate list named fix (c), whose refusal in section 12 rests on the layer selecting
+its output on the metric the results report. The mitigation section 15 offered, reporting a v2 beside
+the pre-registered result as exploratory, answers the objection that a design changed after seeing
+its own results is not the pre-registered design. It does not answer grader conformance: labelling a
+figure records when the design was fixed and does not change what the figure measures. The list is
+narrowed to (b) whole and the structured-output half of (e), and the section opens by saying the
+earlier list was wrong.
+
+`docs/REPRODUCE.md` limit 1 is tense-marked rather than corrected, on the precedent 83c983d sets. The
+claim that two of the three model strings are undated aliases is superseded by current documentation,
+which states that dateless IDs from the 4.6 generation onward are pinned snapshots. What that page
+said when the paragraph was written is not established, the page carries no date and no archived copy
+exists here, so neither reading is asserted. The serving-infrastructure limit that does survive is
+kept, because that part is still true.
+
+### Section 16
+
+The retrospective. It carries the design as designed, the assumption written down in four places and
+named as an assumption in none, the disjointness with `augment`'s signature and the flagged list
+computed after the trigger branch, the 930 chunks identical per row across three tiers whose flagged
+lists were 68, 14 and 27, the denominator correction so the zero reads over 25, what is still not
+established about why, and what the correct next step is. The claim that the assumption was never
+tested as one rests on its absence from four files and is marked in the text as weaker than the
+quotations beside it.
+
+Two instrument properties are recorded because nobody had measured them. The predicate returns no
+value near zero for in-domain text. And the two populations do not share a baseline in the tail:
+their nulls agree on the median at 0.285714 and on the mean to within 0.0018, while the 95th
+percentiles are 0.4516 and 0.6464 and the maxima 0.8 and 1.0, which is where the strict comparison
+lives.
+
+The tier concentration is reported with its counts and is not presented as new. Section 4 already
+recorded that its pooled sentence flattens Opus and describes Haiku, so section 16 states this as the
+second time in the file that a pooled figure over three tiers has turned out to be a Haiku figure
+rather than reporting the shape twice as news.
+
+### Figures
+
+Every figure in section 16 was resolved against a digest-pinned artifact rather than against a
+report, 43 of 43, so the file's opening claim that every figure is read from a pinned artifact stays
+true without qualification. Two per-tier counts the control does not carry as fields are derived from
+its own committed unit records.
+
+The suite is unchanged at 1087 collected, 1087 passed, none skipped, because this scope adds no test.
+The prediction of 1087 plus nothing was stated with that reasoning before the run. `ruff check src
+tests` passes. The offline guard reported zero connection attempts with the agent registry file 497
+hours old, well past its 24-hour expiry. Seven figure digests and four table digests match, and none
+of the three original result artifacts, the sealed set, the four frozen grader modules,
+`PREREGISTRATION.md`, `CLAUDE.md` or `docs/METHODOLOGY.md` changed.
+
+The local wall clock stops being a figure. The lead paragraph carried 4m10s and the environment table
+three more, all stale against a measured 4m51s, and the suite has grown four times this month. They
+are replaced by the treatment the continuous-integration sentence beside them already uses, with the
+reason for carrying no figure stated so the absence reads as a decision. The table's wall-clock
+column went with the sentence; leaving three point figures there would have made the new sentence
+false about its own file. The continuous-integration assertion matches the fresh-clone row on its
+leading cell and reads only the first three counts, so a removed trailing column is outside what it
+parses, verified by running the script against the edited file.
+
+### Commits
+
+- 4b29839 docs(results): correct section 5, narrow section 15, and add the design retrospective
+- c4283e8 docs(reproduce): tense-mark limit 1, and stop carrying a local wall-clock figure
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-09-16, the positive control, and what the paired test was actually measuring
 
 The alignment control reported that 66 of the 109 flagged units do not align to their own first-pass
