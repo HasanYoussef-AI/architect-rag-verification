@@ -105,11 +105,11 @@ report fewer skips than a reviewer sees.
 
 | environment | collected | passed | skipped | wall clock |
 | --- | --- | --- | --- | --- |
-| **a fresh clone**, `uv sync` | 1083 | 1072 | 11 | 4m10s |
-| with the `embed` group and the model cache primed, no segment cache | 1083 | 1076 | 7 | 4m23s |
-| with the `embed` group, the model primed and the segment cache built | 1083 | 1083 | 0 | 4m28s |
+| **a fresh clone**, `uv sync` | 1087 | 1076 | 11 | 4m10s |
+| with the `embed` group and the model cache primed, no segment cache | 1087 | 1080 | 7 | 4m23s |
+| with the `embed` group, the model primed and the segment cache built | 1087 | 1087 | 0 | 4m28s |
 
-**A fresh clone gives 1072 passed and 11 skipped, and that is the expected result.** The eleven fall
+**A fresh clone gives 1076 passed and 11 skipped, and that is the expected result.** The eleven fall
 into three classes, and every one names the artifact it needs. Tests are named rather than located
 by line, because a line number drifts with every edit above it and has already been wrong in this
 file once.
@@ -165,7 +165,7 @@ registered, and it has moved three times already. The names above are stable. A 
 segment cache, the pinned model or `onnxruntime` is expected. A skip naming anything else is not,
 and is worth reporting.
 
-The collected count is 1083 in every environment. If yours differs, the tree differs.
+The collected count is 1087 in every environment. If yours differs, the tree differs.
 
 ### Lint
 
@@ -312,7 +312,7 @@ separated that sentence was not true of the code beneath it.
 
 Measured on the machine this file was written on: the build took 19.0 minutes and wrote 40,906,880
 bytes to `embeddings_cache/segment_embeddings.npy`, which is git-ignored. After it the suite reports
-1083 passed and 0 skipped, which is the third row of the table above.
+1087 passed and 0 skipped, which is the third row of the table above.
 
 Two things reproduced exactly on that run and are worth knowing, because they are what the manifest
 exists to let you check. The rebuilt cache's SHA-256 matched
