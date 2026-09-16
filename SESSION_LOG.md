@@ -117,6 +117,14 @@ parses, verified by running the script against the edited file.
 
 - 4b29839 docs(results): correct section 5, narrow section 15, and add the design retrospective
 - c4283e8 docs(reproduce): tense-mark limit 1, and stop carrying a local wall-clock figure
+- ea04603 docs(results): reflow a section 5 line left long by the rate-denominator edit
+- 37c6f76 docs(results): rewrap the section 5 control paragraph, which ea04603 left worse
+
+The last two landed after this entry was first placed and are named here rather than in an entry of
+their own, because they are the same unit of work: the rate-denominator edit in 4b29839 left a
+116-character line, ea04603 reflowed it and produced a 128-character one beside it, and 37c6f76
+rewrapped the paragraph as a whole. No word of the text changed across either. The intermediate
+state is recorded rather than hidden, since Rule 10 fixes a defect forward rather than by amending.
 
 The commit placing this entry is exempt under Rule 11.
 
