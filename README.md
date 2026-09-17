@@ -262,15 +262,17 @@ Against a null whose median is 0.285714, 43 of the 109 align to their own first-
 than to any of 49 foreign ones, 41 tie their best foreign row because the same block is carried in
 another row as well, and 25 align better to some foreign context than to their own. So the earlier
 reading, that the flagged units were paraphrase of blocks already present and there was therefore
-nothing for a fetch to repair, is **contradicted for 25, silent for 41 and unestablished for 43**.
-Section 5 of [RESULTS.md](docs/RESULTS.md) carries the table and section 16 carries why the question
-arose.
+nothing for a fetch to repair, is **contradicted for the 25 that align better elsewhere, silent for
+the 41 that tie, and unestablished for the remaining 43**. Section 5 of
+[RESULTS.md](docs/RESULTS.md) carries the table and section 16 carries why the question arose.
 
 **The zero is a partition, not a test of the fetch.** Only the 25 units that came back unchanged
-were ever in a position to be scored that way. The 84 that were dropped or rewritten left the
-answer, and nothing in the artifact maps a rewritten unit back to the flagged one it replaced. The
-layer's faithfulness effect comes from its detector plus its instruction, the model dropping or
-rewriting what was flagged, and not from retrieval completeness.
+were ever in a position to be scored that way, and those are a different 25 from the alignment count
+just above: one counts what the model did with a unit, the other counts where the unit aligns. The
+84 that were dropped or rewritten left the answer, and nothing in the artifact maps a rewritten unit
+back to the flagged one it replaced. The layer's faithfulness effect comes from its detector plus
+its instruction, the model dropping or rewriting what was flagged, and not from retrieval
+completeness.
 
 ![Stacked bar chart. For each of three model tiers, the flagged claim units split into dropped or rewritten, repeated unchanged and still unsupported, and repeated unchanged and now grounded, the last of which is zero on every tier.](docs/figures/flagged-fate.svg)
 

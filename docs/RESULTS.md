@@ -180,10 +180,6 @@ What can be bounded is the ceiling: on 18 of the 49 row-tier pairs carrying a dr
 second answer holds no grounded unit that was absent from the first, so the 27 dropped units on
 those pairs cannot have been reworded into a grounded one. For the other 57 the artifact is silent.
 
-Two different quantities in this section both equal 25, and they are not the same units. The 25 in
-the table above is the count that came back unchanged. The 25 below is the count that aligns better
-to a foreign context than to its own.
-
 Each flagged unit was scored against the first-pass context it was flagged in and against all 49
 other sealed rows' first-pass contexts, under the grader's own window comparison. The measurement is
 `eval/test_flagged_alignment_control.json`, pinned by digest like every other artifact here.
@@ -194,9 +190,11 @@ containment over a window of the unit's own length picks up function words and s
 vocabulary between any claim about these frameworks and any passage from them. **A low absolute
 alignment is not evidence that a source was absent.**
 
-Against that null the 109 split three ways, not two.
+Against that null the 109 split three ways, not two. **This is a different cut of the same 109 from
+the fate table at the top of this section**, which counts what the model did with each unit; this one
+counts where each unit aligns. The two cuts share no column and are not read across.
 
-| outcome | n | what it means |
+| alignment outcome | n | what it means |
 | --- | --- | --- |
 | aligns better to its own context than to any of the 49 | 43 | consistent with paraphrase of a block already present |
 | ties its best foreign row | 41 | the same block is carried in another row as well |
@@ -210,7 +208,8 @@ one row. It says nothing about whether it supports the claim in this one.
 
 **The test discriminates, and a control is what establishes that.** The grader's 142 grounded units
 over the same rows, through the identical test, produce **2 strict losses of 142** against the
-flagged population's **25 of 109**, which is 0.0141 against 0.2294.
+flagged population's **25 of 109 aligning better to a foreign context**, which is 0.0141 against
+0.2294.
 
 **The control reaches only part of the question, and the limit belongs here rather than in a
 footnote.** Grounded means the overlap term reached the threshold, so every unit in the control
@@ -222,10 +221,11 @@ named in `docs/METHODOLOGY.md` is what would settle it, and it has not been run.
 
 **So the sentence this paragraph used to carry is neither confirmed nor inverted.** It read that the
 flagged units were paraphrase of blocks already present. Against the measurement that is
-**contradicted for 25, silent for 41, and consistent but unestablished for the remaining 43**, since
-token overlap does not establish that the aligning block states the claim.
+**contradicted for the 25 that align better elsewhere, silent for the 41 that tie, and consistent
+but unestablished for the remaining 43**, since token overlap does not establish that the aligning
+block states the claim.
 
-The 25 are concentrated: 23 are Haiku, against 0 of 14 on Sonnet and 2 of 27 on Opus. Section 16
+Those 25 are concentrated: 23 are Haiku, against 0 of 14 on Sonnet and 2 of 27 on Opus. Section 16
 carries the per-tier counts and what they mean for every pooled figure in this file.
 
 The population is the 48 rows the corrective pass fires on. Two rows are excluded on every tier
@@ -647,6 +647,16 @@ four places and named as an assumption in none, and it was never tested as one. 
 rests on its absence from the four files above rather than on a positive finding, which is weaker
 evidence than the quotations beside it.
 
+**Nothing in that prompt was false, and the precise version of the defect is narrower than that.**
+The context had genuinely been expanded on every second call, measured at 144 of 144 firing row-tier
+pairs carrying fetched chunks and a context set above ten, and the flagged statements genuinely were
+unsupported by the first-pass context. The second quoted line is an instruction rather than an
+assertion. What it did was presuppose a relation between the two that nothing had arranged: the
+expansion was real, and it was selected by the references the first pass named rather than by
+anything the flagged statements needed. A model following the instruction exactly would be searching
+an expanded context for support that had not been fetched for it, and could find it only by
+coincidence.
+
 ### The two passes are disjoint, and the code establishes it
 
 **No predicate anywhere in the layer relates a flagged unit to a fetch.**
@@ -767,6 +777,25 @@ Section 4 already had to say this about a different figure, recording that its p
 measurement, and the pattern is worth naming rather than reporting twice as news: **on this corpus a
 pooled figure over three tiers has repeatedly turned out to be a Haiku figure.** Every pooled number
 in this section should be read with the table above beside it.
+
+### Two predictions whose interpretation rested on the connection
+
+Two of the twenty-six pre-registered predictions read a faithfulness reduction as an effect of
+corrective re-retrieval. **P11** put the clean multi-hop reduction on `test_10` and `test_19`, the two
+rows where the corrective pass recovered a gold unit. **P19** said the near-miss reduction counted as
+the layer working only if it concentrated on units carrying the queried surface, on the stratum the
+pre-registration assigns to the completeness check. Both are contradicted, both stand as written, and
+both were scored mechanically from the graded blocks inside the results artifact; nothing here
+rescores them.
+
+What changes is what a held verdict would have meant. A reduction concentrating on the recovered rows
+would have been read as the fetch repairing flagged units, and no path in the layer connects the two,
+so that reading was never available to either prediction.
+
+The set was checked rather than assumed. P4 and P15 are abstention predictions and P9 is about grader
+conformance, so none of the three rests on the fetch reaching a flagged unit, and the six layer
+predictions at sections 6.1 to 6.6 are about retrieval recovery, which is what the corrective pass
+does. Those nine are unaffected. `PREREGISTRATION.md` is sealed and its wording is not amended.
 
 ### What the evidence supports next, not done
 
