@@ -4,6 +4,71 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-09-17, a check that compared a branch with itself, and the re-audit it forced
+
+A Rule 11 audit run against `main..HEAD` after `main` had been fast-forwarded onto `HEAD` compared a
+branch with itself, printed nothing, and was read as a pass. That is the third check in this
+repository that could not fail, after a guard that passed under a warm cache and a comparison that
+passed when both sides were absent. The reusable part is the shape rather than the instance: a check
+whose output on a clean tree is empty needs to distinguish an empty result from an empty input, and
+this one did not.
+
+### Which audit was vacuous, and which was not
+
+The vacuous run was the one placed in the scope that logged the sweep, not the one before it. The
+earlier audit ran while `main` still stood at the commit the scope began from, enumerated fourteen
+commits, and was a real check. The later one ran after `main` had been moved onto the branch tip and
+enumerated none. Recorded because the two are easy to transpose and one of them was, in a report
+written before the range was re-derived.
+
+### What the re-audit established
+
+Every commit this scope has put on the published branch, fourteen of them, audited under a form that
+refuses an empty range rather than passing it. Ten are named by an entry and four are log-only and
+exempt, so **no commit in published history touches a file other than `SESSION_LOG.md` without being
+named**. The two commits not yet published audit the same way.
+
+The audit was shown able to fail in both of its modes before its pass was trusted. Against an empty
+range it reports the range as unverified and exits 2. Against a constructed commit touching
+`docs/RESULTS.md` under a subject no entry names, it reports that commit and exits 1. The construction
+was made on a scratch branch and discarded, and the tree was confirmed unchanged afterwards.
+
+### The branch breach, and what it was not
+
+Two commits were made on `main` rather than on a working branch. Nothing was pushed, `origin/main`
+never moved, and both commit objects still resolve, so the correction was to create a branch at the
+tip and return `main` to the commit the remote already held. What moved was a local ref. No published
+history was rewritten and no force operation ran, so this is a branch-discipline breach and not a
+Rule 10 matter, and it is recorded as the first rather than the second.
+
+### The corrections this entry covers
+
+The two counts that both equal 25 are separated rather than signposted. Naming a collision in a
+paragraph of its own tells a reader it exists without removing it, so that paragraph is deleted and
+each quantity is named at every mention in both files. The alignment table gains a lead-in stating it
+is a different cut of the same 109 from the fate table above it, one counting what the model did with
+each unit and the other where each unit aligns.
+
+Section 16 now says what the second-call prompt actually did, at the strength the text supports, and
+that is narrower than the reading it replaces. Nothing in the prompt was false. The context had
+genuinely been expanded on every second call, measured at 144 of 144 firing row-tier pairs, and the
+flagged statements genuinely were unsupported by the first-pass context. The line that carries the
+assumption is an instruction rather than an assertion, and what it did was presuppose a relation
+nothing had arranged, since the expansion was selected by the references the first pass named rather
+than by anything the flagged statements needed.
+
+Two predictions, P11 and P19, are recorded as having an interpretation that rested on that
+connection. Both are contradicted, both stand as written, and both were scored mechanically. The set
+was checked rather than assumed: P4 and P15 are abstention predictions, P9 is about grader
+conformance, and the six layer predictions are about retrieval recovery, so those nine are
+unaffected. `PREREGISTRATION.md` is sealed and untouched.
+
+### Commits
+
+- 66667a5 docs: disambiguate the two counts that both equal 25, and land the two remaining corrections
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-09-17, a corrected claim that survived the correction, and the sweep that was never run
 
 The defect is the sweep, not the claim. Section 5 of `docs/RESULTS.md` was corrected in the previous
