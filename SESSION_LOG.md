@@ -4,6 +4,109 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-09-18, rule 16, and the sweep a corrected claim now gets
+
+Owner-directed governance change. Rule 16 is Hasan's decision and his placement.
+
+### What the rule establishes
+
+A corrected claim is swept for before its scope closes, on the idea rather than on the string, with a
+funnel, a control firing on a known instance, a control returning empty on a term known absent, and
+every surviving instance classified rather than only the ones that change. An instance left standing
+carries its reason, because a sweep that lists only what it changed cannot be checked.
+
+One defect earned it. A causal claim was corrected in one section of `docs/RESULTS.md` and survived
+in `README.md`, which "carried the pre-correction account and added to it the clause \"so there was
+nothing for a fetch to repair\", the causal conclusion the measurement contradicts", and did so "in a
+stronger form than section 5 had ever carried".
+
+### Coverage
+
+The sweep reaches the same ignored governance files V12 reaches, which V12 covers "because they sit
+outside every mechanical guarantee the tracked tree makes about itself". A surviving instance in one
+of those is read at session start and re-seeds the correction it survived. The rule points at that
+set and lists nothing, because the entry recording the working-file separation states that
+"`CLAUDE.md` and this log now reference only files that ship".
+
+### Precedence
+
+A file another regime governs is classified and left, and rule 16 changes nothing in it. It moves
+only by that regime's own correction, stated where that regime is enforced, with any pin it carries
+moving in the same commit. A commit message has no such route, since Rule 10 states "Never rewrite
+committed history", so an instance in one is recorded forward here.
+
+Routing every protected file through a Rule 4 correction was considered and rejected. Rule 4's scope
+is the files its own sentence lists, "The query set, the ground-truth passages, the metrics, the
+thresholds, and the pass and fail rules". A digest-pinned result artifact is outside that scope and
+states its own correction at its pin, in four test files and in two runners' refusal messages. The
+grader modules' pin states that "the decision is reversed in the open or not at all". One regime does
+not cover the three.
+
+The frozen modules are identified by `tests/test_grader_freeze.py`, which holds `FROZEN_MODULES` and
+asserts the set is exactly four and no others. `PREREGISTRATION.md` records that "The deterministic
+grounding check is built and frozen against the twelve development generations before the sealed
+fifty run"; it carries zero `src/` paths and zero occurrences of the word module, so it names no
+module and states no count.
+
+### A forcing defect that earlier drafts carried, and that no record supports
+
+The entry of 2026-09-17 headed "a corrected claim that survived the correction, and the sweep that
+was never run" states that "This repository built exactly this discipline in an earlier scope, when a
+suite figure was corrected in one file and a sweep found it in four." That entry is left as written,
+per rule 16's own clause on entries, and is corrected forward here.
+
+What the record shows. The entry it rests on, headed "2026-08-17, the sealed set closed at fifty, and
+a predicate corrected under it", states that "The corrected predicate moved seven committed figures
+across three populations" and that one of them was "the period-only segmenter's blindness figure from
+0.2968 to 0.3621, in six places across four files including a module docstring".
+
+What no record found shows. That entry contains the words sweep, swept and discipline zero times,
+against a control finding "blindness figure" in it once. No entry records a suite figure corrected in
+one file and found in four, and every suite-figure correction in this history touched exactly two
+files, `README.md` and `docs/REPRODUCE.md`, measured on `f4becdf`, `49eafe3`, `024938e` and
+`8a6abfc`. So the sentence describes an event this record does not carry, and rule 16 states one
+forcing defect rather than two.
+
+The sweep for that claim, on the idea and in any wording, over the tracked tree and the ignored
+governance files, returned one instance in a tracked file and it is the `SESSION_LOG.md` sentence
+above. The control fired on that known site and the same command returned empty on a term known
+absent.
+
+### The contradiction sweep, run before the placement
+
+Every commit-shaped citation resolves: 51 backticked seven-character citations across `CLAUDE.md`,
+`SESSION_LOG.md`, `PREREGISTRATION.md`, `README.md`, `eval/README.md` and `docs/`, none dangling,
+against a control in which a fabricated citation does not resolve. Every referenced file exists and
+ships: 89 backticked references, none missing, against a control in which a fabricated basename
+resolves nowhere. The one count `CLAUDE.md` states in its own voice, 212 edges, is derivable from
+`data/chunks/nist_ai_600_1.relations.jsonl` by summing the per-unit `action_subcategory` lists and
+matches. Terminology matches Rule 1: no tracked file uses closed-book for the no-retrieval condition.
+
+A targeted pass asked which statements would go stale at sixteen rules. Every rule-number citation in
+the tracked tree was collected and none exceeds fifteen, and no tracked file states how many rules
+exist, so nothing in the tracked tree moves on placement. The ignored governance files were covered.
+
+### A false empty, and what it binds
+
+The first control for that targeted pass searched `CLAUDE.md` for the string `Rule 15` and returned
+nothing, which would have left an empty sweep unreadable as either a clean result or a broken
+command. The cause binds every later sweep of that file: `CLAUDE.md` defines each binding rule as a
+numbered list item, so a search for a rule's definition by the `Rule N` form does not find it, and a
+control for a sweep of that file has to match the form the file actually uses. Measured with rule 16
+in place: sixteen definitions by the numbered-list form and none by the `Rule N` form, against a
+control in which the `Rule N` form matches a string written that way.
+
+### Figures
+
+No test is added and no source file changes, so no row of `docs/REPRODUCE.md` and no figure in
+`README.md` moves.
+
+### Commits
+
+- 0ad43f0 docs(governance): rule 16, sweep a correction
+
+The commit placing this entry is exempt under Rule 11.
+
 ## 2026-09-17, a check that compared a branch with itself, and the re-audit it forced
 
 A Rule 11 audit run against `main..HEAD` after `main` had been fast-forwarded onto `HEAD` compared a
