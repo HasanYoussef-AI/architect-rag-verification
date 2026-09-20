@@ -4,6 +4,67 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-09-20, a universal about suite-figure corrections, bounded to its enumeration
+
+The entry of 2026-09-18 headed "rule 16, and the sweep a corrected claim now gets" states that
+"every suite-figure correction in this history touched exactly two files, `README.md` and
+`docs/REPRODUCE.md`, measured on `f4becdf`, `49eafe3`, `024938e` and `8a6abfc`". The enumeration does
+not support it.
+
+That entry is not edited and the correction is made here. This file states the disposition directly:
+"Mechanical references, commit hashes and dates, are corrected in place. Claims and findings are
+corrected forward in a new entry." Rule 16's clause on entries was considered and is not the ground
+relied on. It reads "`SESSION_LOG.md` entries record what was true when written and are classified
+and left", and the sentence corrected here was not true when written, so the clause's stated reason
+does not reach it.
+
+### The enumeration
+
+Every commit reachable from the branch head, 237. Those touching `README.md` or
+`docs/REPRODUCE.md`, 22. Those whose diff to either file adds or removes a line carrying a three or
+four digit count beside collected, passed, skipped or the phrase "suite is", or an environment-table
+row, 11. Those where a documented count value moved rather than a figure-carrying line merely being
+touched, read as the fresh-clone triple and the README suite sentence at the commit against the same
+at its parent, 10. Those where the figure moved rather than first appearing, 8.
+
+The tenth was removed because the fresh-clone triple reads 1087/1076/11 on both sides of `c4283e8`,
+which changed figure-carrying lines without moving a figure. The two authorship commits were removed
+because `docs/REPRODUCE.md` does not exist at the parent of `e7a3be8`, and the README suite sentence
+is present zero times at the parent of `a9f798b` and once at the commit.
+
+A control matched `b9fde0e`, whose subject is "docs(readme): correct three stale suite figures
+against the fresh-clone measurement" and whose figures move 991 to 1058. The same form with the
+predicate replaced by a term known absent matched nothing. A third control ran the file-count method
+over `90f1d67` and `49eafe3` and returned 5 and 2, so the method distinguishes rather than reporting
+a constant.
+
+### What the eight corrections are
+
+Five touched exactly two files: `f4becdf`, `518ae60`, `49eafe3`, `024938e` and `8a6abfc`. Two touched
+exactly one: `b9fde0e` moved `README.md` alone and `85d6ace` moved `docs/REPRODUCE.md` alone. One
+touched five, `90f1d67`, being the two documentation files and `tests/_netguard.py`,
+`tests/conftest.py` and `tests/test_offline_reproducibility.py`, whose landing moved the figures.
+
+So the four named are four of the five two-file corrections rather than the population, and `518ae60`
+is the fifth.
+
+### The claim that holds
+
+No suite-figure correction in this history touched four files. The files-touched distribution over
+the eight is 1, 1, 2, 2, 2, 2, 2 and 5. Nor did any move a figure in four lines: the count of added
+lines carrying a three or four digit number is 2, 8, 8, 8, 8, 8, 8 and 9. Counting every such number
+on those same lines rather than the lines themselves gives 3, 12, 12, 12, 12, 12, 12 and 13, and
+neither distribution contains a four.
+
+That narrower claim is what the 2026-09-18 entry needed to support the sentence it opens with, "No
+entry records a suite figure corrected in one file and found in four". The first half of what that
+entry refutes is in fact satisfied, since two suite-figure corrections did touch exactly one file.
+What no commit shows is the second half.
+
+### Commits
+
+This commit touches only `SESSION_LOG.md` and is named by no entry, under Rule 11.
+
 ## 2026-09-18, rule 16, and the sweep a corrected claim now gets
 
 Owner-directed governance change. Rule 16 is Hasan's decision and his placement.
