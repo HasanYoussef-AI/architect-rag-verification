@@ -4,6 +4,21 @@ Running log owned by Claude Code. One entry per unit of work, naming the commits
 it covers, per CLAUDE.md Rule 11. A new session should be able to resume from the
 last entry here plus the governance files alone. Newest entries at the top.
 
+## 2026-09-22, where a quoted sentence sits in the rule 16 entry
+
+The entry of 2026-09-20 carries this sentence verbatim: That narrower claim is what the 2026-09-18
+entry needed to support the sentence it opens with, "No entry records a suite figure corrected in one
+file and found in four".
+
+The 2026-09-18 entry does not open with that sentence. It opens "Owner-directed governance change."
+The quoted sentence sits under the heading "A forcing defect that earlier drafts carried, and that no
+record supports", in the paragraph opening "What no record found shows.", and is neither that
+paragraph's first sentence nor the section's.
+
+Nothing else in the 2026-09-20 entry changes.
+
+This commit touches only `SESSION_LOG.md` and is named by no entry, under Rule 11.
+
 ## 2026-09-20, a universal about suite-figure corrections, bounded to its enumeration
 
 The entry of 2026-09-18 headed "rule 16, and the sweep a corrected claim now gets" states that
